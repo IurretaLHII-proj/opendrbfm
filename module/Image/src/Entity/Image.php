@@ -9,7 +9,7 @@ use DateTime;
 
 abstract class Image implements 
 	JsonSerializable,
- 	ResourceInterface,
+ 	////ResourceInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
 	\User\Entity\UserAwareInterface,

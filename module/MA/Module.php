@@ -49,7 +49,8 @@ class Module
     {
 		return [
 			'invokables' => [
-				//Form\IssueForm::class => Form\IssueForm::class,
+				Form\ProcessForm::class => Form\ProcessForm::class,
+				Form\StageForm::class => Form\StageForm::class,
 			],
 		];
     }
@@ -68,7 +69,8 @@ class Module
 	{
 		return [
 			'invokables' => [
-				//Hydrator\IssueHydrator::class => Hydrator\IssueHydrator::class,
+				Hydrator\ProcessHydrator::class => Hydrator\ProcessHydrator::class,
+				Hydrator\StageHydrator::class => Hydrator\StageHydrator::class,
 			],
 		];
 	}
