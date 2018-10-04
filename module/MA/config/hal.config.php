@@ -1,0 +1,38 @@
+<?php
+
+namespace MA;
+
+return [
+	'metadata_map' => [
+		//'MA\Entity\User' => [
+		//	'route_name' => 'user/detail',
+		//	'route_identifier_name' => 'id',
+		//	'entity_identifier_name' => 'id',
+		//	'route_params' => ['action' => 'detail'],
+		//	'max_depth' => 0,
+		//],
+		'MA\Entity\Process' => [
+			'route_name' => 'process/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 4,
+			'hydrator' => Hydrator\ProcessHydrator::class,
+		],
+		'MA\Entity\Stage' => [
+			'route_name' => 'process/stage/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+			'hydrator' => Hydrator\StageHydrator::class,
+		],
+		'MA\Entity\Image\IStage' => [
+			'route_name' => 'image/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 0,
+		],
+	],
+];

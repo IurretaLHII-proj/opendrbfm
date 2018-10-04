@@ -1,0 +1,52 @@
+a:hover {
+	text-decoration: none;
+}
+
+.btn-toolbar .btn {
+	background: white;
+}
+
+.breadcrumb {
+	padding: .25rem 1rem;
+    background: aliceblue;
+}
+
+.breadcrumb a,
+.breadcrumb a.nav-link {
+	padding: 0 5px;
+}
+
+#sidebar {
+	background: #f8f9fa;
+	padding: 15px;
+}
+
+.issue-item {
+	border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+.last.issue-item {
+	border-bottom: none;
+}
+
+.issue-item p {
+	margin: 0;
+}
+
+li.nav-link {
+	/*margin: 0.1rem;
+	padding: 0.5rem !important;
+	border-radius: 5px;
+	border: 1px solid lightgray;*/
+}
+.ta-scroll-window > .ta-bind {
+    min-height: auto;
+    max-height: 600px;
+}
+.ta-editor.ta-html, .ta-scroll-window.form-control {
+    min-height: auto;
+    max-height: 600px;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 100%;
+}

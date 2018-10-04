@@ -10,7 +10,7 @@ return [
                     'host'     => 'localhost',
                     'user'     => 'root',
                     'password' => '1turr1',
-                    'dbname'   => 'zf_issues',
+                    'dbname'   => 'ma_drbfm',
                     'charset'  => 'utf8',
                 ]
             ]
