@@ -1,0 +1,21 @@
+{% set index = index+1 %}
+<div 
+	 style="overflow-y:scroll; overflow-x: hidden; border:1px solid lightgray;"
+	 class="col-md-2"
+	>
+	<p>{{ index }}</p>
+	<!--
+	<p>id: {{ stage.id }}</p>
+	<p>text: {{ stage.body }}</p>
+	-->
+	<ul class="hints">
+	{% for i, hint in stage.hints %}
+		<li class="{% if hint.id == entity.id %}active{% endif %}">{{ hint.text }}</li>
+	{% endfor %}
+	</ul>
+</div>
+{% if stage.children | length %}
+	{% for stg in stage.children %}
+		{{ partial('partial/stage/col', {'stage': stg, 'index':index, 'entity': entity}) }}
+	{% endfor %}
+{% endif %}

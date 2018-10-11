@@ -8,7 +8,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 use DateTime;
 
 /**
- * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\IssueRepository")
+ * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\StageRepository")
  * @ORM\Table(name="process_stage")
  */
 class Stage implements 
@@ -50,7 +50,7 @@ class Stage implements
 	 * @var StageInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Stage",
-	 *	mappedBy	 = "process",
+	 *	mappedBy	 = "parent",
 	 *	cascade = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
@@ -58,7 +58,18 @@ class Stage implements
 	protected $children;
 
 	/**
-	 * @var Stage\ImageInterface[]
+	 * @var HintInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Hint",
+	 *	mappedBy	 = "stage",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"priority" = "DESC"})
+	 */
+	protected $hints;
+
+	/**
+	 * @var Image\IStage[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Image\IStage",
 	 *	mappedBy	 = "source",
@@ -102,6 +113,7 @@ class Stage implements
 		$this->updated  = new DateTime;
 		$this->children = new ArrayCollection;
 		$this->images   = new ArrayCollection;
+		$this->hints	= new ArrayCollection;
 	}
     
     /**
@@ -118,7 +130,7 @@ class Stage implements
      * Set id.
      *
      * @param int id the value to set.
-     * @return AbstractIssue.
+     * @return Stage.
      */
     public function setId($id)
     {
@@ -140,7 +152,7 @@ class Stage implements
      * Set body.
      *
      * @param string body the value to set.
-     * @return Issue.
+     * @return Stage.
      */
     public function setBody($body = null)
     {
@@ -213,6 +225,69 @@ class Stage implements
         $this->children = $children;
         return $this;
     }
+    
+    /**
+     * Add child.
+     *
+     * @param StageInterface child the value to set.
+     * @return Stage.
+     */
+    public function addChild(StageInterface $child)
+    {
+		$child->setParent($this);
+		$this->getChildren()->add($child);
+        return $this;
+    }
+    
+    /**
+     * Get hints.
+     *
+     * @return HintInterface[].
+     */
+    public function getHints()
+    {
+        return $this->hints;
+    }
+    
+    /**
+     * Set hints.
+     *
+     * @param HintInterface[] hints the value to set.
+     * @return StageInterface.
+     */
+    public function setHints($hints)
+    {
+        $this->hints = $hints;
+        return $this;
+    }
+
+	/**
+	 * @param HintInterface hint
+	 * @return StageInterface
+	 */
+	public function addHint(HintInterface $hint)
+	{
+		$hint->setStage($this);
+		$this->getHints()->add($hint);
+		return $this;
+	}
+
+	/**
+	 * @param HintInterface hint
+	 * @return bool 
+	 */
+	public function hasHint(HintInterface $hint)
+	{
+		if ($this->getHints()->contains($hint) !== false) {
+			return true;	
+		}
+
+		foreach ($this->getChildren() as $child) {
+			if ($child->hasHint($hint)) return true;
+		}
+
+		return false;
+	}
     
     /**
      * Get images.
@@ -306,7 +381,7 @@ class Stage implements
      * Set created.
      *
      * @param DateTime created the value to set.
-     * @return Issue.
+     * @return Stage.
      */
     public function setCreated(DateTime $created)
     {
@@ -328,7 +403,7 @@ class Stage implements
      * Set updated.
      *
      * @param DateTime updated the value to set.
-     * @return Issue.
+     * @return Stage.
      */
     public function setUpdated(DateTime $updated)
     {
@@ -338,7 +413,7 @@ class Stage implements
 
 	/**
 	 * @ORM\PreUpdate
-	 * @return Issue
+	 * @return Stage
 	 */
 	public function preUpdate()
 	{
@@ -350,7 +425,7 @@ class Stage implements
 	 */
 	public function __toString()
 	{
-		return (string) $this->getTitle();
+		return (string) $this->getId();
 	}
 
 	/**
@@ -380,6 +455,14 @@ class Stage implements
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
 				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'hint',
+				//'privilege'   => 'hint',
+				'route' => [
+				    'name'    => 'process/stage/detail/json',
+				    'params'  => ['action' => 'hint', 'id' => $this->getId()],
 				],
 			],
 			[

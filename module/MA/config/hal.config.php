@@ -16,7 +16,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 4,
+			'max_depth' => 6,
 			'hydrator' => Hydrator\ProcessHydrator::class,
 		],
 		'MA\Entity\Stage' => [
@@ -24,8 +24,16 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 1,
+			'max_depth' => 4,
 			'hydrator' => Hydrator\StageHydrator::class,
+		],
+		'MA\Entity\Hint' => [
+			'route_name' => 'process/hint/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+			'hydrator' => Hydrator\HintHydrator::class,
 		],
 		'MA\Entity\Image\IStage' => [
 			'route_name' => 'image/detail',
