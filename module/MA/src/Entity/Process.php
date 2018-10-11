@@ -8,7 +8,7 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 use DateTime;
 
 /**
- * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\IssueRepository")
+ * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\ProcessRepository")
  * @ORM\Table(name="process")
  */
 class Process implements 
@@ -85,7 +85,7 @@ class Process implements
      * Set id.
      *
      * @param int id the value to set.
-     * @return AbstractIssue.
+     * @return Process.
      */
     public function setId($id)
     {
@@ -107,7 +107,7 @@ class Process implements
      * Set title.
      *
      * @param string title the value to set.
-     * @return Issue.
+     * @return Process.
      */
     public function setTitle($title)
     {
@@ -129,7 +129,7 @@ class Process implements
      * Set body.
      *
      * @param string body the value to set.
-     * @return Issue.
+     * @return Process.
      */
     public function setBody($body = null)
     {
@@ -146,6 +146,30 @@ class Process implements
     {
         return $this->stages;
     }
+
+    /**
+     * Get primary stage.
+     *
+	 * @param int $index
+     * @return StageInterface
+     */
+	public function getStage($index = 0)
+	{
+		return $this->getStages()->get($index);
+	}
+
+	/**
+     * Add stages.
+     *
+	 * @param StageInterface $stage
+     * @return Process.
+	 */
+	public function addStage(StageInterface $stage)
+	{
+		$stage->setProcess($this);
+		$this->getStages()->add($stage);
+		return $this;
+	}
     
     /**
      * Set stages.
@@ -173,7 +197,7 @@ class Process implements
      * Set created.
      *
      * @param DateTime created the value to set.
-     * @return Issue.
+     * @return Process.
      */
     public function setCreated(DateTime $created)
     {
@@ -195,7 +219,7 @@ class Process implements
      * Set updated.
      *
      * @param DateTime updated the value to set.
-     * @return Issue.
+     * @return Process.
      */
     public function setUpdated(DateTime $updated)
     {
@@ -205,7 +229,7 @@ class Process implements
 
 	/**
 	 * @ORM\PreUpdate
-	 * @return Issue
+	 * @return Process
 	 */
 	public function preUpdate()
 	{

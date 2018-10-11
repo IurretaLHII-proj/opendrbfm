@@ -10,10 +10,20 @@ return [
 			'defaults' => [
 				'controller' => Controller\ProcessController::class,
 				'action' => 'add' 
-			]
+			],
 		],
 		'may_terminate' => true,
 		'child_routes' => [
+			'json' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/json',
+					'defaults' => [
+						'action' => 'index',
+						'controller' => Controller\Js\ProcessController::class,
+					],
+				],
+			],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -23,7 +33,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|stage',
+						'action' => 'detail|edit|stage',
 					]
 				],
 				'may_terminate' => true,
@@ -45,7 +55,7 @@ return [
 					'route' => '/stage',
 					'defaults' => [
 						'controller' => Controller\StageController::class,
-						'action' => 'add' 
+						'action' => 'index' 
 					],
 				],
 				'may_terminate' => true,
@@ -69,7 +79,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|image',
+								'action' => 'detail|edit|hint|image',
 							]
 						],
 						'may_terminate' => true,
@@ -80,6 +90,44 @@ return [
 									'route' => '/json',
 									'defaults' => [
 										'controller' => Controller\Js\StageController::class,
+									],
+								],
+							]
+						],
+					],
+				],
+			],
+			'hint' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/hint',
+					'defaults' => [
+						'controller' => Controller\HintController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|edit|delete',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\HintController::class,
 									],
 								],
 							]

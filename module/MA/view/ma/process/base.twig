@@ -11,13 +11,13 @@
 	{% block content %}
 		<!--<div class="col-md-12 breadcrumb">{{ navigation('navigation').breadcrumbs() | raw }}</div>-->
 
-		<div class="col-md-12" style="">
-			{% block template %}{% endblock template %}
-		</div>
+		{% block template %}{% endblock template %}
 
+		<!--
 		<div class="col-md-12 sidebar" style="">
 			{% block sidebar %}{% endblock sidebar %}
 		</div>
+		-->
 	{% endblock content %}
 </div>
 {% endblock body %}

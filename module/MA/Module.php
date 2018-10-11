@@ -71,6 +71,7 @@ class Module
 			'invokables' => [
 				Hydrator\ProcessHydrator::class => Hydrator\ProcessHydrator::class,
 				Hydrator\StageHydrator::class => Hydrator\StageHydrator::class,
+				Hydrator\HintHydrator::class => Hydrator\HintHydrator::class,
 			],
 		];
 	}

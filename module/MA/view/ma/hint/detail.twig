@@ -1,0 +1,32 @@
+{% extends 'ma/process/base.twig' %}
+
+{% block style %}
+	{[ parent() ]}
+
+	<style>
+		ul.hints {
+			padding: 0;
+		}
+		ul.hints li {
+			padding: 2px 8px;;
+		}
+		ul.hints li.active {
+			background: lightgray;
+		}
+	</style>
+{% endblock style %}
+
+{% block template %}
+	
+	<div class="col-md-12">
+		<h2>{{ entity.process }}</h2><a class="" href="{{ url('process/detail', {'id':entity.process.id}) }}">return</a>
+		<p>{{ entity.text }}</p>
+		<div class="row">
+			{% for index, stage in process.stages() %}
+				{{ partial('partial/stage/col', {'stage': stage, 'index': index, 'entity': entity}) }}
+			{% endfor %}
+		</div>
+	</div>
+
+{% endblock template %}
+

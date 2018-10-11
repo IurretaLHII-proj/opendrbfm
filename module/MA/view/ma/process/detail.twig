@@ -17,196 +17,473 @@
 		}
 		.editor-box .btns a {
 		}
-		.editor-box.edit {
+		.editor-box.editor {
 			border: 1px solid;
 			border-color: #e6e6e6;
 			border-radius: 5px;
 			background: #FFF;
 		}
 		ul.stage-tabs {
+			border:none;
 		}
 		ul.stage-tabs li.nav-link {
 		    border: none;
 		    margin-right: 6px;
+			background: #f9f9f9;
 		}
 		ul.stage-tabs li.nav-link.active {
-			background: #e4e4e4;
+			background: #f4f4f4;
+			border: 1px solid #e6e6e6;
+			border-bottom: 1px solid #f4f4f4;
+			margin-bottom: -1px;
 		}
+		ul.stage-tabs li.nav-link.editor {
+		}
+
+		button {
+			border-style: unset;
+		}
+		.process-img-list {
+		}
+		.process-img-list .item {
+			border: 2px solid white;
+			padding: 4px;
+			margin: 0;
+		}
+		.process-img-list .item:not(:first-child) {
+			border-left: none;
+		}
+		.process-img-list.active .item {
+			border-color: #007bff;
+		}
+		.my-box {
+		}
+		.stage-box {
+			margin: 12px;
+		}
+		.my-box.editor {
+			background: white;
+		}
+		.stage-box.editor {
+			border: 1px solid lightgray;
+		}
+		.my-box .errors {
+		}
+		.my-box form {
+			padding: 12px;
+		}
+		table.hint-table thead {
+			text-align: center;
+			background: #eee;
+		}
+		table.hint-table input.form-control {
+			/*width: auto;*/
+		}
+		table.hint-table tr {
+			background: none !important;
+		}
+
+		.alert.ng-hide
+		{
+			opacity: 0;
+		}
+		/*.errors.ng-hide-remove*/
+		.alert.ng-hide-add
+	   	{
+			transition: all linear 1s;
+		}
+
+		.messages {
+			position: fixed;
+		    top: 8%;
+		    right: 0;
+		    left: 0;
+		    z-index: 1050;
+			text-align: center;
+		}
+		.messages .alert {
+			margin: 0;
+		}
+		.hint-row {
+			margin: 0;
+		}
+		.hint-row .col {
+		}
+
+.pl-table  .row{ 
+    margin: 5px 0; 
+    padding: 0 20px; 
+    align-items: center; 
+}
+ .pl-table .col{ 
+    padding: 0 10px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+.pl-table .pl-thead {
+    color: #979797;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+    margin: 15px 0;
+}
 	</style>
 
 {% endblock style %}
 
 {% block template %}
 
-	<div class="row"
-		style="background:#EEE; padding: 12px"
+	<div class="col-md-12"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 		>
+
+		<div ng-if="messages.success.length || messages.errors.length" class="messages">
+			<div class="container">
+				<div ng-repeat="message in messages.errors track by $index" class="alert alert-danger" role="alert">{[ message ]}<a href="" ng-click="closeError(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+				<div ng-repeat="message in messages.success track by $index" class="alert alert-success" role="alert">{[ message ]}<a href="" ng-click="closeSuccess(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+			</div>
+		</div>
+
 		<!--
 		{[ values ]}
 		-->
-		<div ng-if="!entity.editor" class="col-md-12 editor-box">
-			<h2 class="title">{[ entity.title ]}</h2>
-			<div ng-bind-html="entity.body"></div>
-			<div class="btns">
-				<a href="" class="btn btn-sm btn-default" ng-click="entity.editor=true;">
-					<span class="fa fa-pencil"></span>
-				</a>
-			</div>
-		</div>
 
-		<div ng-if="entity.editor" class="col-md-12 editor-box edit">
-			<div class="form-group">
-				<!--<label class="control-label">Title</label>-->
-				<div class="controls">
-					<input type="text" class="form-control" ng-model="values.title" />
-				</div>
-			</div>
-			<div class="form-group">
-			    <div class="controls">
-			
-					<text-angular 
-						name="body"
-						ng-model="values.body"
-						ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-						ta-text-editor-class="form-height form-control"
-						>
-					</text-angular>
-					
-			    </div>
-			</div>
-			<div class="btns">
-				<a href="" class="btn btn-sm btn-default" ng-click="entity.editor=false;">
-					<span class="fa fa-close"></span>
-				</a>
-				<a href="" class="btn btn-sm btn-success" ng-click="entity.editor=false;">
-					<span class="fa fa-check"></span>
-				</a>
-			</div>
-		</div>
-
-		<ul class="nav nav-tabs stage-tabs mt-2" ng-init="tab=0;">
-			<li ng-repeat="(i, stage) in values.stages" class="nav-link" ng-class="{active:stage==values.current}"><a href="" ng-click="values.current = stage;">Stage {[ i+1 ]}</a></li>
-			<li ng-if="values.stages[values.stages.length-1].id" class="nav-link" style=""><a href="" class="btn-sm btn-primary" ng-click="addStage()"><span class="fa fa-plus"></span></a></li>
-		</ul>
-
-		<div ng-repeat="(i, stage) in entity._embedded.stages" ng-if="!stage.editor && values.current == stage" class="col-md-12 editor-box" style="background:#e5e5e5;">
-			<div ng-bind-html="stage.body"></div>
-			<ul class="list-inline">
-				<li ng-repeat="(index, image) in stage.images" class="list-inline-item">
-					<img ng-if="image._links" ng-src="{[ image._links.self.href ]}" alt="{[ image.description ]}" title="{[ image.description ]}" width=120 height=120 />
-				</li>
-			</ul>
-			<div class="btns">
-				<a href="" class="btn btn-sm btn-default" ng-click="stage.editor=true;">
-					<span class="fa fa-pencil"></span>
-				</a>
-			</div>
-		</div>
-
-		<div ng-repeat="(i, stage) in values.stages" ng-if="stage.editor && values.current == stage" class="col-md-12 editor-box edit">
-			<div ng-if="stage.errors" class="errors"><p>{[ stage.errors.data.title ]}</p></div>
-			<text-angular 
-				ng-model="stage.body"
-				ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-				ta-text-editor-class="form-height form-control"
-				>
-			</text-angular>
-			<hr>
-			<div ng-repeat="(index, image) in stage._embedded.images" 
-				class="mt-1 mb-1 d-flex" 
-				style="
-			">
-				<div style="
-					min-width: 120px;
-					background: lightgray;	
-				">
-					<img ng-if="image._links" ng-src="{[ image._links.self.href ]}" width=120 height=120 />
-					<img ng-if="!image._links" ng-src="/image/{[image.id]}" width=120 height=120 />
-				</div>
-				<div class="mr-auto align-self-stretch" style="width:100%;">
-					<textarea 
-						class="form-control" 
-						style="height:100%;"
-						ng-model="image.description"
-					></textarea>
-				</div>
-				<div class="align-self-center" style="">
-					<a href="" class="btn btn-default" ng-click="removeImage(stage, index)"><span class="fa fa-remove"></span></a>
-				</div>
-			</div>
-			<div class="" style="
-			">
-				<label 
-					class=""
-					style="
-						padding: .5rem 1rem;
-					    font-size: 1.25rem;
-					    line-height: 1.5;
-					    border-radius: .3rem;
-					    cursor: pointer;
-						color: #fff;
-					    background-color: #007bff;
-					    border-color: #007bff;
-					">
-					<i class="fa fa-file-image-o"></i>
-					<input type="file"
-						file-change="uploadFile"
-						file-entity="stage"
-						file-index="{[ stage.images.length ]}"
-						style="display:none;"
-						/>
-				</label>
-			</div>
-			<div class="btns">
-				<a ng-if="stage.id" href="" class="btn btn-sm btn-default" ng-click="stage.editor=false;">
-					<span class="fa fa-close"></span>
-				</a>
-				<a href="" class="btn btn-sm btn-success" ng-click="submitStage(stage, i);">
-					<span class="fa fa-check"></span>
-				</a>
-			</div>
-		</div>
-		<div ng-repeat="n in [1]" class="col-md-12" style="
-			    background: #e9e9e9;
-			    border: 1px solid;
-			    border-color: #e6e6e6;
-			">
-			<div class="editor-box d-flex">
-				<div class="mr-2">
-					<label class="label">Err</label>
-					<select class="form-control">
-						<option>-- Select an option --</option>
-					</select>
-				</div>
+		<div class="my-box d-flex flex-column" ng-class="{editor: entity.editor}">
+			<div class="d-flex">
 				<div class="ml-auto mr-auto">
-					<div class="form-group row"> 
-						<div class="col-md-3">
-							<label class="label">Err</label>
-							<input type="text" class="form-control" />
-						</div>
-						<div class="col-md-3">
-							<label class="label">Err</label>
-							<input type="text" class="form-control" />
-						</div>
-						<div class="col-md-3">
-							<label class="label">Err</label>
-							<input type="text" class="form-control" />
-						</div>
-						<div class="col-md-3">
-							<label class="label">Err</label>
-							<input type="text" class="form-control" />
+					<div ng-show="entity.showErrors" class="errors">{[ entity.errors.title ]}</div>
+				</div>
+				<div class="">
+					<a href="" class="btn btn-sm btn-default" 
+						ng-if="!entity.editor;" 
+						ng-click="entity.editor=true;"
+					>
+						<span class="fa fa-pencil"></span>
+					</a>
+					<a href="" class="btn btn-sm btn-default" 
+						ng-if="entity.editor;" 
+						ng-click="entity.editor=false;"
+					>
+						<span class="fa fa-close"></span>
+					</a>
+					<button type="submit" class="btn btn-sm btn-success" 
+						ng-if="entity.editor;" 
+						ng-click="submitProcess();"
+					>
+						<span class="fa fa-check"></span>
+					</button>
+				</div>
+			</div>
+			<div ng-if="!entity.editor" class="d-flex flex-column">
+				<h2 class="mr-auto">{[ entity.title ]}</h2>
+				<div ng-bind-html="entity.body"></div>
+				<div class="d-flex justify-content-center mt-4 mb-4">
+					<div ng-repeat="(index, stage) in entity._embedded.stages" class="ml-2 mr-2">
+						<div ng-if="stage._embedded.images.length" 
+							class="process-img-list" 
+							ng-class="{active: stage == values.current._embedded}"
+						>
+							<div ng-repeat="(i, img) in stage._embedded.images" 
+								class="item list-inline-item"
+							>
+								<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" width=75 height=75 />
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="ml-2 align-self-stretch col">
-					<a href="" class="btn-sm btn-danger"><span class="fa fa-remove"></span></a>
-					<a href="" class="btn-sm btn-primary"><span class="fa fa-pencil"></span></a>
+			</div>
+			<form ng-if="entity.editor" style="padding:15px;">
+				<div class="form-group">
+					<!--<label class="control-label">Title</label>-->
+					<div class="controls">
+						<input type="text" 
+							class="form-control" 
+							ng-class="{'is-invalid': entity.errors.title}"
+							ng-model="values.title"/>
+						<div ng-if="entity.errors.title"
+							ng-repeat="(key, text) in entity.errors.title"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+				</div>
+				<div class="form-group">
+				    <div class="controls">
+				
+						<text-angular 
+							name="body"
+							ng-model="values.body"
+							ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+							ta-text-editor-class="form-height form-control"
+							>
+						</text-angular>
+
+						<div ng-if="entity.errors.body"
+							ng-repeat="(key, text) in entity.errors.body"
+							class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+						
+				    </div>
+				</div>
+			</form>
+		</div>
+
+		<ul class="nav nav-tabs stage-tabs mt-2" ng-init="tab=0;">
+			<li ng-repeat="(i, stage) in values.stages" class="nav-link" ng-class="{active:stage==values.current, editor:stage.editor}"><a href="" ng-click="values.current = stage;">Stage {[ i+1 ]}</a></li>
+			<li ng-if="values.stages[values.stages.length-1]._embedded" class="nav-link" style=""><a href="" class="btn-sm btn-default" ng-click="addStage(values.stages[values.stages.length-1]._embedded)"><span class="fa fa-plus"></span></a></li>
+		</ul>
+
+
+		<div ng-repeat="(i, stage) in values.stages" 
+			 ng-if="values.current == stage" 
+			 style="
+			 background: #f4f4f4;
+			 border: 1px solid #e6e6e6;
+		">
+			<div class="my-box stage-box d-flex flex-column"
+			 ng-class="{editor: stage.editor}"
+			 style="
+			">
+
+				<div class="d-flex">
+					<div class="ml-auto mr-auto">
+						<div ng-show="stage.showErrors" class="errors">{[ stage.errors.title ]}</div>
+					</div>
+					<div class="">
+						<a href="" class="btn btn-sm btn-default" 
+							ng-if="stage.editor && values.stages[0]._embedded" 
+							ng-click="closeStage(stage, i)"
+						>
+							<span class="fa fa-close"></span>
+						</a>
+						<button type="submit" class="btn btn-sm btn-success" 
+							ng-if="stage.editor;" 
+							ng-click="submitStage(stage, i);"
+						>
+							<span class="fa fa-check"></span>
+						</button>
+						<a href="" class="btn btn-sm btn-default" 
+							ng-if="!stage.editor;" 
+							ng-click="stage.editor=true;"
+						>
+							<span class="fa fa-pencil"></span>
+						</a>
+					</div>
+				</div>
+				<div ng-if="!stage.editor" class="">
+					<div ng-bind-html="stage.body"></div>
+				</div>
+				<form ng-if="stage.editor" class="d-flex flex-column" style="
+				">
+
+					<text-angular 
+						ng-model="stage.body"
+						ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+						ta-text-editor-class="form-height form-control"
+						ng-class="{'is-invalid': stage.errors.body}"
+						>
+					</text-angular>
+
+					<div ng-if="stage.errors.body"
+						ng-repeat="(key, text) in stage.errors.body"
+						class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+
+					<div class="d-flex">
+						<div ng-repeat="(index, image) in stage.images" 
+							class="mt-1 mb-1 d-flex" 
+							style="
+						">
+							<div style="
+								min-width: 120px;
+								background: lightgray;	
+							">
+								<img ng-if="image._links" ng-src="{[ image._links.self.href ]}" width=120 height=120 />
+								<img ng-if="!image._links" ng-src="/image/{[image.id]}" width=120 height=120 />
+							</div>
+							<div class="align-self-stretch" style="">
+								<textarea 
+									class="form-control" 
+									style="height:100%;"
+									ng-model="image.description"
+								></textarea>
+							</div>
+							<div class="align-self-center" style="">
+								<a href="" class="btn btn-default" ng-click="removeImage(stage, index)"><span class="fa fa-remove"></span></a>
+							</div>
+						</div>
+					</div>
+					<div class="" style="
+					">
+						<label 
+							class=""
+							style="
+								padding: .5rem 1rem;
+							    font-size: 1.25rem;
+							    line-height: 1.5;
+							    border-radius: .3rem;
+							    cursor: pointer;
+								color: #fff;
+							    background-color: #007bff;
+							    border-color: #007bff;
+							">
+							<i class="fa fa-file-image-o"></i>
+							<input type="file"
+								file-change="uploadFile"
+								file-entity="stage"
+								file-index="{[ stage.images.length ]}"
+								style="display:none;"
+								/>
+						</label>
+						<div ng-if="stage.errors.file"
+							ng-repeat="(key, text) in stage.errors.file"
+							class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+						</div>
+				</form>
+			</div>
+
+			<div 
+				ng-if="stage._embedded"
+				ng-repeat="(h, hint) in stage.hints"
+				ng-class="{editor: hint.editor}"
+			>
+			    <form ng-if="hint.editor" style="
+					background:white; 
+					border: 1px solid lightgray;
+					margin: 12px; padding: 12px;
+				">
+				  <div class="form-group">
+					<button class="btn-sm btn-success pull-right"
+						ng-click="submitHint(stage, hint, h);"
+					>
+						<span class="fa fa-check"></span>
+					</button>
+					<a href="" class="btn btn-sm btn-default pull-right" 
+						ng-if="stage.hints[0]._embedded" 
+						ng-click="closeHint(stage, hint, h)"
+					>
+						<span class="fa fa-close"></span>
+					</a>
+				  </div>
+				  <div class="form-row">
+				    <div class="form-group col-md-6">
+				      	<label for="inputHType">Type</label>
+						<select class="form-control" id="inputHType">
+							<option>Opt 1</option>
+							<option>Opt 2</option>
+						</select>
+				    </div>
+				    <div class="form-group col-md-6">
+				      	<label for="inputPriority">Priority</label>
+					    <input type="number" 
+					  		id="inputPriority"
+					   		class="form-control" 
+					  		ng-class="{'is-invalid': hint.errors.priority}"
+					  		ng-model="hint.priority"/>
+						<div ng-if="hint.errors.priority"
+							ng-repeat="(key, text) in hint.errors.priority"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+				    </div>
+				  </div>
+				  <div ng-if="hint.editor && values.stages[i-1]._embedded" 
+					  class="form-group">
+				    <label for="inputParents">Parents</label>
+					<div class="form-row"
+						ng-repeat="(_i, parent) in hint.parents"
+						>
+				    	<div class="form-group col-md-11">
+							<select class="form-control"
+								ng-class="{'is-invalid': hint.errors.parents[_i]}"
+								ng-model="hint.parents[_i]"
+								ng-options="item as item.text for item in values.stages[i-1]._embedded._embedded.hints track by item.id"
+								>
+							</select>
+							<div ng-if="hint.errors.parents[_i]"
+								ng-repeat="(key, text) in hint.errors.parents[_i]"
+								class="invalid-feedback">{[key]}. {[text]}</div>
+						</div>
+				    	<div class="form-group col-md-1">
+							<a href="" class="btn-sm btn-default pull-right" 
+								ng-click="hint.parents.splice(_i, 1);">
+								<span class="fa fa-close"></span>
+							</a>
+						</div>
+					</div>
+					<div>
+						<a href="" class="btn-sm btn-default" 
+						ng-click="hint.parents.push({})">
+						<span class="fa fa-plus"></span></a>
+					</div>
+				  </div>
+				  <div class="form-group">
+				    <label for="inputText">Text</label>
+					<input type="text"
+				   		id="inputText" 
+						class="form-control" 
+						ng-class="{'is-invalid': hint.errors.text}"
+						ng-model="hint.text"/>
+					<div ng-if="hint.errors.text"
+						ng-repeat="(key, text) in hint.errors.text"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				  </div>
+				  <div class="form-group">
+				    	<label for="inputDescription">Description</label>
+				  		<textarea rows="3" 
+				  			id="inputDescription"
+				  			class="form-control"
+				  			ng-class="{'is-invalid': hint.errors.description}"
+				  			ng-model="hint.description">
+				  		</textarea>
+				  		<div ng-if="hint.errors.description"
+				  			ng-repeat="(key, text) in hint.errors.description"
+				  			class="invalid-feedback">{[key]}. {[text]}</div>
+				  </div>
+				</form>
+
+				<div ng-if="!hint.editor" class="pl-table">
+					<div class="pl-thead">
+						<div class="row">
+					    	<div class="col col-sm-12 col-md-1">Type</div>
+					    	<div class="col col-sm-12 col-md-1">Prior</div>
+					    	<div class="col col-sm-12 col-md-3">Parents</div>
+					    	<div class="col col-sm-12 col-md-3">Text</div>
+					    	<div class="col col-sm-12 col-md-3">Descr</div>
+					    	<div class="col col-sm-12 col-md-1"></div>
+					  	</div>
+					</div>
+					<div class="pl-tbody">
+						<div class="row">
+					  		<div class="col col-sm-12 col-md-1">x</div>
+					  		<div class="col col-sm-12 col-md-1">{[ hint.priority ]}</div>
+			    	  		<!--<div class="col col-md-3" ng-if="values.stages[i-1]._embedded">-->
+			    	  		<div class="col col-sm-12 col-md-3">
+					  			<p ng-repeat="item in hint.parents">{[ item.text ]}</p>
+					  		</div>
+			    	  		<div class="col col-sm-12 col-md-3">{[ hint.text ]}</div>
+			    	  		<div class="col col-sm-12 col-md-3">{[ hint.description ]}</div>
+			    	  		<div class="col col-sm-12 col-md-1">
+					  			<div class="btn-group">
+					  				<button class="btn-sm btn-default"
+					  				   	style="background:none;color:darkred;"
+										ng-confirm-click
+					  					confirmed-click="deleteHint(stage, hint, h);"
+					  				>
+					  					<span class="fa fa-trash"></span>
+					  				</button>
+					  				<a href="" ng-click="hint.editor=true;" class="btn-sm btn-default">
+					  					<span class="fa fa-pencil"></span>
+					  				</a>
+					  				<a ng-href="{[ hint._embedded._links.self.href ]}" 
+					  					class="btn-sm btn-default"
+					  					target="_blank"
+					  				>
+					  					<span class="fa fa-eye"></span>
+					  				</a>
+					  			</div>
+					  		</div>
+					  </div>
 				</div>
 			</div>
-		</div>
-		<div class="col-sm-12 mt-2 mb-2" style="text-align:center;">
-			<a href="" class="btn-sm btn-primary"><span class="fa fa-plus"></span></a>
+
+			<div class="col-sm-12 mt-2 mb-2" style="text-align:center;" ng-if="stage.hints[stage.hints.length-1]._embedded">
+				<a href="" class="btn-sm btn-default" ng-click="addHint(stage)"><span class="fa fa-plus"></span></a>
+			</div>
 		</div>
 	</div>
 

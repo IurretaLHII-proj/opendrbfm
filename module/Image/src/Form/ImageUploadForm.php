@@ -73,6 +73,21 @@ class ImageUploadForm extends Form implements
                         )
                     ]
                 ],
+                'validators' => array(
+                    array(
+                        'name' => 'Zend\Validator\File\Extension',
+                        'options' => array(
+                            'extension' => array('png', 'jpg', 'jpeg')
+                        )
+                    ),
+                    array(
+                        'name' => 'Zend\Validator\File\Size',
+                        'options' => array(
+                            //'min' => '10kb',
+                            'max' => '2MB'
+                        )
+                    )
+                )
             ],
         ];
     }

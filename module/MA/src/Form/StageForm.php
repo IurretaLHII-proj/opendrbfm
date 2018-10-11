@@ -25,6 +25,19 @@ class StageForm extends Form implements InputFilterProviderInterface
              ],
         ], ['priority' => -9]);
 
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'parent',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Parent',
+				 'empty_option' => 'Choose parent team',
+				 'target_class' => 'MA\Entity\Stage',
+             ],
+        ]);
+
 		$this->add([
                 'type' => 'Collection',
                 'name' => 'images',
@@ -81,6 +94,9 @@ class StageForm extends Form implements InputFilterProviderInterface
 					],
 				],
 			],
+			'parent' => [
+				'required' => false,
+			]
 		];
 	}
 }

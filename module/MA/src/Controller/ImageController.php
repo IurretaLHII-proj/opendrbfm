@@ -13,13 +13,14 @@ class ImageController extends \Base\Controller\AbstractActionController
      */
     public function detailAction()
     {
-		$content  = file_get_contents($this->getEntity()->getName());
+		$name  	  = $this->getEntity()->getName();
+		$content  = file_get_contents($name);
 
         $response = $this->getResponse();
         $response->setContent($content);
         $response->getHeaders()
                  ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                 ->addHeaderLine('Content-Length', mb_strlen($content))
+                 ->addHeaderLine('Content-Length', filesize($name))
                  ->addHeaderLine('Content-Type', 'image/png')
                  ;
 

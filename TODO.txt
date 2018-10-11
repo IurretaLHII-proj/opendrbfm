@@ -1,2 +1,10 @@
 Base - Assertio Factory
 Base - BjyAdapter to config
+
+angular isEditor(e) if e === $scope.stageEditor || $scope.processEditor;
+
+js controller extends abstract  onDispatch() try { parent() }catch (BjyException) throw ApiException(); catch (Exception) throw $exception;
+
+//-----------------------------------
+
+ImagePresets

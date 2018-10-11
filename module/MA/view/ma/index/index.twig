@@ -1,5 +1,40 @@
 {% extends 'layout/layout.twig' %}
 
 {% block body %}
-	Home
+
+	<div class="row"> 
+		<div class="col" 
+			ng-controller="CollectionCtrl"
+			ng-init="init({{ json(hal().renderCollection(hal)) | escape }})"
+		>
+
+			<!--<h1>{{ translate("Home") }}</h1>-->
+			<div ng-repeat="item in collection._embedded.items" 
+				class="d-flex flex-column p-2 issue-item"
+				ng-class="{first: $first, last: $last}"
+				ng-mouseover="item.hover = true;"
+				ng-mouseleave="item.hover = false;"
+			>
+				<div class="d-flex pb-1">
+					<div class="mr-auto">
+						<h5><a href="{[ item._links.self.href ]}">{[ item.title ]}</a></h5>
+					</div>
+				</div>
+				<div>
+					<div ng-bind-html="item.body"></div>
+				</div>
+			</div>
+
+			<div style="text-align: center; margin-top: 1rem;">
+				<p><a href="" ng-if="collection._links.next" ng-click="more()">.view previouses.</a></p>
+				<p class="small">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+			</div>
+
+		</div>
+
+		<aside id="sidebar" class="col-md-4">
+		</aside>
+	</div>
+
 {% endblock body %}
+
