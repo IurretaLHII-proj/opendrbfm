@@ -68,7 +68,12 @@ abstract class AbstractActionController extends BaseAbstractActionController
             }
 
 			if ($this->entity instanceof ResourceInterface && !$this->isAllowed($this->entity, $action)) {
-				throw new UnAuthorizedException(sprintf("%s:%s",$this->entity->getResourceId(), $action));
+				if ($this->zfcUserAuthentication()->hasIdentity()) {
+					throw new UnAuthorizedException(sprintf("%s:%s",$this->entity->getResourceId(), $action));
+				}
+				else {
+					return $this->redirect()->toRoute("zfcuser/login");
+				}
 			}
 
 			$this->navService->generateNavigation(

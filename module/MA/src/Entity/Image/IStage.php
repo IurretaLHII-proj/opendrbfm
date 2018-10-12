@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM,
 /**
  * @ORM\Entity()
  * @ORM\Table(
- *   name="images",
+ *   name="image",
  * )
  */
 class IStage extends \MA\Entity\AbstractImage

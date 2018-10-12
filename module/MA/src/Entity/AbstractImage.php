@@ -47,9 +47,8 @@ abstract class AbstractImage extends \Image\Entity\Image
     protected $created;
 
     /**
-	 * FIXME
      * @ORM\ManyToOne(
-     *     targetEntity="Issues\Entity\User",
+     *     targetEntity="MA\Entity\User",
      *     inversedBy="images"
      * )
      * @ORM\JoinColumn(
@@ -57,7 +56,7 @@ abstract class AbstractImage extends \Image\Entity\Image
      *     referencedColumnName = "user_id"
      * )
      */
-	//protected $user;
+	protected $user;
 
     /**
      * @return string

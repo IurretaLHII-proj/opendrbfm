@@ -8,8 +8,8 @@ use Zend\Permissions\Acl\Role\RoleInterface,
 
 abstract class User extends BaseUser implements
 	UserInterface, 
-	RoleInterface, 
-	ResourceInterface
+	//ResourceInterface,
+	RoleInterface 
 {
 	/**
 	 * @constants string

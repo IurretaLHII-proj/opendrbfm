@@ -67,6 +67,11 @@
 						<li class="nav-link">
 							<a href="{{ url('zfcuser/logout') }}">Logout</a>
 						</li>
+					{% else %}
+						<li class="nav-link">
+							<a href="{{ url('zfcuser/login') }}">Login</a>
+						</li>
+
 					{% endif %}
 				</ul>
 			</div>

@@ -3,6 +3,51 @@
 namespace MA;
 
 return [
+	'zfcuser' => [
+        'options' => [
+            'defaults' => [
+                'controller' => Controller\UserController::class,
+            ],
+		],
+	],
+	'user' => [
+		'type' => 'Literal',
+		'options' => [
+			'route' => '/user',
+			'defaults' => [
+				'controller' => Controller\UserController::class,
+				'action' => 'index' 
+			]
+		],
+		'may_terminate' => true,
+		'child_routes' => [
+			'detail' => [
+				'type' => 'Segment',
+				'options' => [
+					'route' => '/:id[/:action]',
+					'defaults' => [
+						'action' => 'detail',
+					],
+					'constraints' => [
+						'id' => '\d+',
+						'action' => 'detail|changepassword',
+					]
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\UserController::class,
+							],
+						],
+					]
+				],
+			],
+		],
+	],
 	'process' => [
 		'type' => 'Literal',
 		'options' => [
@@ -33,7 +78,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|stage',
+						'action' => 'detail|edit|stage|actions',
 					]
 				],
 				'may_terminate' => true,

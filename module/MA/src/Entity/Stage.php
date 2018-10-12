@@ -13,7 +13,7 @@ use DateTime;
  */
 class Stage implements 
 	//ResourceInterface, 
-	//\User\Entity\UserAwareInterface,
+	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
 	StageInterface 
@@ -31,6 +31,19 @@ class Stage implements
 	 * @ORM\Column(type="string", options="{nullable: true}")
 	 */
 	protected $body;
+
+	/**
+	 * @var User
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\User",
+	 *	inversedBy	 = "stages",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "uid",
+	 *	referencedColumnName = "user_id"
+	 * )
+	 */
+	protected $user;
 
     /**
 	 * @var StageInterface
@@ -179,6 +192,27 @@ class Stage implements
     public function setProcess(ProcessInterface $process)
     {
         $this->process = $process;
+        return $this;
+    }
+    
+    /**
+     * Get user.
+     *
+	 * @inheritDoc
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    /**
+     * Set user.
+     *
+	 * @inheritDoc
+     */
+    public function setUser(\User\Entity\UserInterface $user)
+    {
+        $this->user = $user;
         return $this;
     }
     
@@ -366,6 +400,20 @@ class Stage implements
         $this->images = $images;
         return $this;
     }
+
+	/**
+	 * @return int
+	 */
+	public function getLevel()
+	{
+		$level = 1;
+		$stage = $this;
+		while (null !== ($parent = $stage->getParent())) {
+			$stage = $parent;
+			$level++; 
+		}
+		return $level;
+	}
     
     /**
      * Get created.

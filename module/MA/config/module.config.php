@@ -7,8 +7,8 @@ return [
     'router' 		   => ['routes' => require __DIR__ . '/routes.config.php'],
     'navigation'   	   => require __DIR__ . '/navigation.config.php', 
 	'base_controllers' => require __DIR__ . '/base_controllers.config.php',
-	//'base_services' => require __DIR__ . '/base_services.config.php',
-    'zf-hal' => require __DIR__ . '/hal.config.php', 
+	'base_services'    => require __DIR__ . '/base_services.config.php',
+    'zf-hal' 		   => require __DIR__ . '/hal.config.php', 
 	'doctrine' => [
 		'driver' => [
 			__NAMESPACE__ . '_driver' => [

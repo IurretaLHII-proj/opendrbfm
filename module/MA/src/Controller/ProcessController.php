@@ -28,7 +28,8 @@ class ProcessController extends \Base\Controller\AbstractActionController
 		if ($this->getRequest()->isPost()) {
 			$form->setData($this->getRequest()->getPost());
 			if ($form->isValid()) {
-				//$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
 
 				$this->getEntityManager()->persist($e);
 				$this->getEntityManager()->flush();
@@ -50,7 +51,17 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	 */
     public function detailAction()
     {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$collection = $em->getRepository("MA\Entity\AbstractProcessAction")
+			->findBy(
+				['process' => $this->getEntity()],
+				['created' => 'DESC']
+			);
+
+		$paginator = $this->getPaginator($collection);
 		return new ViewModel([
+			'actionsHal' => $this->prepareHalCollection($paginator, 'process/detail/json', ['action' => 'actions']),
 		]);
 	}
 

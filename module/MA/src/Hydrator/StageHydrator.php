@@ -20,6 +20,7 @@ class StageHydrator extends \Zend\Hydrator\ClassMethods
 		return [
 			'id' 	  => $object->getId(),
 			'body' 	  => $object->getBody(),
+			'owner'   => $object->getUser(),
 			'created' => $object->getCreated()->getTimestamp(),
 			'created' => $object->getUpdated()->getTimestamp(),
 			'images'  => new \ZF\Hal\Collection($object->getImages()),
