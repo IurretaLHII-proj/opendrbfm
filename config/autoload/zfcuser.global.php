@@ -40,8 +40,7 @@ $settings = array(
      *
      * Accepted values: boolean true or false
      */
-    //'enable_username' => false,
-    'enable_username' => true,
+    'enable_username' => false,
 
     /**     
      * Authentication Adapters

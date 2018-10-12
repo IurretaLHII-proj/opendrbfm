@@ -28,7 +28,7 @@ class HintController extends \Base\Controller\AbstractActionController
 			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
 			if ($form->isValid()) {
 
-				//$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $img);
+				$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
 
 				$em->persist($e);
 				$em->flush();

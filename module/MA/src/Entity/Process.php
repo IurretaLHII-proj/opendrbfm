@@ -13,7 +13,7 @@ use DateTime;
  */
 class Process implements 
 	//ResourceInterface, 
-	//\User\Entity\UserAwareInterface,
+	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
 	ProcessInterface 
@@ -37,6 +37,19 @@ class Process implements
 	 * @ORM\Column(type="string", options="{nullable: true}")
 	 */
 	protected $body;
+
+	/**
+	 * @var User
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\User",
+	 *	inversedBy	 = "processes",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "uid",
+	 *	referencedColumnName = "user_id"
+	 * )
+	 */
+	protected $user;
 
 	/**
 	 * @var StageInterface[]
@@ -134,6 +147,27 @@ class Process implements
     public function setBody($body = null)
     {
         $this->body = $body ? (string) $body : $body;
+        return $this;
+    }
+    
+    /**
+     * Get user.
+     *
+	 * @inheritDoc
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    /**
+     * Set user.
+     *
+	 * @inheritDoc
+     */
+    public function setUser(\User\Entity\UserInterface $user)
+    {
+        $this->user = $user;
         return $this;
     }
     

@@ -3,6 +3,9 @@
 namespace MA;
 
 return [
+	Controller\UserController::class => [
+		'repository' => Entity\User::class,
+	],
 	Controller\ProcessController::class => [
 		'repository' => Entity\Process::class,
 	],

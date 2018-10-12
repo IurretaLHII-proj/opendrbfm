@@ -13,7 +13,33 @@
 		ul.hints li.active {
 			background: lightgray;
 		}
+
+		.stages{
+		}
+		.parent.odd {
+			background: #f7f7f7;
+		}
+		.parent.even {
+			background: #eee;
+		}
+		.parent.item-row {
+			padding: 6px 0;
+			border-bottom: 1px solid lightgray;
+		}
+		.parent.item-row:last-child {
+			border: none;
+		}
+		.hint {
+			border: 1px solid lightgray;
+			text-align: center;
+			padding: 5px;
+			background: white;
+		}
+		.hint .level {
+			background: lightgray;
+		}
 	</style>
+
 {% endblock style %}
 
 {% block template %}
@@ -21,11 +47,51 @@
 	<div class="col-md-12">
 		<h2>{{ entity.process }}</h2><a class="" href="{{ url('process/detail', {'id':entity.process.id}) }}">return</a>
 		<p>{{ entity.text }}</p>
+		{#
 		<div class="row">
 			{% for index, stage in process.stages() %}
 				{{ partial('partial/stage/col', {'stage': stage, 'index': index, 'entity': entity}) }}
 			{% endfor %}
 		</div>
+		#}
+	</div>
+
+	<div class="col-md-12 d-flex" style="padding:0;">
+		{% if not entity.parents.isEmpty %}
+			<div class="d-flex flex-column flex-fill">
+			{% for index, parent in entity.parents %}
+				{{ partial('partial/hint/item', {
+					'item': parent, 
+					'odd': index is odd, 
+					'sParents': true, 
+					'sChildren': false,
+				}) }}
+			{% endfor %}
+			</div>
+		{% endif %}
+
+		<div class="hint flex-fill" style="background:lightgray; min-width: 120px;">
+			<div class="d-flex flex-column flex-fill">
+				{{ partial('partial/hint/item', {
+					'item': entity, 
+					'sParents': false, 
+					'sChildren': false,
+				}) }}
+			</div>
+		</div>
+
+		{% if not entity.children.isEmpty %}
+			<div class="d-flex flex-column flex-fill">
+			{% for index, child in entity.children %}
+				{{ partial('partial/hint/item', {
+					'item': child, 
+					'odd': index is odd, 
+					'sParents': false, 
+					'sChildren': true,
+				}) }}
+			{% endfor %}
+			</div>
+		{% endif %}
 	</div>
 
 {% endblock template %}

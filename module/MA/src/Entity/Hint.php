@@ -13,7 +13,7 @@ use DateTime;
  */
 class Hint implements 
 	//ResourceInterface, 
-	//\User\Entity\UserAwareInterface,
+	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
 	HintInterface 
@@ -47,6 +47,19 @@ class Hint implements
      * )
      */
     protected $description;
+
+	/**
+	 * @var User
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\User",
+	 *	inversedBy	 = "hints",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "uid",
+	 *	referencedColumnName = "user_id"
+	 * )
+	 */
+	protected $user;
 
     /**
 	 * @var StageInterface
@@ -216,18 +229,27 @@ class Hint implements
 	{
 		return $this->getStage()->getProcess();
 	}
-
-	/**
-     * Get process.
+    
+    /**
+     * Get user.
      *
-	 * @return ProcessInterface
-	 */
-	public function getFilteredProcess()
-	{
-
-		return $process;
-
-	}
+	 * @inheritDoc
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+    
+    /**
+     * Set user.
+     *
+	 * @inheritDoc
+     */
+    public function setUser(\User\Entity\UserInterface $user)
+    {
+        $this->user = $user;
+        return $this;
+    }
     
     /**
      * Get parents.

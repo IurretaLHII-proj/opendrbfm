@@ -22,6 +22,7 @@
 				</div>
 				<div>
 					<div ng-bind-html="item.body"></div>
+					<p class="small">by <a ng-href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a></p>
 				</div>
 			</div>
 
