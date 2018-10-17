@@ -65,13 +65,16 @@ class Navigation
 
 		if (isset($args['parent']) && is_array($args['parent'])) {
 
-			$parent = $this->getControllerByName($args['parent']['controller']); 
+			if (isset($args['parent']['controller'])) { 
+				//If controller not set asume the page is allready in navigation
+				$parent = $this->getControllerByName($args['parent']['controller']); 
 
-			$entity = isset($args['parent']['entity']) ? $args['parent']['entity'] : null;
+				$entity = isset($args['parent']['entity']) ? $args['parent']['entity'] : null;
 
-			$controller->prepareParentNavigation($parent, $entity);
+				$controller->prepareParentNavigation($parent, $entity);
 
-			$this->generateNavigation($parent, $nav, $m);
+				$this->generateNavigation($parent, $nav, $m);
+			}
 
 			$navs = $nav->findAllByRoute($args['parent']['route']);
 
@@ -133,11 +136,7 @@ class Navigation
 					'privilege' => $i['action'],
 					'class' => 'nav-link',
 				]; 
-				//var_dump($controller->getEntity()->getResourceId(), $i['action']);
 			}
-			//echo '<pre>';
-			//var_dump($page);
-			//echo '</pre>';
 
 			$nav->addPage($page);
 		}

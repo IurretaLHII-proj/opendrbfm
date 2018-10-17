@@ -33,8 +33,8 @@ return [
     'view_manager' => [ 
         'template_map' => [ 
             'layout/layout'  => __DIR__ . '/../view/layout/layout.twig',
-    //        'zfc-user/user/login'  			=> __DIR__ . '/../view/issues/user/login.phtml',
-    //        'zfc-user/user/changepassword'  => __DIR__ . '/../view/issues/user/changepassword.phtml',
+            'zfc-user/user/login'  			=> __DIR__ . '/../view/ma/user/login.phtml',
+    //        'zfc-user/user/changepassword'  => __DIR__ . '/../view/ma/user/changepassword.phtml',
         ],
         'template_path_stack' => [
             __DIR__ . '/../view',

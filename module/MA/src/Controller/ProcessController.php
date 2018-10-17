@@ -20,7 +20,6 @@ class ProcessController extends \Base\Controller\AbstractActionController
 			->get('FormElementManager')
 			->get(\MA\Form\ProcessForm::class);
 
-		$form->setHydrator(new DoctrineHydrator($em));
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
         $form->setHydrator(new DoctrineHydrator($em));
 		$form->bind($e);

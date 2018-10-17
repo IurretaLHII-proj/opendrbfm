@@ -8,6 +8,23 @@ return [
 	],
 	Controller\ProcessController::class => [
 		'repository' => Entity\Process::class,
+		'parent' => [
+			'route' => 'home',
+		],
+		'page' => [
+			'route' => 'process/detail',
+			'action' => 'detail',
+			'pages' => [
+				[
+					'route' => 'process/detail',
+					'action' => 'detail',
+				],
+				[
+					'route' => 'process/detail',
+					'action' => 'actions',
+				],
+			]
+		],
 	],
 	Controller\Js\ProcessController::class => [
 		'repository' => Entity\Process::class,

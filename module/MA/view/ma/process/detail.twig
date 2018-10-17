@@ -1,139 +1,12 @@
-{% extends 'ma/process/base.twig' %}
-{% block style %}
-	{[ parent() ]}
+{# extends 'ma/process/base.twig' #}
+{% extends 'layout/layout.twig' %}
 
-	<style>
-		.editor-box {
-			padding-top: 45px;
-		   	padding-bottom:	20px;
-			border-bottom: none;
-			position: relative;
-			width: 100%;
-		}
-		.editor-box .btns {
-			position: absolute;
-			top: 5px;
-			right: 5px;
-		}
-		.editor-box .btns a {
-		}
-		.editor-box.editor {
-			border: 1px solid;
-			border-color: #e6e6e6;
-			border-radius: 5px;
-			background: #FFF;
-		}
-		ul.stage-tabs {
-			border:none;
-		}
-		ul.stage-tabs li.nav-link {
-		    border: none;
-		    margin-right: 6px;
-			background: #f9f9f9;
-		}
-		ul.stage-tabs li.nav-link.active {
-			background: #f4f4f4;
-			border: 1px solid #e6e6e6;
-			border-bottom: 1px solid #f4f4f4;
-			margin-bottom: -1px;
-		}
-		ul.stage-tabs li.nav-link.editor {
-		}
-
-		button {
-			border-style: unset;
-		}
-		.process-img-list {
-		}
-		.process-img-list .item {
-			border: 2px solid white;
-			padding: 4px;
-			margin: 0;
-		}
-		.process-img-list .item:not(:first-child) {
-			border-left: none;
-		}
-		.process-img-list.active .item {
-			border-color: #007bff;
-		}
-		.my-box {
-		}
-		.stage-box {
-			margin: 12px;
-		}
-		.my-box.editor {
-			background: white;
-		}
-		.stage-box.editor {
-			border: 1px solid lightgray;
-		}
-		.my-box .errors {
-		}
-		.my-box form {
-			padding: 12px;
-		}
-		table.hint-table thead {
-			text-align: center;
-			background: #eee;
-		}
-		table.hint-table input.form-control {
-			/*width: auto;*/
-		}
-		table.hint-table tr {
-			background: none !important;
-		}
-
-		.alert.ng-hide
-		{
-			opacity: 0;
-		}
-		/*.errors.ng-hide-remove*/
-		.alert.ng-hide-add
-	   	{
-			transition: all linear 1s;
-		}
-
-		.messages {
-			position: fixed;
-		    top: 8%;
-		    right: 0;
-		    left: 0;
-		    z-index: 1050;
-			text-align: center;
-		}
-		.messages .alert {
-			margin: 0;
-		}
-		.hint-row {
-			margin: 0;
-		}
-		.hint-row .col {
-		}
-
-.pl-table  .row{ 
-    margin: 5px 0; 
-    padding: 0 20px; 
-    align-items: center; 
-}
- .pl-table .col{ 
-    padding: 0 10px; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
-}
-.pl-table .pl-thead {
-    color: #979797;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 11px;
-    margin: 15px 0;
-}
-	</style>
-
-{% endblock style %}
-
-{% block template %}
+{# block template #}
+{% block body %}
 
 	<div class="col-md-12"
+		ng-cloak
+		ng-controller="DetailCtrl"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 		>
 
@@ -361,11 +234,17 @@
 					<div class="row"
 						ng-if="!hint.editor"
 					>
-						<div class="col col-sm-12 col-md-1">x</div>
-						<div class="col col-sm-12 col-md-1">{[ hint.priority ]}</div>
+						<div class="col col-sm-1 col-md-1">x</div>
+						<div class="col col-sm-1 col-md-1">{[ hint.priority ]}</div>
 			    		<!--<div class="col col-md-3" ng-if="values.stages[i-1]._embedded">-->
 			    		<div class="col col-sm-12 col-md-3">
-							<p ng-repeat="item in hint.parents">{[ item.text ]}</p>
+							<ul style="
+								padding-left: 20px;
+								list-style: square;
+								margin: 0;
+							">
+								<li ng-repeat="item in hint.parents">{[ item.text ]}</li>
+							</ul>
 						</div>
 			    		<div class="col col-sm-12 col-md-3">{[ hint.text ]}</div>
 			    		<div class="col col-sm-12 col-md-3">{[ hint.description ]}</div>
@@ -503,6 +382,7 @@
 
 
 	<div class="col-md-12" 
+		ng-cloak
 		ng-controller="CollectionCtrl"
 		ng-init="init({{ json(hal().renderCollection(actionsHal)) | escape }})"
 	>
@@ -514,14 +394,14 @@
 			ng-mouseover="item.hover = true;"
 			ng-mouseleave="item.hover = false;"
 		>
-			<div class="d-flex pb-1">
-				<div class="mr-auto">
-					<p>{[ item.name ]} on {[ item.class ]}</p>
-				</div>
-			</div>
-			<div>
-				<p class="small">by <a ng-href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a> on {[ item.created | date: 'medium' ]}
-			</div>
+			<p><a ng-href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a> {[ item.name ]} a {[ item.class ]} on {[ item.created | date: "MM/dd/yyyy 'at' HH:mm" ]}</p>
+			<ul ng-if="item.content">
+				<li ng-repeat="(key, values) in item.content">{[ key ]}
+					<ul>
+						<li ng-repeat="value in values" ng-bind-html="value"></li>
+					</ul>
+				</li>
+			</ul>
 		</div>
 
 		<div style="text-align: center; margin-top: 1rem;">
@@ -531,4 +411,126 @@
 	</div>
 
 
-{% endblock template %}
+{% endblock body %}
+{# endblock template #}
+{% block style %}
+	{[ parent() ]}
+
+	<style>
+		.editor-box {
+			padding-top: 45px;
+		   	padding-bottom:	20px;
+			border-bottom: none;
+			position: relative;
+			width: 100%;
+		}
+		.editor-box .btns {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+		}
+		.editor-box .btns a {
+		}
+		.editor-box.editor {
+			border: 1px solid;
+			border-color: #e6e6e6;
+			border-radius: 5px;
+			background: #FFF;
+		}
+		ul.stage-tabs {
+			border:none;
+		}
+		ul.stage-tabs li.nav-link {
+		    border: none;
+		    margin-right: 6px;
+			background: #f9f9f9;
+		}
+		ul.stage-tabs li.nav-link.active {
+			background: #f4f4f4;
+			border: 1px solid #e6e6e6;
+			border-bottom: 1px solid #f4f4f4;
+			margin-bottom: -1px;
+		}
+		ul.stage-tabs li.nav-link.editor {
+		}
+
+		button {
+			border-style: unset;
+		}
+		.process-img-list {
+		}
+		.process-img-list .item {
+			border: 2px solid white;
+			padding: 4px;
+			margin: 0;
+		}
+		.process-img-list .item:not(:first-child) {
+			border-left: none;
+		}
+		.process-img-list.active .item {
+			border-color: #007bff;
+		}
+		.my-box {
+		}
+		.stage-box {
+			margin: 12px;
+		}
+		.my-box.editor {
+			background: white;
+		}
+		.stage-box.editor {
+			border: 1px solid lightgray;
+		}
+		.my-box .errors {
+		}
+		.my-box form {
+			padding: 12px;
+		}
+
+		.alert.ng-hide
+		{
+			opacity: 0;
+		}
+		/*.errors.ng-hide-remove*/
+		.alert.ng-hide-add
+	   	{
+			transition: all linear 1s;
+		}
+
+		.messages {
+			position: fixed;
+		    top: 8%;
+		    right: 0;
+		    left: 0;
+		    z-index: 1050;
+			text-align: center;
+		}
+		.messages .alert {
+			margin: 0;
+		}
+		.hint-row {
+			margin: 0;
+		}
+		.hint-row .col {
+		}
+
+.pl-table  .row{ 
+    margin: 0; 
+    padding: 5px 20px; 
+    align-items: center; 
+	border-bottom: 1px solid #ddd;
+}
+ .pl-table .col{ 
+    padding: 0 10px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+.pl-table .pl-thead {
+    color: #979797;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+	</style>
+
+{% endblock style %}

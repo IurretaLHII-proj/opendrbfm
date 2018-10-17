@@ -21,6 +21,15 @@ return [
 		],
 		'may_terminate' => true,
 		'child_routes' => [
+			'add' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/add',
+					'defaults' => [
+						'action' => 'add' 
+					]
+				],
+			],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -54,7 +63,7 @@ return [
 			'route' => '/process',
 			'defaults' => [
 				'controller' => Controller\ProcessController::class,
-				'action' => 'add' 
+				'action' => 'index' 
 			],
 		],
 		'may_terminate' => true,
@@ -66,6 +75,15 @@ return [
 					'defaults' => [
 						'action' => 'index',
 						'controller' => Controller\Js\ProcessController::class,
+					],
+				],
+			],
+			'add' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/add',
+					'defaults' => [
+						'action' => 'add',
 					],
 				],
 			],

@@ -8,7 +8,7 @@ use Zend\Permissions\Acl\Role\RoleInterface,
 	Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
-
+use BjyAuthorize\Provider\Role\ProviderInterface as RoleProviderInterface;
 use User\Entity\User as BaseUser;
 
 /**
@@ -17,14 +17,20 @@ use User\Entity\User as BaseUser;
  */
 class User extends BaseUser implements
 	JsonSerializable,
+	RoleProviderInterface,
 	UserInterface
 	//LinkProvider
 {
 	/**
-	 * @var string
-	 * @ORM\Column(type="string", options={"default":"user"})
+	 * @constants string
 	 */
-	protected $role = "user";
+	const ROLE_SUPER = "super";
+
+	/**
+	 * @var string
+	 * @ORM\Column(type="array", options={"default":{"user"}})
+	 */
+	protected $roles = ["user"];
 
 	/**
 	 * @var int 
@@ -54,35 +60,27 @@ class User extends BaseUser implements
 	{
 		return static::class;
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function getRoleId()
-	{
-		return $this->getRole();
-	}
     
     /**
-     * Get role.
+     * Get roles.
      *
-     * @return string.
+     * @return array.
      */
-    public function getRole()
+    public function getRoles()
     {
-        return $this->role;
+        return $this->roles;
     }
     
     /**
-     * Set role.
+     * Set roles.
      *
-     * @param string role the value to set.
+     * @param array.
      * @return User.
      */
-    public function setRole($role)
+    public function setRoles(array $roles)
     {
-        $this->role = (string) $role;
-        return $this;
+		$this->roles = $roles;
+		return $this;;
     }
     
     /**
@@ -145,8 +143,9 @@ class User extends BaseUser implements
 	public function jsonSerialize()
 	{
 		return [
-			'id' => $this->getId(),
-			'name' => $this->getName(),
+			'id' 	=> $this->getId(),
+			'email' => $this->getEmail(),
+			'name'  => $this->getName(),
 		];
 	}
 }

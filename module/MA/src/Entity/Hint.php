@@ -80,7 +80,7 @@ class Hint implements
 	 *	targetEntity = "MA\Entity\Hint",
 	 *	mappedBy	 = "parents",
 	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
+	 * @ORM\OrderBy({"priority" = "DESC"})
 	 */
 	protected $children;
 
@@ -105,6 +105,7 @@ class Hint implements
 	 *		)
 	 *	}
 	 * )
+	 * @ORM\OrderBy({"priority" = "DESC"})
 	 */
 	protected $parents;
 

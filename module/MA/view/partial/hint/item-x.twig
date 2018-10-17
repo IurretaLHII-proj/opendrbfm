@@ -1,0 +1,31 @@
+<div class="d-flex flex-fill item stage-{{ item.stage.level }} {% if odd %}odd{% else %}even{% endif %}" 
+	>
+	{% if sParents and not item.parents.isEmpty %}
+		<div class="d-flex flex-column">
+			{% for parent in item.parents %}
+				{{ partial('partial/hint/item-x', {
+					'item': parent, 
+					'sParents': sParents, 
+					'sChildren': sChildren,
+					'odd': odd,
+				}) }}
+			{% endfor %}
+		</div>
+	{% endif %}
+	<div class="hint flex-fill align-self-center mx-auto">
+		<p class="level">Stage {{ item.stage.level }}</p>
+		<p><a href="{{url('process/hint/detail', {id: item.id}) }}">{{ item.text }}</a></p>
+	</div>
+	{% if sChildren and not item.children.isEmpty %}
+		<div class="d-flex flex-column">
+			{% for child in item.children %}
+				{{ partial('partial/hint/item-x', {
+					'item': child, 
+					'sParents': sParents, 
+					'sChildren': sChildren,
+					'odd': odd,
+				}) }}
+			{% endfor %}
+		</div>
+	{% endif %}
+</div>

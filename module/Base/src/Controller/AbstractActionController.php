@@ -238,7 +238,8 @@ abstract class AbstractActionController extends BaseAbstractActionController
 
 			$controller->setEntity($this->getEntity()->$method());
 		}
-		else {
+
+		if ($controller->getEntity() === null) {
 			throw new \InvalidArgumentException(sprintf("Empty entity in %s navigation", static::class));
 		}
 
