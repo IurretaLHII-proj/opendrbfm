@@ -42,50 +42,74 @@
     </head>
 
     <body ng-app="myApp">
-
 		<!-- Just an image -->
-		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-			<a class="navbar-brand" href="/">
-		    	<img src="/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="IurretaLHI">IurretaLHI
-		 	</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<nav class="navbar flex-sm-nowrap navbar-light bg-light sticky-top p-0">
+			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" style="background:#EEE;">
+				<img src="/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="IurretaLHI">IurretaLHI
+			</a>
+			<input 
+				type="search" 
+				class="form-control w-100" 
+				aria-label="Search" 
+				placeholder="Search" 
+				style="
+				padding: .75rem 1rem;
+				border-width: 0;
+				border-radius: 0;
+			">
+			<button class="btn btn-default my-0 rounded-0" type="submit">
+				<span class="fa fa-search"></span>
+			</button>
+		
+			<button class="navbar-toggler d-md-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				{{ navigation('navigation').menu().setAddClassToListItem(true).setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(0).setRenderInvisible(false) | raw }}
-				<!--
-				<form class="form-inline my-2 my-lg-0">
-					<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="min-width:400px;">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-		    	</form>
-				-->
-				<ul class="navbar-nav ml-auto">
-					{% if zfcUserIdentity() %}
-						<li class="nav-link">
-							Hello <a href="{{ url('user/detail', {'id': zfcUserIdentity().id }) }}">{{ zfcUserIdentity().name }}</a>
-						</li>
-						<li class="nav-link">
-							<a href="{{ url('zfcuser/logout') }}">Logout</a>
-						</li>
-					{% else %}
-						<li class="nav-link">
-							<a href="{{ url('zfcuser/login') }}">Login</a>
-						</li>
-
-					{% endif %}
-				</ul>
-			</div>
 	  	</nav>
 
-		<div class="container">
-			<!--
-			<div class="breadcrumb">
-				{{ navigation('navigation').breadcrumbs().setSeparator(" / ").setRenderInvisible(true) | raw }}
-			</div>
-			-->
+		<div class="collapse navbar-collapse d-md-none" id="navbarSupportedContent">
+			{# setAddClassToListItem(true) //Passes li class to a tag #}
+			{{ navigation('navigation').menu().setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(2).setRenderInvisible(true) | raw }}
+			<form class="form-inline my-2 my-lg-0">
+				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="min-width:400px;">
+				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</form>
+			<ul class="navbar-nav ml-auto">
+				{% if zfcUserIdentity() %}
+					<li class="nav-link">
+						Hello <a href="{{ url('user/detail', {'id': zfcUserIdentity().id }) }}">{{ zfcUserIdentity().name }}</a>
+					</li>
+					<li class="nav-link">
+						<a href="{{ url('zfcuser/logout') }}">Logout</a>
+					</li>
+				{% else %}
+					<li class="nav-link">
+						<a href="{{ url('zfcuser/login') }}">Login</a>
+					</li>
 
-            {% block body %}{{ content|raw }}{% endblock body %}
-			<!-- End of modal -->
+				{% endif %}
+			</ul>
+		</div>
+
+		<div class="container-fluid">
+			<div class="col-md-2 d-none d-md-block bg-light sidebar" style="">
+				{% block sidebar %}
+				<div class="sidebar-sticky">
+					{{ navigation('navigation').menu()
+						.setUlClass('nav flex-column')
+						.setMinDepth(0).setMaxDepth(2)
+						.setRenderInvisible(true) | raw }}
+				</div>
+				{% endblock sidebar %}
+			</div>
+
+			<div class="col-md-9 ml-sm-auto col-lg-10" style="">
+				<div class="container">
+					<div class="breadcrumb">
+						{{ navigation('navigation').breadcrumbs().setSeparator(" / ").setRenderInvisible(true) | raw }}
+					</div>
+					{% block body %}{{ content|raw }}{% endblock body %}
+				</div>
+			</div>
 
         </div> <!-- /container -->
         <footer class="container" style="padding: 20px 0;">

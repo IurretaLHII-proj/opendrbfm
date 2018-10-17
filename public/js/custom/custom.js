@@ -105,6 +105,7 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout) {
 						$scope.values.stages[index] = stage;
 						stage.hints = [];
 						angular.forEach(stage._embedded.hints, function(hint, i) {
+							hint.created = new Date(hint.created);
 							stage.hints[i] = hint;
 							hint.parents = [];
 							angular.forEach (hint._embedded.parents, function(prt, p) {

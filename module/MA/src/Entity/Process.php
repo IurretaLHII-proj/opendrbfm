@@ -12,7 +12,7 @@ use DateTime;
  * @ORM\Table(name="process")
  */
 class Process implements 
-	//ResourceInterface, 
+	ResourceInterface, 
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
@@ -275,7 +275,7 @@ class Process implements
 	 */
 	public function __toString()
 	{
-		return (string) $this->getTitle();
+		return substr($this->getTitle(), 0, 15) . "...";
 	}
 
 	/**

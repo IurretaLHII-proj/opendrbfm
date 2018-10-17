@@ -11,34 +11,37 @@ return [
             Entity\User::ROLE_GUEST => [],
             Entity\User::ROLE_USER => [
 				'children' => [
-                	Entity\User::ROLE_ADMIN => [],
+					Entity\User::ROLE_ADMIN => [
+						'children' => [
+							Entity\User::ROLE_SUPER => [
+							],
+            			]
+					],
             	]
 			],
         ],
     ],
-    /*'resource_providers' => [
+    'resource_providers' => [
         \BjyAuthorize\Provider\Resource\Config::class => [
-			Entity\User::class,
-			Entity\Issue::class,
-			Entity\Issue\Image::class,
+			Entity\Process::class,
 		]
 	],
     'rule_providers' => [
         \BjyAuthorize\Provider\Rule\Config::class => [
             'allow' => [
+				//[
+				//	[Entity\User::ROLE_GUEST, Entity\User::ROLE_USER],
+				//	[],
+				//	['detail'],
+				//],
+				//[
+				//	Entity\User::ROLE_USER, 
+				//	[],
+				//	['edit'],
+				//	'IsOwner',
+				//],
 				[
 					[Entity\User::ROLE_GUEST, Entity\User::ROLE_USER],
-					[],
-					['detail'],
-				],
-				[
-					Entity\User::ROLE_USER, 
-					[],
-					['edit'],
-					'IsOwner',
-				],
-				[
-					Entity\User::ROLE_ADMIN, 
 					[],
 					[],
 				],
@@ -51,5 +54,5 @@ return [
 				//],
 			]
 		]
-	],*/
+	],
 ];

@@ -51,6 +51,12 @@ abstract class AbstractAction implements
 	protected $name;
 
 	/**
+	 * @var string 
+	 * @ORM\Column(type="array")
+	 */
+	protected $content = [];
+
+	/**
 	 * @var int 
 	 * @ORM\Column(type="datetime")
 	 */
@@ -105,6 +111,28 @@ abstract class AbstractAction implements
     public function setName($name)
     {
         $this->name = (string) $name;
+        return $this;
+    }
+
+    /**
+     * Get content.
+     *
+     * @return int.
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+    
+    /**
+     * Set content.
+     *
+     * @param int content the value to set.
+     * @return AbstractAction.
+     */
+    public function setContent($content)
+    {
+        $this->content = (array) $content;
         return $this;
     }
     
@@ -162,6 +190,7 @@ abstract class AbstractAction implements
 			'class'		=> $this->getType(),
 			'name'		=> $this->getName(),
 			'source'	=> $this->getSource(),
+			'content'	=> $this->getContent(),
 			'created'	=> $this->getCreated()->getTimestamp(),
 		];
 	

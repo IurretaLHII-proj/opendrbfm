@@ -29,6 +29,17 @@ class ActionService extends AbstractService
 		if (!$process instanceof \MA\Entity\ProcessInterface) {
 			$process = $process->getProcess();
 		}
+
+		if ($e->getName() === self::EVENT_UPDATE) {
+			$uok = $this->getEntityManager()->getUnitOfWork();
+			$uok->computeChangeSets();
+			if (array() === ($changeSet = $uok->getEntityChangeSet($source))) {
+				return;
+			}
+
+			$action->setContent($changeSet);
+		}
+
 		$action->setProcess($process);
 		$action->setSource($source);
 		$action->setName($e->getName());

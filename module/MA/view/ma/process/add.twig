@@ -1,13 +1,13 @@
-{% extends 'ma/process/base.twig' %}
+{% extends 'layout/layout.twig' %}
 
-{% block template %}
+{% block body %}
 
 	<div class="col-md-12" ng-init="init()">
 
 		<h1>{{ translate("New process") }}</h1>
 
-		<div class="row">{{ partial('partial/form/process', {'form': form}) }}</div>
+		{{ partial('partial/form/process', {'form': form}) }}
 
 	</div>
 
-{% endblock template %}
+{% endblock body %}

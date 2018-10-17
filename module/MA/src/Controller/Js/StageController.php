@@ -30,7 +30,6 @@ class StageController extends \Base\Controller\AbstractActionController
 
 				$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
 
-				$em->persist($e);
 				$em->flush();
 
 				$payload = ['payload' => $this->prepareHalEntity($e, "process/stage/detail/json")];

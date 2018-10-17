@@ -7,9 +7,9 @@ use Zend\Permissions\Acl\Role\RoleInterface,
 	Zend\Permissions\Acl\Resource\ResourceInterface;
 
 abstract class User extends BaseUser implements
-	UserInterface, 
+	UserInterface
 	//ResourceInterface,
-	RoleInterface 
+	//RoleInterface 
 {
 	/**
 	 * @constants string

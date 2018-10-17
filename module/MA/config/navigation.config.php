@@ -7,11 +7,25 @@ return [
 		//[
 		//	'label' => 'Home',
 		//	'route' => 'home',
-		//	'class' => 'nav-link',
+		//	'class' => 'nav-item',
 		//],
 		[
-			'label' => 'New',
-			'route' => 'process',
+			'label' => 'Process',
+			'route' => 'home',
+			'class' => 'nav-link',
+			//'resource'	=> Entity\Process::class,
+			//'privilege' => 'add',
+			'pages' => [
+				[
+					'label' => 'New Process',
+					'route' => 'process/add',
+					'class' => 'nav-link',
+				],
+			],
+		],
+		[
+			'label' => 'New User',
+			'route' => 'user/add',
 			'class' => 'nav-link',
 			//'resource'	=> Entity\Process::class,
 			//'privilege' => 'add',
