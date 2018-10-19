@@ -12,7 +12,7 @@ use DateTime;
  * @ORM\Table(name="process_stage")
  */
 class Stage implements 
-	//ResourceInterface, 
+	ResourceInterface, 
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,

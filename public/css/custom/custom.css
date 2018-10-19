@@ -53,7 +53,7 @@
 	color: #a3afc0;
 }
 .sidebar .active > .nav-link {
-	color: #333;
+	color: cadetblue;
 	background: #5f9ea033;
 }
 .sidebar .active > ul {

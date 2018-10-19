@@ -2,13 +2,12 @@
 
 {% block body %}
 
-	<div class="row"> 
-		<div class="col" 
+		<div class="col-md-12" 
 			ng-controller="CollectionCtrl"
 			ng-init="init({{ json(hal().renderCollection(hal)) | escape }})"
 		>
 
-			<!--<h1>{{ translate("Home") }}</h1>-->
+			<h1>{{ translate("Home") }}</h1>
 			<div ng-repeat="item in collection._embedded.items" 
 				class="d-flex flex-column p-2 issue-item"
 				ng-class="{first: $first, last: $last}"
@@ -34,9 +33,6 @@
 
 		</div>
 
-		<aside id="sidebar" class="col-md-4">
-		</aside>
-	</div>
 
 {% endblock body %}
 

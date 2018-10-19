@@ -81,5 +81,10 @@ class Module
 	 */
     public function getServiceConfig()
 	{
+		return [
+			'factories' => [
+				'navigation' => Factory\Navigation\DefaultNavigationFactory::class,
+			],
+		];
 	}
 }

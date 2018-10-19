@@ -1,34 +1,31 @@
 <?php
 
-namespace Issues;
+namespace MA;
 
 return [
 	'default' => [
-		//[
-		//	'label' => 'Home',
-		//	'route' => 'home',
-		//	'class' => 'nav-item',
-		//],
+		[
+			'label' => 'Add User',
+			'route' => 'user/add',
+			'class' => 'nav-link',
+			'resource'	=> Entity\User::class,
+			'privilege' => 'add',
+		],
 		[
 			'label' => 'Process',
 			'route' => 'home',
 			'class' => 'nav-link',
-			//'resource'	=> Entity\Process::class,
-			//'privilege' => 'add',
+			'resource'	=> Entity\Process::class,
+			'privilege' => 'index',
 			'pages' => [
 				[
-					'label' => 'New Process',
+					'label' => 'Add Process',
 					'route' => 'process/add',
 					'class' => 'nav-link',
+					'resource'	=> Entity\Process::class,
+					'privilege' => 'add',
 				],
 			],
-		],
-		[
-			'label' => 'New User',
-			'route' => 'user/add',
-			'class' => 'nav-link',
-			//'resource'	=> Entity\Process::class,
-			//'privilege' => 'add',
 		],
 	],
 ];
