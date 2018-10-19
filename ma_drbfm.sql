@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 10, 2018 at 03:46 PM
+-- Generation Time: Oct 17, 2018 at 07:27 PM
 -- Server version: 5.5.60-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.24
 
@@ -25,13 +25,33 @@ USE `ma_drbfm`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `images`
+-- Table structure for table `action`
 --
 
-DROP TABLE IF EXISTS `images`;
-CREATE TABLE IF NOT EXISTS `images` (
+DROP TABLE IF EXISTS `action`;
+CREATE TABLE IF NOT EXISTS `action` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) DEFAULT NULL,
+  `uid` int(11) NOT NULL,
+  `pcs_id` int(11) NOT NULL COMMENT 'process',
+  `src_id` int(11) NOT NULL COMMENT 'source',
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `discr` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `src-process` (`pcs_id`,`src_id`,`discr`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=67 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `image`
+--
+
+DROP TABLE IF EXISTS `image`;
+CREATE TABLE IF NOT EXISTS `image` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
   `src_id` int(11) DEFAULT NULL,
   `filename` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
@@ -39,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `images` (
   `descr` varchar(255) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
 
 -- --------------------------------------------------------
 
@@ -52,10 +72,11 @@ CREATE TABLE IF NOT EXISTS `process` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `body` text,
+  `uid` int(11) NOT NULL COMMENT 'owner',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -67,13 +88,15 @@ DROP TABLE IF EXISTS `process_hint`;
 CREATE TABLE IF NOT EXISTS `process_hint` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `stg_id` int(11) NOT NULL COMMENT 'stage',
+  `uid` int(11) NOT NULL COMMENT 'owner',
   `prior` int(2) NOT NULL DEFAULT '1',
   `text` varchar(255) NOT NULL,
   `descr` text,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
+  PRIMARY KEY (`id`),
+  KEY `stg_id` (`stg_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=66 ;
 
 -- --------------------------------------------------------
 
@@ -101,12 +124,35 @@ CREATE TABLE IF NOT EXISTS `process_stage` (
   `body` text,
   `prc_id` int(11) NOT NULL COMMENT 'process',
   `stg_id` int(11) DEFAULT NULL COMMENT 'parent stage',
+  `uid` int(11) NOT NULL COMMENT 'owner',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `prc_id` (`prc_id`),
   KEY `stg_id` (`stg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=32 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `display_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `state` smallint(6) DEFAULT NULL,
+  `roles` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
+  UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
 
 --
 -- Constraints for dumped tables

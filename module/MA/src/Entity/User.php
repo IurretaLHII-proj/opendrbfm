@@ -18,6 +18,7 @@ use User\Entity\User as BaseUser;
 class User extends BaseUser implements
 	JsonSerializable,
 	RoleProviderInterface,
+	ResourceInterface,
 	UserInterface
 	//LinkProvider
 {

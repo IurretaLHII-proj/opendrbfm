@@ -12,7 +12,7 @@ use DateTime;
  * @ORM\Table(name="process_hint")
  */
 class Hint implements 
-	//ResourceInterface, 
+	ResourceInterface, 
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,

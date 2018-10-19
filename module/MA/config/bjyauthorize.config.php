@@ -23,7 +23,10 @@ return [
     ],
     'resource_providers' => [
         \BjyAuthorize\Provider\Resource\Config::class => [
+			Entity\User::class,
 			Entity\Process::class,
+			Entity\Stage::class,
+			Entity\Hint::class,
 		]
 	],
     'rule_providers' => [
@@ -41,7 +44,7 @@ return [
 				//	'IsOwner',
 				//],
 				[
-					[Entity\User::ROLE_GUEST, Entity\User::ROLE_USER],
+					[Entity\User::ROLE_USER],
 					[],
 					[],
 				],
