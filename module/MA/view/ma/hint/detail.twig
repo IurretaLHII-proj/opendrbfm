@@ -1,210 +1,87 @@
-{# extends 'ma/process/base.twig' #}
-{% extends 'layout/layout.twig' %}
+{% extends 'ma/hint/base.twig' %}
 
-{# block template #}
-{% block body %}
-	
-	<div class="col-md-12">
-		<h2>{{ entity.process.title }}</h2>
-		<div ng-bind-html="entity.process.body"></div>
-		<a class="" href="{{ url('process/detail', {'id':entity.process.id}) }}">return</a>
-		<hr>
-		<p>{{ entity.text }}</p>
-		{#
-		<div class="row">
-			{% for index, stage in process.stages() %}
-				{{ partial('partial/stage/col', {'stage': stage, 'index': index, 'entity': entity}) }}
+{% block content %}
+
+	<ul class="nav nav-pills">
+		<li class="nav-item"><a href="" class="nav-link" ng-class="{active: tab == 'x'}" ng-click="tab = 'x'">X</a></li>
+		<li class="nav-item"><a href="" class="nav-link" ng-class="{active: tab == 'y'}" ng-click="tab = 'y'">Y</a></li>
+	</ul>
+
+	<div ng-if="tab == 'x'" class="d-flex eye eye-x">
+		{% if not entity.parents.isEmpty %}
+			<div class="d-flex flex-column flex-fill collection parents">
+			{% for index, parent in entity.parents %}
+				{{ partial('partial/hint/item-x', {
+					'item': parent, 
+					'odd': index is odd, 
+					'sParents': true, 
+					'sChildren': false,
+				}) }}
 			{% endfor %}
+			</div>
+		{% endif %}
+
+		<div class="flex-fill align-self-center current">
+			<div class="d-flex flex-column">
+				{{ partial('partial/hint/item-x', {
+					'item': entity, 
+					'sParents': false, 
+					'sChildren': false,
+				}) }}
+			</div>
 		</div>
-		#}
+
+		{% if not entity.children.isEmpty %}
+			<div class="d-flex flex-column flex-fill collection children">
+			{% for index, child in entity.children %}
+				{{ partial('partial/hint/item-x', {
+					'item': child, 
+					'odd': index is odd, 
+					'sParents': false, 
+					'sChildren': true,
+				}) }}
+			{% endfor %}
+			</div>
+		{% endif %}
 	</div>
 
-	<div class="col-md-12" ng-controller="DetailCtrl" ng-init="tab = 'x'">
-		<ul class="nav nav-pills">
-			<li class="nav-item"><a href="" class="nav-link" ng-class="{active: tab == 'x'}" ng-click="tab = 'x'">X</a></li>
-			<li class="nav-item"><a href="" class="nav-link" ng-class="{active: tab == 'y'}" ng-click="tab = 'y'">Y</a></li>
-		</ul>
-
-		<div ng-if="tab == 'x'" class="d-flex eye-x" style="padding:0;">
-			{% if not entity.parents.isEmpty %}
-				<div class="d-flex flex-column flex-fill collection parents">
-				{% for index, parent in entity.parents %}
-					{{ partial('partial/hint/item-x', {
-						'item': parent, 
-						'odd': index is odd, 
-						'sParents': true, 
-						'sChildren': false,
-					}) }}
-				{% endfor %}
-				</div>
-			{% endif %}
-
-			<div class="flex-fill align-self-center current" style="">
-				<div class="d-flex flex-column">
-					{{ partial('partial/hint/item-x', {
-						'item': entity, 
-						'sParents': false, 
-						'sChildren': false,
-					}) }}
-				</div>
+	<div ng-if="tab == 'y'" class="d-flex flex-column eye eye-y">
+		{% if not entity.parents.isEmpty %}
+			<div class="d-flex flex-fill collection parents">
+			{% for index, parent in entity.parents %}
+				{{ partial('partial/hint/item-y', {
+					'item': parent, 
+					'odd': index is odd, 
+					'sParents': true, 
+					'sChildren': false,
+				}) }}
+			{% endfor %}
 			</div>
+		{% endif %}
 
-			{% if not entity.children.isEmpty %}
-				<div class="d-flex flex-column flex-fill collection children">
-				{% for index, child in entity.children %}
-					{{ partial('partial/hint/item-x', {
-						'item': child, 
-						'odd': index is odd, 
-						'sParents': false, 
-						'sChildren': true,
-					}) }}
-				{% endfor %}
-				</div>
-			{% endif %}
+		<div class="flex-fill align-self-center current">
+			<div class="d-flex flex-column">
+				{{ partial('partial/hint/item-y', {
+					'item': entity, 
+					'sParents': false, 
+					'sChildren': false,
+				}) }}
+			</div>
 		</div>
 
-		<div ng-if="tab == 'y'" class="d-flex flex-column eye-y" style="padding:0;">
-			{% if not entity.parents.isEmpty %}
-				<div class="d-flex flex-fill collection parents">
-				{% for index, parent in entity.parents %}
-					{{ partial('partial/hint/item-y', {
-						'item': parent, 
-						'odd': index is odd, 
-						'sParents': true, 
-						'sChildren': false,
-					}) }}
-				{% endfor %}
-				</div>
-			{% endif %}
-
-			<div class="flex-fill align-self-center current" style="">
-				<div class="d-flex flex-column">
-					{{ partial('partial/hint/item-y', {
-						'item': entity, 
-						'sParents': false, 
-						'sChildren': false,
-					}) }}
-				</div>
+		{% if not entity.children.isEmpty %}
+			<div class="d-flex flex-fill collection children">
+			{% for index, child in entity.children %}
+				{{ partial('partial/hint/item-y', {
+					'item': child, 
+					'odd': index is odd, 
+					'sParents': false, 
+					'sChildren': true,
+				}) }}
+			{% endfor %}
 			</div>
-
-			{% if not entity.children.isEmpty %}
-				<div class="d-flex flex-fill collection children">
-				{% for index, child in entity.children %}
-					{{ partial('partial/hint/item-y', {
-						'item': child, 
-						'odd': index is odd, 
-						'sParents': false, 
-						'sChildren': true,
-					}) }}
-				{% endfor %}
-				</div>
-			{% endif %}
-		</div>
+		{% endif %}
 	</div>
+</div>
 
-{% endblock body %}
-{# endblock template #}
-
-{% block style %}
-	{[ parent() ]}
-
-	<style>
-		ul.hints {
-			padding: 0;
-		}
-		ul.hints li {
-			padding: 2px 8px;;
-		}
-		ul.hints li.active {
-			background: lightgray;
-		}
-
-		.current {
-		}
-		.current .flex-column {
-		}
-		.collection {
-		}
-		.collection .flex-column {
-		}
-		.eye-y .parents .flex-column {
-			border-bottom: 1px solid #DDD;
-		}
-		.eye-y .children .flex-column {
-			border-top: 1px solid #DDD;
-		}
-		.eye-x .parents .flex-column {
-			border-right: 1px solid #DDD;
-		}
-		.eye-x .children .flex-column {
-			border-left: 1px solid #DDD;
-		}
-		.collection .item {
-		}
-		.collection .item.odd {
-			background: #f7f7f7;
-		}
-		.collection .item.even {
-			background: #eee;
-		}
-		.collection > .item {
-			border: 1px solid lightgray;
-		}
-		.eye-y .collection > .item {
-			margin: 0 6px;
-		}
-		.eye-y .collection > .item:first-child {
-			margin-left: 0;
-		}
-		.eye-y .collection > .item:last-child {
-			margin-right: 0;
-		}
-		.eye-x .collection > .item {
-			margin: 6px 0;
-		}
-		.eye-x .collection > .item:first-child {
-			margin-top:0;
-		}
-		.eye-x .collection > .item:last-child {
-			margin-bottom:0;
-		}
-		.children .odd .hint {
-		}
-		.children .even .hint {
-		}
-		.hint {
-			text-align: center;
-			padding: 5px;
-			background: white;
-		}
-		.eye-y .hint {
-			border-left: 1px solid #eee;
-			border-right: 1px solid #eee;
-		}
-		.eye-x .hint {
-			border-top: 1px solid #eee;
-			border-bottom: 1px solid #eee;
-		}
-		.hint .level {
-			background: lightgray;
-			padding: 0 2px;
-		}
-		.odd .hint {
-		}
-		.odd .hint .level {
-			background: darkkhaki;
-			color: cornsilk;
-		}
-		.even .hint {
-		}
-		.even .hint .level {
-			background: burlywood;
-			color: antiquewhite;
-		}
-		.current .hint .level {
-			background: lightcoral;
-			color: white;
-		}
-	</style>
-
-{% endblock style %}
+{% endblock content %}

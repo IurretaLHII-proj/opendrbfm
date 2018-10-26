@@ -49,8 +49,6 @@ class Module
     {
 		return [
 			'invokables' => [
-				Form\ProcessForm::class => Form\ProcessForm::class,
-				Form\StageForm::class => Form\StageForm::class,
 			],
 		];
     }

@@ -26,6 +26,8 @@ return [
 			Entity\User::class,
 			Entity\Process::class,
 			Entity\Stage::class,
+			Entity\Operation::class,
+			Entity\OperationType::class,
 			Entity\Hint::class,
 		]
 	],

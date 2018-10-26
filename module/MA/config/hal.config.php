@@ -27,6 +27,20 @@ return [
 			'max_depth' => 4,
 			'hydrator' => Hydrator\StageHydrator::class,
 		],
+		'MA\Entity\OperationType' => [
+			'route_name' => 'process/operation/type/detail/json',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Operation' => [
+			'route_name' => 'process/operation/detail/json',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
 		'MA\Entity\Hint' => [
 			'route_name' => 'process/hint/detail',
 			'route_identifier_name' => 'id',

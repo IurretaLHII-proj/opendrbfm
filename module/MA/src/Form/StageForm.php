@@ -38,6 +38,18 @@ class StageForm extends Form implements InputFilterProviderInterface
              ],
         ]);
 
+        $this->add([
+             'type' => 'ObjectMultiCheckbox',
+             'name' => 'operations',
+             'attributes' => [ 
+                 'class' => '',
+             ],
+             'options' => [
+                 'label' => 'Operations',
+				 'target_class' => 'MA\Entity\Operation',
+             ],
+        ]);
+
 		$this->add([
                 'type' => 'Collection',
                 'name' => 'images',

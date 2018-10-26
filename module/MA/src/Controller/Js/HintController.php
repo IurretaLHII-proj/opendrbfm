@@ -7,7 +7,7 @@ use Zend\Json\Json;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use ZF\Hal\View\HalJsonModel;
 
-class HintController extends \Base\Controller\AbstractActionController
+class HintController extends \Base\Controller\Js\AbstractActionController
 {
 	/**
 	 * @return JsonViewModel

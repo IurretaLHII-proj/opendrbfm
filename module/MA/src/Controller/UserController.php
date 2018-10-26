@@ -81,7 +81,17 @@ class UserController extends \Base\Controller\AbstractActionController
 	 */
     public function detailAction()
     {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$collection = $em->getRepository("MA\Entity\AbstractAction")
+			->findBy(
+				['user' => $this->entity],
+				['created' => 'DESC']
+			);
+
+		$paginator = $this->getPaginator($collection);
 		return new ViewModel([
+			'actionsHal' => $this->prepareHalCollection($paginator, 'user/detail/json', ['action' => 'actions']),
 		]);
 	}
 

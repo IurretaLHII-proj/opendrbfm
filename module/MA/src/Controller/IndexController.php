@@ -8,6 +8,7 @@ use Zend\Paginator\Paginator,
 use Zend\View\Model\ViewModel,
 	Zend\View\Model\ModelInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use BjyAuthorize\Exception\UnAuthorizedException;
 
 class IndexController extends AbstractActionController
 {
@@ -16,9 +17,15 @@ class IndexController extends AbstractActionController
 	 */
     public function indexAction()
     {
+		$resource = "MA\Entity\Process";
+
+		if (!$this->zfcUserAuthentication()->hasIdentity()) {
+			return $this->redirect()->toRoute("zfcuser/login");
+		}
+
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$collection = $em->getRepository("MA\Entity\Process")->findBy([],['created' => 'DESC']);
+		$collection = $em->getRepository($resource)->findBy([],['created' => 'DESC']);
 
 		$paginator = new Paginator(new ArrayAdapter($collection));
 		$paginator->setItemCountPerPage((int) $this->params()->fromQuery('limit', 5));

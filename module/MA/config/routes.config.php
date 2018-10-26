@@ -39,7 +39,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|changepassword',
+						'action' => 'detail|actions',
 					]
 				],
 				'may_terminate' => true,
@@ -160,6 +160,109 @@ return [
 					],
 				],
 			],
+			'operation' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/op',
+					'defaults' => [
+						'controller' => Controller\OperationController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\OperationController::class,
+							]
+						],
+					],
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|edit|delete|actions',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\OperationController::class,
+									],
+								],
+							]
+						],
+					],
+					'type' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/type',
+							'defaults' => [
+								'controller' => Controller\OperationTypeController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\OperationTypeController::class,
+									]
+								],
+							],
+							'add' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/add',
+									'defaults' => [
+										'action' => 'add' 
+									]
+								],
+							],
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail|edit|delete|operation',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\OperationTypeController::class,
+											]
+										],
+									],
+								],
+							],
+						],
+					],
+				],
+			],
 			'hint' => [
 				'type' => 'Literal',
 				'options' => [
@@ -180,7 +283,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete',
+								'action' => 'detail|edit|delete|actions',
 							]
 						],
 						'may_terminate' => true,

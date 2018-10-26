@@ -1,0 +1,29 @@
+{% extends 'ma/hint/base.twig' %}
+
+{% block content %}
+	<div class="row">
+	<div class="col-md-12" 
+		ng-cloak
+		ng-controller="CollectionCtrl"
+		ng-init="init({{ json(hal().renderCollection(actionsHal)) | escape }})"
+	>
+		<div ng-repeat="item in collection._embedded.items" 
+			class="d-flex flex-column py-2 action-item"
+			ng-class="{first: $first, last: $last}"
+			ng-mouseover="item.hover = true;"
+			ng-mouseleave="item.hover = false;"
+			ng-init="item = item;"
+			ng-include="'/js/tpl/partial/action/item.html'"
+			style="border-bottom: 1px solid #eee"
+		>
+		</div>
+
+		<div style="text-align: center; margin-top: 1rem;">
+			<p><a href="" ng-if="collection._links.next" ng-click="more()">.view previouses.</a></p>
+			<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+			<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+		</div>
+	</div>
+	</div>
+
+{% endblock content %}

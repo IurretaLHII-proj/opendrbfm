@@ -1,0 +1,35 @@
+{% extends 'layout/login.twig' %}
+
+{% do loginForm.prepare() %}
+{% do loginForm.setAttribute('action', url('zfcuser/login')) %}
+{% do loginForm.setAttribute('method', 'post') %}
+{% do loginForm.setAttribute('autocomplete', 'off') %}
+{% do loginForm.get('identity').setAttribute('class', 'form-control') %}
+{% do loginForm.get('credential').setAttribute('class', 'form-control') %}
+{% do loginForm.get('submit').setAttribute('class', 'btn btn-primary') %}
+
+{% block body %}
+<div class="col-md-6 mx-auto">
+	<h1 style="text-align:center;"><i class="fa fa-block"></i> Sign In</h1>
+	{{ form().openTag(loginForm) | raw }}
+	<dl class="zend_form">
+		<div class="form-group">
+			<dt>{{ formLabel(loginForm.get('identity')) | raw }}</dt>
+			<dd>{{ formElement(loginForm.get('identity')) | raw }} {{ formElementErrors(loginForm.get('identity')) | raw }}</dd>
+		</div>	
+		<div class="form-group">
+			<dt>{{ formLabel(loginForm.get('credential')) | raw }}</dt>
+			<dd>{{ formElement(loginForm.get('credential')) | raw }} {{ formElementErrors(loginForm.get('credential')) | raw }}</dd>
+		</div>	
+		<div class="form-group">
+			<dd>{{ formElement(loginForm.get('submit')) | raw }}</dd>
+		</div>	
+
+		{% if redirect %}
+			<input type="hidden" name="redirect" value="{{ redirect }}">
+		{% endif %}
+	</dl>
+
+	{{ form().closeTag(loginForm)  | raw }}
+</div>
+{% endblock body %}

@@ -53,17 +53,6 @@ class HintForm extends Form implements InputFilterProviderInterface
         ], ['priority' => -9]);
 
         $this->add([
-                'type' => 'Submit',
-                'name' => 'submit',
-                'attributes' => [ 
-                    'value' => 'Save',
-                    'class' => 'btn btn-primary'
-                ],
-            ],
-            ['priority' => -20]
-        );
-
-        $this->add([
              'type' => 'ObjectMultiCheckbox',
              'name' => 'parents',
              'attributes' => [ 
@@ -74,6 +63,17 @@ class HintForm extends Form implements InputFilterProviderInterface
 				 'target_class' => 'MA\Entity\Hint',
              ],
         ]);
+
+        $this->add([
+                'type' => 'Submit',
+                'name' => 'submit',
+                'attributes' => [ 
+                    'value' => 'Save',
+                    'class' => 'btn btn-primary'
+                ],
+            ],
+            ['priority' => -20]
+        );
 
         parent::init();
     }

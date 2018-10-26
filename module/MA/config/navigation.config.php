@@ -25,6 +25,22 @@ return [
 					'resource'	=> Entity\Process::class,
 					'privilege' => 'add',
 				],
+				[
+					'label' => 'Operation types',
+					'route' => 'process/operation/type',
+					'class' => 'nav-link',
+					'resource'	=> Entity\OperationType::class,
+					'privilege' => 'index',
+					'pages' => [
+						[
+							'label' => 'Add Operation type',
+							'route' => 'process/operation/type/add',
+							'class' => 'nav-link',
+							'resource'	=> Entity\OperationType::class,
+							'privilege' => 'add',
+						],
+					],
+				],
 			],
 		],
 	],

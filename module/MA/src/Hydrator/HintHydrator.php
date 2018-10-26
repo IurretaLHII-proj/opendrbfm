@@ -22,6 +22,7 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 			'priority' 	  => $object->getPriority(),
 			'text' 	  	  => $object->getText(),
 			'description' => $object->getDescription(),
+			'level'		  => $object->getStage()->getLevel(),
 			'owner'   	  => $object->getUser(),
 			'created' 	  => $object->getCreated()->getTimestamp(),
 			'updated' 	  => $object->getUpdated()->getTimestamp(),
