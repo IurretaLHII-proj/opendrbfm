@@ -50,6 +50,16 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	 */
     public function detailAction()
     {
+		return new ViewModel([
+			'stageId' => $this->params()->fromQuery('stage'),
+		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function actionsAction()
+    {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
 		$collection = $em->getRepository("MA\Entity\AbstractProcessAction")
@@ -58,7 +68,7 @@ class ProcessController extends \Base\Controller\AbstractActionController
 				['created' => 'DESC']
 			);
 
-		$paginator = $this->getPaginator($collection);
+		$paginator = $this->getPaginator($collection, 10);
 		return new ViewModel([
 			'actionsHal' => $this->prepareHalCollection($paginator, 'process/detail/json', ['action' => 'actions']),
 		]);

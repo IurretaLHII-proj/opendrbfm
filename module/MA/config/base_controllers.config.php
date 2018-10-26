@@ -6,6 +6,9 @@ return [
 	Controller\UserController::class => [
 		'repository' => Entity\User::class,
 	],
+	Controller\Js\UserController::class => [
+		'repository' => Entity\User::class,
+	],
 	Controller\ProcessController::class => [
 		'repository' => Entity\Process::class,
 		'parent' => [
@@ -32,8 +35,40 @@ return [
 	Controller\Js\StageController::class => [
 		'repository' => Entity\Stage::class,
 	],
+	Controller\OperationController::class => [
+		'repository' => Entity\Operation::class,
+	],
+	Controller\Js\OperationController::class => [
+		'repository' => Entity\Operation::class,
+	],
+	Controller\OperationTypeController::class => [
+		'repository' => Entity\OperationType::class,
+	],
+	Controller\Js\OperationTypeController::class => [
+		'repository' => Entity\OperationType::class,
+	],
 	Controller\HintController::class => [
 		'repository' => Entity\Hint::class,
+		'parent' => [
+			'controller' => Controller\ProcessController::class,
+			'route' => 'process/detail',
+			'action' => 'detail',
+			'entity' => 'process',
+		],
+		'page' => [
+			'route' => 'process/hint/detail',
+			'action' => 'detail',
+			'pages' => [
+				[
+					'route' => 'process/hint/detail',
+					'action' => 'detail',
+				],
+				[
+					'route' => 'process/hint/detail',
+					'action' => 'actions',
+				],
+			]
+		],
 	],
 	Controller\Js\HintController::class => [
 		'repository' => Entity\Hint::class,

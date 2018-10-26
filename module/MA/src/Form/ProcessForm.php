@@ -44,7 +44,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
                 'name' => 'submit',
                 'attributes' => [ 
                     'value' => 'Save',
-                    'class' => 'btn btn-primary'
+                    'class' => 'btn btn-success'
                 ],
             ],
             ['priority' => -20]

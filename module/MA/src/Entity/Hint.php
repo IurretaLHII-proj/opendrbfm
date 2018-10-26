@@ -5,6 +5,7 @@ namespace MA\Entity;
 use Doctrine\ORM\Mapping as ORM,
 	Doctrine\Common\Collections\ArrayCollection;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
+use JsonSerializable;
 use DateTime;
 
 /**
@@ -485,8 +486,22 @@ class Hint implements
 	 */
 	public function getResourceId()
 	{
-		return static::class;
+		return self::class;
 	}
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return array(
+            'id'          => $this->getId(),
+            'text'        => $this->getText(),
+            'priority' 	  => $this->getPriority(),
+            'description' => $this->getDescription(),
+            'created'     => $this->getCreated()->getTimestamp(),
+        );
+    }
 
 	/**
 	 * @inheritDoc
@@ -503,7 +518,8 @@ class Hint implements
 		return [
 			[
 				'rel'   	  => 'edit',
-				//'privilege'   => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/hint/detail/json',
 				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
@@ -511,7 +527,8 @@ class Hint implements
 			],
 			[
 				'rel'   	  => 'delete',
-				//'privilege'   => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/hint/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],

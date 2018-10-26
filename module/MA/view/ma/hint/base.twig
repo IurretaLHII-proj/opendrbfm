@@ -1,0 +1,135 @@
+{# extends 'ma/process/base.twig' #}
+{% extends 'layout/layout.twig' %}
+
+{# block template #}
+{% block body %}
+	<div class="col-md-2 d-none d-lg-block bg-light sidebar" style="">
+		<div class="sidebar-sticky">
+			{{ navigation('navigation').menu()
+				.setUlClass('nav flex-column')
+				.setMinDepth(3).setMaxDepth(null)
+				.setOnlyActiveBranch(false)
+				.setRenderInvisible(true) | raw }}
+		</div>
+	</div>
+	
+	<div class="col-md-12 ml-sm-auto col-lg-10" ng-controller="DetailCtrl" ng-init="tab = 'x'">
+		<h2>{{ entity.process.title }}</h2>
+		<div ng-bind-html="entity.process.body"></div>
+		<p>{{ entity.text }}</p>
+		<a class="" href="{{ url('process/detail', {'id':entity.process.id}, {'query': {'stage': entity.stage.id }}) }}">return</a>
+		<hr>
+		{% block content %}{% endblock content %}
+	</div>
+
+{% endblock body %}
+{# endblock template #}
+
+{% block style %}
+	{[ parent() ]}
+
+	<style>
+		ul.hints {
+			padding: 0;
+		}
+		ul.hints li {
+			padding: 2px 8px;;
+		}
+		ul.hints li.active {
+			background: lightgray;
+		}
+
+		.current {
+		}
+		.current .flex-column {
+		}
+		.collection {
+		}
+		.collection .flex-column {
+		}
+		.eye {
+			padding: 1rem 2rem;
+		}
+		.eye-y .parents .flex-column {
+			border-bottom: 1px solid #DDD;
+		}
+		.eye-y .children .flex-column {
+			border-top: 1px solid #DDD;
+		}
+		.eye-x .parents .flex-column {
+			border-right: 1px solid #DDD;
+		}
+		.eye-x .children .flex-column {
+			border-left: 1px solid #DDD;
+		}
+		.collection .item {
+		}
+		.collection .item.odd {
+			/*background: #f7f7f7;*/
+		}
+		.collection .item.even {
+			/*background: #eee;*/
+		}
+		.collection > .item {
+			/*border: 1px solid lightgray;*/
+		}
+		.eye-y .collection > .item {
+			margin: 0 6px;
+		}
+		.eye-y .collection > .item:first-child {
+			margin-left: 0;
+		}
+		.eye-y .collection > .item:last-child {
+			margin-right: 0;
+		}
+		.eye-x .collection > .item {
+			margin: 6px 0;
+		}
+		.eye-x .collection > .item:first-child {
+			margin-top:0;
+		}
+		.eye-x .collection > .item:last-child {
+			margin-bottom:0;
+		}
+		.children .odd .hint {
+		}
+		.children .even .hint {
+		}
+		.hint {
+			text-align: center;
+			padding: 5px;
+			background: white;
+		}
+		.eye-y .hint {
+			border-left: 1px solid #eee;
+			border-right: 1px solid #eee;
+		}
+		.eye-x .hint {
+			border-top: 1px solid #eee;
+			border-bottom: 1px solid #eee;
+		}
+		.hint .level {
+			background: lightgray;
+			color: #666;
+			padding: 0 2px;
+		}
+		.odd .hint {
+		}
+		.odd .hint .level {
+			/*background: darkkhaki;
+			color: cornsilk;*/
+		}
+		.even .hint {
+		}
+		.even .hint .level {
+			/*background: burlywood;
+			color: antiquewhite;*/
+			background: #EEE;
+		}
+		.current .hint .level {
+			background: lightcoral;
+			color: white;
+		}
+	</style>
+
+{% endblock style %}

@@ -283,7 +283,7 @@ class Process implements
 	 */
 	public function getResourceId()
 	{
-		return static::class;
+		return self::class;
 	}
 
 	/**
@@ -301,7 +301,8 @@ class Process implements
 		return [
 			[
 				'rel'   	  => 'edit',
-				//'privilege'   => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/detail/json',
 				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
@@ -309,7 +310,8 @@ class Process implements
 			],
 			[
 				'rel'   	  => 'stage',
-				//'privilege'   => 'stage',
+				'privilege'   => 'stage',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/detail/json',
 				    'params'  => ['action' => 'stage', 'id' => $this->getId()],

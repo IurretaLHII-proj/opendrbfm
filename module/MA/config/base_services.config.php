@@ -13,6 +13,8 @@ return [
 					Service\StageService::class, 
 					Service\HintService::class, 
 					Service\ImageService::class, 
+					Service\OperationService::class, 
+					Service\OperationTypeService::class, 
 				],
 				'events'   => \Base\Service\AbstractService::EVENT_CREATE, 
 				'callback' => 'injectUser',
@@ -26,11 +28,17 @@ return [
 	Service\StageService::class => [
 		'entities' => [Entity\Stage::class],
 	],
-	Service\ImageService::class => [
-		'entities' => [Entity\Image\IStage::class],
+	Service\OperationTypeService::class => [
+		'entities' => [Entity\OperationType::class],
+	],
+	Service\OperationService::class => [
+		'entities' => [Entity\Operation::class],
 	],
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],
+	],
+	Service\ImageService::class => [
+		'entities' => [Entity\Image\IStage::class],
 	],
 	Service\ActionService::class => [
 		'entities'  => [

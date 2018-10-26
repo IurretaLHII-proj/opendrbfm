@@ -62,23 +62,35 @@ abstract class AbstractActionController extends BaseAbstractActionController
 			throw new \InvalidArgumentException(sprintf("No reporisory especified for %s", static::class));
 		}
 
+		$allowed = true;
+
         if ($id) {
             if (null === ($this->entity = $em->find($repository, $id))) {
                 return $this->notFoundAction();
             }
 
 			if ($this->entity instanceof ResourceInterface && !$this->isAllowed($this->entity, $action)) {
-				if ($this->zfcUserAuthentication()->hasIdentity()) {
-					throw new UnAuthorizedException(sprintf("%s:%s",$this->entity->getResourceId(), $action));
-				}
-				else {
-					return $this->redirect()->toRoute("zfcuser/login");
-				}
+				$allowed = false;
 			}
 
 			$this->navService->generateNavigation(
 				$this,$this->getServiceLocator()->get('navigation'), $this->getEvent()->getRouteMatch());
         }
+		else {
+			$class = new \ReflectionClass($repository);
+			if ($class->implementsInterface(ResourceInterface::class) && !$this->isAllowed($repository, $action)) {
+				$allowed = false;
+			}
+		}
+
+		if (!$allowed) {
+			if ($this->zfcUserAuthentication()->hasIdentity()) {
+				throw new UnAuthorizedException(sprintf("%s:%s",$repository, $action));
+			}
+			else {
+				return $this->redirect()->toRoute("zfcuser/login");
+			}
+		}
 
         return parent::onDispatch($e);
     }

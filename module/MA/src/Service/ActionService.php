@@ -33,7 +33,43 @@ class ActionService extends AbstractService
 		if ($e->getName() === self::EVENT_UPDATE) {
 			$uok = $this->getEntityManager()->getUnitOfWork();
 			$uok->computeChangeSets();
-			if (array() === ($changeSet = $uok->getEntityChangeSet($source))) {
+
+			$changeSet = $uok->getEntityChangeSet($source);
+
+			if ($source instanceof \MA\Entity\StageInterface) {
+				foreach ($source->getImages()->getInsertDiff() as $image) {
+					if (!isset($diff['insert'])) $diff['insert'] = [];
+					$diff['insert'][] = $image->jsonSerialize();
+				}
+
+				foreach ($source->getImages()->getDeleteDiff() as $image) {
+					if (!isset($diff['delete'])) $diff['delete'] = [];
+					$diff['delete'][] = $image->jsonSerialize();
+				}
+
+				if (isset($diff)) {
+					$changeSet['images'] = $diff;
+					unset($diff);
+				}
+			}
+			elseif ($source instanceof \MA\Entity\HintInterface) {
+				foreach ($source->getParents()->getInsertDiff() as $parent) {
+					if (!isset($diff['insert'])) $diff['insert'] = [];
+					$diff['insert'][] = $parent->jsonSerialize();
+				}
+
+				foreach ($source->getParents()->getDeleteDiff() as $parent) {
+					if (!isset($diff['delete'])) $diff['delete'] = [];
+					$diff['delete'][] = $parent->jsonSerialize();
+				}
+
+				if (isset($diff)) {
+					$changeSet['parents'] = $diff;
+					unset($diff);
+				}
+			}
+
+			if ($changeSet === array()) {
 				return;
 			}
 

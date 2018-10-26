@@ -56,6 +56,7 @@
 				padding: .75rem 1rem;
 				border-width: 0;
 				border-radius: 0;
+				border-bottom: 1px solid #EEE;
 			">
 			<button class="btn btn-default my-0 rounded-0" type="submit">
 				<span class="fa fa-search"></span>
@@ -66,10 +67,10 @@
 			</button>
 	  	</nav>
 
-		<div class="collapse navbar-collapse d-md-none" id="navbarSupportedContent">
+		<div class="collapse navbar-collapse d-md-none" id="navbarSupportedContent" style="background: #eee; border-bottom: 1px solid #ccc; padding: 12px;">
 			{# setAddClassToListItem(true) //Passes li class to a tag #}
-			{{ navigation('navigation').menu().setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(2).setRenderInvisible(true) | raw }}
-			<form class="form-inline my-2 my-lg-0">
+			{{ navigation('navigation').menu().setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(null).setRenderInvisible(true) | raw }}
+			{#<form class="form-inline my-2 my-lg-0">
 				<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" style="min-width:400px;">
 				<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 			</form>
@@ -87,29 +88,28 @@
 					</li>
 
 				{% endif %}
-			</ul>
+			</ul>#}
 		</div>
 
 		<div class="container-fluid">
-			<div class="col-md-2 d-none d-md-block bg-light sidebar" style="">
+			<div class="col-md-2 d-none d-md-block bg-light sidebar sidebar-fixed" style="">
 				{% block sidebar %}
 				<div class="sidebar-sticky">
 					{{ navigation('navigation').menu()
 						.setUlClass('nav flex-column')
 						.setMinDepth(0).setMaxDepth(2)
+						.setOnlyActiveBranch(false)
 						.setRenderInvisible(true) | raw }}
 				</div>
 				{% endblock sidebar %}
 			</div>
 
-			<div class="col-md-9 ml-sm-auto col-lg-10" style="">
-				<div class="container">
-					<div class="breadcrumb">
-						{{ navigation('navigation').breadcrumbs().setSeparator(" / ").setRenderInvisible(true) | raw }}
-					</div>
-					{% block body %}{{ content|raw }}{% endblock body %}
-				</div>
-        		<footer class="container-fluid" style="padding: 20px 0;">
+			<div class="col-md-10 ml-sm-auto px-0 col-sm-12" style="">
+				{#<div class="breadcrumb">
+					{{ navigation('navigation').breadcrumbs().setSeparator(" / ").setRenderInvisible(true) | raw }}
+				</div>#}
+				{% block body %}{{ content|raw }}{% endblock body %}
+        		<footer class="row" style="padding: 20px 0;">
 					<hr>
 					<div class="col-md-12"><p>&copy; 2018</p></div>
         		</footer>

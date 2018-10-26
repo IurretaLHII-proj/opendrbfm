@@ -71,6 +71,31 @@ class Stage implements
 	protected $children;
 
 	/**
+	 * @var OperationInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\Operation",
+	 *	inversedBy = "stages"
+	 * )
+	 * @ORM\JoinTable(
+	 *	name = "process_op_stg_rel",
+	 *	joinColumns = {
+	 *		@ORM\JoinColumn(
+	 *			name = "op_id",
+	 *			referencedColumnName = "id",
+	 *		)
+	 *	},
+	 *	inverseJoinColumns = {
+	 *		@ORM\JoinColumn(
+	 *			name = "stg_id",
+	 *			referencedColumnName = "id",
+	 *		)
+	 *	}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $operations;
+
+	/**
 	 * @var HintInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Hint",
@@ -122,11 +147,12 @@ class Stage implements
 	 */
 	public function __construct()
 	{
-		$this->created  = new DateTime;
-		$this->updated  = new DateTime;
-		$this->children = new ArrayCollection;
-		$this->images   = new ArrayCollection;
-		$this->hints	= new ArrayCollection;
+		$this->created    = new DateTime;
+		$this->updated    = new DateTime;
+		$this->operations = new ArrayCollection;
+		$this->children   = new ArrayCollection;
+		$this->images     = new ArrayCollection;
+		$this->hints	  = new ArrayCollection;
 	}
     
     /**
@@ -270,6 +296,82 @@ class Stage implements
     {
 		$child->setParent($this);
 		$this->getChildren()->add($child);
+        return $this;
+    }
+    
+    /**
+     * Get operations.
+     *
+     * @return StageInterface[].
+     */
+    public function getOperations()
+    {
+        return $this->operations;
+    }
+    
+    /**
+     * Set operations.
+     *
+     * @param StageInterface[] ops the value to set.
+     * @return StageInterface.
+     */
+    public function setOperations($ops)
+    {
+        $this->operations = $ops;
+        return $this;
+    }
+    
+    /**
+     * Add operation.
+     *
+     * @param OperationInterface operation the value to set.
+     * @return Stage.
+     */
+    public function addOperation(OperationInterface $operation)
+    {
+		$this->getOperations()->add($operation);
+        return $this;
+    }
+    
+    /**
+     * Add operations.
+     *
+     * @param OperationInterface[] operations the value to set.
+     * @return Stage.
+     */
+    public function addOperations($operations)
+    {
+		foreach ($operations as $operation) {
+			$this->addOperation($operation);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add operation.
+     *
+     * @param OperationInterface operation the value to set.
+     * @return Stage.
+     */
+    public function removeOperation(OperationInterface $operation)
+    {
+		$this->getOperations()->removeElement($operation);
+        return $this;
+    }
+    
+    /**
+     * Add operations.
+     *
+     * @param OperationInterface[] operations the value to set.
+     * @return Stage.
+     */
+    public function removeOperations($operations)
+    {
+		foreach ($operations as $operation) {
+			$this->removeOperation($operation);
+		}
+
         return $this;
     }
     
@@ -481,7 +583,7 @@ class Stage implements
 	 */
 	public function getResourceId()
 	{
-		return static::class;
+		return self::class;
 	}
 
 	/**
@@ -489,6 +591,11 @@ class Stage implements
 	 */
 	public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
 	{
+		//$self = $links->get('self');
+		//$self->setRouteParams(array_merge(
+		//	$self->getRouteParams(),
+		//	['id' => $this->getProcess()->getId()]
+		//));
 	}
 
 	/**
@@ -498,8 +605,19 @@ class Stage implements
   	{
 		return [
 			[
+				'rel'   	  => 'process',
+				'privilege'   => 'detail',
+				'resource'	  => $this->getProcess(),
+				'route' => [
+				    'name'    => 'process/detail',
+				    'params'  => ['action' => 'detail', 'id' => $this->getProcess()->getId()],
+					'options' => ['query' => ['stage' => $this->getId()]],
+				],
+			],
+			[
 				'rel'   	  => 'edit',
-				//'privilege'   => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
 				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
@@ -507,7 +625,8 @@ class Stage implements
 			],
 			[
 				'rel'   	  => 'hint',
-				//'privilege'   => 'hint',
+				'privilege'   => 'hint',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
 				    'params'  => ['action' => 'hint', 'id' => $this->getId()],
@@ -515,7 +634,8 @@ class Stage implements
 			],
 			[
 				'rel'   	  => 'image',
-				//'privilege'   => 'image',
+				'privilege'   => 'image',
+				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/stage/image',
 				    'params'  => ['action' => 'image'],

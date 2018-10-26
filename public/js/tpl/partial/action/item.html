@@ -1,0 +1,28 @@
+<p><a ng-href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a> {[ item.name ]} a <span ng-switch="item.class"><a ng-href="{[ item._embedded.source._links.self.href]}" ng-switch-when="MA\Entity\Action\Hint">error</a><a ng-href="{[ item._embedded.source._links.self.href]}" ng-switch-when="MA\Entity\Action\Process">process</a><a ng-href="{[ item._embedded.source._links.process.href]}" ng-switch-default>stage</a></span> on {[ item.created | date: "MM/dd/yyyy 'at' HH:mm" ]}</p>
+<ul ng-if="item.content">
+	<li ng-repeat="(key, values) in item.content">{[ key ]}
+		<ul ng-switch="key">
+			<li ng-switch-when="images">
+				<ul ng-if="values.delete" class="list-inline">
+					Delete
+					<li ng-repeat="image in values.delete"><img ng-src="/image/{[ image.id ]}" width=45 height=45 /></li> <!-- FIXME -->
+				</ul>
+				<ul ng-if="values.insert" class="list-inline">
+					Insert
+					<li ng-repeat="image in values.insert"><img ng-src="/image/{[ image.id ]}" width=45 height=45 /></li> <!-- FIXME -->
+				</ul>
+			</li>
+			<li ng-switch-when="parents">
+				<ul ng-if="values.delete">
+					Delete
+					<li ng-repeat="parent in values.delete">{[ parent.text ]}</li>
+				</ul>
+				<ul ng-if="values.insert">
+					Insert
+					<li ng-repeat="parent in values.insert">{[ parent.text ]}</li>
+				</ul>
+			</li>
+			<li ng-switch-default ng-repeat="value in values" ng-bind-html="value"></li>
+		</ul>
+	</li>
+</ul>

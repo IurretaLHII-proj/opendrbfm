@@ -18,13 +18,15 @@ class StageHydrator extends \Zend\Hydrator\ClassMethods
 	public function extract($object) 
 	{
 		return [
-			'id' 	  => $object->getId(),
-			'body' 	  => $object->getBody(),
-			'owner'   => $object->getUser(),
-			'created' => $object->getCreated()->getTimestamp(),
-			'updated' => $object->getUpdated()->getTimestamp(),
-			'images'  => new \ZF\Hal\Collection($object->getImages()),
-			'hints'   => new \ZF\Hal\Collection($object->getHints()),
+			'id' 	  	  => $object->getId(),
+			'level'   	  => $object->getLevel(),
+			'body' 	  	  => $object->getBody(),
+			'owner'   	  => $object->getUser(),
+			'created' 	  => $object->getCreated()->getTimestamp(),
+			'updated' 	  => $object->getUpdated()->getTimestamp(),
+			'images'  	  => new \ZF\Hal\Collection($object->getImages()),
+			'operations'  => new \ZF\Hal\Collection($object->getOperations()),
+			'hints'   	  => new \ZF\Hal\Collection($object->getHints()),
 		];
     }
 }
