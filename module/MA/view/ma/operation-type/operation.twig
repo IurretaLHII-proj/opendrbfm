@@ -1,9 +1,0 @@
-{% extends 'layout/layout.twig' %}
-
-{% block body %}
-	<div class="col-md-12">
-		<h1>{{ entity }}</h1>
-
-		{{ partial('partial/form/operation', {'form': form, 'redirect': redirect}) }}
-	</div>
-{% endblock body %}

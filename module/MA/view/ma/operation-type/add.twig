@@ -1,9 +1,9 @@
-{% extends 'layout/layout.twig' %}
+{% extends 'layout/base-layout.twig' %}
 
-{% block body %}
+{% block content %}
 	<div class="col-md-12">
 		<h1>{{ translate("New operation type") }}</h1>
 
 		{{ partial('partial/form/operation-type', {'form': form, 'redirect': redirect}) }}
 	</div>
-{% endblock body %}
+{% endblock content %}

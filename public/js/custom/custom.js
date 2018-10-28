@@ -300,12 +300,14 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 		console.log($scope.entity, $scope.values);
     }
 
-	$scope.current = function(id) {
+	$scope.current = function(id, block) {
+		if ($scope.blockCurrent) return;
 		angular.forEach($scope.values.stages, function(stage) {
 			if (stage.id == id){
 			   	$scope.values.current = stage;
 			}
 		});
+		$scope.blockCurrent = block;
 	}
 
     $scope.addStage = function(parentStage) {

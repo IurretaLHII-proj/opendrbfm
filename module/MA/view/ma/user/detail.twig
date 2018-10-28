@@ -1,6 +1,6 @@
-{% extends 'layout/layout.twig' %}
+{% extends 'layout/base-layout.twig' %}
 
-{% block body %}
+{% block content %}
 	<div class="col-md-12" ng-controller="DetailCtrl">
 		<h1>{{ entity.name }}</h1>
 	</div>
@@ -29,4 +29,4 @@
 			<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 		</div>
 	</div>
-{% endblock body %}
+{% endblock content %}
