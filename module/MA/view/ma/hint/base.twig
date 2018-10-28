@@ -1,32 +1,36 @@
-{# extends 'ma/process/base.twig' #}
-{% extends 'layout/layout.twig' %}
+{% extends 'ma/process/base.twig' %}
 
 {# block template #}
-{% block body %}
-	<div class="col-md-2 d-none d-lg-block bg-light sidebar" style="">
-		<div class="sidebar-sticky">
-			{{ navigation('navigation').menu()
-				.setUlClass('nav flex-column')
-				.setMinDepth(3).setMaxDepth(null)
-				.setOnlyActiveBranch(false)
-				.setRenderInvisible(true) | raw }}
+{% block base %}
+
+	{{ parent() }}
+
+	<div class="row" style="border-top: 1px solid #DDD;" ng-init="current({{entity.stage.id}}, true)">
+		
+		<div class="col-md-12 mr-sm-auto col-lg-10" ng-init="tab = 'x'">
+			<h4 class="my-4">Error: {{ entity.text }}</h4>
+			<a class="" href="{{ url('process/detail', {'id':entity.process.id}, {'query': {'stage': entity.stage.id }}) }}"><i class="fa fa-angle-left"></i> Stage {{ entity.stage.level }}</a>
+			<div>{{ entity.description | raw }}</div>
+			<div class="my-2">{% block main %}{% endblock main %}</div>
 		</div>
-	</div>
-	
-	<div class="col-md-12 ml-sm-auto col-lg-10" ng-controller="DetailCtrl" ng-init="tab = 'x'">
-		<h2>{{ entity.process.title }}</h2>
-		<div ng-bind-html="entity.process.body"></div>
-		<p>{{ entity.text }}</p>
-		<a class="" href="{{ url('process/detail', {'id':entity.process.id}, {'query': {'stage': entity.stage.id }}) }}">return</a>
-		<hr>
-		{% block content %}{% endblock content %}
+
+		<div class="col-md-2 d-none d-lg-block bg-light sidebar" style="">
+			<div class="sidebar-sticky mt-0 pt-0">
+				{{ navigation('navigation').menu()
+					.setUlClass('nav flex-column')
+					.setMinDepth(3).setMaxDepth(null)
+					.setOnlyActiveBranch(false)
+					.setRenderInvisible(true) | raw }}
+			</div>
+		</div>
+
 	</div>
 
-{% endblock body %}
+{% endblock base %}
 {# endblock template #}
 
 {% block style %}
-	{[ parent() ]}
+	{{ parent() }}
 
 	<style>
 		ul.hints {
@@ -48,7 +52,6 @@
 		.collection .flex-column {
 		}
 		.eye {
-			padding: 1rem 2rem;
 		}
 		.eye-y .parents .flex-column {
 			border-bottom: 1px solid #DDD;

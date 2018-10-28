@@ -39,13 +39,15 @@ class StageForm extends Form implements InputFilterProviderInterface
         ]);
 
         $this->add([
-             'type' => 'ObjectMultiCheckbox',
+             'type' => 'ObjectSelect',
              'name' => 'operations',
              'attributes' => [ 
-                 'class' => '',
+                 'class' => 'form-control',
+				 'multiple' => true,
              ],
              'options' => [
                  'label' => 'Operations',
+				 'empty_option' => '-- Select --',
 				 'target_class' => 'MA\Entity\Operation',
              ],
         ]);

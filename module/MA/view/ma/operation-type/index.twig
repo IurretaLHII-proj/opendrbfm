@@ -1,135 +1,140 @@
-{% extends 'layout/layout.twig' %}
+{% extends 'layout/base-layout.twig' %}
 
-{% block body %}
-	<div class="col-md-12"
-		ng-controller="OperationsCtrl"
-		ng-init="init({{ json(hal().renderCollection(collectionHal)) | escape }})"
-	>
-	<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
-		<div class="collapse py-4" id="collapseForm">
-			{{ partial('partial/form/operation-type', {'form': form}) }}
-		</div>
-
-		<h1>{{ translate("Operation types") }}</h1>
-
-		<div ng-repeat="(index, item) in values" 
-			class="d-flex flex-column p-2 issue-item"
-			ng-class="{first: $first, last: $last}"
-			ng-mouseover="item.hover = true;"
-			ng-mouseleave="item.hover = false;"
+{% block content %}
+	<div class="row">
+		<div class="col-md-12"
+			ng-controller="OperationsCtrl"
+			ng-init="init({{ json(hal().renderCollection(collectionHal)) | escape }})"
 		>
-			<div class="d-flex pb-1">
-				<div class="mr-auto">
-					<span>{[ item._embedded.name ]}</span>
-					<a href="" ng-click="item.editor = true"><i class="fa fa-pencil"></i></a>
-					<a href="" 
-						ng-confirm-click
-						confirmed-click="deleteType(item, index)"
-					>
-						<i class="fa fa-trash"></i>
-					</a>
-				</div>
+			<div class="btn-group mt-2" role="group">
+				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
 			</div>
-			<div>
-				<p class="small" ng-bind-html="item._embedded.description"></p>
-				<form ng-if="item.editor">
-					<div class="form-group">
-						<a href="" class="btn btn-sm btn-default"
-							ng-click="closeType(item, index)"
-						>
-							<span class="fa fa-close"></span>
-						</a>
-						<button class="btn btn-sm btn-success"
-							ng-click="submitType(item, index)"
-						>
-							<span class="fa fa-check"></span>
-						</button>
-					</div>
-					<div class="form-group">
-						<label>Name</label>
-						<input type="text"
-						  	id="inputText" 
-							class="form-control" 
-							ng-class="{'is-invalid': item.errors.text}"
-							ng-model="item.text"/>
-						<div ng-if="item.errors.text"
-							ng-repeat="(key, text) in item.errors.text"
-							class="invalid-feedback">{[key]}. {[text]}</div>
-					</div>
-					<div class="form-group">
-						<label>Description</label>
-						<text-angular 
-						ng-model="item.description"
-						ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-						ta-text-editor-class="form-height form-control"
-						ng-class="{'is-invalid': item.errors.description}"
-						>
-						</text-angular>
+			<div class="collapse my-2" id="collapseForm">
+				{{ partial('partial/form/operation-type', {'form': form}) }}
+			</div>
 
-						<div ng-if="item.errors.description"
-							ng-repeat="(key, text) in item.errors.description"
-							class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
-					</div>
-				</form>
-			</div>
-			<ul>
-				<li ng-repeat="(i, op) in item.operations">
-					<div ng-if="!op.editor">
-						<span>{[ op._embedded.text ]}</span>
-						<a href="" ng-click="op.editor = true"><i class="fa fa-pencil"></i></a>
+			<hr class="my-2">
+
+			<h1>{{ translate("Operation types") }}</h1>
+
+			<div ng-repeat="(index, item) in values" 
+				class="d-flex flex-column p-2 issue-item"
+				ng-class="{first: $first, last: $last}"
+				ng-mouseover="item.hover = true;"
+				ng-mouseleave="item.hover = false;"
+			>
+				<div class="d-flex pb-1">
+					<div class="mr-auto">
+						<span>{[ item._embedded.name ]}</span>
+						<a href="" ng-click="item.editor = true"><i class="fa fa-pencil"></i></a>
 						<a href="" 
 							ng-confirm-click
-							confirmed-click="deleteOp(item, op, i)"
+							confirmed-click="deleteType(item, index)"
 						>
 							<i class="fa fa-trash"></i>
 						</a>
-						<p ng-if="op._embedded.description" class="small" ng-bind-html="op.description"></p>
 					</div>
-					<form ng-if="op.editor">
+				</div>
+				<div>
+					<p class="small" ng-bind-html="item._embedded.description"></p>
+					<form ng-if="item.editor">
 						<div class="form-group">
-								<a href="" class="btn btn-sm btn-default"
-									ng-click="closeOp(item, op, i)"
-								>
-									<span class="fa fa-close"></span>
-								</a>
-								<button class="btn btn-sm btn-success"
-									ng-click="submitOp(item, op, i)"
-								>
-									<span class="fa fa-check"></span>
-								</button>
+							<a href="" class="btn btn-sm btn-default"
+								ng-click="closeType(item, index)"
+							>
+								<span class="fa fa-close"></span>
+							</a>
+							<button class="btn btn-sm btn-success"
+								ng-click="submitType(item, index)"
+							>
+								<span class="fa fa-check"></span>
+							</button>
 						</div>
 						<div class="form-group">
 							<label>Name</label>
 							<input type="text"
 							  	id="inputText" 
 								class="form-control" 
-								ng-class="{'is-invalid': op.errors.text}"
-								ng-model="op.text"/>
-							<div ng-if="op.errors.text"
-								ng-repeat="(key, text) in hint.errors.text"
+								ng-class="{'is-invalid': item.errors.text}"
+								ng-model="item.text"/>
+							<div ng-if="item.errors.text"
+								ng-repeat="(key, text) in item.errors.text"
 								class="invalid-feedback">{[key]}. {[text]}</div>
 						</div>
 						<div class="form-group">
-							<label for="inputParents">Description</label>
+							<label>Description</label>
 							<text-angular 
-							ng-model="op.description"
+							ng-model="item.description"
 							ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
 							ta-text-editor-class="form-height form-control"
-							ng-class="{'is-invalid': op.errors.description}"
+							ng-class="{'is-invalid': item.errors.description}"
 							>
 							</text-angular>
 
-							<div ng-if="op.errors.description"
-								ng-repeat="(key, text) in op.errors.description"
+							<div ng-if="item.errors.description"
+								ng-repeat="(key, text) in item.errors.description"
 								class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
 						</div>
 					</form>
-				</li>
-				<li ng-if="!item.operations.length || item.operations[item.operations.length-1]._embedded">
-					<a href="" ng-click="addOp(item)"><i class="fa fa-plus"></i></a>
-				</li>
-			</ul>
-		</div>
+				</div>
+				<ul>
+					<li ng-repeat="(i, op) in item.operations">
+						<div ng-if="!op.editor">
+							<span>{[ op._embedded.text ]}</span>
+							<a href="" ng-click="op.editor = true"><i class="fa fa-pencil"></i></a>
+							<a href="" 
+								ng-confirm-click
+								confirmed-click="deleteOp(item, op, i)"
+							>
+								<i class="fa fa-trash"></i>
+							</a>
+							<p ng-if="op._embedded.description" class="small" ng-bind-html="op.description"></p>
+						</div>
+						<form ng-if="op.editor">
+							<div class="form-group">
+									<a href="" class="btn btn-sm btn-default"
+										ng-click="closeOp(item, op, i)"
+									>
+										<span class="fa fa-close"></span>
+									</a>
+									<button class="btn btn-sm btn-success"
+										ng-click="submitOp(item, op, i)"
+									>
+										<span class="fa fa-check"></span>
+									</button>
+							</div>
+							<div class="form-group">
+								<label>Name</label>
+								<input type="text"
+								  	id="inputText" 
+									class="form-control" 
+									ng-class="{'is-invalid': op.errors.text}"
+									ng-model="op.text"/>
+								<div ng-if="op.errors.text"
+									ng-repeat="(key, text) in hint.errors.text"
+									class="invalid-feedback">{[key]}. {[text]}</div>
+							</div>
+							<div class="form-group">
+								<label for="inputParents">Description</label>
+								<text-angular 
+								ng-model="op.description"
+								ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+								ta-text-editor-class="form-height form-control"
+								ng-class="{'is-invalid': op.errors.description}"
+								>
+								</text-angular>
 
+								<div ng-if="op.errors.description"
+									ng-repeat="(key, text) in op.errors.description"
+									class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+							</div>
+						</form>
+					</li>
+					<li ng-if="!item.operations.length || item.operations[item.operations.length-1]._embedded">
+						<a href="" ng-click="addOp(item)"><i class="fa fa-plus"></i></a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
-{% endblock body %}
+{% endblock content %}

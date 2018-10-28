@@ -53,13 +53,15 @@ class HintForm extends Form implements InputFilterProviderInterface
         ], ['priority' => -9]);
 
         $this->add([
-             'type' => 'ObjectMultiCheckbox',
+             'type' => 'ObjectSelect',
              'name' => 'parents',
              'attributes' => [ 
-                 'class' => '',
+                 'class' => 'form-control',
+				 'multiple' => true,
              ],
              'options' => [
                  'label' => 'Hint parents',
+				 'empty_option' => '-- Select --',
 				 'target_class' => 'MA\Entity\Hint',
              ],
         ]);
