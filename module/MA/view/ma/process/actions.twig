@@ -1,7 +1,6 @@
-{% extends 'layout/base-layout.twig' %}
+{% extends 'ma/process/base.twig' %}
 
-{# block template #}
-{% block content %}
+{% block base %}
 
 	<div class="col-md-12" 
 		ng-cloak
@@ -9,7 +8,7 @@
 		ng-init="init({{ json(hal().renderCollection(actionsHal)) | escape }})"
 	>
 		
-		<h2 class="mr-auto">{{ entity.title }} <small>| actions</small></h2>
+		<h4>Actions</h4>
 
 		<div ng-repeat="item in collection._embedded.items" 
 			class="d-flex flex-column py-2 action-item"
@@ -30,4 +29,4 @@
 	</div>
 
 
-{% endblock content %}
+{% endblock base %}

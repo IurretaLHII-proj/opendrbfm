@@ -92,8 +92,9 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 			->get(\MA\Form\StageForm::class);
 
 		$e->setProcess($this->getEntity());
-
+		
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		//$form->get('operations')->setAllowRemove(false);
         $form->setHydrator(new DoctrineHydrator($em));
 		$form->bind($e);
 

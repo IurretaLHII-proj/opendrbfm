@@ -87,6 +87,39 @@ App.service('operationApi', ['$resource', function($res) {
 	}
 }]);
 
+App.controller('MainCtrl', function($scope, $timeout) {
+
+	$scope.closeError = function(err) {
+		var i = $scope.messages.errors.indexOf(err);
+		$scope.messages.errors.splice(i, 1);
+	}
+	$scope.addError = function(err) {
+		$scope.messages.errors.push(err);
+		$timeout(function() {
+			$scope.closeError(err);
+		}
+		, 1500);
+	}
+	$scope.closeSuccess = function(succ) {
+		var i = $scope.messages.success.indexOf(succ);
+		$scope.messages.success.splice(i, 1);
+	}
+	$scope.addSuccess = function(succ) {
+		$scope.messages.success.push(succ);
+		$timeout(function() {
+			$scope.closeSuccess(succ);
+		}
+		, 1500);
+	}
+
+	$scope.messages = {
+		success: [],
+		errors: [],
+		warnings: [],
+	};
+
+});
+
 App.controller('OperationsCtrl', function($scope, $resource) {
 	$scope.collection = null;
 
@@ -117,11 +150,11 @@ App.controller('OperationsCtrl', function($scope, $resource) {
 				type.editor = false;
 				// ?¿ type._embedded._embedded.operations[i] = data;
 				type._embedded = data;
-				//$scope.addSuccess("Saved succesfully"); TODO
+				$scope.addSuccess("Saved succesfully")
 				console.log($scope.collection, $scope.values, $scope.messages);
 			},
 			function (err) {
-				//$scope.addError(err.data.title); TODO
+				$scope.addError(err.data.title);
 				type.errors = err.data.errors;
 			}	
 		);
@@ -131,7 +164,7 @@ App.controller('OperationsCtrl', function($scope, $resource) {
 		$resource(type._embedded._links.delete.href).delete().$promise.then(
 			function (data) {
         		$scope.values.splice(i, 1);
-				//$scope.addSuccess("Succesfully deleted"); TODO
+				$scope.addSuccess("Succesfully deleted");
 				console.log($scope.collection, $scope.values, $scope.messages);
 			},
 			function (err) {
@@ -164,11 +197,11 @@ App.controller('OperationsCtrl', function($scope, $resource) {
 				op.editor = false;
 				type._embedded._embedded.operations[index] = data;
 				op._embedded = data;
-				//$scope.addSuccess("Saved succesfully"); TODO
+				$scope.addSuccess("Saved succesfully");
 				console.log($scope.collection, $scope.values, $scope.messages);
 			},
 			function (err) {
-				//$scope.addError(err.data.title); TODO
+				$scope.addError(err.data.title);
 				op.errors = err.data.errors;
 			}	
 		);
@@ -259,8 +292,20 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 						angular.forEach(stage._embedded.hints, function(hint, i) {
 							stage.hints[i] = hint;
 							hint.parents = [];
+							hint.reasons = [];
+							hint.suggestions = [];
+							hint.influences = [];
 							angular.forEach (hint._embedded.parents, function(prt, p) {
 								hint.parents[p] = prt;
+							});
+							angular.forEach (hint._embedded.reasons, function(note, n) {
+								hint.reasons[n] = note;
+							});
+							angular.forEach (hint._embedded.suggestions, function(note, n) {
+								hint.suggestions[n] = note;
+							});
+							angular.forEach (hint._embedded.influences, function(note, n) {
+								hint.influences[n] = note;
 							});
 							delete hint._embedded;
 							//Save an reference of original entity to sync them
@@ -300,6 +345,9 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 		console.log($scope.entity, $scope.values);
     }
 
+	$scope.defaultOp   = {id:null, name:'--- Select one ---'};
+	$scope.defaultHint = {id:null, name:'--- Select one ---'};
+
 	$scope.current = function(id, block) {
 		if ($scope.blockCurrent) return;
 		angular.forEach($scope.values.stages, function(stage) {
@@ -314,7 +362,7 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 		var stage = {
 			hints:[],
 			images:[],
-			operations:[{}],
+			operations:[$scope.defaultOp],
 			_links: {
 				image: {href: '/process/stage/image/json'}
 			}
@@ -326,7 +374,12 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
     }
 
 	$scope.addHint = function(stage) {
-		var hint = {parents:[]};
+		var hint = {
+			parents:[], 
+			reasons:[],
+			suggestions:[],
+			influences:[],
+		};
 		hint.editor = true;
 		stage.hints.push(hint);
 	}
@@ -363,7 +416,7 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 
 	//ADD PROCESS
 	$scope.submitProcess = function() {
-		var raw = angular.copy($scope.entity);
+		var raw = angular.copy($scope.values);
 		$resource($scope.entity._links.edit.href).save(raw).$promise.then(
 			function (data) {
 				$scope.entity.errors = null;
@@ -392,11 +445,6 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 		}
 		var raw = angular.copy(stage);
 		if (raw.parent) raw.parent = raw.parent.id;
-		if (raw.operations) {
-			var ops = [];
-			angular.forEach(raw.operations, function(item, i) { ops[i] = item.id});
-			raw.operations = ops;
-		}
 		resource.save(raw).$promise.then(
 			function (data) {
 				stage.errors = null;
@@ -424,11 +472,6 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 			resource = $resource(stage._embedded._links.hint.href);
 		}
 		var raw = angular.copy(hint);
-		if (raw.parents) {
-			var parents = [];
-			angular.forEach(raw.parents, function(item) {parents.push(item.id)});
-			raw.parents = parents;
-		}
 		resource.save(raw).$promise.then(
 			function (data) {
 				hint.errors = null;
@@ -461,46 +504,32 @@ App.controller('DetailCtrl', function($scope, $resource, $timeout, operationApi)
 		);
 	}
 
-	$scope.getPrevs = function(i) {
+	$scope.getOperations = function(model, currents) {
+		var options = [];
+		angular.forEach($scope.operations, function(op, key) {
+			if (model.id == op.id || currents.map(function(e) {return e.id}).indexOf(op.id) == -1) {
+				options.push(op);	
+			}
+		});
+		options.unshift($scope.defaultOp);
+		return options;
+	}
+
+	$scope.getPrevs = function(i, model, currents) {
+		console.log(currents, model);
 		var options = [];
 		angular.forEach($scope.values.stages, function(stage, key) {
 			if (key < i) {
 				angular.forEach(stage.hints, function(hint) {
-					if (hint._embedded) options.push(hint);	
+					if (hint._embedded && (hint.id == model.id || currents.map(function(e) {return e.id}).indexOf(hint.id) == -1)) {
+						options.push(hint);	
+					}
 				});	
 			}
 		});
+		options.unshift($scope.defaultHint);
 		return options;
 	}
-
-	$scope.closeError = function(err) {
-		var i = $scope.messages.errors.indexOf(err);
-		$scope.messages.errors.splice(i, 1);
-	}
-	$scope.addError = function(err) {
-		$scope.messages.errors.push(err);
-		$timeout(function() {
-			$scope.closeError(err);
-		}
-		, 1500);
-	}
-	$scope.closeSuccess = function(succ) {
-		var i = $scope.messages.success.indexOf(succ);
-		$scope.messages.success.splice(i, 1);
-	}
-	$scope.addSuccess = function(succ) {
-		$scope.messages.success.push(succ);
-		$timeout(function() {
-			$scope.closeSuccess(succ);
-		}
-		, 1500);
-	}
-
-	$scope.messages = {
-		success: [],
-		errors: [],
-		warnings: [],
-	};
 
 	//Update Stage image
     $scope.uploadFile = function(ev, stage, index) {

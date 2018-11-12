@@ -52,19 +52,81 @@ class HintForm extends Form implements InputFilterProviderInterface
              ],
         ], ['priority' => -9]);
 
-        $this->add([
-             'type' => 'ObjectSelect',
-             'name' => 'parents',
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'multiple' => true,
-             ],
-             'options' => [
-                 'label' => 'Hint parents',
-				 'empty_option' => '-- Select --',
-				 'target_class' => 'MA\Entity\Hint',
-             ],
-        ]);
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'parents',
+                'attributes' => [ 
+                    'class' => 'parents'
+				],
+				'options' => [
+					'label' => 'Parents',
+					'count' => 0,
+					//'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\HintSelectorFieldset::class,
+						'object' => \MA\Entity\Hint::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'reasons',
+                'attributes' => [ 
+                    'class' => 'reasons'
+				],
+				'options' => [
+					'label' => 'Reasons',
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintReason::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'suggestions',
+                'attributes' => [ 
+                    'class' => 'suggestions'
+				],
+				'options' => [
+					'label' => 'Suggestions',
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintSuggestion::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'influences',
+                'attributes' => [ 
+                    'class' => 'influences'
+				],
+				'options' => [
+					'label' => 'Influences',
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintInfluence::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
 
         $this->add([
                 'type' => 'Submit',
@@ -96,7 +158,7 @@ class HintForm extends Form implements InputFilterProviderInterface
 				'validators' => [
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 10, 'max' => 255],
+						'options' => ['min' => 3, 'max' => 255],
 					],
 				],
 			],
@@ -113,12 +175,9 @@ class HintForm extends Form implements InputFilterProviderInterface
 				'validators' => [
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 10, 'max' => 800],
+						'options' => ['min' => 3, 'max' => 800],
 					],
 				],
-			],
-			'parents' => [
-				'required' => false,
 			],
 		];
 	}

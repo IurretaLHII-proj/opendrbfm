@@ -111,6 +111,39 @@ class Hint implements
 	protected $parents;
 
 	/**
+	 * @var Note\HintReason[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintReason",
+	 *	mappedBy	 = "hint",
+	 *	cascade 	 = {"persist"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $reasons;
+
+	/**
+	 * @var Note\HintSuggestion[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintSuggestion",
+	 *	mappedBy	 = "hint",
+	 *	cascade 	 = {"persist"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $suggestions;
+
+	/**
+	 * @var Note\HintInfluence[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintInfluence",
+	 *	mappedBy	 = "hint",
+	 *	cascade 	 = {"persist"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $influences;
+
+	/**
 	 * @var int 
 	 * @ORM\Column(type="datetime")
 	 */
@@ -127,10 +160,13 @@ class Hint implements
 	 */
 	public function __construct()
 	{
-		$this->created  = new DateTime;
-		$this->updated  = new DateTime;
-		$this->parents  = new ArrayCollection;
-		$this->children = new ArrayCollection;
+		$this->created     = new DateTime;
+		$this->updated     = new DateTime;
+		$this->parents     = new ArrayCollection;
+		$this->children    = new ArrayCollection;
+		$this->reasons     = new ArrayCollection;
+		$this->suggestions = new ArrayCollection;
+		$this->influences  = new ArrayCollection;
 	}
     
     /**
@@ -231,6 +267,17 @@ class Hint implements
 	{
 		return $this->getStage()->getProcess();
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return sprintf("Stage %d. %s", 
+			$this->getStage()->getLevel(),
+			$this->getText()
+		);
+	}
     
     /**
      * Get user.
@@ -318,7 +365,6 @@ class Hint implements
 		if ($this->getParents()->contains($hint) !== false) {
 			return true;	
 		}
-		//echo '<pre>'; var_dump($this->getText() .' != '.$hint->getText()); echo '</pre>';
 
 		foreach ($this->getParents() as $parent) {
 			if ($parent->hasParent($hint)) return true;
@@ -417,6 +463,240 @@ class Hint implements
     public function setDescription($descr = null)
     {
         $this->description = $descr ? (string) $descr : $descr;
+        return $this;
+    }
+    
+    /**
+     * Get reasons.
+     *
+     * @return Note\HintReason[].
+     */
+    public function getReasons()
+    {
+        return $this->reasons;
+    }
+    
+    /**
+     * Set reasons.
+     *
+     * @param Note\HintReason[] reasons the value to set.
+     * @return Hint.
+     */
+    public function setReasons($reasons)
+    {
+        $this->reasons = $reasons;
+        return $this;
+    }
+    
+    /**
+     * Add reason.
+     *
+     * @param Note\HintReason reason the value to set.
+     * @return Stage.
+     */
+    public function addReason(Note\HintReason $reason)
+    {
+		$reason->setHint($this);
+		$this->getReasons()->add($reason);
+        return $this;
+    }
+    
+    /**
+     * Add reasons.
+     *
+     * @param Note\HintReason[] reasons the value to set.
+     * @return Stage.
+     */
+    public function addReasons($reasons)
+    {
+		foreach ($reasons as $reason) {
+			$this->addReason($reason);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add reason.
+     *
+     * @param Note\HintReason reason the value to set.
+     * @return Stage.
+     */
+    public function removeReason(Note\HintReason $reason)
+    {
+		$reason->setHint();
+		$this->getReasons()->removeElement($reason);
+        return $this;
+    }
+    
+    /**
+     * Add reasons.
+     *
+     * @param Note\HintReason[] reasons the value to set.
+     * @return Stage.
+     */
+    public function removeReasons($reasons)
+    {
+		foreach ($reasons as $reason) {
+			$this->removeReason($reason);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Get suggestions.
+     *
+     * @return Note\HintSuggestion[].
+     */
+    public function getSuggestions()
+    {
+        return $this->suggestions;
+    }
+    
+    /**
+     * Set suggestions.
+     *
+     * @param Note\HintSuggestion[] suggestions the value to set.
+     * @return Hint.
+     */
+    public function setSuggestions($suggestions)
+    {
+        $this->suggestions = $suggestions;
+        return $this;
+    }
+    
+    /**
+     * Add suggestion.
+     *
+     * @param Note\HintSuggestion suggestion the value to set.
+     * @return Stage.
+     */
+    public function addSuggestion(Note\HintSuggestion $suggestion)
+    {
+		$suggestion->setHint($this);
+		$this->getSuggestions()->add($suggestion);
+        return $this;
+    }
+    
+    /**
+     * Add suggestions.
+     *
+     * @param Note\HintSuggestion[] suggestions the value to set.
+     * @return Stage.
+     */
+    public function addSuggestions($suggestions)
+    {
+		foreach ($suggestions as $suggestion) {
+			$this->addSuggestion($suggestion);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add suggestion.
+     *
+     * @param Note\HintSuggestion suggestion the value to set.
+     * @return Stage.
+     */
+    public function removeSuggestion(Note\HintSuggestion $suggestion)
+    {
+		$suggestion->setHint();
+		$this->getSuggestions()->removeElement($suggestion);
+        return $this;
+    }
+    
+    /**
+     * Add suggestions.
+     *
+     * @param Note\HintSuggestion[] suggestions the value to set.
+     * @return Stage.
+     */
+    public function removeSuggestions($suggestions)
+    {
+		foreach ($suggestions as $suggestion) {
+			$this->removeSuggestion($suggestion);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Get influences.
+     *
+     * @return Note\HintInfluence[].
+     */
+    public function getInfluences()
+    {
+        return $this->influences;
+    }
+    
+    /**
+     * Set influences.
+     *
+     * @param Note\HintInfluence[] influences the value to set.
+     * @return Hint.
+     */
+    public function setInfluences($influences)
+    {
+        $this->influences = $influences;
+        return $this;
+    }
+    
+    /**
+     * Add influence.
+     *
+     * @param Note\HintInfluence influence the value to set.
+     * @return Stage.
+     */
+    public function addInfluence(Note\HintInfluence $influence)
+    {
+		$influence->setHint($this);
+		$this->getInfluences()->add($influence);
+        return $this;
+    }
+    
+    /**
+     * Add influences.
+     *
+     * @param Note\HintInfluence[] influences the value to set.
+     * @return Stage.
+     */
+    public function addInfluences($influences)
+    {
+		foreach ($influences as $influence) {
+			$this->addInfluence($influence);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add influence.
+     *
+     * @param Note\HintInfluence influence the value to set.
+     * @return Stage.
+     */
+    public function removeInfluence(Note\HintInfluence $influence)
+    {
+		$influence->setHint();
+		$this->getInfluences()->removeElement($influence);
+        return $this;
+    }
+    
+    /**
+     * Add influences.
+     *
+     * @param Note\HintInfluence[] influences the value to set.
+     * @return Stage.
+     */
+    public function removeInfluences($influences)
+    {
+		foreach ($influences as $influence) {
+			$this->removeInfluence($influence);
+		}
+
         return $this;
     }
 

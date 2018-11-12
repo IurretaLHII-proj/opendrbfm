@@ -28,7 +28,7 @@ class IndexController extends AbstractActionController
 		$collection = $em->getRepository($resource)->findBy([],['created' => 'DESC']);
 
 		$paginator = new Paginator(new ArrayAdapter($collection));
-		$paginator->setItemCountPerPage((int) $this->params()->fromQuery('limit', 5));
+		$paginator->setItemCountPerPage((int) $this->params()->fromQuery('limit', 10));
 		$paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
 
 		return new ViewModel([

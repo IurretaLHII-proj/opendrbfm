@@ -38,19 +38,24 @@ class StageForm extends Form implements InputFilterProviderInterface
              ],
         ]);
 
-        $this->add([
-             'type' => 'ObjectSelect',
-             'name' => 'operations',
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'multiple' => true,
-             ],
-             'options' => [
-                 'label' => 'Operations',
-				 'empty_option' => '-- Select --',
-				 'target_class' => 'MA\Entity\Operation',
-             ],
-        ]);
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'operations',
+                'attributes' => [ 
+                    'class' => 'operations'
+				],
+				'options' => [
+					'label' => 'Operations',
+					'count' => 1,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\OperationSelectorFieldset::class,
+						'object' => \MA\Entity\Operation::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
 
 		$this->add([
                 'type' => 'Collection',
@@ -92,7 +97,7 @@ class StageForm extends Form implements InputFilterProviderInterface
 	{
 		return [
 			'body' => [
-				//'required' => false,
+				'required' => false,
 				'filters' => [
 					[
 						'name' => \Zend\Filter\StringTrim::class,
@@ -104,7 +109,7 @@ class StageForm extends Form implements InputFilterProviderInterface
 				'validators' => [
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 10, 'max' => 800],
+						'options' => ['min' => 3, 'max' => 800],
 					],
 				],
 			],

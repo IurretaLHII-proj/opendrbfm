@@ -35,7 +35,7 @@ return [
 			'max_depth' => 2,
 		],
 		'MA\Entity\Operation' => [
-			'route_name' => 'process/operation/detail/json',
+			'route_name' => 'process/operation/detail',
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
@@ -48,6 +48,27 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
 			'hydrator' => Hydrator\HintHydrator::class,
+		],
+		'MA\Entity\Note\HintReason' => [
+			'route_name' => 'process/hint/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Note\HintSuggestion' => [
+			'route_name' => 'process/hint/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Note\HintInfluence' => [
+			'route_name' => 'process/hint/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
 		],
 		'MA\Entity\Image\IStage' => [
 			'route_name' => 'image/detail',
