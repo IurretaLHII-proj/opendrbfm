@@ -41,7 +41,7 @@
         {% block script %}{% endblock script %}
     </head>
 
-    <body ng-app="myApp">
+    <body ng-app="myApp" ng-controller="MainCtrl">
 		<!-- Just an image -->
 		<nav class="navbar flex-sm-nowrap navbar-light bg-light sticky-top p-0">
 			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" style="background:#EEE;">
@@ -69,11 +69,20 @@
 
 		<div class="collapse navbar-collapse d-md-none" id="navbarSupportedContent" style="background: #eee; border-bottom: 1px solid #ccc; padding: 12px;">
 			{# setAddClassToListItem(true) //Passes li class to a tag #}
-			{{ navigation('navigation').menu().setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(null).setRenderInvisible(true) | raw }}
+			{{ navigation('navigation').menu().setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(null).setRenderInvisible(false) | raw }}
 		</div>
 
 		<div class="container-fluid">
+
+			<div ng-if="messages.success.length || messages.errors.length" class="messages">
+				<div class="container">
+					<div ng-repeat="message in messages.errors track by $index" class="alert alert-danger" role="alert">{[ message ]}<a href="" ng-click="closeError(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+					<div ng-repeat="message in messages.success track by $index" class="alert alert-success" role="alert">{[ message ]}<a href="" ng-click="closeSuccess(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+				</div>
+			</div>
+
 			{% block body %}{{ content|raw }}{% endblock body %}
+
         </div> <!-- /container -->
     	<footer class="row" style="padding: 20px 0;">
 			<hr>

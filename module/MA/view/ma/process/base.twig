@@ -8,14 +8,6 @@
 		ng-controller="DetailCtrl"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 		>
-
-		<div ng-if="messages.success.length || messages.errors.length" class="messages">
-			<div class="container">
-				<div ng-repeat="message in messages.errors track by $index" class="alert alert-danger" role="alert">{[ message ]}<a href="" ng-click="closeError(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
-				<div ng-repeat="message in messages.success track by $index" class="alert alert-success" role="alert">{[ message ]}<a href="" ng-click="closeSuccess(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
-			</div>
-		</div>
-
 		<!--
 		{[ values ]}
 		-->
@@ -62,7 +54,7 @@
 								class="item list-inline-item"
 							>
 								<a href="" ng-click="current(stage.id)">
-									<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" width=85 height=85 />
+									<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail" style="max-height:80px;"/>
 								</a>
 							</div>
 						</div>
@@ -217,7 +209,8 @@
 		.hint-row .col {
 		}
 
-.pl-table  .row{ 
+.pl-table > .pl-thead > .row, 
+.pl-table > .pl-tbody > .row { 
     margin: 0; 
     padding: 5px 20px; 
     align-items: center; 

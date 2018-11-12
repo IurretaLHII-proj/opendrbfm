@@ -9,6 +9,7 @@ return [
 			[
 				'services' => [
 					Service\ActionService::class, 
+					Service\NoteService::class, 
 					Service\ProcessService::class, 
 					Service\StageService::class, 
 					Service\HintService::class, 
@@ -39,6 +40,13 @@ return [
 	],
 	Service\ImageService::class => [
 		'entities' => [Entity\Image\IStage::class],
+	],
+	Service\NoteService::class => [
+		'entities'  => [
+			Entity\Note\HintReason::class, 
+			Entity\Note\HintSuggestion::class, 
+			Entity\Note\HintInfluence::class, 
+		],
 	],
 	Service\ActionService::class => [
 		'entities'  => [

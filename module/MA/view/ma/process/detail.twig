@@ -2,6 +2,10 @@
 
 {% block base %}
 
+	<a href="" class="btn btn-sm btn-default">v1</a>
+	<a href="" class="btn btn-sm btn-primary">v2</a>
+	<a href="" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> version</a>
+
 	<ul class="nav nav-tabs stage-tabs mt-2" {% if stageId %}ng-init="current({{ stageId }})"{% endif %}>
 		<li ng-repeat="(i, stage) in values.stages" class="nav-link" ng-class="{active:stage==values.current, editor:stage.editor}"><a href="" ng-click="values.current = stage;">Stage <span ng-if="stage._embedded">{[ stage._embedded.level ]}</span><span ng-if="!stage._embedded">{[ values.stages.length ]}</span></a></li>
 		<li ng-if="values.stages[values.stages.length-1]._embedded" class="nav-link" style=""><a href="" class="btn-sm btn-default" ng-click="addStage(values.stages[values.stages.length-1]._embedded)"><span class="fa fa-plus"></span></a></li>
@@ -61,26 +65,25 @@
 						>
 						<div class="form-group col-md-11">
 							<select class="form-control"
-								ng-class="{'is-invalid': stage.errors.operations}"
+								ng-class="{'is-invalid': stage.errors.operations[_i]}"
 								ng-model="stage.operations[_i]"
-								ng-options="item as item.name for item in operations track by item.id"
+								ng-options="item as item.name for item in getOperations(stage.operations[_i], stage.operations) track by item.id"
 								>
 							</select>
 							<div ng-if="stage.errors.operations[_i]"
-								ng-repeat="(key, text) in stage.errors.operations[_i]"
+								ng-repeat="(key, text) in stage.errors.operations[_i].id"
 								class="invalid-feedback">{[key]}. {[text]}</div>
 						</div>
-						<div class="form-group col-md-1">
+						<div ng-if="_i" class="form-group col-md-1">
 							<a href="" class="btn-sm btn-default pull-right" 
 								ng-click="stage.operations.splice(_i, 1);">
 								<span class="fa fa-close"></span>
 							</a>
 						</div>
 					</div>
-					<div>
-						<!--<div ng-if="stage.errors.operations">{[stage.errors.operations]}</div>-->
+					<div ng-if="stage.operations[stage.operations.length-1].id">
 						<a href="" class="btn-sm btn-default" 
-						ng-click="stage.operations.push({})">
+						ng-click="stage.operations.push(defaultOp)">
 						<span class="fa fa-plus"></span></a>
 					</div>
 
@@ -164,14 +167,27 @@
 		>
 			<div class="pl-thead">
 				<div class="row">
-			    	<div class="col">Type</div>
-			    	<div class="col col-sm-12 col-md-1">Prior</div>
-			    	<div class="col col-sm-12 col-md-2">Prevs</div>
-			    	<div class="col col-sm-12 col-md-1">Text</div>
-			    	<div class="col col-sm-12 col-md-2">Reasons</div>
-			    	<div class="col col-sm-12 col-md-2">Influence</div>
-			    	<div class="col col-sm-12 col-md-2">Recommended</div>
-			    	<div class="col col-sm-12 col-md-1"></div>
+					<div class="col-sm-12 col-md-1">
+						<div class="row">
+			    			<div class="col col-sm-6">Type</div>
+							<div class="col col-sm-6">Prior</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-4">
+						<div class="row">
+			    			<div class="col-sm-6 col-md-6">Prevs</div>
+			    			<div class="col-sm-6 col-md-6">Text</div>
+							<!--<div class="col-sm-12 col-md-4">Description</div>-->
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-6">
+						<div class="row">
+			    			<div class="col col-sm-4">Reasons</div>
+			    			<div class="col col-sm-4">Influence</div>
+			    			<div class="col col-sm-4">Suggestions</div>
+			  			</div>
+			  		</div>
+			    	<div class="col-sm-12 col-md-1"></div>
 			  	</div>
 			</div>
 			<div class="pl-tbody"
@@ -181,25 +197,51 @@
 				<div class="row"
 					ng-if="!hint.editor"
 				>
-					<div class="col">x</div>
-					<div class="col col-sm-1 col-md-1">{[ hint.priority ]}</div>
+
+					<div class="col-sm-12 col-md-1">
+						<div class="row">
+							<div class="col col-sm-6">x</div>
+							<div class="col col-sm-6">{[ hint.priority ]}</div>
+						</div>
+					</div>
 		    		<!--<div class="col col-md-3" ng-if="values.stages[i-1]._embedded">-->
-		    		<div class="col col-sm-12 col-md-2">
-						<ul style="
-							padding-left: 20px;
-							list-style: square;
-							margin: 0;
-						">
-							<li ng-repeat="item in hint._embedded._embedded.parents">Stage {[ item.level]}. <a ng-href="{[ item._links.self.href ]}">{[ item.text ]}</a></li>
-						</ul>
+					<div class="col-sm-12 col-md-4">
+						<div class="row">
+		    				<div class="col col-sm-6 col-md-6">
+								<ul style="
+									padding-left: 20px;
+									list-style: square;
+									margin: 0;
+								">
+									<li ng-repeat="item in hint._embedded._embedded.parents">Stage {[ item.level]}. <a ng-href="{[ item._links.self.href ]}">{[ item.text ]}</a></li>
+								</ul>
+							</div>
+							<div class="col col-sm-6 col-md-6">
+								<a ng-href="{[ hint._embedded._links.self.href ]}">{[ hint.text ]}</a>
+							</div>
+							<!--<div class="col col-sm-6 col-md-4">{[ hint.description ]}</div>-->
+						</div>
 					</div>
-					<div class="col col-sm-12 col-md-1">
-						<a ng-href="{[ hint._embedded._links.self.href ]}">{[ hint.text ]}</a>
+					<div class="col-sm-12 col-md-6">
+						<div class="row">
+							<div class="col col-sm-4">
+								<ul ng-if="hint.reasons.length">
+									<li ng-repeat="note in hint._embedded._embedded.reasons">{[note.text]}</li>
+								</ul>
+							</div>
+							<div class="col col-sm-4">
+								<ul ng-if="hint.suggestions.length">
+									<li ng-repeat="note in hint._embedded._embedded.suggestions">{[note.text]}</li>
+								</ul>
+							</div>
+							<div class="col col-sm-4">
+								<ul ng-if="hint.influences.length">
+									<li ng-repeat="note in hint._embedded._embedded.influences">{[note.text]}</li>
+								</ul>
+							</div>
+						</div>
 					</div>
-		    		<div class="col col-sm-12 col-md-2">{[ hint.description ]}</div>
-		    		<div class="col col-sm-12 col-md-2">{[ hint.description ]}</div>
-		    		<div class="col col-sm-12 col-md-2">{[ hint.description ]}</div>
-		    		<div class="col col-sm-12 col-md-1">
+		    		<div class="col-sm-12 col-md-1">
 						<div class="btn-group">
 							<a href="" ng-click="hint.editor=true;" class="btn-sm btn-default">
 								<span class="fa fa-pencil"></span>
@@ -214,6 +256,7 @@
 						</div>
 					</div>
 				</div>
+
 				<div ng-if="hint.editor" class="d-flex flex-column" style="
 					background:white; 
 					border: 1px solid lightgray;
@@ -274,11 +317,11 @@
 									<select class="form-control"
 										ng-class="{'is-invalid': hint.errors.parents[_i]}"
 										ng-model="hint.parents[_i]"
-										ng-options="item as 'Stage '+item.level+': '+item.text for item in getPrevs(i) track by item.id"
+										ng-options="item as item.name for item in getPrevs(i, hint.parents[_i], hint.parents) track by item.id"
 										>
 									</select>
 									<div ng-if="hint.errors.parents[_i]"
-										ng-repeat="(key, text) in hint.errors.parents[_i]"
+										ng-repeat="(key, text) in hint.errors.parents[_i].id"
 										class="invalid-feedback">{[key]}. {[text]}</div>
 								</div>
 								<div class="form-group col-md-1">
@@ -288,9 +331,9 @@
 									</a>
 								</div>
 							</div>
-							<div>
+							<div ng-if="!hint.parents.length || hint.parents[hint.parents.length-1].id">
 								<a href="" class="btn-sm btn-default" 
-								ng-click="hint.parents.push({})">
+								ng-click="hint.parents.push(defaultHint)">
 								<span class="fa fa-plus"></span></a>
 							</div>
 						</div>
@@ -316,6 +359,90 @@
 							<div ng-if="hint.errors.description"
 								ng-repeat="(key, text) in hint.errors.description"
 								class="invalid-feedback">{[key]}. {[text]}</div>
+						</div>
+						<div class="form-group">
+						  	<label for="inputReasons">Reasons</label>
+							<div class="form-row"
+								ng-repeat="(_i, note) in hint.reasons"
+								>
+								<div class="form-group col-md-11">
+									<textarea rows="3" 
+										ng-class="{'is-invalid': hint.errors.reasons[_i]}"
+										ng-model="hint.reasons[_i].text"
+										class="form-control">
+									</textarea>
+									<div ng-if="hint.errors.reasons[_i]"
+										ng-repeat="(key, text) in hint.errors.reasons[_i]"
+										class="invalid-feedback">{[key]}. {[text]}</div>
+								</div>
+								<div class="form-group col-md-1">
+									<a href="" class="btn-sm btn-default pull-right" 
+										ng-click="hint.reasons.splice(_i, 1);">
+										<span class="fa fa-close"></span>
+									</a>
+								</div>
+							</div>
+							<div>
+								<a href="" class="btn-sm btn-default" 
+								ng-click="hint.reasons.push({})">
+								<span class="fa fa-plus"></span></a>
+							</div>
+						</div>
+						<div class="form-group">
+						  	<label for="inputSuggestions">Suggestions</label>
+							<div class="form-row"
+								ng-repeat="(_i, note) in hint.suggestions"
+								>
+								<div class="form-group col-md-11">
+									<textarea rows="3" 
+										ng-class="{'is-invalid': hint.errors.suggestions[_i]}"
+										ng-model="hint.suggestions[_i].text"
+										class="form-control">
+									</textarea>
+									<div ng-if="hint.errors.suggestions[_i]"
+										ng-repeat="(key, text) in hint.errors.suggestions[_i]"
+										class="invalid-feedback">{[key]}. {[text]}</div>
+								</div>
+								<div class="form-group col-md-1">
+									<a href="" class="btn-sm btn-default pull-right" 
+										ng-click="hint.suggestions.splice(_i, 1);">
+										<span class="fa fa-close"></span>
+									</a>
+								</div>
+							</div>
+							<div>
+								<a href="" class="btn-sm btn-default" 
+								ng-click="hint.suggestions.push({})">
+								<span class="fa fa-plus"></span></a>
+							</div>
+						</div>
+						<div class="form-group">
+						  	<label for="inputInfluences">Influences</label>
+							<div class="form-row"
+								ng-repeat="(_i, note) in hint.influences"
+								>
+								<div class="form-group col-md-11">
+									<textarea rows="3" 
+										ng-class="{'is-invalid': hint.errors.influences[_i]}"
+										ng-model="hint.influences[_i].text"
+										class="form-control">
+									</textarea>
+									<div ng-if="hint.errors.influences[_i]"
+										ng-repeat="(key, text) in hint.errors.influences[_i]"
+										class="invalid-feedback">{[key]}. {[text]}</div>
+								</div>
+								<div class="form-group col-md-1">
+									<a href="" class="btn-sm btn-default pull-right" 
+										ng-click="hint.influences.splice(_i, 1);">
+										<span class="fa fa-close"></span>
+									</a>
+								</div>
+							</div>
+							<div>
+								<a href="" class="btn-sm btn-default" 
+								ng-click="hint.influences.push({})">
+								<span class="fa fa-plus"></span></a>
+							</div>
 						</div>
 					</form>
 				</div>

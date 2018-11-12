@@ -38,6 +38,7 @@ return [
 							'class' => 'nav-link',
 							'resource'	=> Entity\OperationType::class,
 							'privilege' => 'add',
+							'visible'	=> false,
 						],
 					],
 				],

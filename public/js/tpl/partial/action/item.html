@@ -22,6 +22,26 @@
 					<li ng-repeat="parent in values.insert">{[ parent.text ]}</li>
 				</ul>
 			</li>
+			<li ng-switch-when="operations">
+				<ul ng-if="values.delete">
+					Delete
+					<li ng-repeat="operation in values.delete">{[ operation.text ]}</li>
+				</ul>
+				<ul ng-if="values.insert">
+					Insert
+					<li ng-repeat="operation in values.insert">{[ operation.text ]}</li>
+				</ul>
+			</li>
+			<li ng-switch-when="reasons|suggestions|influences" ng-switch-when-separator="|">
+				<ul ng-if="values.delete">
+					Delete
+					<li ng-repeat="note in values.delete">{[ note.text ]}</li>
+				</ul>
+				<ul ng-if="values.insert">
+					Insert
+					<li ng-repeat="note in values.insert">{[ note.text ]}</li>
+				</ul>
+			</li>
 			<li ng-switch-default ng-repeat="value in values" ng-bind-html="value"></li>
 		</ul>
 	</li>
