@@ -18,13 +18,14 @@ class ProcessHydrator extends \Zend\Hydrator\ClassMethods
 	public function extract($object) 
 	{
 		return [
-			'id' 	  => $object->getId(),
-			'title'   => $object->getTitle(),
-			'body' 	  => $object->getBody(),
-			'owner'   => $object->getUser(),
-			'created' => $object->getCreated()->getTimestamp(),
-			'updated' => $object->getUpdated()->getTimestamp(),
-			'stages'  => new \ZF\Hal\Collection($object->getStages()),
+			'id' 	   => $object->getId(),
+			'title'    => $object->getTitle(),
+			'body' 	   => $object->getBody(),
+			'owner'    => $object->getUser(),
+			'created'  => $object->getCreated()->getTimestamp(),
+			'updated'  => $object->getUpdated()->getTimestamp(),
+			'versions' => new \ZF\Hal\Collection($object->getVersions()),
+			'stages'   => new \ZF\Hal\Collection($object->getStages()),
 		];
     }
 }

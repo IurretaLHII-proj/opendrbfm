@@ -47,6 +47,9 @@ return [
 	Controller\Js\OperationTypeController::class => [
 		'repository' => Entity\OperationType::class,
 	],
+	Controller\HintTypeController::class => [
+		'repository' => Entity\HintType::class,
+	],
 	Controller\HintController::class => [
 		'repository' => Entity\Hint::class,
 		'parent' => [

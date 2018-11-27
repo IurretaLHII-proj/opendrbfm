@@ -1,0 +1,25 @@
+<div style="float:left;">
+	<div class="text-center">
+		<span>Stage</span> {[stage.level]}
+	</div>
+	<div ng-if="stage._embedded._embedded.images.length" class="process-img-list text-center" >
+		<div ng-repeat="img in stage._embedded._embedded.images" 
+			class="item list-inline-item"
+		>
+			<a href="" ng-click="">
+				<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail" style="max-height:80px;"/>
+			</a>
+		</div>
+	</div>
+	<div ng-repeat="(i, op) in stage._embedded._embedded.operations" class="small">
+		<span>{[op.name]}</span>
+	</div>
+</div>
+
+<ng-include 
+	ng-if="stage.children.length"
+	ng-repeat="child in stage.children" 
+	ng-init="stage=child;" 
+	src="'/js/custom/tpl/stage-img-content.html'"
+/>
+

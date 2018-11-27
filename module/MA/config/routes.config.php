@@ -142,7 +142,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|hint|image',
+								'action' => 'detail|edit|hint|image|children',
 							]
 						],
 						'may_terminate' => true,
@@ -189,7 +189,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|actions',
+								'action' => 'detail|edit|delete|hints|hint|actions',
 							]
 						],
 						'may_terminate' => true,
@@ -297,6 +297,32 @@ return [
 									],
 								],
 							]
+						],
+					],
+					'type' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/type',
+							'defaults' => [
+								'controller' => Controller\HintTypeController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail',
+									]
+								],
+							],
 						],
 					],
 				],

@@ -65,6 +65,59 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
 	/**
 	 * @return JsonViewModel
 	 */
+	public function hintAction()
+	{
+		$e    = new \MA\Entity\HintType;
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\HintTypeForm::class);
+
+		$e->setOperation($this->getEntity());
+
+		$form->setHydrator(new DoctrineHydrator($em));
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$em->persist($e);
+				$em->flush();
+				$payload = ['payload' => $this->prepareHalEntity($e, "process/hint/type/detail")];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function hintsAction()
+    {
+		$e  = $this->getEntity();
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$paginator = $this->getPaginator($e->getHints()->toArray(), $e->getHints()->count());
+		$payload = $this->prepareHalCollection($paginator, 'process/operation/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
 	public function deleteAction()
 	{
 		$e	  = $this->getEntity();

@@ -81,6 +81,16 @@ class Operation implements
 	protected $stages;
 
 	/**
+	 * @var StageInterface[]
+	 * @ORM\OneToMany(
+     *  targetEntity="MA\Entity\HintType",
+	 *	mappedBy	 = "operation",
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $hints;
+
+	/**
 	 * @var int 
 	 * @ORM\Column(type="datetime")
 	 */
@@ -100,6 +110,7 @@ class Operation implements
 		$this->created  = new DateTime;
 		$this->updated  = new DateTime;
 		$this->stages   = new ArrayCollection;
+		$this->hints    = new ArrayCollection;
 	}
     
     /**
@@ -165,6 +176,28 @@ class Operation implements
     public function setStages($stages)
     {
         $this->stages = $stages;
+        return $this;
+    }
+    
+    /**
+     * Get hints.
+     *
+     * @return HintTypeInterface[].
+     */
+    public function getHints()
+    {
+        return $this->hints;
+    }
+    
+    /**
+     * Set hints.
+     *
+     * @param HintTypeInterface[] hints the value to set.
+     * @return OperationInterface.
+     */
+    public function setHints($hints)
+    {
+        $this->hints = $hints;
         return $this;
     }
     
@@ -345,6 +378,24 @@ class Operation implements
 				'route' => [
 				    'name'    => 'process/operation/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'hint',
+				'privilege'   => 'hint',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/operation/detail/json',
+				    'params'  => ['action' => 'hint', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'hints',
+				'privilege'   => 'hints',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/operation/detail/json',
+				    'params'  => ['action' => 'hints', 'id' => $this->getId()],
 				],
 			],
 		];

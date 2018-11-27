@@ -1,0 +1,132 @@
+.nav-tabs {
+    border-bottom: none;
+}
+ul.stage-tabs {
+    border-bottom: 1px solid #CCC;
+}
+ul.stage-tabs li.nav-link.active {
+    background: white;
+    border: 1px solid #CCC !important;
+    border-bottom: 1px solid white !important;
+    margin-bottom: -1px;
+}
+ul.stage-tabs li.nav-link.active a {
+	color: black;
+}
+ul.stage-tabs li.nav-link {
+	background: aliceblue;
+}
+
+		.editor-box {
+			padding-top: 45px;
+		   	padding-bottom:	20px;
+			border-bottom: none;
+			position: relative;
+			width: 100%;
+		}
+		.editor-box .btns {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+		}
+		.editor-box .btns a {
+		}
+		.editor-box.editor {
+			border: 1px solid;
+			border-color: #e6e6e6;
+			border-radius: 5px;
+			background: #FFF;
+		}
+		ul.stage-tabs {
+		}
+		ul.stage-tabs li.nav-link {
+		    margin-right: 6px;
+		}
+		ul.stage-tabs li.nav-link.active {
+			border-bottom: 1px solid white;
+			margin-bottom: -1px;
+		}
+		ul.stage-tabs li.nav-link.editor {
+		}
+
+		button {
+			border-style: unset;
+		}
+		.process-stage-list {
+			text-align: center;
+			border: 2px solid white;
+			padding: 4px;
+			margin: 0;
+		}
+		.process-stage-list.active {
+			border-color: #007bff;
+		}
+		.process-img-list {
+		}
+		.process-img-list .item {
+		}
+		.process-img-list .item:not(:first-child) {
+			border-left: none;
+		}
+		.my-box {
+		}
+		.stage-box {
+			margin: 12px;
+		}
+		.my-box.editor {
+			background: white;
+		}
+		.stage-box.editor {
+			border: 1px solid lightgray;
+		}
+		.my-box .errors {
+		}
+		.my-box form {
+			padding: 12px;
+		}
+
+		.alert.ng-hide
+		{
+			opacity: 0;
+		}
+		/*.errors.ng-hide-remove*/
+		.alert.ng-hide-add
+	   	{
+			transition: all linear 1s;
+		}
+
+		.messages {
+			position: fixed;
+		    top: 8%;
+		    right: 0;
+		    left: 0;
+		    z-index: 1050;
+			text-align: center;
+		}
+		.messages .alert {
+			margin: 0;
+		}
+		.hint-row {
+			margin: 0;
+		}
+		.hint-row .col {
+		}
+
+.pl-table > .pl-thead > .row, 
+.pl-table > .pl-tbody > .row { 
+    margin: 0; 
+    padding: 5px 20px; 
+    align-items: center; 
+	border-bottom: 1px solid #CCC;
+}
+ .pl-table .col{ 
+    padding: 0 10px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+.pl-table .pl-thead {
+    color: #979797;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+}

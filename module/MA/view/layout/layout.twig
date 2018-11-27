@@ -14,6 +14,7 @@
 		<!--<link href="{{ basePath() }}/css/modal.css" media="screen" rel="stylesheet" type="text/css">-->
         <link href="{{ basePath() }}/css/v4.1/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
 		<link rel='stylesheet' href='/js/node_modules/textangular/dist/textAngular.css'>
+		<link rel='stylesheet' href='/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css'>
         <link href="{{ basePath() }}/css/style.css" media="screen" rel="stylesheet" type="text/css">
         <link href="{{ basePath() }}/css/custom/custom.css" media="screen" rel="stylesheet" type="text/css">
         <link href="{{ basePath() }}/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">
@@ -25,12 +26,16 @@
 		<script type="text/javascript" src="{{ basePath() }}/js/jquery-ui-1.12.1/jquery-ui.min.js"></script> <!-- required for border css animations -->
         <!--[if lt IE 9]><script type="text/javascript" src="{{ basePath() }}/js/respond.min.js"></script><![endif]-->
         <!--[if lt IE 9]><script type="text/javascript" src="{{ basePath() }}/js/html5shiv.js"></script><![endif]-->
-        <script type="text/javascript" src="{{ basePath() }}/js/v4.1/bootstrap.min.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/v4.1/bootstrap.min.js"></script>
 
         <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular/angular.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-resource/angular-resource.min.js"></script>
         <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-sanitize/angular-sanitize.min.js"></script>
         <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-animate/angular-animate.min.js"></script>
-        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-resource/angular-resource.min.js"></script>
+		<!--
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+		-->
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
 
 		<script src='/js/node_modules/textangular/dist/textAngular-rangy.min.js'></script>
 		<script src='/js/node_modules/textangular/dist/textAngular-sanitize.min.js'></script>
@@ -41,7 +46,7 @@
         {% block script %}{% endblock script %}
     </head>
 
-    <body ng-app="myApp" ng-controller="MainCtrl">
+    <body ng-app="myApp" ng-controller="MainCtrl" ng-cloak>
 		<!-- Just an image -->
 		<nav class="navbar flex-sm-nowrap navbar-light bg-light sticky-top p-0">
 			<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/" style="background:#EEE;">
@@ -83,11 +88,43 @@
 
 			{% block body %}{{ content|raw }}{% endblock body %}
 
+			<script type="text/ng-template" id="modalContent.html">
+				<div class="modal-header">
+        		    <h3 class="modal-title">{[ operation.name ]}. New error</h3>
+        		</div>
+        		<div class="modal-body">
+					<div class="form-row">
+						<div class="form-group col-md-4">
+						  	<label for="inputPriority">Priority</label>
+						    <input type="number" 
+						  		id="inputPriority"
+						   		class="form-control" 
+						  		ng-class="{'is-invalid': errors.priority}"
+						  		ng-model="values.priority"/>
+							<div ng-if="errors.priority"
+								ng-repeat="(key, text) in errors.priority"
+								class="invalid-feedback">{[key]}. {[text]}</div>
+						</div>
+						<div class="form-group col-md-8">
+						  	<label for="inputTitle">Title</label>
+						    <input type="text" 
+						  		id="inputTitle"
+						   		class="form-control" 
+						  		ng-class="{'is-invalid': errors.title}"
+						  		ng-model="values.title"/>
+							<div ng-if="errors.title"
+								ng-repeat="(key, text) in errors.title"
+								class="invalid-feedback">{[key]}. {[text]}</div>
+						</div>
+					</div>
+				</div>
+    		    <div class="modal-footer">
+					<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+					<a href="" class="btn btn-success" ng-click="save()">Save</a>
+        		</div>
+			</script>
+
         </div> <!-- /container -->
-    	<footer class="row" style="padding: 20px 0;">
-			<hr>
-			<div class="col-md-12"><p>&copy; 2018</p></div>
-    	</footer>
 	</body>
 </html>
 

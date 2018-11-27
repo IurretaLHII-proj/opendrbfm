@@ -12,6 +12,7 @@ return [
 					Service\NoteService::class, 
 					Service\ProcessService::class, 
 					Service\StageService::class, 
+					Service\HintTypeService::class, 
 					Service\HintService::class, 
 					Service\ImageService::class, 
 					Service\OperationService::class, 
@@ -34,6 +35,9 @@ return [
 	],
 	Service\OperationService::class => [
 		'entities' => [Entity\Operation::class],
+	],
+	Service\HintTypeService::class => [
+		'entities' => [Entity\HintType::class],
 	],
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],
