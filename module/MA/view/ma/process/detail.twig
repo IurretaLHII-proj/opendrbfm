@@ -13,6 +13,8 @@
 
 {% block base %}
 
+	base
+
 	<div class="btn-group" 
 		ng-init="initVersion({{ json(hal().renderCollection(childrenHal)) | escape }}{% if version.id %}, {{ version.id }}{% endif %})"
 	>
