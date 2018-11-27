@@ -6,13 +6,7 @@ return [
         'connection' => [
             'orm_default' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
-                'params'      => [
-                    'host'     => 'localhost',
-                    'user'     => 'root',
-                    'password' => '1turr1',
-                    'dbname'   => 'ma_drbfm',
-                    'charset'  => 'utf8',
-                ]
+                'params'      => require 'ddbb.php', 
             ]
         ]
     ],
