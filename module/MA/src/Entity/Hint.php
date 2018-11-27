@@ -75,6 +75,19 @@ class Hint implements
      */
     protected $stage;
 
+    /**
+	 * @var HintTypeInterface
+     * @ORM\ManyToOne(
+     *     targetEntity="MA\Entity\HintType",
+     *     inversedBy="hints"
+     * )
+     * @ORM\JoinColumn(
+     *     name = "type_id",
+	 *     referencedColumnName = "id"
+     * )
+     */
+    protected $type;
+
 	/**
 	 * @var HintInterface[]
 	 * @ORM\ManyToMany(
@@ -213,7 +226,6 @@ class Hint implements
         return $this;
     }
     
-    
     /**
      * Get text.
      *
@@ -259,6 +271,36 @@ class Hint implements
     }
 
 	/**
+	 * @return OperationInterface
+	 */
+	public function getOperation()
+	{
+		return $this->getType()->getOperation();
+	}
+    
+    /**
+     * Get type.
+     *
+     * @return HintTypeInterface.
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    /**
+     * Set type.
+     *
+     * @param HintTypeInterface type the value to set.
+     * @return Hint.
+     */
+    public function setType(HintTypeInterface $type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+	/**
      * Get process.
      *
 	 * @return ProcessInterface
@@ -275,7 +317,7 @@ class Hint implements
 	{
 		return sprintf("Stage %d. %s", 
 			$this->getStage()->getLevel(),
-			$this->getText()
+			$this->getType()->getTitle()
 		);
 	}
     

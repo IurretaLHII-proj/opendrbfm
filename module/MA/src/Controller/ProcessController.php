@@ -6,6 +6,8 @@ use Zend\View\Model\ViewModel,
 	Zend\View\Model\ModelInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use BjyAuthorize\Exception\UnAuthorizedException;
+use Doctrine\ORM\Mapping as ORM,
+	Doctrine\Common\Collections\ArrayCollection;
 
 class ProcessController extends \Base\Controller\AbstractActionController
 {
@@ -50,8 +52,21 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	 */
     public function detailAction()
     {
+		$version  = $this->getEntity()->getVersions()->first();
+
+		if ($version) {
+			$children = $version->getChildren(true);
+		}
+		else {
+			$children = new ArrayCollection;
+		}
+		$paginator = $this->getPaginator($children->toArray(), $children->count());
+
 		return new ViewModel([
-			'stageId' => $this->params()->fromQuery('stage'),
+			//'stageId'     => $this->params()->fromQuery('stage'),
+			'version' 	  => $version,
+			'stage'		  => $version,
+			'childrenHal' => $this->prepareHalCollection($paginator, 'process/detail/json'),
 		]);
 	}
 

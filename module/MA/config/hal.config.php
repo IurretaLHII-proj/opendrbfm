@@ -49,6 +49,13 @@ return [
 			'max_depth' => 2,
 			'hydrator' => Hydrator\HintHydrator::class,
 		],
+		'MA\Entity\HintType' => [
+			'route_name' => 'process/hint/type/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 0,
+		],
 		'MA\Entity\Note\HintReason' => [
 			'route_name' => 'process/hint/detail', //FIXME
 			'route_identifier_name' => 'id',

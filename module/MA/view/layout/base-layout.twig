@@ -1,7 +1,7 @@
 {% extends 'layout/layout.twig' %}
 
 {% block body %}
-	<div class="col-md-2 d-none d-md-block bg-light sidebar sidebar-fixed" style="">
+	<div class="col-md-2 d-none d-md-block sidebar sidebar-fixed" style="">
 		{% block sidebar %}
 		<div class="sidebar-sticky">
 			{{ navigation('navigation').menu()
@@ -18,5 +18,9 @@
 			{{ navigation('navigation').breadcrumbs().setSeparator(" / ").setRenderInvisible(true) | raw }}
 		</div>#}
 		{% block content %}{% endblock content %}
+    	<footer class="row" style="padding: 20px 0;">
+			<hr>
+			<div class="col-md-12"><p>&copy; 2018</p></div>
+    	</footer>
 	</div>
 {% endblock body %}

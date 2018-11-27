@@ -27,6 +27,19 @@ class HintForm extends Form implements InputFilterProviderInterface
         ], ['priority' => -9]);
 
         $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'type',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Type',
+				 'empty_option' => 'Choose hint type',
+				 'target_class' => 'MA\Entity\HintType',
+             ],
+        ]);
+
+        $this->add([
              'type' => 'Text',
              'name' => 'text',
              'required' => true,

@@ -116,4 +116,26 @@ class StageController extends \Base\Controller\Js\AbstractActionController
 
 		return new HalJsonModel($payload);
 	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function childrenAction()
+    {
+		$e  = $this->getEntity();
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$children = [];
+		while (!$e->getChildren()->isEmpty()) {
+			$children[] = $e->getChildren()->first();
+			$e = $e->getChildren()->first();
+		}
+
+		$paginator = $this->getPaginator($children, count($children));
+		$payload = $this->prepareHalCollection($paginator, 'process/stage/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
 }

@@ -170,6 +170,37 @@ class Process implements
         $this->user = $user;
         return $this;
     }
+
+    /**
+     * Get stages.
+     *
+     * @return StageInterface[]
+     */
+	public function getVersions()
+	{
+		$levels = new ArrayCollection;
+
+		foreach ($this->getStages() as $stage) {
+			if (!$stage->hasParent()) $levels->add($stage);
+		}
+
+		return $levels;
+	}
+
+	/**
+	 * @param StageInterface $stage
+	 * @return int|false
+	 */
+	public function getVersion(StageInterface $stage)
+	{
+		foreach ($this->getVersions() as $index => $version) {
+			if ($version === $stage || $version->hasChild($stage, true)) {
+				return $index + 1;
+			}
+		}
+
+		return false;
+	}
     
     /**
      * Get stages.

@@ -1,3 +1,20 @@
+/*********** Angular UI modal with Bootstrap 4
+ ******************/
+.fade.in {
+    opacity: 1;
+}
+
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+       -o-transform: translate(0, 0);
+          transform: translate(0, 0);
+}
+
+.modal-backdrop.in {
+    filter: alpha(opacity=50);
+    opacity: .5;
+}
+/*****************************/
 
 .btn-toolbar .btn {
 	background: white;
@@ -57,20 +74,14 @@
 }
 .sidebar .nav-link {
 	font-weight: 500;
-	color: #333;
 }
 .sidebar .active > .nav-link {
-	color: cadetblue;
-	background: #5f9ea033;
 }
 .sidebar .active > ul {
-	border-left: 4px solid cadetblue;
 }
 .sidebar .active > ul > li > ul {
-	border: none;
 }
 .sidebar .active ul > li > .nav-link {
-	background: none;
 }
 /*************************************/
 .breadcrumb {

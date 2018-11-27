@@ -241,6 +241,14 @@ class Stage implements
         $this->user = $user;
         return $this;
     }
+
+	/**
+	 * @return bool
+	 */
+	public function hasParent()
+	{
+		return $this->getParent() !== null;
+	}
     
     /**
      * Get parent.
@@ -269,9 +277,19 @@ class Stage implements
      *
      * @return StageInterface[].
      */
-    public function getChildren()
+    public function getChildren($recursive = false)
     {
-        return $this->children;
+		$children = $this->children; 
+		if (!$recursive) {
+			return $children;
+		}
+
+		$allChildren = $children->toArray();
+		foreach ($this->getChildren() as $child) {
+			$allChildren = array_merge($allChildren, $child->getChildren($recursive)->toArray());
+		}
+
+		return new ArrayCollection($allChildren);
     }
     
     /**
@@ -285,6 +303,16 @@ class Stage implements
         $this->children = $children;
         return $this;
     }
+
+	/**
+	 * @param StageInterface $stage
+	 * @param boolean $recursive
+	 * @return boolean
+	 */
+	public function hasChild(StageInterface $stage, $recursive = true)
+	{
+		return $this->getChildren(true)->contains($stage);
+	}
     
     /**
      * Add child.
@@ -516,6 +544,14 @@ class Stage implements
 		}
 		return $level;
 	}
+
+	/**
+	 * @return int|false
+	 */
+	public function getVersion()
+	{
+		return $this->getProcess()->getVersion($this);
+	}
     
     /**
      * Get created.
@@ -630,6 +666,15 @@ class Stage implements
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
 				    'params'  => ['action' => 'hint', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'children',
+				'resource'	  => $this,
+				'privilege'   => 'detail',
+				'route' => [
+				    'name'    => 'process/stage/detail/json',
+				    'params'  => ['action' => 'children', 'id' => $this->getId()],
 				],
 			],
 			[

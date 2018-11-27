@@ -43,27 +43,16 @@
 				<div ng-bind-html="entity.body"></div>
 				<div class="d-flex justify-content-center mt-4 mb-4">
 
-					<div ng-repeat="(index, stage) in values.stages" 
-						class="d-flex flex-column justify-content-center mx-1 process-stage-list"
-						ng-class="{active: stage == values.current}"
-					>
-						<div ng-if="stage._embedded._embedded.images.length" 
-							class="process-img-list" 
+					<!--
+					<ng-include ng-if="version" ng-repeat="(i, stage) in getStages(version)"
+						src="'/js/custom/tpl/stage-img-content.html'"
 						>
-							<div ng-repeat="(i, img) in stage._embedded._embedded.images" 
-								class="item list-inline-item"
-							>
-								<a href="" ng-click="current(stage.id)">
-									<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail" style="max-height:80px;"/>
-								</a>
-							</div>
-						</div>
-						<div ng-repeat="(i, op) in stage._embedded._embedded.operations" 
-							class="small"
-						>
-							{[op.name]}
-						</div>
-					</div>
+					-->
+					<ng-include
+						ng-repeat="(i, stage) in values.versions"
+						ng-if="version == stage"
+						src="'/js/custom/tpl/stage-img-content.html'"
+					/>
 
 				</div>
 			</div>
@@ -99,8 +88,9 @@
 				</div>
 			</form>
 		</div>
-		{% block base %}
-		{% endblock base %}
+
+		{% block base %}{% endblock base %}
+
 	</div>
 
 {% endblock content %}
@@ -109,124 +99,6 @@
 	{{ parent() }}
 
 	<style>
-		.editor-box {
-			padding-top: 45px;
-		   	padding-bottom:	20px;
-			border-bottom: none;
-			position: relative;
-			width: 100%;
-		}
-		.editor-box .btns {
-			position: absolute;
-			top: 5px;
-			right: 5px;
-		}
-		.editor-box .btns a {
-		}
-		.editor-box.editor {
-			border: 1px solid;
-			border-color: #e6e6e6;
-			border-radius: 5px;
-			background: #FFF;
-		}
-		ul.stage-tabs {
-			border:none;
-		}
-		ul.stage-tabs li.nav-link {
-		    border: none;
-		    margin-right: 6px;
-			background: #f9f9f9;
-		}
-		ul.stage-tabs li.nav-link.active {
-			background: #f4f4f4;
-			border: 1px solid #e6e6e6;
-			border-bottom: 1px solid #f4f4f4;
-			margin-bottom: -1px;
-		}
-		ul.stage-tabs li.nav-link.editor {
-		}
-
-		button {
-			border-style: unset;
-		}
-		.process-stage-list {
-			text-align: center;
-			border: 2px solid white;
-			padding: 4px;
-			margin: 0;
-		}
-		.process-stage-list.active {
-			border-color: #007bff;
-		}
-		.process-img-list {
-		}
-		.process-img-list .item {
-		}
-		.process-img-list .item:not(:first-child) {
-			border-left: none;
-		}
-		.my-box {
-		}
-		.stage-box {
-			margin: 12px;
-		}
-		.my-box.editor {
-			background: white;
-		}
-		.stage-box.editor {
-			border: 1px solid lightgray;
-		}
-		.my-box .errors {
-		}
-		.my-box form {
-			padding: 12px;
-		}
-
-		.alert.ng-hide
-		{
-			opacity: 0;
-		}
-		/*.errors.ng-hide-remove*/
-		.alert.ng-hide-add
-	   	{
-			transition: all linear 1s;
-		}
-
-		.messages {
-			position: fixed;
-		    top: 8%;
-		    right: 0;
-		    left: 0;
-		    z-index: 1050;
-			text-align: center;
-		}
-		.messages .alert {
-			margin: 0;
-		}
-		.hint-row {
-			margin: 0;
-		}
-		.hint-row .col {
-		}
-
-.pl-table > .pl-thead > .row, 
-.pl-table > .pl-tbody > .row { 
-    margin: 0; 
-    padding: 5px 20px; 
-    align-items: center; 
-	border-bottom: 1px solid #ddd;
-}
- .pl-table .col{ 
-    padding: 0 10px; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
-}
-.pl-table .pl-thead {
-    color: #979797;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 11px;
-}
 	</style>
 
 {% endblock style %}

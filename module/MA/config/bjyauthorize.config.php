@@ -29,6 +29,7 @@ return [
 			Entity\Operation::class,
 			Entity\OperationType::class,
 			Entity\Hint::class,
+			Entity\HintType::class,
 		]
 	],
     'rule_providers' => [
