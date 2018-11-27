@@ -12,3 +12,4 @@ vendor
 composer.phar
 data
 public/img
+config/autoload/ddbb.php
