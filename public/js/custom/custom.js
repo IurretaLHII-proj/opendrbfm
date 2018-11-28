@@ -510,6 +510,7 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 		var stage = _newStage(parentStage); 
 		if (parentStage) stage.parent = parentStage;
         $scope.values.current = stage;
+		console.log(stage);
     }
 
 	$scope.addHint = function(stage) {
@@ -596,10 +597,10 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 			resource = $resource($scope.entity._links.stage.href);
 		}
 		var raw = angular.copy(stage);
-		if (raw.parent) raw.parent = raw.parent.id;
+		if (raw.parent) raw.parent = raw.parent._embedded.id;
 		delete raw._embedded;
 		delete raw.children;
-		console.log(raw);
+		console.log(stage, raw);
 		resource.save(raw).$promise.then(
 			function (data) {
 				stage.errors = null;

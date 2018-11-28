@@ -19,13 +19,6 @@ return [
 			'privilege' => 'index',
 			'pages' => [
 				[
-					'label' => 'Add Process',
-					'route' => 'process/add',
-					'class' => 'nav-link',
-					'resource'	=> Entity\Process::class,
-					'privilege' => 'add',
-				],
-				[
 					'label' => 'Operation types',
 					'route' => 'process/operation/type',
 					'class' => 'nav-link',
@@ -35,12 +28,19 @@ return [
 						[
 							'label' => 'Add Operation type',
 							'route' => 'process/operation/type/add',
-							'class' => 'nav-link',
+							'class' => 'nav-link d-none',
 							'resource'	=> Entity\OperationType::class,
 							'privilege' => 'add',
 							'visible'	=> false,
 						],
 					],
+				],
+				[
+					'label' => 'Add Process',
+					'route' => 'process/add',
+					'class' => 'nav-link',
+					'resource'	=> Entity\Process::class,
+					'privilege' => 'add',
 				],
 			],
 		],
