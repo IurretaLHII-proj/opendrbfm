@@ -60,28 +60,43 @@
 .sidebar ul {
 	padding: 0;
 }
+.sidebar ul > li > ul {
+	padding-left: .8rem;
+	font-size: .8rem;
+}
 .sidebar ul > li {
 }
-.sidebar ul > li > ul {
-	padding-left: .9rem;
-	font-size: .9rem;
+.sidebar ul > .active {
+	background: #EEE;
+}
+.sidebar ul > li > a{
+}
+.sidebar ul > .active > a {
+	/*background: #DDD;*/
 }
 .sidebar ul > li > ul > li {
 }
-.sidebar ul > li > ul > li > ul {
+.sidebar ul > li > ul > .active {
+	/*background: #DDD*/
 }
-.sidebar ul > li > ul > li > ul > li {
+.sidebar ul > li > ul > li > a {
+}
+.sidebar ul > li > ul > .active > a {
+	/*background: #CCC;*/
+}
+.sidebar ul > li > ul > li > ul > li > a {
+}
+.sidebar ul > li > ul > li > ul > .active > a {
+	/*background: #BBB;*/
 }
 .sidebar .nav-link {
 	font-weight: 500;
+	padding:  0;
 }
-.sidebar .active > .nav-link {
-}
-.sidebar .active > ul {
-}
-.sidebar .active > ul > li > ul {
-}
-.sidebar .active ul > li > .nav-link {
+.sidebar a {
+	padding: .5rem 1rem;
+	display: block;
+	color: gray;
 }
 /*************************************/
 .breadcrumb {
