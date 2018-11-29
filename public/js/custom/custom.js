@@ -105,7 +105,7 @@ App.service('operationApi', ['$resource', function($res) {
 			);
 		},
 		getHints: function(op) {
-			return $res(op._links.hints.href).get().$promise.then(
+			return $res(op._embedded._links.hints.href).get().$promise.then(
 				function(data) {
 					return data;
 				},
