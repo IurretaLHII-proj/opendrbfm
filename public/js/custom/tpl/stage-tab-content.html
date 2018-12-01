@@ -147,20 +147,20 @@
 		<label><strong>Errors</strong></label>
 		<div class="pl-thead">
 			<div class="row">
-				<div class="col-sm-12 col-md-1">
+				<div class="col-sm-12 col-md-2">
 					<div class="row">
-						<div class="col col-sm-6">Prior</div>
-		    			<div class="col col-sm-6">Type</div>
+						<div class="col col-md-2">Prior</div>
+		    			<div class="col col-md-10">Type</div>
 					</div>
 				</div>
 				<div class="col-sm-12 col-md-4">
 					<div class="row">
-		    			<div class="col-sm-6 col-md-6">Prevs</div>
-		    			<div class="col-sm-6 col-md-6">Text</div>
+		    			<div class="col-md-6">Prevs</div>
+		    			<div class="col-md-6">Text</div>
 						<!--<div class="col-sm-12 col-md-4">Description</div>-->
 					</div>
 				</div>
-				<div class="col-sm-12 col-md-6">
+				<div class="col-sm-12 col-md-5">
 					<div class="row">
 		    			<div class="col col-sm-4">Reasons</div>
 		    			<div class="col col-sm-4">Influence</div>
@@ -180,12 +180,12 @@
 			"
 			>
 
-				<div class="col-sm-12 col-md-1">
+				<div class="col-sm-12 col-md-2">
 					<div class="row">
-						<div class="col col-sm-6">
+						<div class="col col-sm-2">
 							<span class="badge badge-{[badgeClass(hint.priority)]}">{[ hint.priority ]}</span>
 						</div>
-						<div class="col col-sm-6">x</div>
+						<div class="col col-sm-10">{[ hint.operation.name ]}</div>
 					</div>
 				</div>
 	    		<!--<div class="col col-md-3" ng-if="values.stages[i-1]._embedded">-->
@@ -207,7 +207,7 @@
 						<!--<div class="col col-sm-6 col-md-4">{[ hint.description ]}</div>-->
 					</div>
 				</div>
-				<div class="col-sm-12 col-md-6">
+				<div class="col-sm-12 col-md-5">
 					<div class="row">
 						<div class="col col-sm-4">
 							<ul ng-if="hint.reasons.length">
@@ -303,7 +303,7 @@
 						<select class="form-control"
 							ng-class="{'is-invalid': hint.errors.type}"
 							ng-if="hint.operation"
-							ng-change="operationDialog(hint)"
+							ng-change="createHintDialog(hint)"
 							ng-model="hint.type"
 							ng-options="item as item.name for item in getHintOptions(hint.operation) track by item.id"
 							>

@@ -426,6 +426,27 @@ App.controller('OperationsCtrl', function($scope, $resource, $uibModal, operatio
 			}
 		);
 	} 
+
+	$scope.createHintDialog = function(op) {
+
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
+			controller: 'HintTypeModalCtrl',	
+			size: 'lg',
+			resolve: {
+				op : op 
+			}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {
@@ -808,7 +829,7 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 	}
 
 	$scope.loadHintTypes = function(hint) {
-		if (hint.operation.id > 0) {
+		if (hint.operation && hint.operation.id > 0) {
 			hint.operation.hints = [];
 			operationApi.getHints(hint.operation).then(function(data) {
 				hint.operation.hints = data._embedded.items;
@@ -828,8 +849,8 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 		return options;
 	}
 
-	$scope.operationDialog = function(hint) {
-
+	$scope.createHintDialog = function(hint) {
+		console.log(hint);
 	 	if (hint.type && hint.type.id < 0) {	
 			var modal = $uibModal.open({
 				animation: true,

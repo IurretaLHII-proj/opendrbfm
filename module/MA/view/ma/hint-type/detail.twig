@@ -2,10 +2,34 @@
 
 {% block content %}
 	<div class="row">
-		<div class="col-md-12"
-		>
-			<h1>{{ entity }}</h1>
-
+		<div class="col-md-12">
+			<h2>{{ entity }}</h2>
 		</div>
 	</div>
+
+	<div class="col-md-12" 
+		ng-cloak
+		ng-controller="CollectionCtrl"
+		ng-init="init({{ json(hal().renderCollection(collection)) | escape }})"
+	>
+
+		<!--<h1>{{ translate("Home") }}</h1>-->
+		<div ng-repeat="item in collection._embedded.items" 
+			class="d-flex flex-column p-2 issue-item"
+			ng-class="{first: $first, last: $last}"
+			ng-mouseover="item.hover = true;"
+			ng-mouseleave="item.hover = false;"
+			style="border-bottom: 1px solid #eee"
+		>
+		<span class="badge badge-{[ badgeClass(item.priority) ]}">{[item.priority]}</span>
+		<pre>{[ item ]}</pre>
+		<a ng-href="{[ item._links.self.href ]}" class="btn"><i class="fa fa-eye"></i></a>
+		</div>
+		<div style="text-align: center; margin-top: 1rem;">
+			<p><a href="" ng-if="collection._links.next" ng-click="more()">.view previouses.</a></p>
+			<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+			<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+		</div>
+	</div>
+
 {% endblock content %}

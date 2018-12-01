@@ -19,6 +19,13 @@ return [
 			'privilege' => 'index',
 			'pages' => [
 				[
+					'label' => 'New',
+					'route' => 'process/add',
+					'class' => 'nav-link',
+					'resource'	=> Entity\Process::class,
+					'privilege' => 'add',
+				],
+				[
 					'label' => 'Operation types',
 					'route' => 'process/operation/type',
 					'class' => 'nav-link',
@@ -34,13 +41,6 @@ return [
 							'visible'	=> false,
 						],
 					],
-				],
-				[
-					'label' => 'Add Process',
-					'route' => 'process/add',
-					'class' => 'nav-link',
-					'resource'	=> Entity\Process::class,
-					'privilege' => 'add',
 				],
 			],
 		],
