@@ -5,7 +5,7 @@ namespace MA\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
-class OperationForm extends Form implements InputFilterProviderInterface
+class OperationForm extends Form // implements InputFilterProviderInterface
 {
     /**
      * @inheritDoc
@@ -13,31 +13,31 @@ class OperationForm extends Form implements InputFilterProviderInterface
     public function init()
     {
         $this->add([
-             'type' => 'Text',
-             'name' => 'text',
-             'required' => true,
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'placeholder' => 'Title',
-             ],
-             'options' => [
-                 'label' => 'Title',
-             ],
+            'type' => OperationFieldset::class,
+            'name' => 'operation',
+			'options' => [
+				'use_as_base_fieldset' => true,
+			],
         ], ['priority' => -8]);
 
-        $this->add([
-             'type' => 'TextArea',
-             'name' => 'description',
-             'required' => true,
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'placeholder' => 'Description..',
-				 'rows' => 4,
-             ],
-             'options' => [
-                 'label' => 'Description',
-             ],
-        ], ['priority' => -9]);
+		$this->get('operation')
+			->add([
+                'type' => 'Collection',
+                'name' => 'children',
+                'attributes' => [ 
+                    'class' => 'children'
+				],
+				'options' => [
+					'label' => 'Children',
+					'count' => 0,
+					'target_element' => [
+						'type' => \MA\Form\OperationFieldset::class,
+						'object' => \MA\Entity\Operation::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
 
         $this->add([
                 'type' => 'Submit',
