@@ -81,6 +81,41 @@ class Operation implements
 	protected $stages;
 
 	/**
+	 * @var OperationInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\Operation",
+	 *	mappedBy	 = "parents",
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $children;
+
+	/**
+	 * @var OperationInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\Operation",
+	 *	inversedBy = "children"
+	 * )
+	 * @ORM\JoinTable(
+	 *	name = "process_op_rel",
+	 *	joinColumns = {
+	 *		@ORM\JoinColumn(
+	 *			name = "parent_id",
+	 *			referencedColumnName = "id",
+	 *		)
+	 *	},
+	 *	inverseJoinColumns = {
+	 *		@ORM\JoinColumn(
+	 *			name = "child_id",
+	 *			referencedColumnName = "id",
+	 *		)
+	 *	}
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $parents;
+
+	/**
 	 * @var StageInterface[]
 	 * @ORM\OneToMany(
      *  targetEntity="MA\Entity\HintType",
@@ -111,6 +146,8 @@ class Operation implements
 		$this->updated  = new DateTime;
 		$this->stages   = new ArrayCollection;
 		$this->hints    = new ArrayCollection;
+		$this->parents  = new ArrayCollection;
+		$this->children = new ArrayCollection;
 	}
     
     /**
@@ -176,6 +213,104 @@ class Operation implements
     public function setStages($stages)
     {
         $this->stages = $stages;
+        return $this;
+    }
+    
+    /**
+     * Get parents.
+     *
+     * @return OperationInterface.
+     */
+    public function getParents()
+    {
+        return $this->parents;
+    }
+    
+    /**
+     * Set parents.
+     *
+     * @param OperationInterface[] parents the value to set.
+     * @return OperationInterface.
+     */
+    public function setParents($parents)
+    {
+        $this->parents = $parents;
+        return $this;
+    }
+    
+    /**
+     * Get children.
+     *
+     * @return OperationInterface.
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+    
+    /**
+     * Set children.
+     *
+     * @param OperationInterface[] children the value to set.
+     * @return OperationInterface.
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+        return $this;
+    }
+    
+    /**
+     * Add parent.
+     *
+     * @param OperationInterface child the value to set.
+     * @return OperationInterface.
+     */
+    public function addChild(OperationInterface $child)
+    {
+		$this->getChildren()->add($child);
+        return $this;
+    }
+    
+    /**
+     * Add children.
+     *
+     * @param OperationInterface[] children the value to set.
+     * @return OperationInterface.
+     */
+    public function addChildren($children)
+    {
+		foreach ($children as $child) {
+			$this->addChild($child);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add child.
+     *
+     * @param OperationInterface child the value to set.
+     * @return OperationInterface.
+     */
+    public function removeChild(OperationInterface $child)
+    {
+		$this->getChildren()->removeElement($child);
+        return $this;
+    }
+    
+    /**
+     * Add children.
+     *
+     * @param OperationInterface[] children the value to set.
+     * @return OperationInterface.
+     */
+    public function removeChildren($children)
+    {
+		foreach ($children as $child) {
+			$this->removeChild($child);
+		}
+
         return $this;
     }
     
@@ -346,6 +481,7 @@ class Operation implements
 			'text' 		  => $this->getText(),
 			'owner'		  => $this->getUser(),
 			'description' => $this->getDescription(),
+			'children' 	  => new \ZF\Hal\Collection($this->getChildren()),
 		];
 	}
 

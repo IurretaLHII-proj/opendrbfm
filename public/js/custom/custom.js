@@ -117,7 +117,7 @@ App.service('operationApi', ['$resource', function($res) {
 }]);
 
 
-App.controller('MainCtrl', function($scope, $timeout) {
+App.controller('MainCtrl', function($scope, $timeout, operationApi) {
 
 	$scope.closeError = function(err) {
 		var i = $scope.messages.errors.indexOf(err);
@@ -150,20 +150,69 @@ App.controller('MainCtrl', function($scope, $timeout) {
 
 	$scope.badgeClass = function(number) {
 		switch (true) {
-			case number > 6:
-				return 'danger';
-			case number >= 4:
-				return 'warning';
-			case number >= 2:
-				return 'success';
-			default:
-				return 'secondary';
+			case number > 6: return 'danger';
+			case number >= 4: return 'warning';
+			case number >= 2: return 'success';
+			default: return 'secondary';
 		}
+	};
+
+	//FIXME
+	$scope.defaultOp   = {id:null, name:'--- Select one ---'};
+	$scope.defaultHint = {id:null, name:'--- Select one ---'};
+	var _createOption  = {id:-1,   name:'--- Create new ---'};
+	operationApi.getCollection().then(function(data) {
+		$scope.operations = data._embedded.items;
+	});
+	$scope.getOperations = function(model, currents) {
+		var options = [];
+		angular.forEach($scope.operations, function(op, key) {
+			if (model.id == op.id || currents.map(function(e) {return e.id}).indexOf(op.id) == -1) {
+				options.push(op);	
+			}
+		});
+		options.unshift($scope.defaultOp);
+		return options;
 	};
 
 });
 
-App.controller('ModalCtrl', function($scope, $uibModalInstance, $resource, op) {
+App.controller('OperationModalCtrl', function($scope, $uibModalInstance, $resource, type, op) {
+	$scope.type = type;
+	$scope.values = {
+		text: "",
+		children : [
+			op, 
+			{},
+			//$scope.defaultOp,
+		]
+	};
+
+	$scope.save = function() {
+		var raw = {operation: angular.copy($scope.values)};
+		angular.forEach(raw.operation.children, function(child) {
+			child.type = type.id;
+			if (raw.operation.text.length) raw.operation.text += "+";
+			raw.operation.text += child.text;
+		});
+		console.log(raw, $scope.values);
+		$resource(type._embedded._links.operation.href).save(raw).$promise.then(
+			function(data) {
+				$uibModalInstance.close(data);	
+				//$scope.operations.push(data);
+			},
+			function(err) {
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, op) {
 	$scope.operation = op;
 	$scope.values = {};
 
@@ -184,7 +233,7 @@ App.controller('ModalCtrl', function($scope, $uibModalInstance, $resource, op) {
 	};
 });
 
-App.controller('OperationsCtrl', function($scope, $resource, operationApi) {
+App.controller('OperationsCtrl', function($scope, $resource, $uibModal, operationApi) {
 	$scope.collection = null;
 
 	$scope.init = function(collection) {
@@ -254,7 +303,7 @@ App.controller('OperationsCtrl', function($scope, $resource, operationApi) {
 		else {
 			resource = $resource(type._embedded._links.operation.href);
 		}
-		var raw = angular.copy(op);
+		var raw = {operation: angular.copy(op)};
 		resource.save(raw).$promise.then(
 			function (data) {
 				op.errors = null;
@@ -302,10 +351,34 @@ App.controller('OperationsCtrl', function($scope, $resource, operationApi) {
 	}
 
 	$scope.addOp = function(type) {
-		var op = {};
+		var op = {
+			parents:[{}],
+		};
 		op.editor = true;
 		type.operations.push(op);
 	}
+
+	//$scope.defaultOpParent = function(op, i) {}
+	$scope.operationDialog = function(type, op) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : 'operationModalContent.html',
+			controller: 'OperationModalCtrl',	
+			//scope: $scope,
+			size: 'lg',
+			resolve: {
+				type: type,
+				op : op,
+			}
+		});
+
+		modal.result.then(
+			function(res) {
+			},
+			function() {
+			}
+		);
+	} 
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {
@@ -390,9 +463,6 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 		return _stage;
 	}
 
-	$scope.defaultOp   = {id:null, name:'--- Select one ---'};
-	$scope.defaultHint = {id:null, name:'--- Select one ---'};
-	var _createOption  = {id:-1,   name:'--- Create new ---'};
 
 	//$scope.current = function(id, block) {
 	//	if ($scope.blockCurrent) return;
@@ -716,8 +786,8 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 	 	if (hint.type && hint.type.id < 0) {	
 			var modal = $uibModal.open({
 				animation: true,
-				templateUrl : 'modalContent.html',
-				controller: 'ModalCtrl',	
+				templateUrl : 'hintTypeModalContent.html',
+				controller: 'HintTypeModalCtrl',	
 				size: 'lg',
 				resolve: {
 					op : function() { 
