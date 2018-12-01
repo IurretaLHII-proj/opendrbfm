@@ -47,7 +47,8 @@ return [
 				//	'IsOwner',
 				//],
 				[
-					[Entity\User::ROLE_USER],
+					//[Entity\User::ROLE_USER],
+					[],
 					[],
 					[],
 				],

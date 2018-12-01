@@ -160,7 +160,7 @@ App.controller('MainCtrl', function($scope, $timeout, operationApi) {
 	//FIXME
 	$scope.defaultOp   = {id:null, name:'--- Select one ---'};
 	$scope.defaultHint = {id:null, name:'--- Select one ---'};
-	var _createOption  = {id:-1,   name:'--- Create new ---'};
+	$scope._createOption  = {id:-1,   name:'--- Create new ---'};
 	operationApi.getCollection().then(function(data) {
 		$scope.operations = data._embedded.items;
 	});
@@ -178,38 +178,86 @@ App.controller('MainCtrl', function($scope, $timeout, operationApi) {
 });
 
 App.controller('OperationModalCtrl', function($scope, $uibModalInstance, $resource, type, op) {
+	$scope._createOption  = {id:-1,   name:'--- Create new ---'};
 	$scope.type = type;
-	$scope.values = {
-		text: "",
-		children : [
-			op, 
-			{},
-			//$scope.defaultOp,
-		]
-	};
-
+	$scope.op	= op;
+	$scope.init = function() {
+		console.log(op);
+		$scope.values = angular.copy(op);
+		$scope.values.children = [];
+		if (op._embedded && op._embedded._embedded && op._embedded._embedded.children) {
+			angular.forEach(op._embedded._embedded.children, function(child, i) {
+				_child = angular.copy(child);
+				_child._embedded = child; 
+				$scope.values.children[i] = _child;
+			});
+			delete $scope.values._embedded;
+		}
+	}
+	$scope.getOperations = function(model, currents) {
+		var options = [];
+		angular.forEach(type.operations, function(item, key) {
+			if (model.id == item.id || currents.map(function(e) {return e.id}).indexOf(item.id) == -1) {
+				options.push(item);
+			}
+		});
+		options.unshift($scope._createOption);
+		return options;
+	}
+	$scope.reloadTitle = function() {
+		$scope.values.text = "";
+		angular.forEach($scope.values.children, function(child) {
+			if (child.text) {
+				if ($scope.values.text.length) $scope.values.text += "+";
+				$scope.values.text += child.text;
+			}
+		});
+	}
+	$scope.mixed = function() {
+		if ($scope.values.children.length) {
+			$scope.values.children = [];
+		}
+		else {
+			$scope.values.children = [
+				angular.copy($scope._createOption),
+				angular.copy($scope._createOption),
+			];
+		}
+	}
+	$scope.addChild = function() {
+		$scope.values.children.push(angular.copy($scope._createOption));
+	}
 	$scope.save = function() {
 		var raw = {operation: angular.copy($scope.values)};
 		angular.forEach(raw.operation.children, function(child) {
 			child.type = type.id;
-			if (raw.operation.text.length) raw.operation.text += "+";
-			raw.operation.text += child.text;
 		});
-		console.log(raw, $scope.values);
-		$resource(type._embedded._links.operation.href).save(raw).$promise.then(
+		var resource;
+		if (op._embedded) {
+			resource = $resource(op._embedded._links.edit.href);
+		}
+		else {
+			resource = $resource(type._embedded._links.operation.href);
+		}
+		console.log(raw);
+		resource.save(raw).$promise.then(
 			function(data) {
+				if (!op._embedded) {
+					type.operations.push(op);
+				}
+				op._embedded = data;
 				$uibModalInstance.close(data);	
-				//$scope.operations.push(data);
 			},
 			function(err) {
-				$scope.errors = err.data.errors;
+				console.log(err);
+				$scope.errors = err.data.errors.operation;
 			},
 		);
 	};
-
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');	
 	};
+	$scope.init();
 });
 
 App.controller('HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, op) {
@@ -351,9 +399,7 @@ App.controller('OperationsCtrl', function($scope, $resource, $uibModal, operatio
 	}
 
 	$scope.addOp = function(type) {
-		var op = {
-			parents:[{}],
-		};
+		var op = {};
 		op.editor = true;
 		type.operations.push(op);
 	}
@@ -362,7 +408,7 @@ App.controller('OperationsCtrl', function($scope, $resource, $uibModal, operatio
 	$scope.operationDialog = function(type, op) {
 		var modal = $uibModal.open({
 			animation: true,
-			templateUrl : 'operationModalContent.html',
+			templateUrl : '/js/custom/tpl/modal/operation-form.html',
 			controller: 'OperationModalCtrl',	
 			//scope: $scope,
 			size: 'lg',
@@ -374,6 +420,7 @@ App.controller('OperationsCtrl', function($scope, $resource, $uibModal, operatio
 
 		modal.result.then(
 			function(res) {
+				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
 			}
@@ -776,7 +823,7 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 		if (op.hints) {
 			options = angular.copy(op.hints);
 		}
-		options.push(_createOption);
+		options.push($scope._createOption);
 		options.unshift($scope.defaultOp);
 		return options;
 	}
@@ -786,7 +833,7 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 	 	if (hint.type && hint.type.id < 0) {	
 			var modal = $uibModal.open({
 				animation: true,
-				templateUrl : 'hintTypeModalContent.html',
+				templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
 				controller: 'HintTypeModalCtrl',	
 				size: 'lg',
 				resolve: {

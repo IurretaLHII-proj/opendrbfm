@@ -161,5 +161,21 @@ abstract class AbstractService implements
 	{
 		return $this->listeners;
 	}
+
+	/**
+	 * @param \Zend\Service\Navigation
+	 */
+	protected $navService;
+
+	/**
+	 * @return Service\Navigation
+	 */
+	public function getNavService()
+	{
+		if ($this->navService === null) {
+			$this->navService = $this->sm->get(\Base\Controller\Service\Navigation::class);
+		}
+		return $this->navService;
+	}
 }
 

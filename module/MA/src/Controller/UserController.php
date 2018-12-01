@@ -83,7 +83,7 @@ class UserController extends \Base\Controller\AbstractActionController
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$collection = $em->getRepository("MA\Entity\AbstractAction")
+		$collection = $em->getRepository("MA\Entity\AbstractProcessAction")
 			->findBy(
 				['user' => $this->entity],
 				['created' => 'DESC']

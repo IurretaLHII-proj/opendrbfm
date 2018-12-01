@@ -1,0 +1,33 @@
+<div class="modal-header">
+    <h3 class="modal-title">{[ operation.name ]}. New error</h3>
+</div>
+<div class="modal-body">
+	<div class="form-row">
+		<div class="form-group col-md-4">
+		  	<label for="inputPriority">Priority</label>
+		    <input type="number" 
+		  		id="inputPriority"
+		   		class="form-control" 
+		  		ng-class="{'is-invalid': errors.priority}"
+		  		ng-model="values.priority"/>
+			<div ng-if="errors.priority"
+				ng-repeat="(key, text) in errors.priority"
+				class="invalid-feedback">{[key]}. {[text]}</div>
+		</div>
+		<div class="form-group col-md-8">
+		  	<label for="inputTitle">Title</label>
+		    <input type="text" 
+		  		id="inputTitle"
+		   		class="form-control" 
+		  		ng-class="{'is-invalid': errors.title}"
+		  		ng-model="values.title"/>
+			<div ng-if="errors.title"
+				ng-repeat="(key, text) in errors.title"
+				class="invalid-feedback">{[key]}. {[text]}</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+</div>

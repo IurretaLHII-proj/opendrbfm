@@ -8,6 +8,14 @@ use DateTime;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="process_action")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({
+ * 	"process" = "MA\Entity\Action\Process",
+ * 	"stage"   = "MA\Entity\Action\Stage",
+ * 	"hint"    = "MA\Entity\Action\Hint"
+ * })
  */
 abstract class AbstractProcessAction extends AbstractAction
 {
