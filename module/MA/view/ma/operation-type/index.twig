@@ -20,7 +20,7 @@
 			<h2>{{ translate("Operation Groups") }}</h2>
 
 			<div ng-repeat="(index, item) in values" 
-				class="d-flex flex-column my-1 issue-item"
+				class="d-flex flex-column my-1 p-2 border issue-item"
 				ng-class="{first: $first, last: $last}"
 				ng-mouseover="item.hover = true;"
 				ng-mouseleave="item.hover = false;"
@@ -91,8 +91,7 @@
 					</form>
 
 					<!-- OPERATION -->
-					<div ng-repeat="(i, op) in item.operations" class="pl-4 py-1 my-1" style="
-					">
+					<div ng-repeat="(i, op) in item.operations" class="p-2 my-1 border">
 						<div class="d-flex flex-column" ng-if="!op.editor">
 							<div class="d-flex">
 								<div class="mr-auto"><h6>{[ op._embedded.text ]}</h6></div>
@@ -107,7 +106,7 @@
 													'fa-eye': !op.hints, 
 													'fa-eye-slash': op.hints,
 												}">
-											</i>
+											</i> 3
 										</a>
 										<a href="" ng-click="operationDialog(item, op)" 
 											class="btn btn-sm btn-info"
@@ -192,8 +191,11 @@
 								</div>
 							</div>
 						</div>
-						<div ng-if="op.hints">
-							<p class="small">Showing {[ op.hints.length ]} errors</p>
+						<div ng-if="op.hints" class="text-center">
+							<a href=""ng-click="createHintDialog(op)" class="btn btn-sm">
+								<i class="fa fa-plus"></i>
+							</a>
+							<p class="small">Showing {[ op.hints.length ]} error types</p>
 						</div>
 					</div>
 					<div ng-if="!item.operations.length || item.operations[item.operations.length-1]._embedded"	class="text-center">
