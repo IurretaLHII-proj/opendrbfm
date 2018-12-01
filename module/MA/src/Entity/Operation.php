@@ -85,6 +85,7 @@ class Operation implements
 	 * @ORM\ManyToMany(
 	 *	targetEntity = "MA\Entity\Operation",
 	 *	mappedBy	 = "parents",
+	 *	cascade 	 = {"persist"}
 	 * )
 	 * @ORM\OrderBy({"created" = "DESC"})
 	 */
@@ -268,6 +269,7 @@ class Operation implements
      */
     public function addChild(OperationInterface $child)
     {
+		$child->getParents()->add($this);
 		$this->getChildren()->add($child);
         return $this;
     }
@@ -295,6 +297,7 @@ class Operation implements
      */
     public function removeChild(OperationInterface $child)
     {
+		$child->getParents()->removeElement($this);
 		$this->getChildren()->removeElement($child);
         return $this;
     }

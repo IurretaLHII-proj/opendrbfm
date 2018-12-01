@@ -18,6 +18,18 @@ class OperationFieldset extends Fieldset implements
     public function init()
     {
         $this->add([
+             'type' => 'Number',
+             'name' => 'id',
+             'required' => false,
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Id',
+             ],
+        ], ['priority' => -1]);
+
+        $this->add([
              'type' => 'Text',
              'name' => 'text',
              'required' => true,
@@ -102,9 +114,12 @@ class OperationFieldset extends Fieldset implements
 					],
 				],
 			],
+			'id' => [
+				'required' => false,
+			],
 			'type' => [
 				'required' => false,
-			]
+			],
 		];
 	}
 

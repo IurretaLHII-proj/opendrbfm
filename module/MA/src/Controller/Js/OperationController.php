@@ -48,6 +48,7 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
 
 				$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
 
+				$em->persist($e);
 				$em->flush();
 
 				$payload = ['payload' => $this->prepareHalEntity($e, "process/operation/detail/json")];

@@ -98,12 +98,18 @@
 								<div class="mr-auto"><h6>{[ op._embedded.text ]}</h6></div>
 								<div>
 									<div class="btn-group">
-										<a href="" ng-click="operationDialog(item, op)" 
-											class="btn btn-sm btn-warning"
+										<a href="" ng-click="loadOpHints(op)" 
+											class="btn btn-sm btn-primary"
 										>
-											<i class="fa fa-retweet"></i>
+											<i class="fa" 
+												ng-if="op._embedded.id"									
+												ng-class="{
+													'fa-eye': !op.hints, 
+													'fa-eye-slash': op.hints,
+												}">
+											</i>
 										</a>
-										<a href="" ng-click="op.editor = true" 
+										<a href="" ng-click="operationDialog(item, op)" 
 											class="btn btn-sm btn-info"
 										>
 											<i class="fa fa-pencil"></i>
@@ -118,7 +124,6 @@
 								</div>
 							</div>
 							<div ng-if="op._embedded.description" class="small" ng-bind-html="op.description"></div>
-							<a href="" ng-if="op._embedded.id && !op.hints" ng-click="loadOpHints(op)">View errors</a>
 						</div>
 
 						<!-- OPERATION FORM -->
@@ -126,63 +131,6 @@
 							class="p-2"
 							style="
 						">
-							<!--
-							<div class="form-group"
-								<a href="" class="btn btn-sm btn-default"
-									ng-click="closeOp(item, op, i)"
-								>
-									<span class="fa fa-close"></span>
-								</a>
-								<button class="btn btn-sm btn-success"
-									ng-click="submitOp(item, op, i)"
-								>
-									<span class="fa fa-check"></span>
-								</button>
-							</div>
-							<div class="form-group" ng-repeat="(_i, child) in op.parents">
-								<div class="form-group">
-									<div class="form-row">
-										<div class="form-group col-md-6">
-											<label>Operation</label>
-											<select class="form-control"
-												ng-model="op.parents[_i]"
-												ng-change="defaultOpParent(op, i)"
-												ng-options="item as item.name for item in getOperations(op.parents[_i], op.parents) track by item.id"
-												>
-											</select>
-										</div>
-										<div class="form-group col-md-6">
-											<label>Name</label>
-											<input type="text"
-											  	id="inputText" 
-												class="form-control" 
-												ng-disabled="op.parents[_i].id"
-												ng-model="op.parents[_i].name"
-												/>
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="inputParents">Description</label>
-									<text-angular 
-										ng-model="op.parents[_i].description"
-										ta-disabled="op.parents[_i].id"
-										ta-toolbar="[
-											['bold', 'italics', 'underline' ],
-									   		['ul', 'insertLink', 'html'],
-										]"
-										ta-text-editor-class="form-height form-control"
-										ng-class="{'is-invalid': op.errors.description}"
-										class=""
-									>
-									</text-angular>
-
-									<div ng-if="op.errors.description"
-										ng-repeat="(key, text) in op.errors.description"
-										class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
-								</div>
-							</div>
-							-->
 							<div class="form-group">
 								<a href="" class="btn btn-sm btn-default"
 									ng-click="closeOp(item, op, i)"
@@ -244,9 +192,13 @@
 								</div>
 							</div>
 						</div>
+						<div ng-if="op.hints">
+							<p class="small">Showing {[ op.hints.length ]} errors</p>
+						</div>
 					</div>
 					<div ng-if="!item.operations.length || item.operations[item.operations.length-1]._embedded"	class="text-center">
-						<a href="" ng-click="addOp(item)"><i class="fa fa-plus"></i></a>
+						<!--<a href="" ng-click="addOp(item)"><i class="fa fa-plus"></i></a>-->
+						<a href="" ng-click="operationDialog(item, {})"><i class="fa fa-plus"></i></a>
 					</div>
 				</div>
 			</div>

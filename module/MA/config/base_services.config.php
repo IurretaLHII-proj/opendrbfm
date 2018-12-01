@@ -9,6 +9,7 @@ return [
 			[
 				'services' => [
 					Service\ActionService::class, 
+					Service\ActionProcessService::class, 
 					Service\NoteService::class, 
 					Service\ProcessService::class, 
 					Service\StageService::class, 
@@ -53,6 +54,20 @@ return [
 		],
 	],
 	Service\ActionService::class => [
+		'entities'  => [
+			Entity\Action\Operation::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\OperationService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\ActionProcessService::class => [
 		'entities'  => [
 			Entity\Action\Process::class, 
 			Entity\Action\Stage::class, 
