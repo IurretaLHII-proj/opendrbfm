@@ -355,7 +355,7 @@ class Hint implements
     /**
      * Set parents.
      *
-     * @param HintInterface parents the value to set.
+     * @param HintInterface[] parents the value to set.
      * @return HintInterface.
      */
     public function setParents($parents)
@@ -377,7 +377,7 @@ class Hint implements
     /**
      * Set children.
      *
-     * @param HintInterface children the value to set.
+     * @param HintInterface[] children the value to set.
      * @return HintInterface.
      */
     public function setChildren($children)
@@ -390,7 +390,7 @@ class Hint implements
      * Add child.
      *
      * @param HintInterface child the value to set.
-     * @return Stage.
+     * @return HintInterface.
      */
     public function addChild(HintInterface $child)
     {
@@ -436,7 +436,7 @@ class Hint implements
      * Add parent.
      *
      * @param HintInterface parent the value to set.
-     * @return Stage.
+     * @return HintInterface.
      */
     public function addParent(HintInterface $parent)
     {
@@ -448,7 +448,7 @@ class Hint implements
      * Add parents.
      *
      * @param HintInterface[] parents the value to set.
-     * @return Stage.
+     * @return HintInterface.
      */
     public function addParents($parents)
     {
@@ -463,7 +463,7 @@ class Hint implements
      * Add parent.
      *
      * @param HintInterface parent the value to set.
-     * @return Stage.
+     * @return HintInterface.
      */
     public function removeParent(HintInterface $parent)
     {
@@ -475,7 +475,7 @@ class Hint implements
      * Add parents.
      *
      * @param HintInterface[] parents the value to set.
-     * @return Stage.
+     * @return HintInterface.
      */
     public function removeParents($parents)
     {
