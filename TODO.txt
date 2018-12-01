@@ -8,3 +8,13 @@ js controller extends abstract  onDispatch() try { parent() }catch (BjyException
 //-----------------------------------
 
 ImagePresets
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+01-12-18
+-	Operation children.
+-	Needs render
+-	Materials
+-	Desviations
+-	Comments
