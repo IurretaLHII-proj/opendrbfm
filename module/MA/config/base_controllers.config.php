@@ -35,6 +35,12 @@ return [
 	Controller\Js\StageController::class => [
 		'repository' => Entity\Stage::class,
 	],
+	Controller\MaterialController::class => [
+		'repository' => Entity\Material::class,
+	],
+	Controller\Js\MaterialController::class => [
+		'repository' => Entity\Material::class,
+	],
 	Controller\OperationController::class => [
 		'repository' => Entity\Operation::class,
 	],

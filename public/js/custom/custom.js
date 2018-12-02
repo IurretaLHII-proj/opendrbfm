@@ -117,7 +117,12 @@ App.service('operationApi', ['$resource', function($res) {
 }]);
 
 
-App.controller('MainCtrl', function($scope, $timeout, operationApi) {
+App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
+
+	$scope.api = api;
+	api.material.getAll().then(function(data) {
+		$scope.materials = data;
+	});
 
 	$scope.closeError = function(err) {
 		var i = $scope.messages.errors.indexOf(err);

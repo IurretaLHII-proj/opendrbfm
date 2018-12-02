@@ -45,6 +45,19 @@ class Stage implements
 	 */
 	protected $user;
 
+	/**
+	 * @var User
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\Material",
+	 *	inversedBy	 = "stages",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "mtl_id",
+	 *	referencedColumnName = "id"
+	 * )
+	 */
+	protected $material;
+
     /**
 	 * @var StageInterface
      * @ORM\ManyToOne(
@@ -218,6 +231,28 @@ class Stage implements
     public function setProcess(ProcessInterface $process)
     {
         $this->process = $process;
+        return $this;
+    }
+    
+    /**
+     * Get material.
+     *
+     * @return MaterialInterface.
+     */
+    public function getMaterial()
+    {
+        return $this->material;
+    }
+    
+    /**
+     * Set material.
+     *
+     * @param MaterialInterface material the value to set.
+     * @return Stage.
+     */
+    public function setMaterial(MaterialInterface $material)
+    {
+        $this->material = $material;
         return $this;
     }
     

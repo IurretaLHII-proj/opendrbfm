@@ -38,6 +38,28 @@
 	z-index: 1000;
 }
 
+.alert.ng-hide
+{
+	opacity: 0;
+}
+/*.errors.ng-hide-remove*/
+.alert.ng-hide-add
+{
+	transition: all linear 1s;
+}
+
+.messages {
+	position: fixed;
+    top: 8%;
+    right: 0;
+    left: 0;
+    z-index: 1050;
+	text-align: center;
+}
+.messages .alert {
+	margin: 0;
+}
+
 /*****************************/
 .sidebar {
     padding: 0;

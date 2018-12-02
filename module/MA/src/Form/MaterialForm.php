@@ -5,13 +5,28 @@ namespace MA\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
-class OperationTypeForm extends Form implements InputFilterProviderInterface
+class MaterialForm extends Form implements InputFilterProviderInterface
 {
     /**
      * @inheritDoc
      */
     public function init()
     {
+        $this->add([
+             'type' => 'Number',
+             'name' => 'priority',
+             'required' => true,
+             'attributes' => [ 
+                 'class' => 'form-control',
+				 'placeholder' => 'Priority',
+				 'min' => -99,
+				 'max' => 99,
+             ],
+             'options' => [
+                 //'label' => 'Priority',
+             ],
+        ], ['priority' => -9]);
+
         $this->add([
              'type' => 'Text',
              'name' => 'text',
