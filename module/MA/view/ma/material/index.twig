@@ -1,0 +1,22 @@
+{% extends 'layout/base-layout.twig' %}
+
+{% block content %}
+	<div class="row">
+
+		<!-- GROUP -->
+		<div class="col-md-12"
+		>
+			<div class="btn-group mt-2" role="group">
+				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
+			</div>
+			<div class="collapse my-2" id="collapseForm">
+				{{ partial('partial/form/material', {'form': form}) }}
+			</div>
+
+			<hr class="my-2">
+
+			<h2>{{ translate("Materials") }}</h2>
+
+		</div>
+	</div>
+{% endblock content %}

@@ -23,7 +23,16 @@ class IndexController extends AbstractActionController
 			return $this->redirect()->toRoute("zfcuser/login");
 		}
 
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+        $em   = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\ProcessForm::class);
+
+		$form->setAttribute('action', $this->url()->fromRoute('process/add', [], [
+				'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
+			], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		//$form->bind(new \MA\Entity\Process);
 
 		$collection = $em->getRepository($resource)->findBy([],['created' => 'DESC']);
 
@@ -32,7 +41,8 @@ class IndexController extends AbstractActionController
 		$paginator->setCurrentPageNumber((int) $this->params()->fromQuery('page', 1));
 
 		return new ViewModel([
-			'hal' => $this->prepareHalCollection($paginator, 'process/json'),
+			'collection'  => $this->prepareHalCollection($paginator, 'process/json'),
+			'form' 		  => $form,
 		]);
     }
 

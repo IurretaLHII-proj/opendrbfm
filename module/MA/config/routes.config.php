@@ -160,6 +160,49 @@ return [
 					],
 				],
 			],
+			'material' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/material',
+					'defaults' => [
+						'controller' => Controller\MaterialController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'add' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/add',
+							'defaults' => [
+								'action' => 'add' 
+							]
+						],
+					],
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+							]
+						],
+					],
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\MaterialController::class,
+							]
+						],
+					],
+				],
+			],
 			'operation' => [
 				'type' => 'Literal',
 				'options' => [

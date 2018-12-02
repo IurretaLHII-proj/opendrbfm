@@ -3,6 +3,16 @@
 <div class="col">
 	{{ form().openTag(form) | raw }}	
 	<div
+		class="form-group {% if formElementErrors(form.get('priority')) %}error{% endif %}">
+		<label class="control-label">{{ form.get('priority').label }}</label>
+	    <div class="controls">
+			{{ formElement (form.get('priority')) | raw }}
+			{% if formElementErrors(form.get('priority')) %}
+				<span class="help-inline">{{ formElementErrors(form.get('priority')) | raw}}</span>
+			{% endif %}
+	    </div>
+	</div>
+	<div
 		class="form-group {% if formElementErrors(form.get('text')) %}error{% endif %}">
 		<label class="control-label">{{ form.get('text').label }}</label>
 	    <div class="controls">

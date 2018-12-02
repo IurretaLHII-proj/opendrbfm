@@ -11,6 +11,13 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 0,
 		],
+		'MA\Entity\Material' => [
+			'route_name' => 'process/material/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 0,
+		],
 		'MA\Entity\Process' => [
 			'route_name' => 'process/detail',
 			'route_identifier_name' => 'id',

@@ -1,8 +1,8 @@
-<!-- STAGE -->
-<div class="d-flex flex-column"
+<div class="my-box stage-box d-flex flex-column"
  ng-if="values.current==stage;"
  ng-class="{editor: stage.editor}"
 >	
+
 	<div class="d-flex">
 		<div class="ml-auto mr-auto">
 			<div ng-show="stage.showErrors" class="errors">{[ stage.errors.title ]}</div>
@@ -28,7 +28,7 @@
 			</button>
 		</div>
 	</div>
-	<div ng-if="!stage.editor" class="p-2">
+	<div ng-if="!stage.editor" class="">
 		<label><strong>Operations</strong></label>
 		<Ul>
 			<li ng-repeat="op in stage._embedded._embedded.operations">{[ op.name ]}</li>
@@ -38,52 +38,36 @@
 			<div ng-bind-html="stage._embedded.body" />
 		</div>
 	</div>
-	<!-- STAGE FORM -->
 	<form ng-if="stage.editor" class="d-flex flex-column" style="">
 		<div class="form-group">
-			<div class="form-row">
-				<div class="form-group col-md-6">
-					<label for="inputParents">Material</label>
+			<label for="inputParents">Operations</label>
+			<div class="form-row"
+				ng-repeat="(_i, op) in stage.operations"
+				>
+				<div class="form-group col-md-11">
 					<select class="form-control"
-						ng-class="{'is-invalid': stage.errors.material"
-						ng-model="stage.material"
-						ng-options="item as item.name for item in materials track by item.id"
+						ng-class="{'is-invalid': stage.errors.operations[_i]}"
+						ng-model="stage.operations[_i]"
+						ng-options="item as item.name for item in getOperations(stage.operations[_i], stage.operations) track by item.id"
 						>
 					</select>
-					<div ng-if="stage.errors.material"
-						ng-repeat="(key, text) in stage.errors.material"
+					<div ng-if="stage.errors.operations[_i]"
+						ng-repeat="(key, text) in stage.errors.operations[_i].id"
 						class="invalid-feedback">{[key]}. {[text]}</div>
 				</div>
-				<div class="form-group col-md-6">
-					<label for="inputParents">Operations</label>
-					<div class="form-row"
-						ng-repeat="(_i, op) in stage.operations"
-						>
-						<div class="form-group col-md-11">
-							<select class="form-control"
-								ng-class="{'is-invalid': stage.errors.operations[_i]}"
-								ng-model="stage.operations[_i]"
-								ng-options="item as item.name for item in getOperations(stage.operations[_i], stage.operations) track by item.id"
-								>
-							</select>
-							<div ng-if="stage.errors.operations[_i]"
-								ng-repeat="(key, text) in stage.errors.operations[_i].id"
-								class="invalid-feedback">{[key]}. {[text]}</div>
-						</div>
-						<div ng-if="_i" class="form-group col-md-1">
-							<a href="" class="btn-sm btn-default pull-right" 
-								ng-click="stage.operations.splice(_i, 1);">
-								<span class="fa fa-close"></span>
-							</a>
-						</div>
-					</div>
-					<div ng-if="stage.operations[stage.operations.length-1].id">
-						<a href="" class="btn-sm btn-default" 
-						ng-click="stage.operations.push(defaultOp)">
-						<span class="fa fa-plus"></span></a>
-					</div>
+				<div ng-if="_i" class="form-group col-md-1">
+					<a href="" class="btn-sm btn-default pull-right" 
+						ng-click="stage.operations.splice(_i, 1);">
+						<span class="fa fa-close"></span>
+					</a>
 				</div>
 			</div>
+			<div ng-if="stage.operations[stage.operations.length-1].id">
+				<a href="" class="btn-sm btn-default" 
+				ng-click="stage.operations.push(defaultOp)">
+				<span class="fa fa-plus"></span></a>
+			</div>
+
 		</div>
 		
 		<div class="form-group">
@@ -156,80 +140,93 @@
 		</div>
 	</form>
 
-	<!-- HINTS -->
 	<div 
 		ng-if="stage._embedded"
-		class="pl-table p-2"
+		class="pl-table"
 	>
 		<label><strong>Errors</strong></label>
-		<div class="pl-thead p-2">
+		<div class="pl-thead">
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-sm-12 col-md-2">
 					<div class="row">
-						<div class="col-md-2">Prior</div>
-		    			<div class="col-md-5">Prevs</div>
-		    			<div class="col-md-5">Text</div>
+						<div class="col col-md-2">Prior</div>
+		    			<div class="col col-md-10">Type</div>
+					</div>
+				</div>
+				<div class="col-sm-12 col-md-4">
+					<div class="row">
+		    			<div class="col-md-6">Prevs</div>
+		    			<div class="col-md-6">Text</div>
 						<!--<div class="col-sm-12 col-md-4">Description</div>-->
 					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-sm-12 col-md-5">
 					<div class="row">
 		    			<div class="col col-sm-4">Reasons</div>
 		    			<div class="col col-sm-4">Influence</div>
 		    			<div class="col col-sm-4">Suggestions</div>
 		  			</div>
 		  		</div>
-		    	<div class="col-md-1"></div>
+		    	<div class="col-sm-12 col-md-1"></div>
 		  	</div>
 		</div>
-		<div class="pl-tbody p-2 border my-1"
+		<div class="pl-tbody"
 			ng-repeat="(h, hint) in stage.hints"
 			ng-class="{editor: hint.editor}"
 		>
-			<div class="row"ng-if="!hint.editor">
-				<div class="col-md-5">
+			<div class="row my-1"
+				ng-if="!hint.editor"
+				style="
+			"
+			>
+
+				<div class="col-sm-12 col-md-2">
 					<div class="row">
-						<div class="col-md-2">
+						<div class="col col-sm-2">
 							<span class="badge badge-{[badgeClass(hint.priority)]}">{[ hint.priority ]}</span>
 						</div>
-	    				<div class="col-md-5">
+						<div class="col col-sm-10">{[ hint.operation.name ]}</div>
+					</div>
+				</div>
+	    		<!--<div class="col col-md-3" ng-if="values.stages[i-1]._embedded">-->
+				<div class="col-sm-12 col-md-4">
+					<div class="row">
+	    				<div class="col col-sm-6 col-md-6">
 							<ul style="
 								padding-left: 20px;
 								list-style: square;
 								margin: 0;
 							">
-							<li ng-repeat="item in hint._embedded._embedded.parents">
-							<span class="badge badge-{[badgeClass(item.priority)]}">{[ item.priority ]}</span> <a ng-href="{[ item._links.self.href ]}">{[ item.text ]}</a> <span class="small">(Stage {[ item.level]})
-							</li>
+								<li ng-repeat="item in hint._embedded._embedded.parents">Stage {[ item.level]}. <a ng-href="{[ item._links.self.href ]}">{[ item.text ]}</a></li>
 							</ul>
 						</div>
-						<div class="col-md-5">
+						<div class="col col-sm-6 col-md-6">
 							<span class="badge badge-{[badgeClass(hint._embedded._embedded.type.priority)]}">{[ hint._embedded._embedded.type.priority ]}</span>
 							<a ng-href="{[ hint._embedded._embedded.type._links.self.href ]}">{[ hint._embedded.text ]}</a>
 						</div>
 						<!--<div class="col col-sm-6 col-md-4">{[ hint.description ]}</div>-->
 					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-sm-12 col-md-5">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col col-sm-4">
 							<ul ng-if="hint.reasons.length">
 								<li ng-repeat="note in hint._embedded._embedded.reasons">{[note.text]}</li>
 							</ul>
 						</div>
-						<div class="col-md-4">
+						<div class="col col-sm-4">
 							<ul ng-if="hint.suggestions.length">
 								<li ng-repeat="note in hint._embedded._embedded.suggestions">{[note.text]}</li>
 							</ul>
 						</div>
-						<div class="col-md-4">
+						<div class="col col-sm-4">
 							<ul ng-if="hint.influences.length">
 								<li ng-repeat="note in hint._embedded._embedded.influences">{[note.text]}</li>
 							</ul>
 						</div>
 					</div>
 				</div>
-	    		<div class="col-md-1">
+	    		<div class="col-sm-12 col-md-1">
 					<div class="btn-group">
 						<button class="btn-sm btn btn-danger"
 							ng-confirm-click
@@ -250,6 +247,9 @@
 			</div>
 
 			<div ng-if="hint.editor" class="d-flex flex-column" style="
+				background:white; 
+				border: 1px solid lightgray;
+				margin: 12px;
 			">
 				<div class="d-flex">
 					<div class="ml-auto mr-auto">
@@ -272,6 +272,7 @@
 					</div>
 				</div>
 				<form style="
+				   	padding: 12px;
 				">
 					<div class="form-row">
 						<div class="form-group col-md-4">
