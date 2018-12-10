@@ -1,0 +1,43 @@
+{% extends 'layout/base-layout.twig' %}
+
+{% block content %}
+	<div class="row">
+
+		<!-- GROUP -->
+		<div class="col-md-12"
+		>
+			<div class="btn-group mt-2" role="group">
+				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
+			</div>
+			<div class="collapse my-2" id="collapseForm">
+				<h2>{{ translate("New user") }}</h2>
+				{{ partial('partial/form/user', {'form': form}) }}
+			</div>
+
+			<hr class="my-2">
+
+			<h2>{{ translate("Users") }}</h2>
+
+			<div class="table-resposive-sm">
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Created</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in collection %}
+							<tr>
+								<td>{{ user }}</td>
+								<td>{{ user.email }}</td>
+								<td>{{ user.created | date('d/m/Y') }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+{% endblock content %}

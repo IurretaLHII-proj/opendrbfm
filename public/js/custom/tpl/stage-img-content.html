@@ -1,17 +1,23 @@
-<div style="float:left;">
+<div style="float:left;"
+	class="stage-img-list"
+	ng-if="stage._embedded"
+	ng-class="{active:values.current==stage}"
+	>
 	<div class="text-center">
 		<span>Stage</span> {[stage.level]}
 	</div>
-	<div ng-if="stage._embedded._embedded.images.length" class="process-img-list text-center" >
+	<div ng-if="stage._embedded._embedded.images.length" 
+		class="mx-1 p-2 text-center" 
+	>
 		<div ng-repeat="img in stage._embedded._embedded.images" 
 			class="item list-inline-item"
 		>
-			<a href="" ng-click="">
-				<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail" style="max-height:80px;"/>
+			<a href="" ng-click="values.current = stage;">
+				<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail" style="max-height:250px;"/>
 			</a>
 		</div>
 	</div>
-	<div ng-repeat="(i, op) in stage._embedded._embedded.operations" class="small">
+	<div ng-repeat="(i, op) in stage._embedded._embedded.operations" class="text-center">
 		<span>{[op.name]}</span>
 	</div>
 </div>

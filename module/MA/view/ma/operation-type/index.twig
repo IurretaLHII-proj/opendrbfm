@@ -12,6 +12,7 @@
 				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
 			</div>
 			<div class="collapse my-2" id="collapseForm">
+				<h2>{{ translate("New group") }}</h2>
 				{{ partial('partial/form/operation-type', {'form': form}) }}
 			</div>
 
@@ -106,7 +107,7 @@
 													'fa-eye': !op.hints, 
 													'fa-eye-slash': op.hints,
 												}">
-											</i> 3
+											</i><!-- 3 -->
 										</a>
 										<a href="" ng-click="operationDialog(item, op)" 
 											class="btn btn-sm btn-info"

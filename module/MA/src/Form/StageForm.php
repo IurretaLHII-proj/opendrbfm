@@ -33,8 +33,21 @@ class StageForm extends Form implements InputFilterProviderInterface
              ],
              'options' => [
                  'label' => 'Parent',
-				 'empty_option' => 'Choose parent team',
+				 'empty_option' => 'Choose parent stage',
 				 'target_class' => 'MA\Entity\Stage',
+             ],
+        ]);
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'material',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Material',
+				 'empty_option' => 'Choose material',
+				 'target_class' => 'MA\Entity\Material',
              ],
         ]);
 

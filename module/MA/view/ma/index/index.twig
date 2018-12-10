@@ -11,6 +11,7 @@
 				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
 			</div>
 			<div class="collapse my-2" id="collapseForm">
+				<h2>{{ translate("New process") }}</h2>
 				{{ partial('partial/form/process', {'form': form}) }}
 			</div>
 
@@ -18,6 +19,63 @@
 
 			<h2>{{ translate("Home") }}</h2>
 
+			<div class="table-resposive-sm">
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Product nº</th>
+							<th>Machine</th>
+							<th>Line</th>
+							<th>Article code</th>
+							<th>Complexity</th>
+							<th>Customer</th>
+							<!--<th>Customer code</th>
+							<th>Customer contact</th>
+							<th>Customer phone</th>
+							<th>Customer email</th>-->
+							<th>Productive plant</th>
+							<th>Piece nº</th>
+							<th>Piece name</th>
+							<th>Description</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in collection._embedded.items">
+							<td>{[ item.title ]}</td>
+							<td>{[ item.number ]}</td>
+							<td>{[ item.machine ]}</td>
+							<td>{[ item.line ]}</td>
+							<td>{[ item.code ]}</td>
+							<td>{[ item.complexity ]}</td>
+							<td>{[ item._embedded.customer.name ]}</td>
+							<!--<td>{[ item._embedded.customer.code ]}</td>
+							<td>{[ item._embedded.customer.contact ]}</td>
+							<td>{[ item._embedded.customer.phone ]}</td>
+							<td>{[ item._embedded.customer.email ]}</td>-->
+							<td>{[ item.plant ]}</td>
+							<td>{[ item.pieceNumber ]}</td>
+							<td>{[ item.pieceName ]}</td>
+							<td>{[ item.description ]}</td>
+							<td>
+								<div class="btn-group">
+									<a ng-href="{[ item._links.self.href ]}" class="btn btn-sm">
+										<i class="fa fa-eye"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						<tr class="text-center" ng-if="collection._links.next">
+							<td colspan="12"><a href=""ng-click="more()">.view previouses.</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+			</div>
+
+			<!--
 			<div ng-repeat="item in collection._embedded.items" 
 				class="d-flex flex-column p-2 issue-item"
 				ng-class="{first: $first, last: $last}"
@@ -40,6 +98,7 @@
 				<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
 				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 			</div>
+			-->
 
 		</div>
 

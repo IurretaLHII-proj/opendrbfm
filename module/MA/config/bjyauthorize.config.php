@@ -24,6 +24,7 @@ return [
     'resource_providers' => [
         \BjyAuthorize\Provider\Resource\Config::class => [
 			Entity\User::class,
+			Entity\Customer::class,
 			Entity\Process::class,
 			Entity\Stage::class,
 			Entity\Material::class,

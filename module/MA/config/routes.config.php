@@ -30,6 +30,15 @@ return [
 					]
 				],
 			],
+			'list' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/list',
+					'defaults' => [
+						'action' => 'list' 
+					]
+				],
+			],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -52,6 +61,41 @@ return [
 								'controller' => Controller\Js\UserController::class,
 							],
 						],
+					]
+				],
+			],
+		],
+	],
+	'customer' => [
+		'type' => 'Literal',
+		'options' => [
+			'route' => '/customer',
+			'defaults' => [
+				'controller' => Controller\CustomerController::class,
+				'action' => 'index' 
+			]
+		],
+		'may_terminate' => true,
+		'child_routes' => [
+			'add' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/add',
+					'defaults' => [
+						'action' => 'add' 
+					]
+				],
+			],
+			'detail' => [
+				'type' => 'Segment',
+				'options' => [
+					'route' => '/:id[/:action]',
+					'defaults' => [
+						'action' => 'detail',
+					],
+					'constraints' => [
+						'id' => '\d+',
+						'action' => 'detail',
 					]
 				],
 			],
@@ -326,7 +370,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|actions',
+								'action' => 'detail|edit|delete|render|actions',
 							]
 						],
 						'may_terminate' => true,

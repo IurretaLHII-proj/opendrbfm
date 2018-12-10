@@ -10,6 +10,7 @@
 				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
 			</div>
 			<div class="collapse my-2" id="collapseForm">
+				<h2>{{ translate("New material") }}</h2>
 				{{ partial('partial/form/material', {'form': form}) }}
 			</div>
 
@@ -17,6 +18,9 @@
 
 			<h2>{{ translate("Materials") }}</h2>
 
+			{% for material in collection %}
+				<div>{{ material }}</div>
+			{% endfor %}
 		</div>
 	</div>
 {% endblock content %}
