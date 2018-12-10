@@ -119,11 +119,6 @@ App.service('operationApi', ['$resource', function($res) {
 
 App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 
-	$scope.api = api;
-	api.material.getAll().then(function(data) {
-		$scope.materials = data;
-	});
-
 	$scope.closeError = function(err) {
 		var i = $scope.messages.errors.indexOf(err);
 		$scope.messages.errors.splice(i, 1);
@@ -158,7 +153,8 @@ App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 			case number > 6: return 'danger';
 			case number >= 4: return 'warning';
 			case number >= 2: return 'success';
-			default: return 'secondary';
+			case number >= 0: return 'secondary';
+			default: return 'light';
 		}
 	};
 
@@ -179,6 +175,11 @@ App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 		options.unshift($scope.defaultOp);
 		return options;
 	};
+	$scope.api = api;
+	api.material.getAll().then(function(data) {
+		$scope.materials = data;
+		$scope.materials.unshift($scope.defaultOp);
+	});
 
 });
 
@@ -274,6 +275,40 @@ App.controller('HintTypeModalCtrl', function($scope, $uibModalInstance, $resourc
 			function(data) {
 				$uibModalInstance.close(data);	
 				op.hints.push(data);
+			},
+			function(err) {
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('RenderModalCtrl', function($scope, $uibModalInstance, $resource, $filter, hint) {
+	$scope.stateOptions = [
+		{id:1,  name: "IN PROGRESS"},
+		{id:2,  name: "FINISHED"},
+		{id:-1, name: "NOT NECESSARY"},
+		{id:-2, name: "CANCELlED"},
+	];
+
+	$scope.values = {
+		who : angular.copy(hint._embedded.who),
+		when : hint._embedded.when ? angular.copy(new Date(hint._embedded.when*1000)) : null,
+		state : hint._embedded.state.toString(),
+	}
+	console.log($scope.values, hint);
+
+	$scope.save = function() {
+		var raw = angular.copy($scope.values);
+		raw.when = $filter('date')(new Date($scope.values.when), 'yyyy-MM-dd');
+		$resource(hint._links.render.href).save(raw).$promise.then(
+			function(data) {
+				hint._embedded = data;
+				$uibModalInstance.close(data);	
 			},
 			function(err) {
 				$scope.errors = err.data.errors;
@@ -498,6 +533,14 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 		_hint.reasons = [];
 		_hint.suggestions = [];
 		_hint.influences = [];
+		//FIXME
+		//_hint.render     = true;
+		//_hint.who	 	 = "Maria";
+		//_hint.when 		 = new Date();
+		//_hint.effect 	 = "Effect text";
+		//_hint.prevention = "Effect text";
+		//_hint.state 	 = 0;
+
 		angular.forEach (hint._embedded.parents, function(prt, p) {
 			_hint.parents[p] = prt;
 		});
@@ -516,7 +559,7 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 	var _prepareStage = function(stage) {
 		_stage = angular.copy(stage);
 		_stage._embedded = stage;
-
+		_stage.material  = stage._embedded.material;
 		_stage.operations = [];
 		angular.forEach(stage._embedded.operations, function(op, i) {
 			_stage.operations[i] = _prepareOperation(op);
@@ -651,7 +694,10 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 
     $scope.addStage = function(parentStage) {
 		var stage = _newStage(parentStage); 
-		if (parentStage) stage.parent = parentStage;
+		if (parentStage) {
+			stage.parent   = parentStage;
+			stage.material = parentStage.material;
+		}
         $scope.values.current = stage;
 		console.log(stage);
     }
@@ -740,6 +786,7 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 			resource = $resource($scope.entity._links.stage.href);
 		}
 		var raw = angular.copy(stage);
+		raw.material = raw.material.id;
 		if (raw.parent) raw.parent = raw.parent._embedded.id;
 		delete raw._embedded;
 		delete raw.children;
@@ -878,6 +925,26 @@ App.controller('DetailCtrl', function($scope, $resource, $uibModal, $timeout, op
 				}
 			);
 		}
+	}
+
+	$scope.renderDialog = function(hint) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/render-form.html',
+			controller: 'RenderModalCtrl',	
+			size: 'lg',
+			resolve: {
+				hint : hint
+			}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
 	}
 
 	//Update Stage image

@@ -44,7 +44,7 @@ class DefaultNavigationFactory extends BaseFactory
 					'params' => ['id' => $identity->getId()],
 					'pages' => [
 						[
-							'label' => 'logout',
+							'label' => 'Logout',
 							'route' => 'zfcuser/logout',
 							'class' => 'nav-link',
 							'resource'	=> \MA\Entity\User::class,

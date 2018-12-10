@@ -5,13 +5,6 @@ namespace MA;
 return [
 	'default' => [
 		[
-			'label' => 'Add User',
-			'route' => 'user/add',
-			'class' => 'nav-link',
-			'resource'	=> Entity\User::class,
-			'privilege' => 'add',
-		],
-		[
 			'label' => 'Process',
 			'route' => 'home',
 			'class' => 'nav-link',
@@ -56,6 +49,38 @@ return [
 					//		'privilege' => 'add',
 					//	],
 					//],
+				],
+			],
+		],
+		[
+			'label' => 'Customer',
+			'route' => 'customer',
+			'class' => 'nav-link',
+			'resource'	=> Entity\Customer::class,
+			'privilege' => 'add',
+			'pages' => [
+				[
+					'label' => 'Add Customer',
+					'route' => 'customer/add',
+					'class' => 'nav-link d-none',
+					'resource'	=> Entity\Customer::class,
+					'privilege' => 'add',
+				],
+			],
+		],
+		[
+			'label' => 'User',
+			'route' => 'user/list',
+			'class' => 'nav-link',
+			'resource'	=> Entity\User::class,
+			'privilege' => 'add',
+			'pages' => [
+				[
+					'label' => 'Add User',
+					'route' => 'user/add',
+					'class' => 'nav-link d-none',
+					'resource'	=> Entity\User::class,
+					'privilege' => 'add',
 				],
 			],
 		],

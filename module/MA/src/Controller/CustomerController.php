@@ -2,12 +2,11 @@
 
 namespace MA\Controller;
 
-use Zend\View\Model\ViewModel,
-	Zend\View\Model\ModelInterface;
+use Zend\View\Model\ModelInterface;
+use Zend\View\Model\ViewModel;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use BjyAuthorize\Exception\UnAuthorizedException;
 
-class MaterialController extends \Base\Controller\AbstractActionController
+class CustomerController extends \Base\Controller\AbstractActionController
 {
 	/**
 	 * @return ViewModel
@@ -17,15 +16,15 @@ class MaterialController extends \Base\Controller\AbstractActionController
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\MaterialForm::class);
+			->get(\MA\Form\CustomerForm::class);
 
-		$form->setAttribute('action', $this->url()->fromRoute('process/material/add', [], [
+		$form->setAttribute('action', $this->url()->fromRoute('customer/add', [], [
 				'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
 			], true));
 
         $form->setHydrator(new DoctrineHydrator($em));
 
-		$collection = $em->getRepository(\MA\Entity\Material::class)
+		$collection = $em->getRepository(\MA\Entity\Customer::class)
 			->findBy([],['created' => 'ASC']);
 
 		$paginator = $this->getPaginator($collection, 100);
@@ -34,18 +33,18 @@ class MaterialController extends \Base\Controller\AbstractActionController
 			'collection' 	=> $paginator,
 			'form' 			=> $form,
 		]);
-    }
+	}
 
 	/**
 	 * @return ViewModel
 	 */
     public function addAction()
     {
-		$e    = new \MA\Entity\Material;
+		$e    = new \MA\Entity\Customer;
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\MaterialForm::class);
+			->get(\MA\Form\CustomerForm::class);
 
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
         $form->setHydrator(new DoctrineHydrator($em));
@@ -63,7 +62,7 @@ class MaterialController extends \Base\Controller\AbstractActionController
 				$this->getEntityManager()->flush();
 
 				return $this->redirect()->toUrl($r ? $r : 
-					$this->url()->fromRoute('process/material/detail', [
+					$this->url()->fromRoute('process/customer/detail', [
 						'id' => $e->getId(),
 					]));
 			}
@@ -81,10 +80,8 @@ class MaterialController extends \Base\Controller\AbstractActionController
 	 */
 	protected function _injectDefaultVariables(ModelInterface $model)
 	{
-		if (null !== ($entity = $this->getEntity())) {
-			$model->setVariables([
-				'entity' => $entity,
-			]);
-		}
+		$model->setVariables([
+			'entity' => $this->entity,
+		]);
 	}
 }

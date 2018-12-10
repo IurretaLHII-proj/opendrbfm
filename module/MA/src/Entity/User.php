@@ -29,9 +29,9 @@ class User extends BaseUser implements
 
 	/**
 	 * @var string
-	 * @ORM\Column(type="array", options={"default":{"user"}})
+	 * @ORM\Column(type="array")
 	 */
-	protected $roles = ["user"];
+	protected $roles = [];
 
 	/**
 	 * @var int 
@@ -50,6 +50,7 @@ class User extends BaseUser implements
 	 */
 	public function __construct()
 	{
+
 		$this->created  = new DateTime;
 		$this->updated  = new DateTime;
 	}
@@ -136,6 +137,14 @@ class User extends BaseUser implements
 	{
 		$this->setUpdated(new DateTime);
 		return $this;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function toString()
+	{
+		return $this->getName();
 	}
 
 	/**

@@ -40,4 +40,7 @@ return [
             __DIR__ . '/../view',
         ],
     ],
+	'translator' => [
+		'locale' => 'es_ES',
+	],
 ];

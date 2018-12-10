@@ -11,6 +11,7 @@ return [
 					Service\ActionService::class, 
 					Service\ActionProcessService::class, 
 					Service\NoteService::class, 
+					Service\CustomerService::class, 
 					Service\MaterialService::class, 
 					Service\ProcessService::class, 
 					Service\StageService::class, 
@@ -25,6 +26,9 @@ return [
 				'priority' => 100,
 			],
 		]
+	],
+	Service\CustomerService::class => [
+		'entities' => [Entity\Customer::class],
 	],
 	Service\MaterialService::class => [
 		'entities' => [Entity\Material::class],

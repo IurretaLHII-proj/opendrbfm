@@ -12,6 +12,8 @@
 		{[ values ]}
 		-->
 
+
+
 		<div class="my-box d-flex flex-column" ng-class="{editor: entity.editor}">
 			<div class="d-flex">
 				<div class="ml-auto mr-auto">
@@ -38,24 +40,7 @@
 					</button>
 				</div>
 			</div>
-			<div ng-if="!entity.editor" class="d-flex flex-column">
-				<h2 class="mr-auto">{[ entity.title ]}</h2>
-				<div ng-bind-html="entity.body"></div>
-				<div class="d-flex justify-content-center mt-4 mb-4">
 
-					<!--
-					<ng-include ng-if="version" ng-repeat="(i, stage) in getStages(version)"
-						src="'/js/custom/tpl/stage-img-content.html'"
-						>
-					-->
-					<ng-include
-						ng-repeat="(i, stage) in values.versions"
-						ng-if="version == stage"
-						src="'/js/custom/tpl/stage-img-content.html'"
-					/>
-
-				</div>
-			</div>
 			<form ng-if="entity.editor" style="padding:15px;">
 				<div class="form-group">
 					<!--<label class="control-label">Title</label>-->
@@ -87,6 +72,20 @@
 				    </div>
 				</div>
 			</form>
+		</div>
+		<div ng-if="!entity.editor" class="d-flex flex-column">
+			<h2 class="mr-auto">{[ entity.title ]}</h2>
+			<div ng-bind-html="entity.body"></div>
+		</div>
+
+
+		<div class="btn-group" 
+			ng-init="initVersion({{ json(hal().renderCollection(childrenHal)) | escape }}{% if version.id %}, {{ version.id }}{% endif %})"
+		>
+		<a ng-repeat="(i, v) in values.versions" href="" class="btn btn-sm btn-primary" ng-click="loadVersion(v)" ng-class="{'active': version==v}"><span ng-if="v._embedded">{[v._embedded._embedded.material.name]}</span><span ng-if="!v._embedded"><i class="fa fa-plus"></i> material</span></a>
+
+
+			<a href="" class="btn btn-sm btn-outline-primary" ng-if="values.versions[values.versions.length - 1]._embedded" ng-click="addVersion()"><i class="fa fa-plus"></i> material</a>
 		</div>
 
 		{% block base %}{% endblock base %}

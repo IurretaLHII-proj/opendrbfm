@@ -19,6 +19,13 @@ class Hint implements
 	\Base\Hal\LinkPrepareAware,
 	HintInterface 
 {
+	const STATE_CREATED	      = 0;
+	const STATE_NOT_PROCESSED = 0;
+	const STATE_IN_PROGRESS   = 1;
+	const STATE_FINISHED  	  = 2;
+	const STATE_NOT_NECESSARY = -1;
+	const STATE_CANCELED  	  = -2;
+
 	/**
 	 * @var int 
 	 * @ORM\Id
@@ -157,13 +164,31 @@ class Hint implements
 	protected $influences;
 
 	/**
-	 * @var int 
+	 * @var int
+	 * @ORM\Column(type="integer", options={"default":0})
+	 */
+	protected $state = self::STATE_CREATED;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string", options={"nullable":true})
+	 */
+	protected $who;
+
+	/**
+	 * @var DateTime 
+	 * @ORM\Column(type="datetime", name="whn", options={"nullable":true})
+	 */
+	protected $when;
+
+	/**
+	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
 	protected $created;
 
 	/**
-	 * @var int 
+	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
 	protected $updated;
@@ -223,6 +248,72 @@ class Hint implements
     public function setPriority($priority)
     {
         $this->priority = (int) $priority;
+        return $this;
+    }
+    
+    /**
+     * Set state.
+     *
+     * @param int state the value to set.
+     * @return Hint.
+     */
+    public function setState($state)
+    {
+        $this->state = (int) $state;
+        return $this;
+    }
+    
+    /**
+     * Get state.
+     *
+     * @return int.
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+    
+    /**
+     * Get who.
+     *
+     * @return string.
+     */
+    public function getWho()
+    {
+        return $this->who;
+    }
+    
+    /**
+     * Set who.
+     *
+     * @param string who the value to set.
+     * @return Hint.
+     */
+    public function setWho($who = null)
+    {
+        $this->who = $who ? (string) $who : $who;
+        return $this;
+    }
+    
+    /**
+     * Get when.
+     *
+     * @return DateTime.
+     */
+    public function getWhen()
+    {
+        return $this->when;
+    }
+    
+    /**
+     * Set when.
+     *
+     * @param DateTime when the value to set.
+     * @return Hint.
+     */
+    public function setWhen(DateTime $when = null)
+    {
+        $this->when = $when;
         return $this;
     }
     
@@ -838,6 +929,15 @@ class Hint implements
   	public function provideLinks()
   	{
 		return [
+			[
+				'rel'   	  => 'render',
+				'privilege'   => 'render',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/detail/json',
+				    'params'  => ['action' => 'render', 'id' => $this->getId()],
+				],
+			],
 			[
 				'rel'   	  => 'edit',
 				'privilege'   => 'edit',

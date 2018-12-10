@@ -18,6 +18,10 @@ class Process implements
 	\Base\Hal\LinkPrepareAware,
 	ProcessInterface 
 {
+	const COMPLEXITY_HARD 	= "A";
+	const COMPLEXITY_MEDIUM = "BB";
+	const COMPLEXITY_SOFT 	= "AA";
+
 	/**
 	 * @var int 
 	 * @ORM\Id
@@ -27,10 +31,71 @@ class Process implements
 	protected $id;
 
 	/**
+	 * @var int 
+	 * @ORM\Column(type="integer")
+	 */
+	protected $number;
+
+	/**
+	 * @var int 
+	 * @ORM\Column(type="integer")
+	 */
+	protected $code;
+
+	/**
+	 * @var int 
+	 * @ORM\Column(type="integer")
+	 */
+	protected $line;
+
+	/**
 	 * @var string 
 	 * @ORM\Column(type="string")
 	 */
 	protected $title;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string")
+	 */
+	protected $machine;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string")
+	 */
+	protected $plant;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string", name="p_name")
+	 */
+	protected $pieceName;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string", name="p_num")
+	 */
+	protected $pieceNumber;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string", name="complex", options="{default:'AA'")
+	 */
+	protected $complexity;
+
+    /**
+	 * @var CustomerInterface
+     * @ORM\ManyToOne(
+     *     targetEntity="MA\Entity\Customer",
+     *     inversedBy="proccesses"
+     * )
+     * @ORM\JoinColumn(
+     *     name = "ctm_id",
+	 *     referencedColumnName = "id"
+     * )
+     */
+    protected $customer;
 
 	/**
 	 * @var string 
@@ -107,6 +172,72 @@ class Process implements
     }
 
     /**
+     * Get number.
+     *
+     * @return int.
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+    
+    /**
+     * Set number.
+     *
+     * @param int number the value to set.
+     * @return Process.
+     */
+    public function setNumber($number)
+    {
+        $this->number = (int) $number;
+        return $this;
+    }
+
+    /**
+     * Get code.
+     *
+     * @return int.
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+    
+    /**
+     * Set code.
+     *
+     * @param int code the value to set.
+     * @return Process.
+     */
+    public function setCode($code)
+    {
+        $this->code = (int) $code;
+        return $this;
+    }
+
+    /**
+     * Get line.
+     *
+     * @return int.
+     */
+    public function getLine()
+    {
+        return $this->line;
+    }
+    
+    /**
+     * Set line.
+     *
+     * @param int line the value to set.
+     * @return Process.
+     */
+    public function setLine($line)
+    {
+        $this->line = (int) $line;
+        return $this;
+    }
+
+    /**
      * Get title.
      *
      * @return string.
@@ -125,6 +256,116 @@ class Process implements
     public function setTitle($title)
     {
         $this->title = (string) $title;
+        return $this;
+    }
+
+    /**
+     * Get machine.
+     *
+     * @return string.
+     */
+    public function getMachine()
+    {
+        return $this->machine;
+    }
+    
+    /**
+     * Set machine.
+     *
+     * @param string machine the value to set.
+     * @return Process.
+     */
+    public function setMachine($machine)
+    {
+        $this->machine = (string) $machine;
+        return $this;
+    }
+
+    /**
+     * Get plant.
+     *
+     * @return string.
+     */
+    public function getPlant()
+    {
+        return $this->plant;
+    }
+    
+    /**
+     * Set plant.
+     *
+     * @param string plant the value to set.
+     * @return Process.
+     */
+    public function setPlant($plant)
+    {
+        $this->plant = (string) $plant;
+        return $this;
+    }
+
+    /**
+     * Get complexity.
+     *
+     * @return string.
+     */
+    public function getComplexity()
+    {
+        return $this->complexity;
+    }
+    
+    /**
+     * Set complexity.
+     *
+     * @param string complexity the value to set.
+     * @return Process.
+     */
+    public function setComplexity($complexity)
+    {
+        $this->complexity = (string) $complexity;
+        return $this;
+    }
+    
+    /**
+     * Get pieceName.
+     *
+     * @return string.
+     */
+    public function getPieceName()
+    {
+        return $this->pieceName;
+    }
+    
+    /**
+     * Set pieceName.
+     *
+     * @param string pieceName the value to set.
+     * @return Process.
+     */
+    public function setPieceName($pieceName)
+    {
+        $this->pieceName = (string) $pieceName;
+        return $this;
+    }
+    
+    /**
+     * Get pieceNumber.
+     *
+     * @return string.
+     */
+    public function getPieceNumber()
+    {
+        return $this->pieceNumber;
+    }
+    
+    /**
+     * Set pieceNumber.
+     *
+     * @param string pieceNumber the value to set.
+     * @return Process.
+     */
+    public function setPieceNumber($pieceNumber)
+    {
+        $this->pieceNumber = (string) $pieceNumber;
         return $this;
     }
     
@@ -168,6 +409,28 @@ class Process implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+    
+    /**
+     * Get customer.
+     *
+     * @return CustomerInterface.
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+    
+    /**
+     * Set customer.
+     *
+     * @param CustomerInterface customer the value to set.
+     * @return Process.
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
         return $this;
     }
 

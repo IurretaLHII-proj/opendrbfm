@@ -1,8 +1,8 @@
 {% extends 'layout/base-layout.twig' %}
 
 {% block content %}
-	<div class="col-md-12">
-		<h1>{{ translate("New material") }}</h1>
+	<div class="col-md-22">
+		<h2>{{ translate("New material") }}</h2>
 
 		{{ partial('partial/form/material', {'form': form, 'redirect': redirect}) }}
 	</div>

@@ -26,28 +26,29 @@ class UserController extends \Base\Controller\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
+    public function listAction()
+    {
+		$em   = $this->getEntityManager();
+
+		$collection = $em->getRepository(\MA\Entity\User::class)
+			->findBy([],['created' => 'ASC']);
+
+		$paginator = $this->getPaginator($collection, 100);
+
+		return new ViewModel([
+			'collection' 	=> $paginator,
+			'form' 			=> $this->getForm(),
+		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
     public function addAction()
     {
 		$e    = new \MA\Entity\User;
 		$em   = $this->getEntityManager();
-		$form = $this->getServiceLocator()->get('ZfcUserRegisterForm');
-		$form->add([
-			'type' => 'MultiCheckbox',
-			'name' => 'roles',
-            'attributes' => [ 
-                'class' => 'form-control'
-			],
-			'options' => [
-				'label' => 'Roles',
-				'value_options' => [
-					\MA\Entity\User::ROLE_USER => \MA\Entity\User::ROLE_USER,
-					\MA\Entity\User::ROLE_ADMIN => \MA\Entity\User::ROLE_ADMIN,
-					\MA\Entity\User::ROLE_SUPER => \MA\Entity\User::ROLE_SUPER,
-				]
-			],
-		]);
-		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
-        $form->setHydrator(new DoctrineHydrator($em));
+		$form = $this->getForm();
 		$form->bind($e);
 
 		if ($this->getRequest()->isPost()) {
@@ -101,6 +102,32 @@ class UserController extends \Base\Controller\AbstractActionController
     public function changepasswordAction()
     {
 		//forward
+	}
+
+	protected function getForm()
+	{
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()->get('ZfcUserRegisterForm');
+		$form->add([
+			//'type' => 'MultiCheckbox',
+			'type' => 'Select',
+			'name' => 'roles',
+            'attributes' => [ 
+                'class' => 'form-control',
+				'multiple' => true,
+			],
+			'options' => [
+				'label' => 'Roles',
+				'value_options' => [
+					\MA\Entity\User::ROLE_USER => \MA\Entity\User::ROLE_USER,
+					\MA\Entity\User::ROLE_ADMIN => \MA\Entity\User::ROLE_ADMIN,
+					\MA\Entity\User::ROLE_SUPER => \MA\Entity\User::ROLE_SUPER,
+				]
+			],
+		]);
+		$form->setAttribute('action', $this->url()->fromRoute('user/add', [], [], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		return $form;
 	}
 
 	/**

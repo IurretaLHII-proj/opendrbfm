@@ -9,6 +9,9 @@ return [
 	Controller\Js\UserController::class => [
 		'repository' => Entity\User::class,
 	],
+	Controller\CustomerController::class => [
+		'repository' => Entity\Customer::class,
+	],
 	Controller\ProcessController::class => [
 		'repository' => Entity\Process::class,
 		'parent' => [

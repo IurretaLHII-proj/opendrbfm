@@ -1,37 +1,146 @@
 {% do form.prepare() %}
 
-<div class="col">
-	{{ form().openTag(form) | raw }}	
-	<div
-		class="form-group {% if formElementErrors(form.get('title')) %}error{% endif %}">
-		<label class="control-label">{{ form.get('title').label }}</label>
-	    <div class="controls">
-			{{ formElement (form.get('title')) | raw }}
-			{% if formElementErrors(form.get('title')) %}
-				<span class="help-inline">{{ formElementErrors(form.get('title')) | raw}}</span>
-			{% endif %}
-	    </div>
-	</div>
-	
-	<div
-		class="form-group {% if formElementErrors(form.get('body')) %}error{% endif %}">
-		<label class="control-label">{{ form.get('body').label }}</label>
-	    <div class="controls">
-	
-			<text-angular 
-				name="body"
-				ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-				ta-text-editor-class="form-height form-control"
-				>
-				{{ form.get('body').value | raw}}
-			</text-angular>
+{{ form().openTag(form) | raw }}	
+<div class="form-row">
+	<div class="form-group col-md-6">
+		<div
+			class="form-group {% if formElementErrors(form.get('title')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('title').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('title')) | raw }}
+				{% if formElementErrors(form.get('title')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('title')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+		
+		<div
+			class="form-group {% if formElementErrors(form.get('number')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('number').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('number')) | raw }}
+				{% if formElementErrors(form.get('number')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('number')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+		
+		<div class="form-row">
+			<div
+				class="form-group col-md-6{% if formElementErrors(form.get('machine')) %} error{% endif %}">
+				<!--<label class="control-label">{{ form.get('machine').label }}</label>-->
+			    <div class="controls">
+					{{ formElement (form.get('machine')) | raw }}
+					{% if formElementErrors(form.get('machine')) %}
+						<span class="help-inline">{{ formElementErrors(form.get('machine')) | raw}}</span>
+					{% endif %}
+			    </div>
+			</div>
 			
-			<!--{{ formElement (form.get('body')) | raw }}-->
-			{% if formElementErrors(form.get('body')) %}
-				<span class="help-inline">{{ formElementErrors(form.get('body')) | raw }}</span>
-			{% endif %}
-	    </div>
+			<div
+				class="form-group col-md-6{% if formElementErrors(form.get('line')) %} error{% endif %}">
+				<!--<label class="control-label">{{ form.get('line').label }}</label>-->
+			    <div class="controls">
+					{{ formElement (form.get('line')) | raw }}
+					{% if formElementErrors(form.get('line')) %}
+						<span class="help-inline">{{ formElementErrors(form.get('line')) | raw}}</span>
+					{% endif %}
+			    </div>
+			</div>
+		</div>
+	
+		<div
+			class="form-group {% if formElementErrors(form.get('code')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('code').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('code')) | raw }}
+				{% if formElementErrors(form.get('code')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('code')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
 	</div>
-	{{ formElement (form.get('submit')) }}
-	{{ form().closeTag(form)  | raw }}	
+		
+	<div class="form-group col-md-6">
+		
+		<div
+			class="form-group {% if formElementErrors(form.get('customer')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('customer').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('customer')) | raw }}
+				{% if formElementErrors(form.get('customer')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('customer')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+		
+		<div
+			class="form-group {% if formElementErrors(form.get('plant')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('plant').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('plant')) | raw }}
+				{% if formElementErrors(form.get('plant')) %}
+					<span class="help-inplant">{{ formElementErrors(form.get('plant')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+		
+		<div
+			class="form-group {% if formElementErrors(form.get('pieceNumber')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('pieceNumber').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('pieceNumber')) | raw }}
+				{% if formElementErrors(form.get('pieceNumber')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('pieceNumber')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+		
+		<div
+			class="form-group {% if formElementErrors(form.get('pieceName')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('pieceName').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('pieceName')) | raw }}
+				{% if formElementErrors(form.get('pieceName')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('pieceName')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+	</div>
+		
+	<div class="form-group col-md-12">
+		<div
+			class="form-group {% if formElementErrors(form.get('complexity')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('complexity').label }}</label>-->
+		    <div class="controls">
+				{{ formElement (form.get('complexity')) | raw }}
+				{% if formElementErrors(form.get('complexity')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('complexity')) | raw}}</span>
+				{% endif %}
+		    </div>
+		</div>
+		
+		<div
+			class="form-group {% if formElementErrors(form.get('body')) %}error{% endif %}">
+			<!--<label class="control-label">{{ form.get('body').label }}</label>-->
+		    <div class="controls">
+		
+				<text-angular 
+					name="body"
+					ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+					ta-text-editor-class="form-height form-control"
+					placeholder="Description"
+					>
+					{{ form.get('body').value | raw}}
+				</text-angular>
+				
+				<!--{{ formElement (form.get('body')) | raw }}-->
+				{% if formElementErrors(form.get('body')) %}
+					<span class="help-inline">{{ formElementErrors(form.get('body')) | raw }}</span>
+				{% endif %}
+		    </div>
+		</div>
+		{{ formElement (form.get('submit')) }}
+		{{ form().closeTag(form)  | raw }}	
+	</div>
 </div>
