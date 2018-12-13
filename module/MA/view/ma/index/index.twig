@@ -2,106 +2,468 @@
 
 {% block content %}
 
-		<div class="col-md-12" 
-			ng-controller="CollectionCtrl"
-			ng-init="init({{ json(hal().renderCollection(collection)) | escape }})"
-		>
-
-			<div class="btn-group mt-2" role="group">
-				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
-			</div>
-			<div class="collapse my-2" id="collapseForm">
-				<h2>{{ translate("New process") }}</h2>
-				{{ partial('partial/form/process', {'form': form}) }}
-			</div>
-
-			<hr class="my-2">
-
-			<h2>{{ translate("Home") }}</h2>
-
-			<div class="table-resposive-sm">
-				<table class="table table-striped table-bordered">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Product nº</th>
-							<th>Machine</th>
-							<th>Line</th>
-							<th>Article code</th>
-							<th>Complexity</th>
-							<th>Customer</th>
-							<!--<th>Customer code</th>
-							<th>Customer contact</th>
-							<th>Customer phone</th>
-							<th>Customer email</th>-->
-							<th>Productive plant</th>
-							<th>Piece nº</th>
-							<th>Piece name</th>
-							<th>Description</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr ng-repeat="item in collection._embedded.items">
-							<td>{[ item.title ]}</td>
-							<td>{[ item.number ]}</td>
-							<td>{[ item.machine ]}</td>
-							<td>{[ item.line ]}</td>
-							<td>{[ item.code ]}</td>
-							<td>{[ item.complexity ]}</td>
-							<td>{[ item._embedded.customer.name ]}</td>
-							<!--<td>{[ item._embedded.customer.code ]}</td>
-							<td>{[ item._embedded.customer.contact ]}</td>
-							<td>{[ item._embedded.customer.phone ]}</td>
-							<td>{[ item._embedded.customer.email ]}</td>-->
-							<td>{[ item.plant ]}</td>
-							<td>{[ item.pieceNumber ]}</td>
-							<td>{[ item.pieceName ]}</td>
-							<td>{[ item.description ]}</td>
-							<td>
-								<div class="btn-group">
-									<a ng-href="{[ item._links.self.href ]}" class="btn btn-sm">
-										<i class="fa fa-eye"></i>
-									</a>
-								</div>
-							</td>
-						</tr>
-						<tr class="text-center" ng-if="collection._links.next">
-							<td colspan="12"><a href=""ng-click="more()">.view previouses.</a></td>
-						</tr>
-					</tbody>
-				</table>
-				<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
-				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
-			</div>
-
-			<!--
-			<div ng-repeat="item in collection._embedded.items" 
-				class="d-flex flex-column p-2 issue-item"
-				ng-class="{first: $first, last: $last}"
-				ng-mouseover="item.hover = true;"
-				ng-mouseleave="item.hover = false;"
-			>
-				<div class="d-flex pb-1">
-					<div class="mr-auto">
-						<h5><a href="{[ item._links.self.href ]}">{[ item.title ]}</a></h5>
+			<div class="d-flex flex-column">
+				<div class="d-flex">
+					<h2 class="mr-auto">Un titulo cualquiera</h2>
+					<a href="" class="btn"><i class="fa fa-pencil"></i></a>
+				</div>
+				<div class="d-flex">
+					<div class="d-flex flex-column flex-fill">
+						<div class="d-flex mt-2 mb-1">
+							<div class="px-2 bg-secondary text-light">Name</div>
+							<div class="px-2 bg-white flex-fill">Un titulo cualquiera</div>
+						</div>
+						<div class="d-flex my-1">
+							<div class="px-2 bg-secondary text-light">Project nº</div>
+							<div class="px-2 bg-white flex-fill">3846491239</div>
+						</div>
+						<div class="d-flex my-1">
+							<div class="px-2 bg-secondary text-light">Machine</div>
+							<div class="pl-2 pr-4 bg-white">Machine name</div>
+							<div class="px-2 bg-secondary text-light">Line</div>
+							<div class="px-2 bg-white flex-fill">3</div>
+						</div>
+						<div class="d-flex mt-1 mb-2">
+							<div class="px-2 bg-secondary text-light">Article code</div>
+							<div class="px-2 bg-white flex-fill">3846491239</div>
+						</div>
+						<!--
+						<div class="d-flex mt-1 mb-2">
+							<div class="px-2 bg-secondary text-light">Created on</div>
+							<div class="px-2 bg-white">22/11/2018</div>
+							<div class="px-2 bg-secondary text-light">By</div>
+							<div class="px-2 bg-white flex-fill">Pamintxa</div>
+						</div>
+						-->
+					</div>
+					<div class="d-flex flex-column flex-fill">
+						<div class="d-flex mt-2 mb-1">
+							<div class="px-2 bg-secondary text-light">Customer</div>
+							<div class="px-2 bg-white flex-fill">Audi</div>
+						</div>
+						<div class="d-flex my-1">
+							<div class="px-2 bg-secondary text-light">Productive plant</div>
+							<div class="px-2 bg-white flex-fill">USA</div>
+						</div>
+						<div class="d-flex my-1">
+							<div class="px-2 bg-secondary text-light">Piece nº</div>
+							<div class="px-2 bg-white flex-fill">qur20nxw22</div>
+						</div>
+						<div class="d-flex mb-2 mt-1">
+							<div class="px-2 bg-secondary text-light">Piece name</div>
+							<div class="px-2 bg-white flex-fill">UR678GG</div>
+						</div>
+					</div>
+					<div class="d-flex flex-column flex-fill">
+						<div class="d-flex mt-2 mb-1">
+							<div class="px-2 bg-secondary text-light">Complexity</div>
+							<div class="px-2 bg-white flex-fill">BB</div>
+						</div>
+						<div class="d-flex mb-2 mt-1">
+							<div class="bg-secondary text-light px-2">Description</div>
+							<div class="px-2 bg-white flex-fill">Praesent fringilla sagittis justo, sed malesuada odio ultrices vel. Quisque eget risus id urna blandit sagittis</div>
+						</div>
 					</div>
 				</div>
-				<div>
-					<div ng-bind-html="item.body"></div>
-					<p class="small">by <a ng-href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a></p>
+			</div>
+
+			<ul class="list-inline my-2">
+				<a href="" class="btn btn-sm btn-primary">v1 | C8C</a>
+				<a href="" class="btn btn-sm btn-outline-primary">v2 | C8C</a>
+				<a href="" class="btn btn-sm btn-outline-primary"><i class="fa fa-plus"></i> version</a>
+			</ul>
+
+			<ul class="nav nav-tabs mt-2 border-0">
+				<li class="nav-link">
+					<a href="" >Stage <span>1</span></a>
+				</li>
+				<li class="nav-link active bg-light" style="margin-bottom:-1px; border-bottom: 1px solid #f8f9fa">
+					<a href="" >Stage <span>2</span></a>
+				</li>
+				<li class="nav-link">
+					<a href="" >Stage <span>3</span></a>
+				</li>
+				<li class="nav-link">
+					<a href="" ><i class="fa fa-plus"></i></a>
+				</li>
+			</ul>
+
+			<div class="d-flex flex-column bg-light border">
+				<div class="">
+					<a href="" class="btn pull-right"><i class="fa fa-pencil"></i></a>
+				</div>
+				<div class="d-flex">
+					<!--<div class="d-flex flex-column align-self-center flex-fill mr-2">-->
+					<div class="d-flex flex-column flex-fill mx-2">
+						<div class="d-flex mb-1">
+							<div class="bg-secondary text-light px-2">Version</div>
+							<div class="px-2 bg-white flex-fill">1</div>
+						</div>
+						<div class="d-flex my-2">
+							<div class="bg-secondary text-light px-2">Material</div>
+							<div class="pl-2 pr-4 bg-white">C8C</div>
+							<div class="px-2 bg-secondary text-light">Stage</div>
+							<div class="px-2 bg-white flex-fill">2</div>
+						</div>
+						<div class="d-flex my-2">
+							<div class="bg-secondary text-light px-2">Operations</div>
+							<div class="px-2 bg-white flex-fill">
+								<ul>
+									<li>I'm a flexbox container!</li>
+									<li>I'm a flexbox container!</li>
+									<li>I'm a flexbox container!</li>
+								</ul>
+							</div>
+						</div>
+						<div class="d-flex mb-2 mt-1">
+							<div class="bg-secondary text-light px-2">Description</div>
+							<div class="px-2 bg-white flex-fill">Vivamus tincidunt odio ac ex sagittis rutrum. Nullam ultricies feugiat quam nec pellentesque. Vestibulum at nisi rhoncus, molestie leo sit amet, congue massa</div>
+						</div>
+					</div>
+					<div class="d-flex align-self-center mx-2">
+						<div class="mb-2">
+							<img src="http://local.drbfm.eus/image/51" style="max-height:250px;"/>
+						</div>
+						<div class="mb-2">
+							<img src="http://local.drbfm.eus/image/50" style="max-height:250px;"/>
+						</div>
+						<div class="pb-2 bg-secondary">
+							<img src="http://local.drbfm.eus/image/52" style="max-height:250px;"/>
+						</div>
+						<div class="mb-2">
+							<img src="http://local.drbfm.eus/image/53" style="max-height:250px;"/>
+						</div>
+						<div class="mb-2">
+							<img src="http://local.drbfm.eus/image/53" style="max-height:250px;"/>
+						</div>
+						<div class="mb-2">
+							<img src="http://local.drbfm.eus/image/53" style="max-height:250px;"/>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div style="text-align: center; margin-top: 1rem;">
-				<p><a href="" ng-if="collection._links.next" ng-click="more()">.view previouses.</a></p>
-				<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
-				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
-			</div>
-			-->
+			<table class="table table-responsive table-bordered my-2">
+				<thead class="text-center">
+					<tr>
+						<th rowspan="2">Error</th>
+						<th colspan="2">Relations</th>
+						<th colspan="3">Description</th>
+						<th rowspan="2"></th>
+						<th colspan="4">Simulación</th>
+						<th rowspan="2"></th>
+					</tr>
+					<tr>
+						<th>Prevs</th>
+						<th>Nexts</th>
+						<th>Reasons</th>
+						<th>Influence</th>
+						<th>Suggestions</th>
+						<th>State</th>
+						<th>Who</th>
+						<th>When</th>
+						<th>When</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<div class="small text-muted">Corte.Inicial</div>
+							<div>
+								<span class="badge badge-danger">8</span> Pinzas y muelles necesarios
+							</div>
+						</td>
+						<td>
+							<ul>
+								<li>
+									<div class="text-muted small">Corte.Inicial</div>
+									<div>
+										<span class="small badge badge-danger">8</span> Problemas con el tope
+									</div>
+									
+								</li>
+								<li>
+									<div class="text-muted small">Corte.Inicial</div>
+									<div>
+										<span class="small badge badge-info">3</span> Rebabas 
+									</div>
+									
+								</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Cuchilla no ajustada a la longitud del tocho</li>
+							</ul>
+						</td>
+						<td></td>
+						<td>
+							<ul>
+								<li>Diseñar casquillo y cuchilla especiales para alojar longitudes de corte menores a 30</li>
+							</ul>
+						</td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+						<td class="bg-light text-secondary">Not necessary</td>
+						<td class="bg-light text-secondary"></td>
+						<td class="bg-light text-secondary"></td>
+						<td class="bg-light text-secondary"></td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="small text-muted">Corte.Inicial</div>
+							<a href="" class="btn btn-sm btn-light"><span class="badge badge-light">8</span> Rebabas</a>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Cuchilla no ajustada a la longitud del tocho</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>No pasaría pieza. Habría golpe en esta misma</li>
+							</ul>
+						</td>
+						<td></td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+						<td class="bg-light text-info">In progress</td>
+						<td class="bg-light text-info">Maria on 30/11/2018</td>
+						<td class="bg-light text-info"></td>
+						<td class="bg-light text-info"></td>
+						<td class="bg-light">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="" class="btn btn-sm btn-success"><span class="badge badge-light">8</span> Separación del corte</a></td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li><a href="" class="btn btn-sm btn-warning" style="white-space:inherit"><span class="badge badge-light">8</span> Cuchilla no ajustada a la longitud del tocho a cortar</a></li>
+							</ul>
+						</td>
+						<td></td>
+						<td></td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+						<td class="bg-light text-info">In progress</td>
+						<td class="bg-light text-info">Peru on 10/12/2018</td>
+						<td class="bg-light text-info"></td>
+						<td class="bg-light text-info"></td>
+						<td class="bg-light">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="small text-muted">Corte.Transporte</div>
+							<a href="" class="btn btn-sm btn-danger"><span class="badge badge-light">8</span> La pieza se pega al utillaje</a>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Cuchilla no ajustada a la longitud del tocho</li>
+							</ul>
+						</td>
+						<td></td>
+						<td>
+							<ul>
+								<li>Revisar tolerancia de materia prima de Posco</li>
+								<li>Tener en cuenta rango de volumen de material (según profundidad counterbore)- rango de longitud de corte para la anchura de la cuchilla y portacuchillas</li>
+							</ul>
+						</td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+						<td class="bg-light text-danger">Canceled</td>
+						<td class="bg-light text-danger">Txema on 10/12/2018</td>
+						<td class="bg-light text-danger">Phasellus a mi et risus semper interdum. Maecenas est diam, laoreet et tempor sed, cursus in ipsum. </td>
+						<td class="bg-light text-danger"></td>
+						<td class="bg-light">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>Problemas con el tope</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Separación del corte</li>
+								<li>Cuchilla no ajustada a la longitud del tocho</li>
+							</ul>
+						</td>
+						<td></td>
+						<td></td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+						<td class="bg-light text-secondary">Not necessary</td>
+						<td class="bg-light text-secondary">Cristina on 30/11/2001</td>
+						<td class="bg-light text-secondary"></td>
+						<td class="bg-light text-secondary"></td>
+						<td class="bg-light">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="small text-muted">Corte.Inicial</div>
+							<div>
+								<a href="" class="btn btn-sm btn-warning"><span class="badge badge-light">8</span> Cuchilla no ajustada a la longitud del tocho a cortar</a>
+							</div>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Problemas con el tope</li>
+								<li>Rebabas</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Cuchilla no ajustada a la longitud del tocho</li>
+							</ul>
+						</td>
+						<td></td>
+						<td></td>
+						<td class="">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
+						<td class="bg-light text-success">Finished</td>
+						<td class="bg-light text-success">Maria on 30/11/2201</td>
+						<td class="bg-light text-success">Aliquam ac purus interdum, cursus arcu eu, convallis metus. Aenean accumsan, nunc ac gravida consequat</td>
+						<td class="bg-light text-success">Praesent consectetur tincidunt libero, ac viverra ex tincidunt non. Ut vitae dui massa. Mauris sollicitudin vulputate aliquet</td>
+						<td class="bg-light text-success">
+							<div class="btn-group btn-group-justified">
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+								<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							</div>
+						</td>
 
+					</tr>
+				</tbody>
+			</table>
 		</div>
 
 
 {% endblock content %}
-
+{% block style %}
+<style>
+	table {
+	}
+	table td {
+		/*max-width: 250px;*/
+	}
+	table ul {
+		padding:0;
+		list-style:none;
+	}
+	table ul li {
+		background: #f8f9fa;
+		margin-bottom: 1rem;
+	}
+</style>
+{% endblock style %}
