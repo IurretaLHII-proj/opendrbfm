@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 27, 2018 at 04:52 PM
+-- Generation Time: Dec 11, 2018 at 11:25 AM
 -- Server version: 5.5.60-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.24
 
@@ -19,7 +19,11 @@ SET time_zone = "+00:00";
 --
 -- Database: `ma_drbfm`
 --
+
+-- DROP DATABASE ma_drbfm;
+
 CREATE DATABASE IF NOT EXISTS `ma_drbfm` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 USE `ma_drbfm`;
 
 -- --------------------------------------------------------
@@ -28,19 +32,36 @@ USE `ma_drbfm`;
 -- Table structure for table `action`
 --
 
-DROP TABLE IF EXISTS `action`;
 CREATE TABLE IF NOT EXISTS `action` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
-  `pcs_id` int(11) NOT NULL COMMENT 'process',
   `src_id` int(11) NOT NULL COMMENT 'source',
   `name` varchar(255) NOT NULL,
   `content` text,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `discr` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `src-process` (`pcs_id`,`src_id`,`discr`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=246 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer`
+--
+
+CREATE TABLE IF NOT EXISTS `customer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` int(11) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `email` varchar(64) NOT NULL,
+  `phone` varchar(64) NOT NULL,
+  `contact` varchar(64) NOT NULL,
+  `uid` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `descr` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -48,7 +69,6 @@ CREATE TABLE IF NOT EXISTS `action` (
 -- Table structure for table `image`
 --
 
-DROP TABLE IF EXISTS `image`;
 CREATE TABLE IF NOT EXISTS `image` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
@@ -59,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `image` (
   `descr` varchar(255) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=50 ;
 
 -- --------------------------------------------------------
 
@@ -67,7 +87,6 @@ CREATE TABLE IF NOT EXISTS `image` (
 -- Table structure for table `note`
 --
 
-DROP TABLE IF EXISTS `note`;
 CREATE TABLE IF NOT EXISTS `note` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `text` text NOT NULL,
@@ -76,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `note` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `discr` varchar(24) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=57 ;
 
 -- --------------------------------------------------------
 
@@ -84,16 +103,43 @@ CREATE TABLE IF NOT EXISTS `note` (
 -- Table structure for table `process`
 --
 
-DROP TABLE IF EXISTS `process`;
 CREATE TABLE IF NOT EXISTS `process` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
+  `number` int(4) NOT NULL,
+  `line` int(2) NOT NULL,
+  `code` int(11) NOT NULL,
+  `plant` varchar(64) NOT NULL,
+  `machine` varchar(64) NOT NULL,
+  `p_num` varchar(64) NOT NULL COMMENT 'piece number',
+  `p_name` varchar(64) NOT NULL COMMENT 'piece name',
+  `complex` varchar(4) NOT NULL DEFAULT 'AA',
+  `ctm_id` int(11) NOT NULL COMMENT 'customer',
   `body` text,
   `uid` int(11) NOT NULL COMMENT 'owner',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `process_action`
+--
+
+CREATE TABLE IF NOT EXISTS `process_action` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL,
+  `pcs_id` int(11) NOT NULL COMMENT 'process',
+  `src_id` int(11) NOT NULL COMMENT 'source',
+  `name` varchar(255) NOT NULL,
+  `content` text,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `discr` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `src-process` (`pcs_id`,`src_id`,`discr`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=311 ;
 
 -- --------------------------------------------------------
 
@@ -101,7 +147,6 @@ CREATE TABLE IF NOT EXISTS `process` (
 -- Table structure for table `process_hint`
 --
 
-DROP TABLE IF EXISTS `process_hint`;
 CREATE TABLE IF NOT EXISTS `process_hint` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `stg_id` int(11) NOT NULL COMMENT 'stage',
@@ -109,12 +154,15 @@ CREATE TABLE IF NOT EXISTS `process_hint` (
   `uid` int(11) NOT NULL COMMENT 'owner',
   `prior` int(2) NOT NULL DEFAULT '1',
   `text` varchar(255) NOT NULL,
+  `who` varchar(255) DEFAULT NULL COMMENT 'who modelizes',
+  `whn` timestamp NULL DEFAULT NULL COMMENT 'when modelizes',
+  `state` int(2) NOT NULL DEFAULT '0' COMMENT 'modelize state',
   `descr` text,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `stg_id` (`stg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=93 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=99 ;
 
 -- --------------------------------------------------------
 
@@ -122,7 +170,6 @@ CREATE TABLE IF NOT EXISTS `process_hint` (
 -- Table structure for table `process_hint_rel`
 --
 
-DROP TABLE IF EXISTS `process_hint_rel`;
 CREATE TABLE IF NOT EXISTS `process_hint_rel` (
   `parent_id` int(11) NOT NULL,
   `child_id` int(11) NOT NULL,
@@ -136,7 +183,6 @@ CREATE TABLE IF NOT EXISTS `process_hint_rel` (
 -- Table structure for table `process_hint_type`
 --
 
-DROP TABLE IF EXISTS `process_hint_type`;
 CREATE TABLE IF NOT EXISTS `process_hint_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `op_id` int(11) NOT NULL,
@@ -147,7 +193,24 @@ CREATE TABLE IF NOT EXISTS `process_hint_type` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `process_material`
+--
+
+CREATE TABLE IF NOT EXISTS `process_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) NOT NULL,
+  `prior` int(2) NOT NULL DEFAULT '0',
+  `descr` text,
+  `uid` int(11) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -155,7 +218,6 @@ CREATE TABLE IF NOT EXISTS `process_hint_type` (
 -- Table structure for table `process_op`
 --
 
-DROP TABLE IF EXISTS `process_op`;
 CREATE TABLE IF NOT EXISTS `process_op` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `text` varchar(255) NOT NULL,
@@ -166,7 +228,20 @@ CREATE TABLE IF NOT EXISTS `process_op` (
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `type` (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `process_op_rel`
+--
+
+CREATE TABLE IF NOT EXISTS `process_op_rel` (
+  `parent_id` int(11) NOT NULL,
+  `child_id` int(11) NOT NULL,
+  UNIQUE KEY `rel` (`parent_id`,`child_id`),
+  KEY `child_id` (`child_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -174,7 +249,6 @@ CREATE TABLE IF NOT EXISTS `process_op` (
 -- Table structure for table `process_op_stg_rel`
 --
 
-DROP TABLE IF EXISTS `process_op_stg_rel`;
 CREATE TABLE IF NOT EXISTS `process_op_stg_rel` (
   `op_id` int(11) NOT NULL,
   `stg_id` int(11) NOT NULL,
@@ -187,7 +261,6 @@ CREATE TABLE IF NOT EXISTS `process_op_stg_rel` (
 -- Table structure for table `process_op_type`
 --
 
-DROP TABLE IF EXISTS `process_op_type`;
 CREATE TABLE IF NOT EXISTS `process_op_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `text` varchar(255) NOT NULL,
@@ -204,19 +277,19 @@ CREATE TABLE IF NOT EXISTS `process_op_type` (
 -- Table structure for table `process_stage`
 --
 
-DROP TABLE IF EXISTS `process_stage`;
 CREATE TABLE IF NOT EXISTS `process_stage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `body` text,
   `prc_id` int(11) NOT NULL COMMENT 'process',
   `stg_id` int(11) DEFAULT NULL COMMENT 'parent stage',
+  `mtl_id` int(11) NOT NULL COMMENT 'material',
   `uid` int(11) NOT NULL COMMENT 'owner',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `prc_id` (`prc_id`),
   KEY `stg_id` (`stg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=68 ;
 
 -- --------------------------------------------------------
 
@@ -224,7 +297,6 @@ CREATE TABLE IF NOT EXISTS `process_stage` (
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -238,7 +310,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=14 ;
 
 --
 -- Constraints for dumped tables
