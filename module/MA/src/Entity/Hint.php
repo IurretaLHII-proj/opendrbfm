@@ -406,10 +406,12 @@ class Hint implements
 	 */
 	public function getName()
 	{
-		return sprintf("Stage %d. %s", 
-			$this->getStage()->getLevel(),
-			$this->getType()->getTitle()
-		);
+		return $this->getType()->getTitle();
+
+		//return sprintf("Stage %d. %s", 
+		//	$this->getStage()->getLevel(),
+		//	$this->getType()->getTitle()
+		//);
 	}
     
     /**

@@ -38,7 +38,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 4,
+			'max_depth' => 5,
 			'hydrator' => Hydrator\StageHydrator::class,
 		],
 		'MA\Entity\OperationType' => [
