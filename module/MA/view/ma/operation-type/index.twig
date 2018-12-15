@@ -5,7 +5,7 @@
 
 		<!-- GROUP -->
 		<div class="col-md-12"
-			ng-controller="OperationsCtrl"
+			ng-controller="_OperationTypesCtrl"
 			ng-init="init({{ json(hal().renderCollection(collectionHal)) | escape }})"
 		>
 			<div class="btn-group mt-2" role="group">
@@ -18,192 +18,98 @@
 
 			<hr class="my-2">
 
-			<h2>{{ translate("Operation Groups") }}</h2>
+			<h2>{{ translate("Groups") }}</h2>
 
-			<div ng-repeat="(index, item) in values" 
-				class="d-flex flex-column my-2 p-2 border issue-item"
+			<div ng-repeat="(index, group) in values" 
+				class="my-2 p-2 bg-light border"
 				ng-class="{first: $first, last: $last}"
-				ng-mouseover="item.hover = true;"
-				ng-mouseleave="item.hover = false;"
-				style="
-			">
-				<div class="d-flex flex-column pb-1">
-					<div class="d-flex">
-						<div class="mr-auto">
-							<h4>{[ item._embedded.name ]}</h4>
-						</div>
-						<div>
-							<div class="btn-group">
-								<a href="" 
-									class="btn btn-sm btn-info" 
-									ng-click="item.editor = true"
-								>
-									<i class="fa fa-pencil"></i>
-								</a>
-								<a href="" 
-									class="btn btn-sm btn-danger" 
-									ng-confirm-click
-									confirmed-click="deleteType(item, index)"
-								>
-									<i class="fa fa-trash"></i>
-								</a>
-							</div>
+			>
+				<div class="d-flex">
+					<div class="d-flex flex-column mr-auto">
+						<h4>{[ group._embedded.name ]}</h4>
+						<div class="small border-bottom" 
+							ng-bind-html="group._embedded.description">
 						</div>
 					</div>
-					<div class="small" ng-bind-html="item._embedded.description"></div>
-					<form ng-if="item.editor">
-						<div class="form-group">
-							<a href="" class="btn btn-sm btn-default"
-								ng-click="closeType(item, index)"
-							>
-								<span class="fa fa-close"></span>
-							</a>
-							<button class="btn btn-sm btn-success"
-								ng-click="submitType(item, index)"
-							>
-								<span class="fa fa-check"></span>
-							</button>
+					<div>
+					  	<div class="btn-group btn-group-justified">
+						<a href="" 
+							class="btn btn-sm btn-primary" 
+							ng-click="editGroup(group)"
+						><i class="fa fa-pencil"></i></a>
+						<!--<a href="" 
+							class="btn btn-sm btn-primary" 
+							ng-confirm-click
+							confirmed-click="deleteType(group)"
+						><i class="fa fa-trash"></i></a>-->
 						</div>
-						<div class="form-group">
-							<label>Name</label>
-							<input type="text"
-							  	id="inputText" 
-								class="form-control" 
-								ng-class="{'is-invalid': item.errors.text}"
-								ng-model="item.text"/>
-							<div ng-if="item.errors.text"
-								ng-repeat="(key, text) in item.errors.text"
-								class="invalid-feedback">{[key]}. {[text]}</div>
-						</div>
-						<div class="form-group">
-							<label>Description</label>
-							<text-angular 
-							ng-model="item.description"
-							ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-							ta-text-editor-class="form-height form-control"
-							ng-class="{'is-invalid': item.errors.description}"
-							>
-							</text-angular>
-
-							<div ng-if="item.errors.description"
-								ng-repeat="(key, text) in item.errors.description"
-								class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
-						</div>
-					</form>
-
-					<!-- OPERATION -->
-					<div ng-repeat="(i, op) in item.operations" class="p-2 my-1 border">
-						<div class="d-flex flex-column" ng-if="!op.editor">
-							<div class="d-flex">
-								<div class="mr-auto"><h6>{[ op._embedded.text ]}</h6></div>
-								<div>
-									<div class="btn-group">
-										<a href="" ng-click="loadOpHints(op)" 
-											class="btn btn-sm btn-primary"
-										>
-											<i class="fa" 
-												ng-if="op._embedded.id"									
-												ng-class="{
-													'fa-eye': !op.hints, 
-													'fa-eye-slash': op.hints,
-												}">
-											</i><!-- 3 -->
-										</a>
-										<a href="" ng-click="operationDialog(item, op)" 
-											class="btn btn-sm btn-info"
-										>
-											<i class="fa fa-pencil"></i>
-										</a>
-										<a href=""  class="btn btn-sm btn-secondary"
-											ng-confirm-click
-											confirmed-click="deleteOp(item, op, i)"
-										>
-											<i class="fa fa-trash"></i>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div ng-if="op._embedded.description" class="small" ng-bind-html="op.description"></div>
-						</div>
-
-						<!-- OPERATION FORM -->
-						<form ng-if="op.editor" 
-							class="p-2"
-							style="
-						">
-							<div class="form-group">
-								<a href="" class="btn btn-sm btn-default"
-									ng-click="closeOp(item, op, i)"
-								>
-									<span class="fa fa-close"></span>
-								</a>
-								<button class="btn btn-sm btn-success"
-									ng-click="submitOp(item, op, i)"
-								>
-									<span class="fa fa-check"></span>
-								</button>
-							</div>
-							<div class="form-group">
-								<label>Name</label>
-								<input type="text"
-								  	id="inputText" 
-									class="form-control" 
-									ng-class="{'is-invalid': op.errors.text}"
-									ng-model="op.text"/>
-								<div ng-if="op.errors.text"
-									ng-repeat="(key, text) in op.errors.text"
-									class="invalid-feedback">{[key]}. {[text]}</div>
-							</div>
-							<div class="form-group">
-								<label for="inputParents">Description</label>
-								<text-angular 
-								ng-model="op.description"
-								ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-								ta-text-editor-class="form-height form-control"
-								ng-class="{'is-invalid': op.errors.description}"
-								>
-								</text-angular>
-
-								<div ng-if="op.errors.description"
-									ng-repeat="(key, text) in op.errors.description"
-									class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
-							</div>
-						</form>
-
-						<!-- HINT TYPES -->
-						<div ng-if="op.hints" ng-repeat="hint in op.hints" 
-							class="d-flex flex-column pl-4 py-1 my-1">
-							<div class="d-flex">
-								<div class="mr-auto">
-									<span class="badge badge-{[badgeClass(hint.priority)]}">{[ hint.priority ]}</span> {[hint.name]}
-								</div>
-								<div class="btn-group">
-									<a ng-href="{[ hint._links.self.href ]}" 
-										class="btn btn-sm btn-primary"
-									>
-										<i class="fa fa-eye"></i>
-									</a>
-									<a href=""  class="btn btn-sm btn-danger"
-										ng-confirm-click
-										confirmed-click="alert('todo!')"
-									>
-										<i class="fa fa-trash"></i>
-									</a>
-								</div>
-							</div>
-						</div>
-						<div ng-if="op.hints" class="text-center">
-							<a href=""ng-click="createHintDialog(op)" class="btn btn-sm">
-								<i class="fa fa-plus"></i>
-							</a>
-							<p class="small">Showing {[ op.hints.length ]} error types</p>
-						</div>
-					</div>
-					<div ng-if="!item.operations.length || item.operations[item.operations.length-1]._embedded"	class="text-center">
-						<!--<a href="" ng-click="addOp(item)"><i class="fa fa-plus"></i></a>-->
-						<a href="" ng-click="operationDialog(item, {})"><i class="fa fa-plus"></i></a>
 					</div>
 				</div>
+
+				<!-- OPERATION -->
+				<div ng-repeat="(i, op) in group.operations" class="p-2 my-1">
+					<div class="d-flex flex-column" ng-if="!op.editor">
+						<div class="d-flex">
+							<div class="mr-auto"><h6>{[ op._embedded.text ]}</h6></div>
+							<div>
+								<div class="btn-group btn-group-justified">
+									<a href="" ng-click="showHints(op)" 
+										class="btn btn-sm btn-primary"
+									>
+										<i class="fa" 
+											ng-if="op._embedded.id"									
+											ng-class="{
+												'fa-eye': !op.hints, 
+												'fa-eye-slash': op.hints,
+											}">
+										</i><!-- 3 -->
+									</a>
+									<a href="" ng-click="editOperation(group, op)" 
+										class="btn btn-sm btn-primary"
+									><i class="fa fa-pencil"></i></a>
+									<!--<a href=""
+										class="btn btn-sm btn-primary"
+										ng-confirm-click
+										confirmed-click="deleteOp(group, op, i)"
+									><i class="fa fa-trash"></i></a>-->
+								</div>
+							</div>
+						</div>
+						<div ng-if="op._embedded.description" class="small" ng-bind-html="op.description"></div>
+					</div>
+
+					<!-- HINT TYPES -->
+					<div ng-if="op.hints" 
+						ng-repeat="hint in op.hints" 
+						class="pl-4 py-1 my-1"
+					>
+						<div class="d-flex">
+							<div class="mr-auto">
+								<span class="badge badge-{[badgeClass(hint.priority)]}">{[ hint.priority ]}</span> {[hint.name]}
+							</div>
+							<div class="btn-group btn-group-justified">
+								<a ng-href="{[ hint._links.self.href ]}" 
+									class="btn btn-sm btn-primary"
+								><i class="fa fa-eye"></i></a>
+								<!--<a href=""  class="btn btn-sm btn-primary"
+									ng-confirm-click
+									confirmed-click="alert('todo!')">
+									<i class="fa fa-trash"></i></a>-->
+							</div>
+						</div>
+					</div>
+					<div ng-if="op.hints" class="text-center border-bottom">
+						<a href=""ng-click="createHintDialog(op)" class="btn btn-sm">
+							<i class="fa fa-plus"></i>
+						</a>
+						<p class="small">Showing {[ op.hints.length ]} error types</p>
+					</div>
+				</div>
+
+				<div class="text-center">
+					<a href="" ng-click="addOperation(group)"><i class="fa fa-plus"></i></a>
+				</div>
+
 			</div>
 		</div>
 	</div>

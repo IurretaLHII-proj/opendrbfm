@@ -1,0 +1,34 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ values.name ]}</h3>
+</div>
+<div class="modal-body">
+	<div class="form-group">
+		<label>Name</label>
+		<input type="text"
+		  	id="inputText" 
+			class="form-control" 
+			ng-class="{'is-invalid': errors.text}"
+			ng-model="values.text"/>
+		<div ng-if="errors.text"
+			ng-repeat="(key, text) in errors.text"
+			class="invalid-feedback">{[key]}. {[text]}</div>
+	</div>
+	<div class="form-group">
+		<text-angular 
+		ng-model="values.description"
+		ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+		ta-text-editor-class="form-height form-control"
+		ng-class="{'is-invalid': errors.description}"
+		placeholder="Description"
+		>
+		</text-angular>
+
+		<div ng-if="errors.description"
+			ng-repeat="(key, text) in errors.description"
+			class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+</div>
