@@ -1,454 +1,64 @@
 {% extends 'ma/process/base.twig' %}
 
+{% block style %}
+
+	{{ parent() }}
+
+	<link href="{{ basePath() }}/css/custom/process-content.css" 
+		media="screen" 
+		rel="stylesheet" 
+		type="text/css" />
+
+	<style>
+	.process-img-list {
+		background: #E7E7E7;
+	}
+	.process-img-list .stage-img-list {
+	}
+	.process-img-list .active {
+		background: white;
+		border-left: 1px solid darkgray;
+		border-right: 1px solid darkgray;
+	}
+	</style>
+
+{% endblock style %}
+
 {% block base %}
 
-	<a href="" class="btn btn-sm btn-default">v1</a>
-	<a href="" class="btn btn-sm btn-primary">v2</a>
-	<a href="" class="btn btn-sm btn-default"><i class="fa fa-plus"></i> version</a>
-
-	<ul class="nav nav-tabs stage-tabs mt-2" {% if stageId %}ng-init="current({{ stageId }})"{% endif %}>
-		<li ng-repeat="(i, stage) in values.stages" class="nav-link" ng-class="{active:stage==values.current, editor:stage.editor}"><a href="" ng-click="values.current = stage;">Stage <span ng-if="stage._embedded">{[ stage._embedded.level ]}</span><span ng-if="!stage._embedded">{[ values.stages.length ]}</span></a></li>
-		<li ng-if="values.stages[values.stages.length-1]._embedded" class="nav-link" style=""><a href="" class="btn-sm btn-default" ng-click="addStage(values.stages[values.stages.length-1]._embedded)"><span class="fa fa-plus"></span></a></li>
+	<ul  
+		ng-repeat="(i, stage) in values.versions"
+		class="nav nav-tabs stage-tabs mt-2"
+			ng-if="version == stage"
+			ng-init="index = i;"
+			ng-include="'/js/custom/tpl/stage-nav-content.html'">
 	</ul>
 
+	<div class="process-img-list d-flex justify-content-center mt-4 mb-4">
 
-	<div ng-repeat="(i, stage) in values.stages" 
-		 ng-if="values.current == stage" 
-		 style="
-		 background: #f4f4f4;
-		 border: 1px solid #e6e6e6;
-	">
-		<div class="my-box stage-box d-flex flex-column"
-		 ng-class="{editor: stage.editor}"
-		 style="
-		">
-
-			<div class="d-flex">
-				<div class="ml-auto mr-auto">
-					<div ng-show="stage.showErrors" class="errors">{[ stage.errors.title ]}</div>
-				</div>
-				<div class="">
-					<a href="" class="btn btn-sm btn-default" 
-						ng-if="stage.editor && values.stages[0]._embedded" 
-						ng-click="closeStage(stage, i)"
-					>
-						<span class="fa fa-close"></span>
-					</a>
-					<button type="submit" class="btn btn-sm btn-success" 
-						ng-if="stage.editor;" 
-						ng-click="submitStage(stage, i);"
-					>
-						<span class="fa fa-check"></span>
-					</button>
-					<a href="" class="btn btn-sm btn-default" 
-						ng-if="!stage.editor;" 
-						ng-click="stage.editor=true;"
-					>
-						<span class="fa fa-pencil"></span>
-					</a>
-				</div>
-			</div>
-			<div ng-if="!stage.editor" class="">
-				<p>Operations</p>
-				<Ul>
-					<li ng-repeat="op in stage._embedded._embedded.operations">{[ op.name ]}</li>
-				</ul>
-				<div ng-bind-html="stage.body"></div>
-			</div>
-			<form ng-if="stage.editor" class="d-flex flex-column" style="
-			">
-
-				<div class="form-group">
-					<label for="inputParents">Operations</label>
-					<div class="form-row"
-						ng-repeat="(_i, op) in stage.operations"
-						>
-						<div class="form-group col-md-11">
-							<select class="form-control"
-								ng-class="{'is-invalid': stage.errors.operations[_i]}"
-								ng-model="stage.operations[_i]"
-								ng-options="item as item.name for item in getOperations(stage.operations[_i], stage.operations) track by item.id"
-								>
-							</select>
-							<div ng-if="stage.errors.operations[_i]"
-								ng-repeat="(key, text) in stage.errors.operations[_i].id"
-								class="invalid-feedback">{[key]}. {[text]}</div>
-						</div>
-						<div ng-if="_i" class="form-group col-md-1">
-							<a href="" class="btn-sm btn-default pull-right" 
-								ng-click="stage.operations.splice(_i, 1);">
-								<span class="fa fa-close"></span>
-							</a>
-						</div>
-					</div>
-					<div ng-if="stage.operations[stage.operations.length-1].id">
-						<a href="" class="btn-sm btn-default" 
-						ng-click="stage.operations.push(defaultOp)">
-						<span class="fa fa-plus"></span></a>
-					</div>
-
-				</div>
-				
-				<div class="form-group">
-					<label for="inputParents">Description</label>
-					<text-angular 
-					ng-model="stage.body"
-					ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
-					ta-text-editor-class="form-height form-control"
-					ng-class="{'is-invalid': stage.errors.body}"
-					>
-					</text-angular>
-
-					<div ng-if="stage.errors.body"
-						ng-repeat="(key, text) in stage.errors.body"
-						class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
-				</div>
-
-				<div class="form-group">
-					<label for="inputParents">Images</label>
-					<div class="d-flex">
-						<div ng-repeat="(index, image) in stage.images" 
-							class="mt-1 mb-1 d-flex" 
-							style="
-						">
-							<div style="
-								min-width: 120px;
-								background: lightgray;	
-							">
-								<img ng-if="image._links" ng-src="{[ image._links.self.href ]}" width=120 height=120 />
-								<img ng-if="!image._links" ng-src="/image/{[image.id]}" width=120 height=120 />
-							</div>
-							<div class="align-self-stretch" style="">
-								<textarea 
-									class="form-control" 
-									style="height:100%;"
-									ng-model="image.description"
-								></textarea>
-							</div>
-							<div class="align-self-center" style="">
-								<a href="" class="btn btn-default" ng-click="removeImage(stage, index)"><span class="fa fa-remove"></span></a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label 
-						class=""
-						style="
-							padding: .5rem 1rem;
-						    font-size: 1.25rem;
-						    line-height: 1.5;
-						    border-radius: .3rem;
-						    cursor: pointer;
-							color: #fff;
-						    background-color: #007bff;
-						    border-color: #007bff;
-						">
-						<i class="fa fa-file-image-o"></i>
-						<input type="file"
-							file-change="uploadFile"
-							file-entity="stage"
-							file-index="{[ stage.images.length ]}"
-							style="display:none;"
-							/>
-					</label>
-					<div ng-if="stage.errors.file"
-						ng-repeat="(key, text) in stage.errors.file"
-						class="invalid-feedback" style="display:block;">{[key]}. {[text]}
-					</div>
-				</div>
-			</form>
-		</div>
-
-
-		<div 
-			ng-if="stage._embedded"
-			class="pl-table"
-		>
-			<div class="pl-thead">
-				<div class="row">
-					<div class="col-sm-12 col-md-1">
-						<div class="row">
-			    			<div class="col col-sm-6">Type</div>
-							<div class="col col-sm-6">Prior</div>
-						</div>
-					</div>
-					<div class="col-sm-12 col-md-4">
-						<div class="row">
-			    			<div class="col-sm-6 col-md-6">Prevs</div>
-			    			<div class="col-sm-6 col-md-6">Text</div>
-							<!--<div class="col-sm-12 col-md-4">Description</div>-->
-						</div>
-					</div>
-					<div class="col-sm-12 col-md-6">
-						<div class="row">
-			    			<div class="col col-sm-4">Reasons</div>
-			    			<div class="col col-sm-4">Influence</div>
-			    			<div class="col col-sm-4">Suggestions</div>
-			  			</div>
-			  		</div>
-			    	<div class="col-sm-12 col-md-1"></div>
-			  	</div>
-			</div>
-			<div class="pl-tbody"
-				ng-repeat="(h, hint) in stage.hints"
-				ng-class="{editor: hint.editor}"
+		<!--
+		<ng-include ng-if="version" ng-repeat="(i, stage) in getStages(version)"
+			src="'/js/custom/tpl/stage-img-content.html'"
 			>
-				<div class="row"
-					ng-if="!hint.editor"
-				>
+		-->
+		<ng-include
+			ng-repeat="(i, stage) in values.versions"
+			ng-if="version == stage && stage._embedded && stage._embedded._embedded.images.length"
+			src="'/js/custom/tpl/stage-img-content.html'"
+		/>
 
-					<div class="col-sm-12 col-md-1">
-						<div class="row">
-							<div class="col col-sm-6">x</div>
-							<div class="col col-sm-6">{[ hint.priority ]}</div>
-						</div>
-					</div>
-		    		<!--<div class="col col-md-3" ng-if="values.stages[i-1]._embedded">-->
-					<div class="col-sm-12 col-md-4">
-						<div class="row">
-		    				<div class="col col-sm-6 col-md-6">
-								<ul style="
-									padding-left: 20px;
-									list-style: square;
-									margin: 0;
-								">
-									<li ng-repeat="item in hint._embedded._embedded.parents">Stage {[ item.level]}. <a ng-href="{[ item._links.self.href ]}">{[ item.text ]}</a></li>
-								</ul>
-							</div>
-							<div class="col col-sm-6 col-md-6">
-								<a ng-href="{[ hint._embedded._links.self.href ]}">{[ hint.text ]}</a>
-							</div>
-							<!--<div class="col col-sm-6 col-md-4">{[ hint.description ]}</div>-->
-						</div>
-					</div>
-					<div class="col-sm-12 col-md-6">
-						<div class="row">
-							<div class="col col-sm-4">
-								<ul ng-if="hint.reasons.length">
-									<li ng-repeat="note in hint._embedded._embedded.reasons">{[note.text]}</li>
-								</ul>
-							</div>
-							<div class="col col-sm-4">
-								<ul ng-if="hint.suggestions.length">
-									<li ng-repeat="note in hint._embedded._embedded.suggestions">{[note.text]}</li>
-								</ul>
-							</div>
-							<div class="col col-sm-4">
-								<ul ng-if="hint.influences.length">
-									<li ng-repeat="note in hint._embedded._embedded.influences">{[note.text]}</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-		    		<div class="col-sm-12 col-md-1">
-						<div class="btn-group">
-							<a href="" ng-click="hint.editor=true;" class="btn-sm btn-default">
-								<span class="fa fa-pencil"></span>
-							</a>
-							<button class="btn-sm btn-default"
-							   	style="background:none;color:darkred;"
-								ng-confirm-click
-								confirmed-click="deleteHint(stage, hint, h);"
-							>
-								<span class="fa fa-trash"></span>
-							</button>
-						</div>
-					</div>
-				</div>
-
-				<div ng-if="hint.editor" class="d-flex flex-column" style="
-					background:white; 
-					border: 1px solid lightgray;
-					margin: 12px;
-				">
-					<div class="d-flex">
-						<div class="ml-auto mr-auto">
-							<div ng-show="hint.showErrors" class="errors">
-								<p>{[ hint.errors.title ]}</p>
-							</div>
-						</div>
-						<div>
-							<a href="" class="btn btn-sm btn-default"
-								ng-if="stage.hints[0]._embedded" 
-								ng-click="closeHint(stage, hint, h)"
-							>
-								<span class="fa fa-close"></span>
-							</a>
-							<button class="btn btn-sm btn-success"
-								ng-click="submitHint(stage, hint, h);"
-							>
-								<span class="fa fa-check"></span>
-							</button>
-						</div>
-					</div>
-					<form style="
-					   	padding: 12px;
-					">
-						<div class="form-row">
-							<div class="form-group col-md-6">
-							  	<label for="inputHType">Type</label>
-								<select class="form-control"
-									ng-class="{'is-invalid': hint.errors.operation}"
-									ng-model="hint.operation"
-									ng-options="item as item.name for item in stage._embedded._embedded.operations track by item.id"
-									>
-								</select>
-							</div>
-							<div class="form-group col-md-6">
-							  	<label for="inputPriority">Priority</label>
-							    <input type="number" 
-							  		id="inputPriority"
-							   		class="form-control" 
-							  		ng-class="{'is-invalid': hint.errors.priority}"
-							  		ng-model="hint.priority"/>
-								<div ng-if="hint.errors.priority"
-									ng-repeat="(key, text) in hint.errors.priority"
-									class="invalid-feedback">{[key]}. {[text]}</div>
-							</div>
-						</div>
-						<div ng-if="hint.editor && values.stages[i-1]._embedded" 
-							  class="form-group">
-							<label for="inputParents">Prevs</label>
-							<div class="form-row"
-								ng-repeat="(_i, parent) in hint.parents"
-								>
-								<div class="form-group col-md-11">
-									<select class="form-control"
-										ng-class="{'is-invalid': hint.errors.parents[_i]}"
-										ng-model="hint.parents[_i]"
-										ng-options="item as item.name for item in getPrevs(i, hint.parents[_i], hint.parents) track by item.id"
-										>
-									</select>
-									<div ng-if="hint.errors.parents[_i]"
-										ng-repeat="(key, text) in hint.errors.parents[_i].id"
-										class="invalid-feedback">{[key]}. {[text]}</div>
-								</div>
-								<div class="form-group col-md-1">
-									<a href="" class="btn-sm btn-default pull-right" 
-										ng-click="hint.parents.splice(_i, 1);">
-										<span class="fa fa-close"></span>
-									</a>
-								</div>
-							</div>
-							<div ng-if="!hint.parents.length || hint.parents[hint.parents.length-1].id">
-								<a href="" class="btn-sm btn-default" 
-								ng-click="hint.parents.push(defaultHint)">
-								<span class="fa fa-plus"></span></a>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="inputText">Text</label>
-							<input type="text"
-							  	id="inputText" 
-								class="form-control" 
-								ng-class="{'is-invalid': hint.errors.text}"
-								ng-model="hint.text"/>
-							<div ng-if="hint.errors.text"
-								ng-repeat="(key, text) in hint.errors.text"
-								class="invalid-feedback">{[key]}. {[text]}</div>
-						</div>
-						<div class="form-group">
-						  	<label for="inputDescription">Description</label>
-							<textarea rows="3" 
-								id="inputDescription"
-								class="form-control"
-								ng-class="{'is-invalid': hint.errors.description}"
-								ng-model="hint.description">
-							</textarea>
-							<div ng-if="hint.errors.description"
-								ng-repeat="(key, text) in hint.errors.description"
-								class="invalid-feedback">{[key]}. {[text]}</div>
-						</div>
-						<div class="form-group">
-						  	<label for="inputReasons">Reasons</label>
-							<div class="form-row"
-								ng-repeat="(_i, note) in hint.reasons"
-								>
-								<div class="form-group col-md-11">
-									<textarea rows="3" 
-										ng-class="{'is-invalid': hint.errors.reasons[_i]}"
-										ng-model="hint.reasons[_i].text"
-										class="form-control">
-									</textarea>
-									<div ng-if="hint.errors.reasons[_i]"
-										ng-repeat="(key, text) in hint.errors.reasons[_i]"
-										class="invalid-feedback">{[key]}. {[text]}</div>
-								</div>
-								<div class="form-group col-md-1">
-									<a href="" class="btn-sm btn-default pull-right" 
-										ng-click="hint.reasons.splice(_i, 1);">
-										<span class="fa fa-close"></span>
-									</a>
-								</div>
-							</div>
-							<div>
-								<a href="" class="btn-sm btn-default" 
-								ng-click="hint.reasons.push({})">
-								<span class="fa fa-plus"></span></a>
-							</div>
-						</div>
-						<div class="form-group">
-						  	<label for="inputSuggestions">Suggestions</label>
-							<div class="form-row"
-								ng-repeat="(_i, note) in hint.suggestions"
-								>
-								<div class="form-group col-md-11">
-									<textarea rows="3" 
-										ng-class="{'is-invalid': hint.errors.suggestions[_i]}"
-										ng-model="hint.suggestions[_i].text"
-										class="form-control">
-									</textarea>
-									<div ng-if="hint.errors.suggestions[_i]"
-										ng-repeat="(key, text) in hint.errors.suggestions[_i]"
-										class="invalid-feedback">{[key]}. {[text]}</div>
-								</div>
-								<div class="form-group col-md-1">
-									<a href="" class="btn-sm btn-default pull-right" 
-										ng-click="hint.suggestions.splice(_i, 1);">
-										<span class="fa fa-close"></span>
-									</a>
-								</div>
-							</div>
-							<div>
-								<a href="" class="btn-sm btn-default" 
-								ng-click="hint.suggestions.push({})">
-								<span class="fa fa-plus"></span></a>
-							</div>
-						</div>
-						<div class="form-group">
-						  	<label for="inputInfluences">Influences</label>
-							<div class="form-row"
-								ng-repeat="(_i, note) in hint.influences"
-								>
-								<div class="form-group col-md-11">
-									<textarea rows="3" 
-										ng-class="{'is-invalid': hint.errors.influences[_i]}"
-										ng-model="hint.influences[_i].text"
-										class="form-control">
-									</textarea>
-									<div ng-if="hint.errors.influences[_i]"
-										ng-repeat="(key, text) in hint.errors.influences[_i]"
-										class="invalid-feedback">{[key]}. {[text]}</div>
-								</div>
-								<div class="form-group col-md-1">
-									<a href="" class="btn-sm btn-default pull-right" 
-										ng-click="hint.influences.splice(_i, 1);">
-										<span class="fa fa-close"></span>
-									</a>
-								</div>
-							</div>
-							<div>
-								<a href="" class="btn-sm btn-default" 
-								ng-click="hint.influences.push({})">
-								<span class="fa fa-plus"></span></a>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-			<div class="col-sm-12 mt-2 mb-2" style="text-align:center;" ng-if="stage.hints[stage.hints.length-1]._embedded">
-				<a href="" class="btn-sm btn-default" ng-click="addHint(stage)"><span class="fa fa-plus"></span></a>
 	</div>
+
+	<ng-include 
+		ng-repeat="(i, stage) in values.versions"
+		ng-if="version == stage;"
+		src="'/js/custom/tpl/stage-tab-content.html'"
+	/>
+
+	<!--
+	<ng-include ng-repeat="(index, stage) in getStages(version)"
+		src="'/js/custom/tpl/stage-tab-content.html'"
+		>
+	-->
 
 {% endblock base %}

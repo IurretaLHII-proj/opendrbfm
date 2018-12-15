@@ -105,7 +105,8 @@ App.service('operationApi', ['$resource', function($res) {
 			);
 		},
 		getHints: function(op) {
-			return $res(op._embedded._links.hints.href).get().$promise.then(
+			console.log(op);
+			return $res(op._links.hints.href).get().$promise.then(
 				function(data) {
 					return data;
 				},
@@ -153,8 +154,17 @@ App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 			case number > 6: return 'danger';
 			case number >= 4: return 'warning';
 			case number >= 2: return 'success';
-			case number >= 0: return 'secondary';
+			case number > 0: return 'secondary';
 			default: return 'light';
+		}
+	};
+
+	$scope.textClass = function(number) {
+		switch (true) {
+			case number == 1: return 'dark';
+			case number == 2: return 'success';
+			case number == -1: return 'muted';
+			default: return 'danger';
 		}
 	};
 

@@ -161,8 +161,11 @@ class HintForm extends Form implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return [
-			'text' => [
+			'priority' => [
 				'required' => true,
+			],
+			'text' => [
+				'required' => false,
 				'filters' => [
 					[
 						'name' => \Zend\Filter\StringTrim::class,

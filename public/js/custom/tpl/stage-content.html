@@ -1,0 +1,32 @@
+<!--<div class="d-flex flex-column align-self-center flex-fill mr-2">-->
+<div ng-if="stage==current" class="d-flex flex-column mx-2">
+	<div class="d-flex mb-1">
+		<div class="bg-light border px-4">Version</div>
+		<div class="px-4 bg-white border flex-fill">{[ stage._embedded.version ]}</div>
+	</div>
+	<div class="d-flex my-2">
+		<div class="bg-light border px-4">Material</div>
+		<div class="pl-2 pr-4 bg-white border">{[ stage._embedded._embedded.material.name ]}</div>
+		<div class="px-4 bg-light border">Stage</div>
+		<div class="px-4 bg-white border flex-fill">{[ stage._embedded.level ]}</div>
+	</div>
+	<div class="d-flex my-2">
+		<div class="bg-light border px-4">Operations</div>
+		<div class="px-4 bg-white border flex-fill">
+			<ul class="m-0 p-0" style="list-style:none;">
+				<li ng-repeat="op in stage._embedded._embedded.operations">{[op.name]}</li>
+			</ul>
+		</div>
+	</div>
+	<div class="d-flex mb-2 mt-1">
+		<div class="bg-light border px-4">Description</div>
+		<div class="px-4 bg-white border flex-fill" ng-bind-html="stage._embedded.body"></div>
+	</div>
+</div>
+
+<ng-include 
+	ng-repeat="child in stage.children" 
+	ng-init="stage=child;" 
+	class="flex-fill"
+	src="'/js/custom/tpl/stage-content.html'"
+/>
