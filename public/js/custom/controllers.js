@@ -405,7 +405,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 		return options;
 	};
 	$scope.addOperation = function() {
-		$scope.values.operations.push(_defaultOption);
+		$scope.values.operations.push(angular.coy(_defaultOption));
 	};
 
     $scope.addImage = function(stage) {
@@ -462,4 +462,183 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
                  }
              );
     }
+});
+
+App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api) {
+		
+	$scope.values = [];
+	$scope.init = function(collection) {
+		$scope.collection = collection._embedded.items;
+		angular.forEach($scope.collection, function(item, index) {
+			var group = angular.copy(item);
+			group._embedded = item;
+			group.operations = [];
+			angular.forEach(group._embedded._embedded.operations, function(op, i) {
+				group.operations[i] = angular.copy(op);
+				group.operations[i]._embedded = op;
+			});
+			$scope.values.push(group); 
+		});
+		console.log(collection, $scope.values);
+	};
+
+	$scope.showHints = function(op) {
+		if (!op.loaded) {
+			api.operation.getHints(op._embedded).then(function(data) {
+				op.hints = data._embedded.items;
+			});
+			op.loaded=true;
+		}
+	};
+
+	$scope.editGroup = function(group) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-type-form.html',
+			controller: '_OperationTypeModalCtrl',	
+			size: 'lg',
+			resolve: {group: group}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			}
+		);
+	}
+	$scope.addOperation = function(group) {
+		var op = {type: group,};
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-form.html',
+			controller: '_OperationModalCtrl',	
+			size: 'lg',
+			resolve: {group: group, op:op}
+		});
+
+		modal.result.then(
+			function(res) {
+				group.operations.push(res);
+				$scope.addSuccess("Saved succesfully");
+			}
+		);
+	}
+	$scope.editOperation = function(group, op) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-form.html',
+			controller: '_OperationModalCtrl',	
+			size: 'lg',
+			resolve: {group: group, op:op}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			}
+		);
+	}
+});
+
+App.controller('_OperationTypeModalCtrl', function($scope, $uibModalInstance, $resource, group) {
+	console.log(group);
+	$scope.values = group;
+	$scope.errors = {};
+	$scope.save = function() {
+		$resource(group._links.edit.href).save($scope.values).$promise.then(
+			function(data) {
+				group._embedded = data;
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resource, group, op) {
+	console.log(group, op);
+	$scope._createOption  = _createOption;
+	$scope.group  = group;
+	$scope.op	  = op;
+	$scope.values = angular.copy(op);
+	$scope.init = function() {
+		//$scope.values = angular.copy(op);
+		$scope.values.children = [];
+		if (op._embedded && op._embedded._embedded && op._embedded._embedded.children) {
+			angular.forEach(op._embedded._embedded.children, function(child, i) {
+				_child = angular.copy(child);
+				_child._embedded = child; 
+				$scope.values.children[i] = _child;
+			});
+			delete $scope.values._embedded;
+		}
+		console.log($scope.op, $scope.values);
+	}
+	$scope.getOperations = function(model, currents) {
+		var options = [];
+		angular.forEach(group.operations, function(item, key) {
+			if (model.id == item.id || currents.map(function(e) {return e.id}).indexOf(item.id) == -1) {
+				options.push(item);
+			}
+		});
+		options.unshift($scope._createOption);
+		return options;
+	}
+	$scope.reloadTitle = function() {
+		$scope.values.text = "";
+		angular.forEach($scope.values.children, function(child) {
+			if (child.text) {
+				if ($scope.values.text.length) $scope.values.text += "+";
+				$scope.values.text += child.text;
+			}
+		});
+	}
+	$scope.mixed = function() {
+		if ($scope.values.children.length) {
+			$scope.values.children = [];
+		}
+		else {
+			$scope.values.children = [
+				angular.copy($scope._createOption),
+				angular.copy($scope._createOption),
+			];
+		}
+	}
+	$scope.addChild = function() {
+		$scope.values.children.push(angular.copy(_createOption));
+	}
+	$scope.save = function() {
+		var raw = {operation: angular.copy($scope.values)};
+		angular.forEach(raw.operation.children, function(child) {
+			child.type = group.id;
+		});
+		var resource;
+		if (op._embedded) {
+			resource = $resource(op._embedded._links.edit.href);
+		}
+		else {
+			resource = $resource(group._embedded._links.operation.href);
+		}
+		console.log(raw);
+		resource.save(raw).$promise.then(
+			function(data) {
+				op._embedded = data;
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors.operation;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+	$scope.init();
 });
