@@ -7,7 +7,8 @@
 		><span>Stage</span> {[stage.level]}</a>
 	</div>
 	<div ng-if="stage._embedded._embedded.images.length" 
-		 ng-repeat="img in stage._embedded._embedded.images" class=""
+		 ng-repeat="img in stage._embedded._embedded.images" 
+		 class="text-center"
 	>
 		<a href="" ng-click="setCurrent(stage);">
 			<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail p-0 border-0 img-responsive stage-img"/>

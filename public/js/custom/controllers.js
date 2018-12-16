@@ -407,7 +407,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 		return options;
 	};
 	$scope.addOperation = function() {
-		$scope.values.operations.push(angular.coy(_defaultOption));
+		$scope.values.operations.push(angular.copy(_defaultOption));
 	};
 
     $scope.addImage = function(stage) {
