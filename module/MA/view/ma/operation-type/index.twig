@@ -17,7 +17,7 @@
 			ng-init="init({{ json(hal().renderCollection(collectionHal)) | escape }})"
 		>
 			<div class="btn-group mt-2" role="group">
-				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
+				<button class="btn btn-sm btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
 			</div>
 			<div class="collapse my-2" id="collapseForm">
 				<h2>{{ translate("New group") }}</h2>
@@ -26,23 +26,24 @@
 
 			<hr class="my-2">
 
-			<h2>{{ translate("Groups") }}</h2>
+			<!--<h2>{{ translate("Groups") }}</h2>-->
 
 			<div ng-repeat="(index, group) in values" 
 				class="my-2"
 				ng-class="{first: $first, last: $last}"
 			>
 				<div class="d-flex">
-					<div class="bg-secondary text-light px-4">
+					<h4 class="mr-4">{[ group._embedded.text ]}</h4>
+					<!--<div class="bg-secondary text-light px-4">
 						{[ group._embedded.text ]}
-					</div>
+					</div>-->
 					<div ng-if="group._embedded.description" 
 						class="small px-4" ng-bind-html="group.description">
 					</div>
 					<div class="ml-auto pl-4">
 					  	<div class="btn-group btn-group-justified">
 						<a href="" 
-							class="btn btn-sm btn-primary" 
+							class="btn btn-sm btn-outline-primary" 
 							ng-click="editGroup(group)"
 						><i class="fa fa-pencil"></i></a>
 						<!--<a href="" 
@@ -73,7 +74,7 @@
 								<a href="" 
 									ng-click="showHints(op)" 
 									ng-class="{active:op._sh}"
-									class="btn btn-sm btn-primary"
+									class="btn btn-sm btn-outline-primary"
 									data-toggle="collapse"
 									data-target="#op-{[op.id]}-hints"
 									aria-expanded="false"
@@ -84,10 +85,10 @@
 									</i>
 								</a>
 								<a href="" ng-click="editOperation(group, op)" 
-									class="btn btn-sm btn-primary"
+									class="btn btn-sm btn-outline-primary"
 								><i class="fa fa-pencil"></i></a>
 								<a href=""
-									class="btn btn-sm btn-primary"
+									class="btn btn-sm btn-outline-primary"
 									ng-confirm-click
 									confirmed-click="deleteOperation(group, op)"
 								><i class="fa fa-trash"></i></a>
@@ -109,10 +110,10 @@
 									<div class="btn-group btn-group-justified">
 										<a  href="" 
 											ng-click="editHint(op,hint)"
-											class="btn btn-sm btn-primary"
+											class="btn btn-sm btn-outline-primary"
 										><i class="fa fa-pencil"></i></a>
 										<a ng-href="{[ hint._embedded._links.self.href ]}" 
-											class="btn btn-sm btn-primary"
+											class="btn btn-sm btn-outline-primary"
 										><i class="fa fa-eye"></i></a>
 										<!--<a href=""  class="btn btn-sm btn-primary"
 											ng-confirm-click
