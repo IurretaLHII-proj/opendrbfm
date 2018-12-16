@@ -145,7 +145,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			_links: {image: {href: '/process/stage/image/json'}}
 		};
 		if (parentStage) {
-			_stage.parent   = parentStage;
+			_stage.parent   = parentStage._embedded; //id
 			_stage.level    = parentStage.level + 1;
 			_stage.version  = parentStage.version;
 			_stage.material = parentStage.material;

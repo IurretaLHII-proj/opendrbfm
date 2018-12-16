@@ -26,7 +26,7 @@
 		<ul class="list-inline my-2">
 			<li ng-repeat="(i,v) in values.versions" class="list-inline-item">
 				<a href=""
-				   class="btn btn-sm btn-primary" 
+				   class="btn btn-sm btn-outline-primary" 
 				   ng-class="{active: v == version}"
 				   ng-click="loadVersion(v)"
 				>v{[i+1]} | {[ v._embedded._embedded.material.name ]}</a>
@@ -48,7 +48,7 @@
 		<!-- END OF VERSION STAGE TABS -->
 
 		<!-- VERSION STAGE CONTENT -->
-		<div class="d-flex flex-column border">
+		<div ng-if="current" class="d-flex flex-column border">
 			<div class="">
 				<a href="" ng-click="editStage(current)" class="btn pull-right">
 					<i class="fa fa-pencil"></i>
@@ -73,7 +73,7 @@
 		<!-- END OF VERSION STAGE CONTENT -->
 		
 		<!-- HINTS TABLE -->
-		<table class="table table-bordered my-2">
+		<table ng-if="current" class="table table-bordered my-2">
 			<thead class="text-center">
 				<tr>
 					<th rowspan="2">Error</th>
@@ -133,10 +133,10 @@
 					<td class="">
 						<div class="btn-group btn-group-justified">
 							<!--<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>-->
-							<a href="" ng-click="editHint(hint)" class="btn btn-sm btn-primary">
+							<a href="" ng-click="editHint(hint)" class="btn btn-sm btn-outline-primary">
 								<i class="fa fa-pencil"></i>
 							</a>
-							<a ng-href="{[ hint._links.self.href ]}" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							<a ng-href="{[ hint._embedded._links.self.href ]}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></a>
 						</div>
 					</td>
 					<td class="bg-light text-{[textClass(hint._embedded.state)]}" 
@@ -157,7 +157,7 @@
 					</td>
 					<td class="bg-light">
 						<div class="btn-group btn-group-justified">
-							<a ng-click="simuleHint(hint)" href="" class="btn btn-sm btn-primary">
+							<a ng-click="simuleHint(hint)" href="" class="btn btn-sm btn-outline-primary">
 								<i class="fa fa-pencil"></i>
 							</a>
 						</div>

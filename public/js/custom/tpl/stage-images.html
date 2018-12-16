@@ -1,6 +1,10 @@
 <div ng-if="stage._embedded" ng-class="{active:current==stage}">
-	<div class="text-center" ng-class="{'bg-secondary':current==stage, 'bg-white':current!=stage}">
-		<a href="" ng-click="setCurrent(stage)" ng-class="{'text-light':current==stage}" ng-click=""><span>Stage</span> {[stage.level]}</a>
+	<div class="text-center my-2">
+		<a href="" 
+			class="btn btn-sm btn-outline-primary"
+			ng-click="setCurrent(stage)" 
+			ng-class="{'active':current==stage}" 
+		><span>Stage</span> {[stage.level]}</a>
 	</div>
 	<div ng-if="stage._embedded._embedded.images.length" 
 		 ng-repeat="img in stage._embedded._embedded.images" class=""
