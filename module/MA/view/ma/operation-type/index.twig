@@ -1,5 +1,13 @@
 {% extends 'layout/base-layout.twig' %}
 
+{% block style %}
+	{[parent()]}
+	<style>
+	p {
+	margin:0;
+	}
+	</style>
+{% endblock style %}
 {% block content %}
 	<div class="row">
 
@@ -21,17 +29,17 @@
 			<h2>{{ translate("Groups") }}</h2>
 
 			<div ng-repeat="(index, group) in values" 
-				class="my-2 p-2 bg-light border"
+				class="my-2"
 				ng-class="{first: $first, last: $last}"
 			>
 				<div class="d-flex">
-					<div class="d-flex flex-column mr-auto">
-						<h4>{[ group._embedded.name ]}</h4>
-						<div class="small border-bottom" 
-							ng-bind-html="group._embedded.description">
-						</div>
+					<div class="bg-secondary text-light px-4">
+						{[ group._embedded.text ]}
 					</div>
-					<div>
+					<div ng-if="group._embedded.description" 
+						class="small px-4" ng-bind-html="group.description">
+					</div>
+					<div class="ml-auto pl-4">
 					  	<div class="btn-group btn-group-justified">
 						<a href="" 
 							class="btn btn-sm btn-primary" 
@@ -47,62 +55,79 @@
 				</div>
 
 				<!-- OPERATION -->
-				<div ng-repeat="(i, op) in group.operations" class="p-2 my-1">
-					<div class="d-flex flex-column" ng-if="!op.editor">
-						<div class="d-flex">
-							<div class="mr-auto"><h6>{[ op._embedded.text ]}</h6></div>
-							<div>
-								<div class="btn-group btn-group-justified">
-									<a href="" ng-click="showHints(op)" 
-										class="btn btn-sm btn-primary"
-									>
-										<i class="fa" 
-											ng-if="op._embedded.id"									
-											ng-class="{
-												'fa-eye': !op.hints, 
-												'fa-eye-slash': op.hints,
-											}">
-										</i><!-- 3 -->
-									</a>
-									<a href="" ng-click="editOperation(group, op)" 
-										class="btn btn-sm btn-primary"
-									><i class="fa fa-pencil"></i></a>
-									<!--<a href=""
-										class="btn btn-sm btn-primary"
-										ng-confirm-click
-										confirmed-click="deleteOp(group, op, i)"
-									><i class="fa fa-trash"></i></a>-->
-								</div>
+				<div ng-repeat="(i, op) in group.operations" 
+					ng-class="{first: $first, last: $last}"
+					class="my-2 border" 
+					id="op-{[op.id]}"
+				>
+					<div class="d-flex">
+						<div class="bg-light border-right px-4">
+							{[ op._embedded.text ]}
+						</div>
+						<div ng-if="op._embedded.description" 
+							 class="small px-4"
+						   	 ng-bind-html="op.description">
+						</div>
+						<div class="ml-auto pl-4">
+							<div class="btn-group btn-group-justified">
+								<a href="" 
+									ng-click="showHints(op)" 
+									ng-class="{active:op._sh}"
+									class="btn btn-sm btn-primary"
+									data-toggle="collapse"
+									data-target="#op-{[op.id]}-hints"
+									aria-expanded="false"
+								>
+									<i class="fa" 
+										ng-class="op._sh ? 'fa-eye-slash' : 'fa-eye'"
+										>
+									</i>
+								</a>
+								<a href="" ng-click="editOperation(group, op)" 
+									class="btn btn-sm btn-primary"
+								><i class="fa fa-pencil"></i></a>
+								<a href=""
+									class="btn btn-sm btn-primary"
+									ng-confirm-click
+									confirmed-click="deleteOperation(group, op)"
+								><i class="fa fa-trash"></i></a>
 							</div>
 						</div>
-						<div ng-if="op._embedded.description" class="small" ng-bind-html="op.description"></div>
 					</div>
 
 					<!-- HINT TYPES -->
-					<div ng-if="op.hints" 
-						ng-repeat="hint in op.hints" 
-						class="pl-4 py-1 my-1"
-					>
-						<div class="d-flex">
-							<div class="mr-auto">
-								<span class="badge badge-{[badgeClass(hint.priority)]}">{[ hint.priority ]}</span> {[hint.name]}
-							</div>
-							<div class="btn-group btn-group-justified">
-								<a ng-href="{[ hint._links.self.href ]}" 
-									class="btn btn-sm btn-primary"
-								><i class="fa fa-eye"></i></a>
-								<!--<a href=""  class="btn btn-sm btn-primary"
-									ng-confirm-click
-									confirmed-click="alert('todo!')">
-									<i class="fa fa-trash"></i></a>-->
+					<div id="op-{[op.id]}-hints" class="collapse">
+						<div ng-if="op.hints" 
+							ng-repeat="hint in op.hints" 
+							class="pl-4 border-top"
+						>
+							<div class="d-flex">
+								<div class="mr-auto">
+									<span class="badge badge-{[badgeClass(hint.priority)]}">{[ hint._embedded.priority ]}</span> {[hint._embedded.name]}
+								</div>
+								<div>
+									<div class="btn-group btn-group-justified">
+										<a  href="" 
+											ng-click="editHint(op,hint)"
+											class="btn btn-sm btn-primary"
+										><i class="fa fa-pencil"></i></a>
+										<a ng-href="{[ hint._embedded._links.self.href ]}" 
+											class="btn btn-sm btn-primary"
+										><i class="fa fa-eye"></i></a>
+										<!--<a href=""  class="btn btn-sm btn-primary"
+											ng-confirm-click
+											confirmed-click="alert('todo!')">
+											<i class="fa fa-trash"></i></a>-->
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div ng-if="op.hints" class="text-center border-bottom">
-						<a href=""ng-click="createHintDialog(op)" class="btn btn-sm">
-							<i class="fa fa-plus"></i>
-						</a>
-						<p class="small">Showing {[ op.hints.length ]} error types</p>
+						<div ng-if="op.hints" class="text-center border-top">
+							<a href=""ng-click="addHint(op)" class="btn btn-sm">
+								<i class="fa fa-plus"></i>
+							</a>
+							<!--<p class="small">Showing {[ op.hints.length ]} error types</p>-->
+						</div>
 					</div>
 				</div>
 

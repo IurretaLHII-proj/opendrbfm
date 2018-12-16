@@ -21,6 +21,14 @@ App.service('api', ['$resource', function($res) {
 					}
 				);
 			},
+			delete: function(op) {
+				return $res(op._links.delete.href).delete().$promise.then(
+					function(data) {
+					},
+					function(err) {
+					}
+				);
+			},
 			getHints: function(op) {
 				return $res(op._links.hints.href).get().$promise.then(
 					function(data) {

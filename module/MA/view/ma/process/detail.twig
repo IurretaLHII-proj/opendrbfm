@@ -132,11 +132,11 @@
 					</td>
 					<td class="">
 						<div class="btn-group btn-group-justified">
-							<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>
+							<!--<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>-->
 							<a href="" ng-click="editHint(hint)" class="btn btn-sm btn-primary">
 								<i class="fa fa-pencil"></i>
 							</a>
-							<a href="" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+							<a ng-href="{[ hint._links.self.href ]}" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
 						</div>
 					</td>
 					<td class="bg-light text-{[textClass(hint._embedded.state)]}" 
@@ -150,8 +150,10 @@
 						<span ng-if="hint._embedded.who">{[ hint._embedded.who ]} on {[ hint._embedded.when*1000 | date:"longDate"]}</span>
 					</td>
 					<td class="bg-light text-{[textClass(hint._embedded.state)]}">
+						<span ng-if="hint._embedded.effect" ng-bind-html="hint._embedded.effect"></span>
 					</td>
 					<td class="bg-light text-{[textClass(hint._embedded.state)]}">
+						<span ng-if="hint._embedded.prevention" ng-bind-html="hint._embedded.prevention"></span>
 					</td>
 					<td class="bg-light">
 						<div class="btn-group btn-group-justified">

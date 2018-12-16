@@ -42,7 +42,7 @@ class Hint implements
 
 	/**
 	 * @var string 
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", options = {"nullable":true})
 	 */
 	protected $text;
 
@@ -182,6 +182,18 @@ class Hint implements
 	protected $when;
 
 	/**
+	 * @var string 
+	 * @ORM\Column(type="string", name="eff", options = {"nullable":true})
+	 */
+	protected $effect;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="string", name="prev", options = {"nullable":true})
+	 */
+	protected $prevention;
+
+	/**
 	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
@@ -318,9 +330,53 @@ class Hint implements
     }
     
     /**
+     * Get effect.
+     *
+     * @return string|null.
+     */
+    public function getEffect()
+    {
+        return $this->effect;
+    }
+    
+    /**
+     * Set effect.
+     *
+     * @param strin|nullg effect the value to set.
+     * @return Hint.
+     */
+    public function setEffect($effect = null)
+    {
+		$this->effect = $effect ? (string) $effect : $effect;
+        return $this;
+    }
+    
+    /**
+     * Get prevention.
+     *
+     * @return string|null.
+     */
+    public function getPrevention()
+    {
+        return $this->prevention;
+    }
+    
+    /**
+     * Set prevention.
+     *
+     * @param strin|nullg prevention the value to set.
+     * @return Hint.
+     */
+    public function setPrevention($prevention = null)
+    {
+		$this->prevention = $prevention ? (string) $prevention : $prevention;
+        return $this;
+    }
+    
+    /**
      * Get text.
      *
-     * @return string.
+     * @return string|null.
      */
     public function getText()
     {
@@ -330,12 +386,12 @@ class Hint implements
     /**
      * Set text.
      *
-     * @param string text the value to set.
+     * @param string|null text the value to set.
      * @return Hint.
      */
-    public function setText($text)
+    public function setText($text = null)
     {
-        $this->text = $text;
+        $this->text = $text ?  (string) $text : $text;
         return $this;
     }
     

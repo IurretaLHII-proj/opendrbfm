@@ -1,13 +1,15 @@
 {% extends 'ma/hint/base.twig' %}
 
-{% block main %}
+{% block content %}
+
+	<h2>{{ entity.name }}</h2>
 
 	<div class="btn-group">
-		<a href="" class="btn btn-sm btn-primary" ng-class="{active: tab == 'x'}" ng-click="tab = 'x'"><i class="fa fa-eye"></i> x</a>
+		<a href="" class="btn btn-sm btn-primary" ng-class="{active: !tab || tab == 'x'}" ng-click="tab = 'x'"><i class="fa fa-eye"></i> x</a>
 		<a href="" class="btn btn-sm btn-primary" ng-class="{active: tab == 'y'}" ng-click="tab = 'y'"><i class="fa fa-eye"></i> y</a>
 	</div>
 
-	<div ng-if="tab == 'x'" class="d-flex eye eye-x">
+	<div ng-if="!tab || tab == 'x'" class="d-flex eye eye-x">
 		{% if not entity.parents.isEmpty %}
 			<div class="d-flex flex-column flex-fill collection parents">
 			{% for index, parent in entity.parents %}
@@ -83,4 +85,4 @@
 		{% endif %}
 	</div>
 
-{% endblock main %}
+{% endblock content %}
