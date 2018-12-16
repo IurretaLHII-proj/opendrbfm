@@ -26,7 +26,7 @@ class HintController extends \Base\Controller\Js\AbstractActionController
 
 		if ($this->getRequest()->isPost()) {
 			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
-			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Hint::STATE_CREATED ? \Zend\Form\FormInterface::VALIDATE_ALL : ['state']; 
+			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Hint::STATE_CREATED ? \Zend\Form\FormInterface::VALIDATE_ALL : ['state', 'effect', 'prevention']; 
 			$form->setValidationGroup($validationGroup);
 			$form->setData($data);
 			if ($form->isValid()) {

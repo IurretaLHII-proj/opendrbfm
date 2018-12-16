@@ -248,19 +248,21 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 });
 
-App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, op) {
+App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, op, type) {
 	$scope.operation = op;
-	$scope.values = {};
+	$scope.values = type;
 	$scope.errors = {};
 	$scope.save = function() {
-		$resource(op._links.hint.href).save($scope.values).$promise.then(
-			function(data) {
-				$uibModalInstance.close(data);	
-			},
-			function(err) {
-				$scope.errors = err.data.errors;
-			},
-		);
+		$resource(type._embedded ? type._embedded._links.edit.href : op._links.hint.href)
+			.save($scope.values).$promise.then(
+				function(data) {
+					type._embedded = data;
+					$uibModalInstance.close(data);	
+				},
+				function(err) {
+					$scope.errors = err.data.errors;
+				},
+			);
 	};
 
 	$scope.cancel = function() {
@@ -321,17 +323,17 @@ App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, 
 	}
 
 	$scope.createHint = function() {
+		var _type = {};
 	 	if ($scope.values.type && $scope.values.type.id < 0) {	
 			var modal = $uibModal.open({
 				templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
 				controller: '_HintTypeModalCtrl',	
 				size: 'lg',
-				resolve: {op : $scope.values.operation},
+				resolve: {op : $scope.values.operation, type: _type},
 			});
 
 			modal.result.then(
 				function(res) {
-					console.log(res);
 					$scope.operationOptions.push(res);
 					hint.type = res;
 				},
@@ -484,11 +486,19 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api
 
 	$scope.showHints = function(op) {
 		if (!op.loaded) {
+			op.loaded = true;
+			op.hints  = [];
 			api.operation.getHints(op._embedded).then(function(data) {
-				op.hints = data._embedded.items;
+				angular.forEach(data._embedded.items, function(item, i) {
+					op.hints[i] = angular.copy(item);
+					op.hints[i]._embedded = item;
+					
+				});
+				op._sh=true;
 			});
-			op.loaded=true;
 		}
+		op._sh = !op._sh;
+		console.log(op);
 	};
 
 	$scope.editGroup = function(group) {
@@ -518,7 +528,7 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api
 
 		modal.result.then(
 			function(res) {
-				group.operations.push(res);
+				group.operations.push(op);
 				$scope.addSuccess("Saved succesfully");
 			}
 		);
@@ -536,6 +546,49 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api
 			function(res) {
 				$scope.addSuccess("Saved succesfully");
 			}
+		);
+	}
+	$scope.deleteOperation = function(group, op) {
+		api.operation.delete(op._embedded).then(
+			function (data) {
+        		group.operations.splice(group.operations.indexOf(op), 1);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+	$scope.addHint = function(op) {
+		var _type = {};
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
+			controller: '_HintTypeModalCtrl',	
+			size: 'lg',
+			resolve: {op: op, type: _type} 
+		});
+
+		modal.result.then(
+			function(res) {
+				op.hints.push(_type);
+				$scope.addSuccess("Saved succesfully");
+			},
+		);
+	}
+	$scope.editHint = function(op, hint) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
+			controller: '_HintTypeModalCtrl',	
+			size: 'lg',
+			resolve: {op: op, type: hint} 
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
 		);
 	}
 });
@@ -566,7 +619,8 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 	$scope._createOption  = _createOption;
 	$scope.group  = group;
 	$scope.op	  = op;
-	$scope.values = angular.copy(op);
+	$scope.values = op;
+	//$scope.values = angular.copy(op);
 	$scope.init = function() {
 		//$scope.values = angular.copy(op);
 		$scope.values.children = [];
@@ -576,7 +630,6 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 				_child._embedded = child; 
 				$scope.values.children[i] = _child;
 			});
-			delete $scope.values._embedded;
 		}
 		console.log($scope.op, $scope.values);
 	}
@@ -594,7 +647,7 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 		$scope.values.text = "";
 		angular.forEach($scope.values.children, function(child) {
 			if (child.text) {
-				if ($scope.values.text.length) $scope.values.text += "+";
+				if ($scope.values.text.length) $scope.values.text += " + ";
 				$scope.values.text += child.text;
 			}
 		});
@@ -618,6 +671,7 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 		angular.forEach(raw.operation.children, function(child) {
 			child.type = group.id;
 		});
+		delete raw.operation.type;
 		var resource;
 		if (op._embedded) {
 			resource = $resource(op._embedded._links.edit.href);
@@ -625,11 +679,10 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 		else {
 			resource = $resource(group._embedded._links.operation.href);
 		}
-		console.log(raw);
 		resource.save(raw).$promise.then(
 			function(data) {
-				op._embedded = data;
 				$uibModalInstance.close(data);	
+				op._embedded = data;
 			},
 			function(err) {
 				console.log(err);

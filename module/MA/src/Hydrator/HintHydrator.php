@@ -29,6 +29,8 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 			'state' 	  => $object->getState(),
 			'who' 	  	  => $object->getWho(),
 			'when' 	  	  => null !== ($w = $object->getWhen()) ? $w->getTimestamp() : $w,
+			'effect'	  => $object->getEffect(),
+			'prevention'  => $object->getPrevention(),
 			'created' 	  => $object->getCreated()->getTimestamp(),
 			'updated' 	  => $object->getUpdated()->getTimestamp(),
 			'operation'   => $object->getOperation(),

@@ -14,7 +14,7 @@
 	{% endif %}
 	<div class="hint flex-fill align-self-center mx-auto">
 		<p class="level">Stage {{ item.stage.level }}</p>
-		<p><a href="{{url('process/hint/detail', {id: item.id}) }}">{{ item.text }}</a></p>
+		<p><a href="{{url('process/hint/detail', {id: item.id}) }}">{{ item.name }}</a></p>
 	</div>
 	{% if sChildren and not item.children.isEmpty %}
 		<div class="d-flex flex-column">

@@ -61,7 +61,6 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
         $this->add([
              'type' => 'Textarea',
              'name' => 'effect',
-             'required' => true,
              'attributes' => [ 
                  'class' => 'form-control',
 				 'rows' => 4,
@@ -74,7 +73,6 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
         $this->add([
              'type' => 'Textarea',
              'name' => 'prevention',
-             'required' => true,
              'attributes' => [ 
                  'class' => 'form-control',
 				 'rows' => 4,
