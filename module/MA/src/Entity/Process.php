@@ -510,6 +510,23 @@ class Process implements
         $this->stages = $stages;
         return $this;
     }
+
+	/**
+	 * @return ImageInterface|null
+	 */
+	public function getImage()
+	{
+		if (null === ($version = $this->getVersions()->last())) {
+			return;
+		}
+
+		$stage = $version;
+		while (!($stage->getChildren()->isEmpty()) && $stage->getImages()->isEmpty()) {
+			$stage = $stage->getChildren()->first();
+		}
+	
+		return $stage->getImages()->first();
+	}
     
     /**
      * Get created.
@@ -592,7 +609,7 @@ class Process implements
   	 */
   	public function provideLinks()
   	{
-		return [
+		$links = [
 			[
 				'rel'   	  => 'edit',
 				'privilege'   => 'edit',
@@ -612,5 +629,19 @@ class Process implements
 				],
 			],
 		];
+
+		if (false !== ($image = $this->getImage())) {
+			$links[] = [
+				'rel'   	  => 'image',
+				'privilege'   => 'image',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'image/detail',
+				    'params'  => ['action' => 'detail', 'id' => $image->getId()],
+				],
+			];
+		}
+
+		return $links;
 	}
 }

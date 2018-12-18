@@ -18,7 +18,7 @@ class MaterialForm extends Form implements InputFilterProviderInterface
              'required' => true,
              'attributes' => [ 
                  'class' => 'form-control',
-				 'placeholder' => 'Priority',
+				 'placeholder' => 'Criticality',
 				 'min' => -99,
 				 'max' => 99,
              ],
