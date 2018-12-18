@@ -45,7 +45,7 @@ class HintController extends \Base\Controller\AbstractActionController
 		if (null !== ($entity = $this->getEntity())) {
 			$model->setVariables([
 				'entity' => $entity,
-				'hal'    => $this->prepareHalEntity($entity->getProcess(), "hint/detail/json")
+//				'hal'    => $this->prepareHalEntity($entity->getProcess(), "hint/detail/json")
 			]);
 		}
 	}
