@@ -571,7 +571,7 @@ class Stage implements
 	 */
 	public function getLevel()
 	{
-		$level = 1;
+		$level = 0;
 		$stage = $this;
 		while (null !== ($parent = $stage->getParent())) {
 			$stage = $parent;

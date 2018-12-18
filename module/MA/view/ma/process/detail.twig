@@ -55,13 +55,13 @@
 				</a>
 			</div>
 			<div class="row" ng-repeat="(i,stage) in values.versions">
-				<div class="col-sm-12 col-md-3">
+				<div class="col-sm-12 col-md-4">
 					<ng-include 
 						ng-if="stage == version"
 						src="'/js/custom/tpl/stage-content.html'"
 					/>
 				</div>
-				<div class="col-sm-12 col-md-9">
+				<div class="col-sm-12 col-md-8">
 					<ng-include 
 						ng-if="stage == version"
 						class="d-flex"
@@ -101,6 +101,9 @@
 						<div class="small text-muted">{[ hint._embedded._embedded.operation.name ]}</div>
 						<div>
 							<span class="badge badge-{[badgeClass(hint._embedded.priority)]}">{[ hint._embedded.priority ]}</span> {[ hint._embedded.name ]} 
+						</div>
+						<div class="small text-muted pull-right">
+							<a href="{[ hint._embedded._embedded.owner._links.self.href ]}">{[ hint._embedded._embedded.owner.name ]}</a> on {[ hint._embedded.created*1000 | date:"dd MMM yyyy HH:mm" ]}
 						</div>
 					</td>
 					<td>

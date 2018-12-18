@@ -40,7 +40,10 @@
 					<div ng-if="group._embedded.description" 
 						class="small px-4" ng-bind-html="group.description">
 					</div>
-					<div class="ml-auto pl-4">
+						<div class="ml-auto px-4 small">
+							<a href="{[ group._embedded._embedded.owner._links.self.href ]}">{[ group._embedded._embedded.owner.name ]}</a> on {[ group.created*1000 | date:"dd MMM yyyy HH:mm" ]}
+						</div>
+					<div class="pl-4">
 					  	<div class="btn-group btn-group-justified">
 						<a href="" 
 							class="btn btn-sm btn-outline-primary" 
@@ -69,7 +72,10 @@
 							 class="small px-4"
 						   	 ng-bind-html="op.description">
 						</div>
-						<div class="ml-auto pl-4">
+						<div class="ml-auto px-4 small">
+							<a href="{[ op._embedded._embedded.owner._links.self.href ]}">{[ op._embedded._embedded.owner.name ]}</a> on {[ op.created*1000 | date:"dd MMM yyyy HH:mm" ]}
+						</div>
+						<div class="pl-4">
 							<div class="btn-group btn-group-justified">
 								<a href="" 
 									ng-click="showHints(op)" 

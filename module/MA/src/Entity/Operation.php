@@ -485,6 +485,8 @@ class Operation implements
 			'owner'		  => $this->getUser(),
 			'description' => $this->getDescription(),
 			'children' 	  => new \ZF\Hal\Collection($this->getChildren()),
+			'updated'	  => $this->getUpdated()->getTimestamp(),
+			'created'	  => $this->getCreated()->getTimestamp(),
 		];
 	}
 
