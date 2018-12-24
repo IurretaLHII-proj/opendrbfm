@@ -49,8 +49,8 @@
 				<select class="form-control"
 					ng-class="{'is-invalid': errors.parents[_i]}"
 					ng-model="values.parents[_i]"
-					ng-options="item as item.name for 
-					item in getPrevs(values.parents[_i]) 
+					ng-options="item as 'Stage ' + item.level + ': ' + item.name 
+					for item in getPrevs(values.parents[_i]) 
 					track by item.id"
 					>
 				</select>

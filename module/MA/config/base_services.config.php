@@ -47,6 +47,20 @@ return [
 	],
 	Service\HintTypeService::class => [
 		'entities' => [Entity\HintType::class],
+		'listeners' => [
+			[
+				'services' => Service\HintService::class, 
+				'events'   => \Base\Service\AbstractService::EVENT_CREATE, 
+				'callback' => 'increaseErrors',
+				'priority' => 100,
+			],
+			[
+				'services' => Service\HintService::class, 
+				'events'   => \Base\Service\AbstractService::EVENT_REMOVE, 
+				'callback' => 'decreaseErrors',
+				'priority' => 100,
+			],
+		],
 	],
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],

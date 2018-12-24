@@ -4,7 +4,7 @@
 			class="btn btn-sm btn-outline-primary"
 			ng-click="setCurrent(stage)" 
 			ng-class="{'active':current==stage}" 
-		><span>Stage</span> {[stage.level]}</a>
+		><span>Stage</span> {[level]}</a>
 	</div>
 	<div ng-if="stage._embedded._embedded.images.length" 
 		 ng-repeat="img in stage._embedded._embedded.images" 
@@ -22,7 +22,7 @@
 <ng-include 
 	ng-if="stage.children.length"
 	ng-repeat="child in stage.children" 
-	ng-init="stage=child;" 
+	ng-init="stage=child;level=level+1;" 
 	class="d-flex"
 	src="'/js/custom/tpl/stage-images.html'"
 />

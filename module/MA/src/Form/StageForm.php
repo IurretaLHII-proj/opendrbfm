@@ -38,6 +38,22 @@ class StageForm extends Form implements InputFilterProviderInterface
              ],
         ]);
 
+		$this->add([
+             'type' => 'Collection',
+             'name' => 'children',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Children',
+				 'count' => 0,
+				 'target_element' => [
+				 	'type' => \MA\Form\StageSelectorFieldset::class,
+				 	'object' => \MA\Entity\Stage::class,
+				 ],
+             ],
+		]);
+
         $this->add([
              'type' => 'ObjectSelect',
              'name' => 'material',

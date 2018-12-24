@@ -24,6 +24,7 @@ abstract class AbstractService implements
 	const EVENT_CREATE = 'create';
 	const EVENT_UPDATE = 'update';
 	const EVENT_REMOVE = 'remove';
+	const EVENT_DELETE = 'remove';
 
 	/**
 	 * @var array
@@ -65,6 +66,7 @@ abstract class AbstractService implements
 	}
 
 	/**
+	 * FIXME attach Shared using func args directrly
 	 * @inheritDoc
 	 */
 	public function attachShared(SharedEventManagerInterface $ev)

@@ -512,12 +512,12 @@ class Process implements
     }
 
 	/**
-	 * @return ImageInterface|null
+	 * @return ImageInterface|false
 	 */
 	public function getImage()
 	{
-		if (null === ($version = $this->getVersions()->last())) {
-			return;
+		if (false === ($version = $this->getVersions()->last())) {
+			return $version;
 		}
 
 		$stage = $version;

@@ -363,6 +363,49 @@ class Stage implements
     }
     
     /**
+     * Add children.
+     *
+     * @param StageInterface[] children the value to set.
+     * @return StageInterface.
+     */
+    public function addChildren($children)
+    {
+		foreach ($children as $child) {
+			$this->addChild($child);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add child.
+     *
+     * @param StageInterface child the value to set.
+     * @return StageInterface.
+     */
+    public function removeChild(StageInterface $child)
+    {
+		$child->setParent();
+		$this->getChildren()->removeElement($child);
+        return $this;
+    }
+    
+    /**
+     * Add children.
+     *
+     * @param StageInterface[] children the value to set.
+     * @return StageInterface.
+     */
+    public function removeChildren($children)
+    {
+		foreach ($children as $child) {
+			$this->removeChild($child);
+		}
+
+        return $this;
+    }
+    
+    /**
      * Get operations.
      *
      * @return StageInterface[].
