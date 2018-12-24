@@ -10,7 +10,7 @@
 			ng-class="{'is-invalid': errors.parent}"
 			ng-change="changeParent()"
 			ng-model="values.parent"
-			ng-options="item as 'Stage ' + item.level for item in previouses"
+			ng-options="item as 'Stage ' + item._embedded.level for item in previouses"
 			>
 		</select>
 		<div ng-if="errors.parent"

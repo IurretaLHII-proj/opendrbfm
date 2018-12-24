@@ -13,7 +13,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		version.children = [];
 		while(items.length) {
 			item = _prepareStage(items.shift(items));
-			//item.parent = version;
+			item.parent = version;
 			version.children.push(item);
 			_initVersion(item, items);
 		}
@@ -99,6 +99,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		if (values) {
 			angular.merge($scope.values, values);
 		}
+		console.log($scope.values);
 	}
 
 	$scope.loadVersion = function(version) {
@@ -142,14 +143,13 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			templateUrl : '/js/custom/tpl/modal/stage-form.html',
 			controller: '_StageModalCtrl',	
 			size: 'lg',
-			resolve: {stage: _stage, version: $scope.version, process: $scope.values,}
+			resolve: {stage: _stage, process: $scope.values,}
 		});
 
 		modal.result.then(
 			function(res) {
 				if (_stage.parent) {
 					var parent = _stage.parent;
-					delete _stage.parent;
 					if (parent.children.length) {
 						_stage.children = parent.children.splice(0, parent.children.length);
 					}
@@ -176,6 +176,21 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
+				stage.children = [];
+				if (stage.parent) {
+					var parent = stage.parent;
+					if (parent.children.length) {
+						var child  = stage.parent;
+						while (child.children.length && child.children.indexOf(stage) == -1) {
+							var child = child.children[0];
+						}
+						if (child.children.length) {
+							child.children = [];
+						}
+						stage.children = parent.children.splice(0, parent.children.length);
+					}
+					parent.children.push(stage);
+				}
 				$scope.addSuccess("Saved succesfully");
 			}
 		);

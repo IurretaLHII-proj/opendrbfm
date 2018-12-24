@@ -25,10 +25,10 @@
 	<div class="d-flex mt-2 mb-1">
 		<div class="px-4 bg-light border">Owner</div>
 		<div class="px-4 bg-white border flex-fill">
-			<a href="{[ values._embedded._embedded.owner._links.self.href ]}">{[ values._embedded._embedded.owner.name ]}</a>
+			<a href="{[ stage._embedded._embedded.owner._links.self.href ]}">{[ stage._embedded._embedded.owner.name ]}</a>
 		</div>
 		<div class="px-4 bg-light border">Created</div>
-		<div class="px-4 bg-white border flex-fill"><small>{[ values.created*1000 | date:"dd MMM yyyy HH:mm" ]}</small></div>
+		<div class="px-4 bg-white border flex-fill"><small>{[ stage._embedded.created*1000 | date:"dd MMM yyyy HH:mm" ]}</small></div>
 	</div>
 </div>
 

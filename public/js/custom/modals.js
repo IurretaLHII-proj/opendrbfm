@@ -115,8 +115,7 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	};
 });
 
-App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, version, stage) {
-	//console.log(process,version, stage);
+App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, stage) {
 	api.operation.getAll().then(function(data) {
 		$scope.operations = data;
 	});
@@ -126,18 +125,22 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 	$scope.errors = {};
 	$scope.values = stage; 
 	$scope.save = function() {
-		console.log($scope.values);
 		var raw = angular.copy($scope.values);
 		raw.material = raw.material.id;
-		if (raw.parent) raw.parent = raw.parent._embedded.id;
-		angular.forEach(raw.children, function(item, i) { 
-			raw.children[i] = {id:item._embedded.id}; 
-		});
+		raw.children = [];
+		if (raw.parent) {
+			angular.forEach(raw.parent.children, function(item, i) { 
+				raw.children[i] = {id:item._embedded.id}; 
+			});
+			raw.parent = raw.parent._embedded.id;
+		}
 		delete raw._embedded;
+		console.log($scope.values, raw);
 		var uri;  
 		uri = stage._embedded ? stage._embedded._links.edit.href : process._embedded._links.stage.href;
 		$resource(uri).save(raw).$promise.then(
 			function(data) {
+				//FIXME: update previous parent
 				stage._embedded = data;
 				$uibModalInstance.close(data);	
 			},
@@ -178,13 +181,21 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
         stage.images[index] = data;
     }
 
+	/**
+	 * Select next ones needs another update query
+	 */
 	$scope.parentOptions = function() {
 		var options = [];
-		var child = version; 
+		/*var child = version; 
 		options.push(child);
 		while (child.children && child.children.length) {
 			child = child.children[0];	
 			options.push(child);
+		}*/
+		var item = $scope.values;
+		while (item.parent) {
+			options.push(item.parent);
+			item = item.parent;
 		}
 		return options;
 	}

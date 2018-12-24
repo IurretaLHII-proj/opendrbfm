@@ -1,6 +1,6 @@
 <li class="nav-link" ng-class="{active:current==stage}">
 	<!--<a href="" ng-click="setCurrent(stage);">Stage {[ stage._embedded.level ]}</a>-->
-	<a href="" ng-click="setCurrent(stage);">Stage {[ level ]}</a>
+	<a href="" ng-click="setCurrent(stage);">Stage {[ stage._embedded.id ]}</a>
 </li>
 
 <li ng-if="stage._embedded && !stage.children.length" class="nav-link">
