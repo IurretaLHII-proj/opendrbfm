@@ -46,7 +46,7 @@
 					</thead>
 					<tbody>
 						<tr ng-repeat="item in collection._embedded.items">
-							<td><img ng-if="item._links.image" class="img-responsive img-thumbnail" ng-src="{[ item._links.image.href ]}"/></td>
+							<td><a ng-if="item._links.image" href="{[ item._links.self.href  ]}"><img class="img-responsive img-thumbnail" ng-src="{[ item._links.image.href ]}"/></td></a>
 							<td>{[ item.title ]}</td>
 							<td>{[ item.number ]}</td>
 							<td>{[ item.machine ]}</td>

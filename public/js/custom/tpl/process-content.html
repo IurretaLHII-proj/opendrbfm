@@ -53,6 +53,6 @@
 			<a href="{[ values._embedded._embedded.owner._links.self.href ]}">{[ values._embedded._embedded.owner.name ]}</a>
 		</div>
 		<div class="px-4 bg-light border">Created</div>
-		<div class="px-4 bg-white border flex-fill">{[ values.created | date:"dd MMM yyyy HH:mm" ]}</div>
+		<div class="px-4 bg-white border flex-fill">{[ values.created*1000 | date:"dd MMM yyyy HH:mm" ]}</div>
 	</div>
 </div>

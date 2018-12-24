@@ -13,7 +13,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		version.children = [];
 		while(items.length) {
 			item = _prepareStage(items.shift(items));
-			//item.parent = version;
+			item.parent = version;
 			version.children.push(item);
 			_initVersion(item, items);
 		}
@@ -52,7 +52,6 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		});
 		return _hint;
 	}
-
 	var _prepareStage = function(stage) {
 		_stage = angular.copy(stage);
 		_stage._embedded = stage;
@@ -95,10 +94,16 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 					}
 				});
 			}
+			else {
+				//$scope.addVersion();
+			}
 		}
+
 		if (values) {
 			angular.merge($scope.values, values);
 		}
+
+		console.log(item, $scope.values, $scope.current);
 	}
 
 	$scope.loadVersion = function(version) {
@@ -132,7 +137,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			_links: {image: {href: '/process/stage/image/json'}}
 		};
 		if (parentStage) {
-			_stage.parent   = parentStage;
+			_stage.parent   = parentStage; //id
 			_stage.level    = parentStage.level + 1;
 			_stage.version  = parentStage.version;
 			_stage.material = parentStage.material;
@@ -142,24 +147,26 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			templateUrl : '/js/custom/tpl/modal/stage-form.html',
 			controller: '_StageModalCtrl',	
 			size: 'lg',
-			resolve: {stage: _stage, version: $scope.version, process: $scope.values,}
+			resolve: {stage: _stage, process: $scope.values,}
 		});
 
 		modal.result.then(
 			function(res) {
+				console.log(_stage);
 				if (_stage.parent) {
-					var parent = _stage.parent;
-					delete _stage.parent;
-					if (parent.children.length) {
-						_stage.children = parent.children.splice(0, parent.children.length);
+					if (_stage.parent.children.length) {
+						_stage.parent.children.splice(0, _stage.parent.children.length);
 					}
-					parent.children.push(_stage);
+					_stage.parent.children.push(_stage);
+					console.log(_stage);
 				}
 				else {
 					$scope.values.versions.push(_stage);
-					$scope.version = _stage;
 				}
 				$scope.current = _stage;
+				if (!$scope.current.parent) {
+					$scope.version = _stage;
+				}
 				$scope.addSuccess("Saved succesfully");
 			}
 		);

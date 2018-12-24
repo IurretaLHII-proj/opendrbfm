@@ -35,6 +35,12 @@ class HintType implements
 	protected $priority = 1;
 
 	/**
+	 * @var int
+	 * @ORM\Column(type="integer", name="h_count", options={"default":0})
+	 */
+	protected $errorCount = 0;
+
+	/**
 	 * @var string 
 	 * @ORM\Column(type="string")
 	 */
@@ -140,6 +146,48 @@ class HintType implements
         $this->priority = (int) $priority;
         return $this;
     }
+    
+    /**
+     * Get errorCount.
+     *
+     * @return int.
+     */
+    public function getErrorCount()
+    {
+        return $this->errorCount;
+    }
+    
+    /**
+     * Set errorCount.
+     *
+     * @param int errorCount the value to set.
+     * @return HintType.
+     */
+    public function setErrorCount($errorCount)
+    {
+        $this->errorCount = (int) $errorCount;
+        return $this;
+    }
+
+	/**
+	 * @return HintTypeInterface 
+	 */
+	public function increaseErrorCount()
+	{
+		$this->errorCount++;
+		return $this;
+	}
+
+	/**
+	 * @return HintTypeInterface 
+	 */
+	public function decreaseErrorCount()
+	{
+		if ($this->errorCount > 0) {
+			$this->errorCount--;
+		}
+		return $this;
+	}
     
     /**
      * Get name.

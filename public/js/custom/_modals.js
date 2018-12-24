@@ -115,8 +115,8 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	};
 });
 
-App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, version, stage) {
-	//console.log(process,version, stage);
+App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, stage) {
+	console.log(process, stage);
 	api.operation.getAll().then(function(data) {
 		$scope.operations = data;
 	});
@@ -126,14 +126,14 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 	$scope.errors = {};
 	$scope.values = stage; 
 	$scope.save = function() {
-		console.log($scope.values);
 		var raw = angular.copy($scope.values);
 		raw.material = raw.material.id;
-		if (raw.parent) raw.parent = raw.parent._embedded.id;
-		angular.forEach(raw.children, function(item, i) { 
-			raw.children[i] = {id:item._embedded.id}; 
-		});
+		if (raw.parent) raw.parent = raw.parent.id;
 		delete raw._embedded;
+		angular.forEach(raw.children, function(item, i) { 
+			raw.children[i] = {id:item.id}; 
+		});
+		console.log(raw);
 		var uri;  
 		uri = stage._embedded ? stage._embedded._links.edit.href : process._embedded._links.stage.href;
 		$resource(uri).save(raw).$promise.then(
@@ -180,13 +180,21 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 
 	$scope.parentOptions = function() {
 		var options = [];
-		var child = version; 
+		var current = stage; 
+		while (current.parent) {
+			current = current.parent;
+		}
+		var child = current; 
 		options.push(child);
 		while (child.children && child.children.length) {
 			child = child.children[0];	
 			options.push(child);
 		}
 		return options;
+	}
+
+	$scope.changeParent = function() {
+		$scope.values.children = $scope.values.parent.children;
 	}
 
 	//Update Stage image

@@ -42,6 +42,7 @@
 		<!-- VERSION STAGE TABS -->
 		<ul ng-repeat="(i,stage) in values.versions" 
 			ng-if="stage == version"
+			ng-init="level = i;"
 			ng-include="'/js/custom/tpl/stage-tabs.html'"
 			class="nav nav-tabs mt-2 border-0">
 		</ul>
@@ -64,6 +65,7 @@
 				<div class="col-sm-12 col-md-8">
 					<ng-include 
 						ng-if="stage == version"
+						ng-init="level=i;"
 						class="d-flex"
 						src="'/js/custom/tpl/stage-images.html'"
 					/>
@@ -133,7 +135,7 @@
 							<li ng-repeat="note in hint._embedded._embedded.suggestions">{[note.text]}</li>
 						</ul>
 					</td>
-					<td class="">
+					<td class="text-center">
 						<div class="btn-group btn-group-justified">
 							<!--<a href="" class="btn btn-sm btn-primary"><i class="fa fa-trash"></i></a>-->
 							<a href="" ng-click="editHint(hint)" class="btn btn-sm btn-outline-primary">
@@ -158,7 +160,7 @@
 					<td class="bg-light text-{[textClass(hint._embedded.state)]}">
 						<span ng-if="hint._embedded.prevention" ng-bind-html="hint._embedded.prevention"></span>
 					</td>
-					<td class="bg-light">
+					<td class="bg-light text-center">
 						<div class="btn-group btn-group-justified">
 							<a ng-click="simuleHint(hint)" href="" class="btn btn-sm btn-outline-primary">
 								<i class="fa fa-pencil"></i>
