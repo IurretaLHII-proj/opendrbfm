@@ -3,7 +3,7 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 	$scope.values = type;
 	$scope.errors = {};
 	$scope.save = function() {
-		$resource(type._embedded ? type._embedded._links.edit.href : op._embedded._links.hint.href)
+		$resource(type._embedded ? type._embedded._links.edit.href : op._links.hint.href)
 			.save($scope.values).$promise.then(
 				function(data) {
 					type._embedded = data;

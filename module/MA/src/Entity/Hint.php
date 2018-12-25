@@ -131,6 +131,17 @@ class Hint implements
 	protected $parents;
 
 	/**
+	 * @var SimulationInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Simulation",
+	 *	mappedBy	 = "hint",
+	 *	cascade 	 = {"persist"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $simulations;
+
+	/**
 	 * @var Note\HintReason[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Note\HintReason",
@@ -214,6 +225,7 @@ class Hint implements
 		$this->updated     = new DateTime;
 		$this->parents     = new ArrayCollection;
 		$this->children    = new ArrayCollection;
+		$this->simulations = new ArrayCollection;
 		$this->reasons     = new ArrayCollection;
 		$this->suggestions = new ArrayCollection;
 		$this->influences  = new ArrayCollection;
@@ -654,6 +666,28 @@ class Hint implements
     public function setDescription($descr = null)
     {
         $this->description = $descr ? (string) $descr : $descr;
+        return $this;
+    }
+    
+    /**
+     * Get simulations.
+     *
+     * @return Simulation[].
+     */
+    public function getSimulations()
+    {
+        return $this->simulations;
+    }
+    
+    /**
+     * Set simulations.
+     *
+     * @param Simulation[] simulations the value to set.
+     * @return Hint.
+     */
+    public function setSimulations($simulations)
+    {
+        $this->simulations = $simulations;
         return $this;
     }
     

@@ -35,6 +35,7 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 			'updated' 	  => $object->getUpdated()->getTimestamp(),
 			'operation'   => $object->getOperation(),
 			'parents' 	  => new \ZF\Hal\Collection($object->getParents()),
+			'simulations' => new \ZF\Hal\Collection($object->getSimulations()),
 			'reasons' 	  => new \ZF\Hal\Collection($object->getReasons()),
 			'suggestions' => new \ZF\Hal\Collection($object->getSuggestions()),
 			'influences'  => new \ZF\Hal\Collection($object->getInfluences()),
