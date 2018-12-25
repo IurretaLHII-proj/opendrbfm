@@ -3,7 +3,7 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 	$scope.values = type;
 	$scope.errors = {};
 	$scope.save = function() {
-		$resource(type._embedded ? type._embedded._links.edit.href : op._embedded._links.hint.href)
+		$resource(type._embedded ? type._embedded._links.edit.href : op._links.hint.href)
 			.save($scope.values).$promise.then(
 				function(data) {
 					type._embedded = data;
@@ -116,7 +116,6 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 });
 
 App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, stage) {
-	console.log(process, stage);
 	api.operation.getAll().then(function(data) {
 		$scope.operations = data;
 	});
@@ -128,16 +127,20 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 	$scope.save = function() {
 		var raw = angular.copy($scope.values);
 		raw.material = raw.material.id;
-		if (raw.parent) raw.parent = raw.parent.id;
+		raw.children = [];
+		if (raw.parent) {
+			angular.forEach(raw.parent.children, function(item, i) { 
+				raw.children[i] = {id:item._embedded.id}; 
+			});
+			raw.parent = raw.parent._embedded.id;
+		}
 		delete raw._embedded;
-		angular.forEach(raw.children, function(item, i) { 
-			raw.children[i] = {id:item.id}; 
-		});
-		console.log(raw);
+		console.log($scope.values, raw);
 		var uri;  
 		uri = stage._embedded ? stage._embedded._links.edit.href : process._embedded._links.stage.href;
 		$resource(uri).save(raw).$promise.then(
 			function(data) {
+				//FIXME: update previous parent
 				stage._embedded = data;
 				$uibModalInstance.close(data);	
 			},
@@ -178,23 +181,23 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
         stage.images[index] = data;
     }
 
+	/**
+	 * Select next ones needs another update query
+	 */
 	$scope.parentOptions = function() {
 		var options = [];
-		var current = stage; 
-		while (current.parent) {
-			current = current.parent;
-		}
-		var child = current; 
+		/*var child = version; 
 		options.push(child);
 		while (child.children && child.children.length) {
 			child = child.children[0];	
 			options.push(child);
+		}*/
+		var item = $scope.values;
+		while (item.parent) {
+			options.push(item.parent);
+			item = item.parent;
 		}
 		return options;
-	}
-
-	$scope.changeParent = function() {
-		$scope.values.children = $scope.values.parent.children;
 	}
 
 	//Update Stage image

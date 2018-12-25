@@ -70,6 +70,13 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 0,
 		],
+		'MA\Entity\Simulation' => [
+			'route_name' => 'process/hint/simulation/detail/json',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 0,
+		],
 		'MA\Entity\Note\HintReason' => [
 			'route_name' => 'process/hint/detail', //FIXME
 			'route_identifier_name' => 'id',

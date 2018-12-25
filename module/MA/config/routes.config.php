@@ -412,6 +412,44 @@ return [
 							],
 						],
 					],
+					'simulation' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/simulation',
+							'defaults' => [
+								'controller' => Controller\SimulationController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+											'controller' => Controller\Js\SimulationController::class,
+											],
+										],
+									]
+								],
+							],
+						],
+					],
 				],
 			],
 		],

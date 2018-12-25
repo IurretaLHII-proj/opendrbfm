@@ -85,6 +85,12 @@ return [
 	Controller\Js\HintController::class => [
 		'repository' => Entity\Hint::class,
 	],
+	Controller\SimulationController::class => [
+		'repository' => Entity\Simulation::class,
+	],
+	Controller\Js\SimulationController::class => [
+		'repository' => Entity\Simulation::class,
+	],
 	Controller\ImageController::class => [
 		'repository' => Entity\Image\IStage::class,
 	],

@@ -52,6 +52,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		});
 		return _hint;
 	}
+
 	var _prepareStage = function(stage) {
 		_stage = angular.copy(stage);
 		_stage._embedded = stage;
@@ -94,16 +95,11 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 					}
 				});
 			}
-			else {
-				//$scope.addVersion();
-			}
 		}
-
 		if (values) {
 			angular.merge($scope.values, values);
 		}
-
-		console.log(item, $scope.values, $scope.current);
+		console.log($scope.values);
 	}
 
 	$scope.loadVersion = function(version) {
@@ -137,7 +133,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			_links: {image: {href: '/process/stage/image/json'}}
 		};
 		if (parentStage) {
-			_stage.parent   = parentStage; //id
+			_stage.parent   = parentStage;
 			_stage.level    = parentStage.level + 1;
 			_stage.version  = parentStage.version;
 			_stage.material = parentStage.material;
@@ -152,21 +148,18 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
-				console.log(_stage);
 				if (_stage.parent) {
-					if (_stage.parent.children.length) {
-						_stage.parent.children.splice(0, _stage.parent.children.length);
+					var parent = _stage.parent;
+					if (parent.children.length) {
+						_stage.children = parent.children.splice(0, parent.children.length);
 					}
-					_stage.parent.children.push(_stage);
-					console.log(_stage);
+					parent.children.push(_stage);
 				}
 				else {
 					$scope.values.versions.push(_stage);
-				}
-				$scope.current = _stage;
-				if (!$scope.current.parent) {
 					$scope.version = _stage;
 				}
+				$scope.current = _stage;
 				$scope.addSuccess("Saved succesfully");
 			}
 		);
@@ -183,6 +176,21 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
+				stage.children = [];
+				if (stage.parent) {
+					var parent = stage.parent;
+					if (parent.children.length) {
+						var child  = stage.parent;
+						while (child.children.length && child.children.indexOf(stage) == -1) {
+							var child = child.children[0];
+						}
+						if (child.children.length) {
+							child.children = [];
+						}
+						stage.children = parent.children.splice(0, parent.children.length);
+					}
+					parent.children.push(stage);
+				}
 				$scope.addSuccess("Saved succesfully");
 			}
 		);
