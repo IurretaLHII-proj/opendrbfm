@@ -19,6 +19,7 @@ class StageHydrator extends \Zend\Hydrator\ClassMethods
 	{
 		return [
 			'id' 	  	  => $object->getId(),
+			'name'   	  => 'Stage ' . $object->getLevel(),
 			'level'   	  => $object->getLevel(),
 			'version'     => $object->getVersion(),
 			'material'	  => $object->getMaterial(),
@@ -28,7 +29,7 @@ class StageHydrator extends \Zend\Hydrator\ClassMethods
 			'updated' 	  => $object->getUpdated()->getTimestamp(),
 			'images'  	  => new \ZF\Hal\Collection($object->getImages()),
 			'operations'  => new \ZF\Hal\Collection($object->getOperations()),
-			'hints'   	  => new \ZF\Hal\Collection($object->getHints()),
+			//'hints'   	  => new \ZF\Hal\Collection($object->getHints()),
 		];
     }
 }

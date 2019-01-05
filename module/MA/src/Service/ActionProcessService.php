@@ -69,6 +69,7 @@ class ActionProcessService extends ActionService
 				}
 			}
 			elseif ($source instanceof \MA\Entity\HintInterface) {
+/*
 				foreach ($source->getParents()->getInsertDiff() as $parent) {
 					if (!isset($diff['insert'])) $diff['insert'] = [];
 					$diff['insert'][] = $parent->jsonSerialize();
@@ -83,7 +84,6 @@ class ActionProcessService extends ActionService
 					$changeSet['parents'] = $diff;
 					unset($diff);
 				}
-
 				$nav = $this->sm->get(\Base\Controller\Service\Navigation::class);
 				foreach ($source->getReasons()->getInsertDiff() as $reason) {
 					$nav->triggerService(self::EVENT_CREATE, $reason); //Insert owner
@@ -142,7 +142,7 @@ class ActionProcessService extends ActionService
 					$changeSet['influences'] = $diff;
 					unset($diff);
 				}
-
+ */
 			}
 
 			if ($changeSet === array()) {

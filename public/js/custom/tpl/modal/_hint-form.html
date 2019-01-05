@@ -19,8 +19,8 @@
 			<select class="form-control"
 				ng-class="{'is-invalid': errors.operation}"
 				ng-model="values.operation"
-				ng-change="loadOperationTypes()"
-				ng-options="item as item._embedded.name for item in stage.operations track by item.id"
+				ng-change="operationTypes()"
+				ng-options="item as item.name for item in stage._embedded._embedded.operations track by item.id"
 				>
 			</select>
 		</div>
@@ -30,29 +30,16 @@
 		<select class="form-control"
 			ng-class="{'is-invalid': errors.type}"
 			ng-disabled="!values.operation"
-			ng-init="loadOperationTypes()"
 			ng-change="createHint()"
+			ng-init="operationTypes()"
 			ng-model="values.type"
-			ng-options="item as item.name for item in operationTypes track by item.id"
+			ng-options="item as item.name for item in operationOptions track by item.id"
 			>
 		</select>
 		<div ng-if="errors.type"
 			ng-repeat="(key, text) in errors.type"
 			class="invalid-feedback">{[key]}. {[text]}</div>
 	</div>
-	<div class="form-group">
-	  	<label for="inputDescription">Description</label>
-		<textarea rows="3" 
-			id="inputDescription"
-			class="form-control"
-			ng-class="{'is-invalid': errors.description}"
-			ng-model="values.description">
-		</textarea>
-		<div ng-if="errors.description"
-			ng-repeat="(key, text) in errors.description"
-			class="invalid-feedback">{[key]}. {[text]}</div>
-	</div>
-	<!--
 	<div ng-if="stage.parent" class="form-group">
 		<label for="inputParents">Prevs</label>
 		<div class="form-row"
@@ -84,6 +71,7 @@
 			<span class="fa fa-plus"></span></a>
 		</div>
 	</div>
+	<!--
 	<div class="form-group">
 		<label for="inputText">Text</label>
 		<input type="text"
@@ -95,6 +83,19 @@
 			ng-repeat="(key, text) in errors.text"
 			class="invalid-feedback">{[key]}. {[text]}</div>
 
+	</div>
+	-->
+	<div class="form-group">
+	  	<label for="inputDescription">Description</label>
+		<textarea rows="3" 
+			id="inputDescription"
+			class="form-control"
+			ng-class="{'is-invalid': errors.description}"
+			ng-model="values.description">
+		</textarea>
+		<div ng-if="errors.description"
+			ng-repeat="(key, text) in errors.description"
+			class="invalid-feedback">{[key]}. {[text]}</div>
 	</div>
 	<div class="form-group">
 	  	<label for="inputReasons">Reasons</label>
@@ -179,7 +180,6 @@
 			ng-click="values.suggestions.push({})">
 			<span class="fa fa-plus"></span></a>
 		</div>
-	-->
 	</div>
 </div>
 <div class="modal-footer">

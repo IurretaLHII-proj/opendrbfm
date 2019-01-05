@@ -83,6 +83,17 @@ class HintType implements
     protected $operation;
 
 	/**
+	 * @var HintInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Hint",
+	 *	mappedBy	 = "type",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $hints;
+
+	/**
 	 * @var int 
 	 * @ORM\Column(type="datetime")
 	 */
@@ -99,6 +110,7 @@ class HintType implements
 	 */
 	public function __construct()
 	{
+		$this->hints   = new ArrayCollection;
 		$this->created = new DateTime;
 		$this->updated = new DateTime;
 	}
@@ -261,6 +273,28 @@ class HintType implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+    
+    /**
+     * Get hints.
+     *
+     * @return HintInterface[].
+     */
+    public function getHints()
+    {
+        return $this->hints;
+    }
+    
+    /**
+     * Set hints.
+     *
+     * @param HintInterface[] hints the value to set.
+     * @return HintType.
+     */
+    public function setHints($hints)
+    {
+        $this->hints = $hints;
         return $this;
     }
     

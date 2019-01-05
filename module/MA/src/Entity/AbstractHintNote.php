@@ -12,9 +12,9 @@ use DateTime;
 abstract class AbstractHintNote extends AbstractNote
 {
 	/**
-	 * @var HintInterface
+	 * @var SimulationInterface
 	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\Hint",
+	 *	targetEntity = "MA\Entity\Simulation",
 	 *	inversedBy	 = "notes",
 	 * )
 	 * @ORM\JoinColumn(
@@ -23,27 +23,27 @@ abstract class AbstractHintNote extends AbstractNote
 	 *  nullable = true
 	 * )
 	 */
-	protected $hint;
+	protected $simulation;
     
     /**
-     * Set hint.
+     * Set simulation.
      *
-     * @param HintInterface|null hint the value to set.
+     * @param SimulationInterface|null simulation the value to set.
      * @return Note.
      */
-    public function setHint(\MA\Entity\HintInterface $hint = null)
+    public function setSimulation(\MA\Entity\SimulationInterface $simulation = null)
     {
-        $this->hint = $hint;
+        $this->simulation = $simulation;
         return $this;
     }
     
     /**
-     * Get hint.
+     * Get simulation.
      *
-     * @return HintInterface|null.
+     * @return SimulationInterface|null.
      */
-    public function getHint()
+    public function getSimulation()
     {
-        return $this->hint;
+        return $this->simulation;
     }
 }

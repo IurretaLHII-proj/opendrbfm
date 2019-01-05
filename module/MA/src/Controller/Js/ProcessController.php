@@ -118,4 +118,44 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 
 		return new HalJsonModel($payload);
 	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function stagesAction()
+	{
+		$e	  = $this->getEntity();
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\StageCollectionForm::class);
+
+		$form->get('stages')->getTargetElement()->remove('children');
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		$form->bind($e);
+
+		$payload = ['payload' => []];
+		if ($this->getRequest()->isPost()) {
+
+			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+			$form->setData($data);
+			
+			if ($form->isValid()) {
+
+				//$this->triggerService(\Base\Service\ProcessService::EVENT_STAGES, $e);
+
+				$em->flush();
+
+				$payload = ['payload' => $this->prepareHalEntity($e, "process/stage/detail/json")];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
+	}
 }

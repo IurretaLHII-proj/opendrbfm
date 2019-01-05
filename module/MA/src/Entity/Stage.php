@@ -77,7 +77,7 @@ class Stage implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Stage",
 	 *	mappedBy	 = "parent",
-	 *	cascade = {"remove"}
+	 *	cascade = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -113,7 +113,7 @@ class Stage implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Hint",
 	 *	mappedBy	 = "stage",
-	 *	cascade = {"remove"}
+	 *	cascade = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -124,7 +124,7 @@ class Stage implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Image\IStage",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -695,6 +695,19 @@ class Stage implements
 	/**
 	 * @inheritDoc
 	 */
+	public function __clone()
+	{
+		$this->id 		  = null;
+		$this->created    = new DateTime;
+		$this->updated    = new DateTime;
+		$this->hints  	  = new ArrayCollection;
+		$this->images  	  = new ArrayCollection;
+		$this->children	  = new ArrayCollection;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function getResourceId()
 	{
 		return self::class;
@@ -738,21 +751,21 @@ class Stage implements
 				],
 			],
 			[
-				'rel'   	  => 'hint',
-				'privilege'   => 'hint',
+				'rel'   	  => 'delete',
+				'privilege'   => 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
-				    'params'  => ['action' => 'hint', 'id' => $this->getId()],
+				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
 				],
 			],
 			[
-				'rel'   	  => 'children',
+				'rel'   	  => 'clone',
+				'privilege'   => 'clone',
 				'resource'	  => $this,
-				'privilege'   => 'detail',
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
-				    'params'  => ['action' => 'children', 'id' => $this->getId()],
+				    'params'  => ['action' => 'clone', 'id' => $this->getId()],
 				],
 			],
 			[
@@ -762,6 +775,33 @@ class Stage implements
 				'route' => [
 				    'name'    => 'process/stage/image',
 				    'params'  => ['action' => 'image'],
+				],
+			],
+			[
+				'rel'   	  => 'hint',
+				'privilege'   => 'hint',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/stage/detail/json',
+				    'params'  => ['action' => 'hint', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'hints',
+				'privilege'   => 'hints',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/stage/detail/json',
+				    'params'  => ['action' => 'hints', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'children',
+				'resource'	  => $this,
+				'privilege'   => 'detail',
+				'route' => [
+				    'name'    => 'process/stage/detail/json',
+				    'params'  => ['action' => 'children', 'id' => $this->getId()],
 				],
 			],
 		];

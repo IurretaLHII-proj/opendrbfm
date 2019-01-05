@@ -82,8 +82,9 @@
 
 		<div class="container-fluid">
 
-			<div ng-if="messages.success.length || messages.errors.length" class="messages">
+			<div ng-if="messages.warnings.length || messages.success.length || messages.errors.length" class="messages">
 				<div class="container">
+					<div ng-repeat="message in messages.warnings track by $index" class="alert alert-warning" role="alert">{[ message ]}<a href="" ng-click="closeWarning(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
 					<div ng-repeat="message in messages.errors track by $index" class="alert alert-danger" role="alert">{[ message ]}<a href="" ng-click="closeError(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
 					<div ng-repeat="message in messages.success track by $index" class="alert alert-success" role="alert">{[ message ]}<a href="" ng-click="closeSuccess(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
 				</div>

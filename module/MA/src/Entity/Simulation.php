@@ -14,6 +14,7 @@ use DateTime;
  */
 class Simulation implements 
 	ResourceInterface, 
+	JsonSerializable,
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
@@ -71,6 +72,39 @@ class Simulation implements
     protected $hint;
 
 	/**
+	 * @var Note\HintReason[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintReason",
+	 *	mappedBy	 = "simulation",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $reasons;
+
+	/**
+	 * @var Note\HintSuggestion[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintSuggestion",
+	 *	mappedBy	 = "simulation",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $suggestions;
+
+	/**
+	 * @var Note\HintInfluence[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintInfluence",
+	 *	mappedBy	 = "simulation",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $influences;
+
+	/**
 	 * @var int
 	 * @ORM\Column(type="integer", options={"default":0})
 	 */
@@ -119,6 +153,9 @@ class Simulation implements
 	{
 		$this->created     = new DateTime;
 		$this->updated     = new DateTime;
+		$this->reasons     = new ArrayCollection;
+		$this->suggestions = new ArrayCollection;
+		$this->influences  = new ArrayCollection;
 	}
     
     /**
@@ -183,7 +220,7 @@ class Simulation implements
      */
     public function setWho($who = null)
     {
-        $this->who = $who ? (string) $who : $who;
+        $this->who = $who != null ? (string) $who : $who;
         return $this;
     }
     
@@ -307,6 +344,240 @@ class Simulation implements
     }
     
     /**
+     * Get reasons.
+     *
+     * @return Note\HintReason[].
+     */
+    public function getReasons()
+    {
+        return $this->reasons;
+    }
+    
+    /**
+     * Set reasons.
+     *
+     * @param Note\HintReason[] reasons the value to set.
+     * @return Hint.
+     */
+    public function setReasons($reasons)
+    {
+        $this->reasons = $reasons;
+        return $this;
+    }
+    
+    /**
+     * Add reason.
+     *
+     * @param Note\HintReason reason the value to set.
+     * @return Stage.
+     */
+    public function addReason(Note\HintReason $reason)
+    {
+		$reason->setSimulation($this);
+		$this->getReasons()->add($reason);
+        return $this;
+    }
+    
+    /**
+     * Add reasons.
+     *
+     * @param Note\HintReason[] reasons the value to set.
+     * @return Stage.
+     */
+    public function addReasons($reasons)
+    {
+		foreach ($reasons as $reason) {
+			$this->addReason($reason);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add reason.
+     *
+     * @param Note\HintReason reason the value to set.
+     * @return Stage.
+     */
+    public function removeReason(Note\HintReason $reason)
+    {
+		$reason->setSimulation();
+		$this->getReasons()->removeElement($reason);
+        return $this;
+    }
+    
+    /**
+     * Add reasons.
+     *
+     * @param Note\HintReason[] reasons the value to set.
+     * @return Stage.
+     */
+    public function removeReasons($reasons)
+    {
+		foreach ($reasons as $reason) {
+			$this->removeReason($reason);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Get suggestions.
+     *
+     * @return Note\HintSuggestion[].
+     */
+    public function getSuggestions()
+    {
+        return $this->suggestions;
+    }
+    
+    /**
+     * Set suggestions.
+     *
+     * @param Note\HintSuggestion[] suggestions the value to set.
+     * @return Hint.
+     */
+    public function setSuggestions($suggestions)
+    {
+        $this->suggestions = $suggestions;
+        return $this;
+    }
+    
+    /**
+     * Add suggestion.
+     *
+     * @param Note\HintSuggestion suggestion the value to set.
+     * @return Stage.
+     */
+    public function addSuggestion(Note\HintSuggestion $suggestion)
+    {
+		$suggestion->setSimulation($this);
+		$this->getSuggestions()->add($suggestion);
+        return $this;
+    }
+    
+    /**
+     * Add suggestions.
+     *
+     * @param Note\HintSuggestion[] suggestions the value to set.
+     * @return Stage.
+     */
+    public function addSuggestions($suggestions)
+    {
+		foreach ($suggestions as $suggestion) {
+			$this->addSuggestion($suggestion);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add suggestion.
+     *
+     * @param Note\HintSuggestion suggestion the value to set.
+     * @return Stage.
+     */
+    public function removeSuggestion(Note\HintSuggestion $suggestion)
+    {
+		$suggestion->setSimulation();
+		$this->getSuggestions()->removeElement($suggestion);
+        return $this;
+    }
+    
+    /**
+     * Add suggestions.
+     *
+     * @param Note\HintSuggestion[] suggestions the value to set.
+     * @return Stage.
+     */
+    public function removeSuggestions($suggestions)
+    {
+		foreach ($suggestions as $suggestion) {
+			$this->removeSuggestion($suggestion);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Get influences.
+     *
+     * @return Note\HintInfluence[].
+     */
+    public function getInfluences()
+    {
+        return $this->influences;
+    }
+    
+    /**
+     * Set influences.
+     *
+     * @param Note\HintInfluence[] influences the value to set.
+     * @return Hint.
+     */
+    public function setInfluences($influences)
+    {
+        $this->influences = $influences;
+        return $this;
+    }
+    
+    /**
+     * Add influence.
+     *
+     * @param Note\HintInfluence influence the value to set.
+     * @return Stage.
+     */
+    public function addInfluence(Note\HintInfluence $influence)
+    {
+		$influence->setSimulation($this);
+		$this->getInfluences()->add($influence);
+        return $this;
+    }
+    
+    /**
+     * Add influences.
+     *
+     * @param Note\HintInfluence[] influences the value to set.
+     * @return Stage.
+     */
+    public function addInfluences($influences)
+    {
+		foreach ($influences as $influence) {
+			$this->addInfluence($influence);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add influence.
+     *
+     * @param Note\HintInfluence influence the value to set.
+     * @return Stage.
+     */
+    public function removeInfluence(Note\HintInfluence $influence)
+    {
+		$influence->setSimulation();
+		$this->getInfluences()->removeElement($influence);
+        return $this;
+    }
+    
+    /**
+     * Add influences.
+     *
+     * @param Note\HintInfluence[] influences the value to set.
+     * @return Stage.
+     */
+    public function removeInfluences($influences)
+    {
+		foreach ($influences as $influence) {
+			$this->removeInfluence($influence);
+		}
+
+        return $this;
+    }
+    
+    /**
      * Get description.
      *
      * @return string.
@@ -396,10 +667,33 @@ class Simulation implements
     {
         return array(
             'id'          => $this->getId(),
+			'owner'   	  => $this->getUser(),
             'description' => $this->getDescription(),
             'created'     => $this->getCreated()->getTimestamp(),
+			'owner'   	  => $this->getUser(),
+			'state' 	  => $this->getState(),
+			'who' 	  	  => $this->getWho(),
+			'when' 	  	  => null !== ($w = $this->getWhen()) ? $w->getTimestamp() : $w,
+			'effect'	  => $this->getEffect(),
+			'prevention'  => $this->getPrevention(),
+			'reasons' 	  => new \ZF\Hal\Collection($this->getReasons()),
+			'suggestions' => new \ZF\Hal\Collection($this->getSuggestions()),
+			'influences'  => new \ZF\Hal\Collection($this->getInfluences()),
         );
     }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function __clone()
+	{
+		$this->id 		   = null;
+		$this->created     = new DateTime;
+		$this->updated     = new DateTime;
+		$this->reasons     = new ArrayCollection;
+		$this->suggestions = new ArrayCollection;
+		$this->influences  = new ArrayCollection;
+	}
 
 	/**
 	 * @inheritDoc
@@ -414,6 +708,33 @@ class Simulation implements
   	public function provideLinks()
   	{
 		return [
+			[
+				'rel'   	  => 'render',
+				'privilege'   => 'render',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'render', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'delete',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
 		];
 	}
 }

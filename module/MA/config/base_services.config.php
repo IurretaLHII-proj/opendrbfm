@@ -17,6 +17,7 @@ return [
 					Service\StageService::class, 
 					Service\HintTypeService::class, 
 					Service\HintService::class, 
+					Service\SimulationService::class, 
 					Service\ImageService::class, 
 					Service\OperationService::class, 
 					Service\OperationTypeService::class, 
@@ -65,6 +66,9 @@ return [
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],
 	],
+	Service\SimulationService::class => [
+		'entities' => [Entity\Simulation::class],
+	],
 	Service\ImageService::class => [
 		'entities' => [Entity\Image\IStage::class],
 	],
@@ -90,21 +94,21 @@ return [
 		],
 	],
 	Service\ActionProcessService::class => [
-		'entities'  => [
-			Entity\Action\Process::class, 
-			Entity\Action\Stage::class, 
-			Entity\Action\Hint::class, 
-		],
-		'listeners' => [
-			[
-				'services' => [
-					Service\ProcessService::class, 
-					Service\StageService::class, 
-					Service\HintService::class
-				],
-				'events'   => ['*'], 
-				'callback' => 'createAction',
-			]
-		],
+		//'entities'  => [
+		//	Entity\Action\Process::class, 
+		//	Entity\Action\Stage::class, 
+		//	Entity\Action\Hint::class, 
+		//],
+		//'listeners' => [
+		//	[
+		//		'services' => [
+		//			Service\ProcessService::class, 
+		//			Service\StageService::class, 
+		//			Service\HintService::class
+		//		],
+		//		'events'   => ['*'], 
+		//		'callback' => 'createAction',
+		//	]
+		//],
 	],
 ];

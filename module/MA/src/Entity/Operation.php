@@ -121,6 +121,7 @@ class Operation implements
 	 * @ORM\OneToMany(
      *  targetEntity="MA\Entity\HintType",
 	 *	mappedBy	 = "operation",
+	 *	cascade 	 = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

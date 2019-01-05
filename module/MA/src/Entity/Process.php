@@ -500,6 +500,50 @@ class Process implements
 	}
     
     /**
+     * Add stages.
+     *
+     * @param StageInterface[] stages the value to set.
+     * @return Stage.
+     */
+    public function addStages($stages)
+    {
+		foreach ($stages as $stage) {
+			$this->addStage($stage);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add stage.
+     *
+     * @param StageInterface stage the value to set.
+     * @return Stage.
+     */
+    public function removeStage(StageInterface $stage)
+    {
+		//FIXME
+		//$stage->setProcess();
+		//$this->getStages()->removeElement($stage);
+        return $this;
+    }
+    
+    /**
+     * Add stages.
+     *
+     * @param StageInterface[] stages the value to set.
+     * @return Stage.
+     */
+    public function removeStages($stages)
+    {
+		foreach ($stages as $stage) {
+			$this->removeStage($stage);
+		}
+
+        return $this;
+    }
+    
+    /**
      * Set stages.
      *
      * @param StageInterface[] stages the value to set.
@@ -626,6 +670,15 @@ class Process implements
 				'route' => [
 				    'name'    => 'process/detail/json',
 				    'params'  => ['action' => 'stage', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'stages',
+				'privilege'   => 'stages',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/detail/json',
+				    'params'  => ['action' => 'stages', 'id' => $this->getId()],
 				],
 			],
 		];
