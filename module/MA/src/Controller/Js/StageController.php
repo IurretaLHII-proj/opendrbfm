@@ -138,4 +138,83 @@ class StageController extends \Base\Controller\Js\AbstractActionController
 			'payload' => $payload,
 		]);
 	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function _cloneAction($entity)
+    {
+		$c = clone $entity;
+
+		foreach ($entity->getImages() as $img) {
+			$c->addImage(clone $img);
+		}
+
+		foreach ($entity->getHints() as $hint) {
+			$_hint = clone $hint;
+			foreach ($hint->getSimulations() as $sm) {
+				$_sm = clone $sm;
+				foreach ($sm->getReasons() as $r) 		$_sm->addReason(clone $r);
+				foreach ($sm->getInfluences() as $r) 	$_sm->addInfluence(clone $r);
+				foreach ($sm->getSuggestions() as $r) 	$_sm->addSuggestion(clone $r);
+				$_hint->addSimulation($_sm);
+			}
+			$c->addHint($_hint);
+		}
+
+		foreach ($entity->getChildren() as $child) {
+			$c->addChild($this->_cloneAction($child));
+		}
+
+		return $c;
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function cloneAction($entity = null)
+    {
+		$c = $this->_cloneAction($this->getEntity());
+
+		$this->triggerService(\MA\Service\StageService::EVENT_CLONE, $c);
+
+		$this->getEntityManager()->persist($c);
+		$this->getEntityManager()->flush();
+
+		return new HalJsonModel([
+			'payload' => $this->prepareHalEntity($c, "process/stage/detail/json")
+		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function hintsAction()
+    {
+		$e  = $this->getEntity();
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$paginator = $this->getPaginator($e->getHints()->toArray(), $e->getHints()->count());
+		$payload = $this->prepareHalCollection($paginator, 'process/stage/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function deleteAction()
+	{
+		$e	  = $this->getEntity();
+		$em   = $this->getEntityManager();
+
+		//$this->triggerService(\Base\Service\AbstractService::EVENT_DELETE, $e);
+
+		$em->remove($e);
+		$em->flush();
+
+		return new HalJsonModel(['payload' => []]);
+	}
 }

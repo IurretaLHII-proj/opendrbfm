@@ -5,6 +5,8 @@ namespace MA\Entity;
 use Doctrine\ORM\Mapping as ORM,
 	Doctrine\Common\Collections\ArrayCollection;
 
+use DateTime;
+
 /**
  * @ORM\MappedSuperclass()
  */
@@ -80,6 +82,15 @@ abstract class AbstractImage extends \Image\Entity\Image
     {
 		return [];
     }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function __clone()
+	{
+		$this->id 	   = null;
+        $this->created = new DateTime;
+	}
 
 	/**
 	 * @return mixed

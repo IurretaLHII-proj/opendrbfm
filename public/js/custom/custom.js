@@ -143,6 +143,16 @@ App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 		, 1500);
 	}
 
+	$scope._closeWarning = function(war) {
+		var i = $scope.messages.warnings.indexOf(war);
+		$scope.messages.warnings.splice(i, 1);
+	}
+	$scope._addWarning = function(msg) {
+		var war = msg; 
+		$scope.messages.warnings.push(war);
+		return war;
+	}
+
 	$scope.messages = {
 		success: [],
 		errors: [],
@@ -163,6 +173,7 @@ App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 		switch (true) {
 			case number == 1: return 'dark';
 			case number == 2: return 'success';
+			case number == 0: 
 			case number == -1: return 'muted';
 			default: return 'danger';
 		}
@@ -172,8 +183,8 @@ App.controller('MainCtrl', function($scope, $timeout, api, operationApi) {
 	$scope.defaultOp   = {id:null, name:'--- Select one ---'};
 	$scope.defaultHint = {id:null, name:'--- Select one ---'};
 	$scope._createOption  = {id:-1,   name:'--- Create new ---'};
-	operationApi.getCollection().then(function(data) {
-		$scope.operations = data._embedded.items;
+	api.operation.getAll().then(function(data) {
+		$scope.operations = data;
 	});
 	$scope.getOperations = function(model, currents) {
 		var options = [];

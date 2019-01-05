@@ -5,6 +5,8 @@ namespace MA\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
+use MA\Entity\Simulation;
+
 class HintRenderForm extends Form implements InputFilterProviderInterface
 {
     /**
@@ -49,11 +51,11 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
              'options' => [
                  'label' => 'State',
 				 'value_options' => [
-				 	\MA\Entity\Hint::STATE_CREATED	=>  \MA\Entity\Hint::STATE_CREATED,
-				 	\MA\Entity\Hint::STATE_NOT_NECESSARY => \MA\Entity\Hint::STATE_NOT_NECESSARY,
-				 	\MA\Entity\Hint::STATE_IN_PROGRESS => \MA\Entity\Hint::STATE_IN_PROGRESS,
-				 	\MA\Entity\Hint::STATE_FINISHED => \MA\Entity\Hint::STATE_FINISHED,
-				 	\MA\Entity\Hint::STATE_CANCELED => \MA\Entity\Hint::STATE_CANCELED,
+				 	Simulation::STATE_CREATED		=> Simulation::STATE_CREATED,
+				 	Simulation::STATE_NOT_NECESSARY => Simulation::STATE_NOT_NECESSARY,
+				 	Simulation::STATE_IN_PROGRESS 	=> Simulation::STATE_IN_PROGRESS,
+				 	Simulation::STATE_FINISHED 		=> Simulation::STATE_FINISHED,
+				 	Simulation::STATE_CANCELED 		=> Simulation::STATE_CANCELED,
 				 ],
              ],
         ], ['priority' => -9]);

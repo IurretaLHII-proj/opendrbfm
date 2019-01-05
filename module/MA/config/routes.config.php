@@ -140,7 +140,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|stage|actions',
+						'action' => 'detail|edit|stages|stage|actions',
 					]
 				],
 				'may_terminate' => true,
@@ -186,7 +186,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|hint|image|children',
+								'action' => 'detail|edit|delete|clone|image|hints|hint|children',
 							]
 						],
 						'may_terminate' => true,
@@ -370,7 +370,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|render|actions',
+								'action' => 'detail|edit|delete|simulate|actions',
 							]
 						],
 						'may_terminate' => true,
@@ -432,7 +432,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail',
+										'action' => 'detail|edit|delete|render',
 									]
 								],
 								'may_terminate' => true,

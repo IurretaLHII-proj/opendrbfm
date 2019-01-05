@@ -1,58 +1,58 @@
 <div class="d-flex flex-column flex-fill">
 	<div class="d-flex mt-2 mb-1">
-		<div class="px-4 bg-light border">Name</div>
+		<div class="px-4 bg-light border border-right-0">Name</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.title ]}</div>
 	</div>
 	<div class="d-flex my-1">
-		<div class="px-4 bg-light border">Project nº</div>
+		<div class="px-4 bg-light border border-right-0">Project nº</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.number ]}</div>
 	</div>
 	<div class="d-flex my-1">
-		<div class="px-4 bg-light border">Machine</div>
+		<div class="px-4 bg-light border border-right-0">Machine</div>
 		<div class="pl-2 pr-4 bg-white border">{[ values._embedded.machine ]}</div>
-		<div class="px-4 bg-light border">Line</div>
+		<div class="px-4 bg-light border-top border-bottom">Line</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.line ]}</div>
 	</div>
 	<div class="d-flex mt-1 mb-2">
-		<div class="px-4 bg-light border">Article code</div>
+		<div class="px-4 bg-light border border-right-0">Article code</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.code ]}</div>
 	</div>
 </div>
-<div class="d-flex flex-column flex-fill">
+<div class="d-flex flex-column flex-fill mx-2">
 	<div class="d-flex mt-2 mb-1">
-		<div class="px-4 bg-light border">Customer</div>
+		<div class="px-4 bg-light border border-right-0">Customer</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded._embedded.customer.name ]}</div>
 	</div>
 	<div class="d-flex my-1">
-		<div class="px-4 bg-light border">Productive plant</div>
+		<div class="px-4 bg-light border border-right-0">Productive plant</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.plant ]}</div>
 	</div>
 	<div class="d-flex my-1">
-		<div class="px-4 bg-light border">Piece nº</div>
+		<div class="px-4 bg-light border border-right-0">Piece nº</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.pieceNumber ]}</div>
 	</div>
 	<div class="d-flex mb-2 mt-1">
-		<div class="px-4 bg-light border">Piece name</div>
+		<div class="px-4 bg-light border border-right-0">Piece name</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.pieceName ]}</div>
 	</div>
 </div>
 <div class="d-flex flex-column flex-fill">
 	<div class="d-flex mt-2 mb-1">
-		<div class="px-4 bg-light border">Complexity</div>
+		<div class="px-4 bg-light border border-right-0">Complexity</div>
 		<div class="px-4 bg-white border flex-fill">{[ values._embedded.complexity ]}</div>
 	</div>
 	<div class="d-flex my-1">
-		<div class="bg-light border px-4">Description</div>
+		<div class="bg-light border px-4 border-right-0">Description</div>
 		<div class="px-4 bg-white border flex-fill" 
 			ng-bind-html="values._embedded.body">
 		</div>
 	</div>
 	<div class="d-flex mt-2 mb-1">
-		<div class="px-4 bg-light border">Owner</div>
+		<div class="px-4 bg-light border border-right-0">Owner</div>
 		<div class="px-4 bg-white border flex-fill">
 			<a href="{[ values._embedded._embedded.owner._links.self.href ]}">{[ values._embedded._embedded.owner.name ]}</a>
 		</div>
-		<div class="px-4 bg-light border">Created</div>
+		<div class="px-4 bg-light border border-right-0">Created</div>
 		<div class="px-4 bg-white border flex-fill">{[ values.created*1000 | date:"dd MMM yyyy HH:mm" ]}</div>
 	</div>
 </div>

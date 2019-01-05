@@ -1,64 +1,338 @@
-{% extends 'ma/process/base.twig' %}
+{% extends 'layout/base-layout.twig' %}
+
+{# block template #}
+{% block content %}
+
+	<div class="row"><div class="col-md-12"
+		ng-cloak
+		ng-controller="_DetailCtrl"
+		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
+		>
+
+		<!--{[ values ]}-->
+
+		<!-- PROCESS DETAIL -->
+		<div class="d-flex flex-column">
+			<div class="d-flex">
+				<h2 class="mr-auto">{[ values._embedded.title ]}</h2>
+				<a href="" class="btn"><i class="fa fa-pencil"></i></a>
+			</div>
+			<div class="d-flex" ng-include="'/js/custom/tpl/process-content.html'">
+			</div>
+		</div>
+		<!-- END OF PROCESS DETAIL -->
+
+		<!-- VERSION LIST -->
+		<ul class="list-inline my-2">
+			<li ng-repeat="(i,v) in values.versions" class="list-inline-item">
+				<div class="btn-group btn-group-justified">
+					<a href=""
+					   class="btn btn-sm btn-outline-primary" 
+					   ng-class="{active: v == version}"
+					   ng-click="setVersion(v)"
+					>v{[i+1]} | {[ v._embedded._embedded.material.name ]}</a>
+					<a href=""
+					   class="btn btn-sm btn-outline-primary" 
+					   ng-click="cloneVersion(v)"
+					>clone</a>
+					<a href=""
+					   class="btn btn-sm btn-outline-primary"
+					   ng-confirm-click
+					   confirmed-click="deleteVersion(v)"
+					   ><i class="fa fa-trash"></i></a>
+				</div>
+			</li>
+			<li class="list-inline-item">
+				<a href="" ng-click="addStage()" class="btn btn-sm btn-outline-primary">
+					<i class="fa fa-plus"></i>
+				</a>
+			</li>
+		</ul>
+		<!-- END OF VERSION LIST -->
+
+		<!-- VERSION STAGE TABS -->
+		<ul ng-repeat="(i,stage) in values.versions" 
+			ng-if="stage == version"
+			ng-init="level = 0;"
+			ng-include="'/js/custom/tpl/stage-tabs.html'"
+			class="nav nav-tabs mt-2 border-0">
+		</ul>
+		<!-- END OF VERSION STAGE TABS -->
+
+		<!-- VERSION STAGE CONTENT -->
+		<div ng-if="current && current.childrenLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
+		<div ng-if="current && !current.childrenLoading" class="d-flex flex-column border">
+			<div class="">
+				<a href="" ng-confirm-click confirmed-click="deleteStage(current)" class="btn pull-right">
+					<i class="fa fa-trash"></i>
+				</a>
+				<a href="" ng-click="editStage(current)" class="btn pull-right">
+					<i class="fa fa-pencil"></i>
+				</a>
+			</div>
+			<div class="row" ng-repeat="(i,stage) in values.versions">
+				<div class="col-sm-12 col-md-4">
+					<ng-include 
+						ng-if="stage == version"
+						src="'/js/custom/tpl/stage-content.html'"
+					/>
+				</div>
+				<div class="col-sm-12 col-md-8">
+					<ng-include 
+						ng-if="stage == version"
+						ng-init="level=0;"
+						class="d-flex"
+						src="'/js/custom/tpl/stage-images.html'"
+					/>
+				</div>
+			</div>
+		</div>
+		<!-- END OF VERSION STAGE CONTENT -->
+		
+		<!-- HINTS TABLE -->
+		<div ng-if="current && current.hintsLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
+		<table ng-if="current && !current.hintsLoading" class="table table-bordered my-2">
+			<thead class="text-center">
+				<tr>
+					<th rowspan="2" colspan="2">Error</th>
+					<th colspan="3">Description</th>
+					<th rowspan="2"></th>
+					<th colspan="4">Simulación</th>
+					<th rowspan="2"></th>
+				</tr>
+				<tr>
+					<th>Reasons</th>
+					<th>Influence</th>
+					<th>Suggestions</th>
+					<th>State</th>
+					<th>Who</th>
+					<th>Effect</th>
+					<th>Prevention</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat-start="(h, hint) in current.hints">
+					<td rowspan="{[hint.simulations.length+1]}">
+						<div class="small text-muted">{[ hint._embedded._embedded.operation.name ]}</div>
+						<a href="" class="btn btn-sm btn-{[badgeClass(hint._embedded.priority)]}" style="white-space:normal">
+							<span class="badge badge-light mr-2">{[ hint._embedded.priority ]}</span>{[ hint._embedded.name ]} 
+						</a>
+						<div class="small text-muted">
+							<a href="{[ hint._embedded._embedded.owner._links.self.href ]}">{[ hint._embedded._embedded.owner.name ]}</a> on {[ hint._embedded.created*1000 | date:"dd MMM yyyy HH:mm" ]}
+						</div>
+					</td>
+					<td rowspan="{[hint.simulations.length+1]}" class="text-center">
+						<div class="btn-group btn-group-justified">
+							<a ng-href="{[ hint._embedded._links.self.href ]}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></a>
+							<button href="" ng-click="editHint(hint)" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></button>
+							<button href="" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm btn-outline-primary"><i class="fa fa-trash"></i></button>
+						</div>
+					</td>
+					<td colspan="9" class="p-0 text-center">
+							<a href="" ng-click="addSimulation(hint)" class="btn btn-sm">
+								<i class="fa fa-plus"></i>
+							</a>
+					</td>
+				</tr>
+				<tr ng-repeat-end ng-repeat="s in hint.simulations">
+					<td>
+						<ul>
+							<!--
+							<li ng-repeat="sim in s.parents">
+							<span ng-repeat="inf in sim.influences">{[ sim.hint.name ]}</span>
+							</li>
+							-->
+							<li ng-repeat="note in s._embedded._embedded.reasons">
+								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
+							</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li ng-repeat="note in s._embedded._embedded.influences">
+								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
+							</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li ng-repeat="note in s._embedded._embedded.suggestions">
+								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
+							</li>
+						</ul>
+					</td>
+					<td class="text-center">
+						<div class="btn-group btn-group-justified">
+							<button href="" ng-click="editSimulation(s)" class="btn btn-sm btn-outline-primary">
+								<i class="fa fa-pencil"></i>
+							</button>
+							<button href="" ng-confirm-click confirmed-click="deleteSimulation(s)" class="btn btn-sm btn-outline-primary">
+								<i class="fa fa-trash"></i>
+							</button>
+						</div>
+					</td>
+					<td class="bg-light text-{[textClass(s._embedded.state)]}" 
+						ng-switch="s._embedded.state">
+						<span ng-switch-when="-1">Not necessary</span>
+						<span ng-switch-when="-2">Canceled</span>
+						<span ng-switch-when="1">In progress</span>
+						<span ng-switch-when="2">Finished</span>
+						<span ng-switch-default>Not processed</span>
+					</td>
+					<td class="bg-light text-{[textClass(s._embedded.state)]}">
+						<span ng-if="s._embedded.who">{[ s._embedded.who ]}<span ng-if="s._embedded.when"class="small"> on {[ s._embedded.when*1000 | date:"longDate"]}</span></span>
+					</td>
+					<td class="bg-light text-{[textClass(s._embedded.state)]}">
+						<span ng-if="s._embedded.effect" ng-bind-html="s._embedded.effect"></span>
+					</td>
+					<td class="bg-light text-{[textClass(s._embedded.state)]}">
+						<span ng-if="s._embedded.prevention" ng-bind-html="s._embedded.prevention"></span>
+					</td>
+					<td class="bg-light text-center">
+						<div class="btn-group btn-group-justified">
+							<a ng-click="renderSimulation(s)" href="" class="btn btn-sm btn-outline-primary">
+								<i class="fa fa-pencil"></i>
+							</a>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="p-0 text-center" colspan="12">
+						<a href="" ng-click="addHint()" class="btn"><i class="fa fa-plus"></i></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!--
+		<table ng-if="current" class="table table-bordered my-4">
+			<thead class="text-center">
+				<tr>
+					<th rowspan="2">Error</th>
+					<th colspan="2">Relations</th>
+					<th colspan="3">Description</th>
+					<th rowspan="2"></th>
+					<th colspan="4">Simulación</th>
+					<th rowspan="2"></th>
+				</tr>
+				<tr>
+					<th>Prevs</th>
+					<th>Nexts</th>
+					<th>Reasons</th>
+					<th>Influence</th>
+					<th>Suggestions</th>
+					<th>State</th>
+					<th>Who</th>
+					<th>Effect</th>
+					<th>Prevention</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(h, hint) in current.hints">
+					<td>
+						<div class="small text-muted">{[ hint._embedded._embedded.operation.name ]}</div>
+						<div>
+							<span class="badge badge-{[badgeClass(hint._embedded.priority)]}">{[ hint._embedded.priority ]}</span> {[ hint._embedded.name ]} 
+						</div>
+						<div class="small text-muted pull-right">
+							<a href="{[ hint._embedded._embedded.owner._links.self.href ]}">{[ hint._embedded._embedded.owner.name ]}</a> on {[ hint._embedded.created*1000 | date:"dd MMM yyyy HH:mm" ]}
+						</div>
+					</td>
+					<td>
+						<ul>
+							<li ng-repeat="parent in hint._embedded._embedded.parents">
+								<div class="small text-muted">{[ parent._embedded.operation.name ]}</div>
+								<div>
+									<span class="badge badge-{[badgeClass(parent.priority)]}">{[ parent.priority ]}</span> {[ parent.name ]} 
+								</div>
+							</li>
+						</ul>
+					</td>
+					<td>
+					</td>
+					<td>
+						<ul>
+							<li ng-repeat="note in hint._embedded._embedded.reasons">{[note.text]}</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li ng-repeat="note in hint._embedded._embedded.influences">{[note.text]}</li>
+						</ul>
+					</td>
+					<td>
+						<ul>
+							<li ng-repeat="note in hint._embedded._embedded.suggestions">{[note.text]}</li>
+						</ul>
+					</td>
+					<td class="text-center">
+						<div class="btn-group btn-group-justified">
+							<a href="" ng-click="editHint(hint)" class="btn btn-sm btn-outline-primary">
+								<i class="fa fa-pencil"></i>
+							</a>
+							<a ng-href="{[ hint._embedded._links.self.href ]}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></a>
+						</div>
+					</td>
+					<td class="bg-light text-{[textClass(hint._embedded.state)]}" 
+						ng-switch="hint._embedded.state">
+						<span ng-switch-when="-1">Not necessary</span>
+						<span ng-switch-when="-2">Canceled</span>
+						<span ng-switch-when="1">In progress</span>
+						<span ng-switch-when="2">Finished</span>
+					</td>
+					<td class="bg-light text-{[textClass(hint._embedded.state)]}">
+						<span ng-if="hint._embedded.who">{[ hint._embedded.who ]} on {[ hint._embedded.when*1000 | date:"longDate"]}</span>
+					</td>
+					<td class="bg-light text-{[textClass(hint._embedded.state)]}">
+						<span ng-if="hint._embedded.effect" ng-bind-html="hint._embedded.effect"></span>
+					</td>
+					<td class="bg-light text-{[textClass(hint._embedded.state)]}">
+						<span ng-if="hint._embedded.prevention" ng-bind-html="hint._embedded.prevention"></span>
+					</td>
+					<td class="bg-light text-center">
+						<div class="btn-group btn-group-justified">
+							<a ng-click="simuleHint(hint)" href="" class="btn btn-sm btn-outline-primary">
+								<i class="fa fa-pencil"></i>
+							</a>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="p-0 text-center" colspan="12">
+						<a href="" ng-click="addHint()" class="btn"><i class="fa fa-plus"></i></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		-->
+
+	</div></div>
+
+{% endblock content %}
 
 {% block style %}
 
-	{{ parent() }}
-
-	<link href="{{ basePath() }}/css/custom/process-content.css" 
-		media="screen" 
-		rel="stylesheet" 
-		type="text/css" />
+	{[ parent() ]}
 
 	<style>
-	.process-img-list {
-		background: #E7E7E7;
+	li.nav-link.active {
+		margin-bottom: -1px;
+		border-bottom: 1px solid white;
 	}
-	.process-img-list .stage-img-list {
+	.stage-img {
+		max-height:300px;
 	}
-	.process-img-list .active {
-		background: white;
-		border-left: 1px solid darkgray;
-		border-right: 1px solid darkgray;
+	table {
+	}
+	table td {
+		/*max-width: 250px;*/
+	}
+	table ul {
+		padding:0;
+		list-style:none;
+	}
+	table ul li {
 	}
 	</style>
 
 {% endblock style %}
-
-{% block base %}
-
-	<ul  
-		ng-repeat="(i, stage) in values.versions"
-		class="nav nav-tabs stage-tabs mt-2"
-			ng-if="version == stage"
-			ng-init="index = i;"
-			ng-include="'/js/custom/tpl/stage-nav-content.html'">
-	</ul>
-
-	<div class="process-img-list d-flex justify-content-center mt-4 mb-4">
-
-		<!--
-		<ng-include ng-if="version" ng-repeat="(i, stage) in getStages(version)"
-			src="'/js/custom/tpl/stage-img-content.html'"
-			>
-		-->
-		<ng-include
-			ng-repeat="(i, stage) in values.versions"
-			ng-if="version == stage && stage._embedded && stage._embedded._embedded.images.length"
-			src="'/js/custom/tpl/stage-img-content.html'"
-		/>
-
-	</div>
-
-	<ng-include 
-		ng-repeat="(i, stage) in values.versions"
-		ng-if="version == stage;"
-		src="'/js/custom/tpl/stage-tab-content.html'"
-	/>
-
-	<!--
-	<ng-include ng-repeat="(index, stage) in getStages(version)"
-		src="'/js/custom/tpl/stage-tab-content.html'"
-		>
-	-->
-
-{% endblock base %}

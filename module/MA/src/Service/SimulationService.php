@@ -5,7 +5,6 @@ namespace MA\Service;
 use Zend\EventManager\EventInterface;
 use Base\Service\AbstractService;
 
-class StageService extends AbstractService
+class SimulationService extends AbstractService
 {
-	const EVENT_CLONE = 'create';
 }

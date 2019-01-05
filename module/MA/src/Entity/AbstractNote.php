@@ -64,6 +64,15 @@ abstract class AbstractNote implements
 		$this->created = new DateTime;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function __clone()
+	{
+		$this->id 	   = null;
+        $this->created = new DateTime;
+	}
+
     /**
      * Get id.
      *
@@ -158,7 +167,7 @@ abstract class AbstractNote implements
 	{
 		return [
 			'id'		=> $this->getId(),
-			'owner'		=> $this->getUser(),
+			//'owner'		=> $this->getUser(),
 			'text'		=> $this->getText(),
 			'created'	=> $this->getCreated()->getTimestamp(),
 		];

@@ -1,16 +1,17 @@
 <div class="modal-header">
 	<h3 class="modal-title">Version {[ values.version ]}. Stage {[ values.level ]}</h3>
 </div>
-<div class="modal-body">
+<div ng-init="init()" class="modal-body">
+
 	<div class="form-group" 
-		ng-if="values.parent"
-		ng-init="previouses = parentOptions()">
+		ng-if="values.parent.id"
+		ng-init="loadStages()">
 		<label for="inputParents">Previous stage</label>
 		<select class="form-control"
 			ng-class="{'is-invalid': errors.parent}"
-			ng-change="changeParent()"
-			ng-model="values.parent"
-			ng-options="item as 'Stage ' + item._embedded.level for item in previouses"
+			ng-model="values._parent"
+			ng-change="stageChanged()"
+			ng-options="item as item.getName() for item in stageOptions"
 			>
 		</select>
 		<div ng-if="errors.parent"
@@ -24,7 +25,7 @@
 				ng-class="{'is-invalid': errors.material}"
 				ng-model="values.material"
 				ng-disabled="values.level > 1"
-				ng-options="item as item.name for item in materials track by item.id"
+				ng-options="item as item.name for item in _materials track by item.id"
 				>
 			</select>
 			<div ng-if="errors.material"
@@ -36,13 +37,21 @@
 			<div class="form-row"
 				ng-repeat="(_i, op) in values.operations"
 				>
-				<div class="form-group col-md-11">
+				<div class="form-group col-md-5">
+					<select class="form-control"
+						ng-model="values.operationTypes[_i]"
+						ng-options="item as item.name 
+						for item in _operationTypes"
+						>
+					</select>
+				</div>
+				<div class="form-group col-md-6">
 					<select class="form-control"
 						ng-class="{'is-invalid': errors.operations[_i]}"
+						ng-disabled="!values.operationTypes[_i].id"
 						ng-model="values.operations[_i]"
-						ng-options="item as item.name for 
-						item in getOperations(values.operations[_i], values.operations) 
-						track by item.id"
+						ng-options="item as item.name 
+						for item in getOperations(_i)"
 						>
 					</select>
 					<div ng-if="errors.operations[_i]"
