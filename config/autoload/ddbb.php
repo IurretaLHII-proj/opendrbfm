@@ -3,7 +3,7 @@
 return [
      'host'     => 'localhost',
      'user'     => 'root',
-     'password' => '1turr1',
+     'password' => '22open11drbfm',
      'dbname'   => 'ma_drbfm',
      'charset'  => 'utf8',
 ];

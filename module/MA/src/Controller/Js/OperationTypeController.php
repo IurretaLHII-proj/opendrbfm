@@ -18,7 +18,7 @@ class OperationTypeController extends \Base\Controller\Js\AbstractActionControll
 
 		$collection = $em->getRepository("MA\Entity\OperationType")->findBy([],['created' => 'DESC']);
 
-		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'process/operation/type/json');
+		$payload = $this->prepareHalCollection($this->getPaginator($collection, 100), 'process/operation/type/json');
 
 		return new HalJsonModel([
 			'payload' => $payload,
