@@ -359,12 +359,15 @@ App.controller('_OperationTypeModalCtrl', function($scope, $uibModalInstance, $r
 	$scope.values = group;
 	$scope.errors = {};
 	$scope.save = function() {
+		var war = $scope._addWarning("Updating...");
 		$resource(group._links.edit.href).save($scope.values).$promise.then(
 			function(data) {
+				$scope._closeWarning(war);
 				group._embedded = data;
 				$uibModalInstance.close(data);	
 			},
 			function(err) {
+				$scope._closeWarning(war);
 				console.log(err);
 				$scope.errors = err.data.errors;
 			},

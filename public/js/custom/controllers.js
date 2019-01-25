@@ -487,6 +487,7 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api
 			templateUrl : '/js/custom/tpl/modal/operation-type-form.html',
 			controller: '_OperationTypeModalCtrl',	
 			size: 'lg',
+			scope: $scope,
 			resolve: {group: group}
 		});
 
@@ -495,6 +496,20 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api
 				$scope.addSuccess("Saved succesfully");
 			},
 			function(err) {}
+		);
+	}
+	$scope.deleteGroup = function(group) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(group._embedded._links.delete.href).delete().$promise.then(
+			function (data) {
+				$scope._closeWarning(war);
+        		$scope.values.splice($scope.values.indexOf(group), 1);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
 		);
 	}
 	$scope.addOperation = function(group) {
