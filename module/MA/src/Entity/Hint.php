@@ -89,6 +89,17 @@ class Hint implements
     protected $type;
 
 	/**
+	 * @var CommentInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\Comment\Hint",
+	 *	mappedBy	 = "source",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"priority" = "DESC"})
+	 */
+	protected $comments;
+
+	/**
 	 * @var HintInterface[]
 	 * @ORM\ManyToMany(
 	 *	targetEntity = "MA\Entity\Hint",
@@ -183,6 +194,7 @@ class Hint implements
 	{
 		$this->created     = new DateTime;
 		$this->updated     = new DateTime;
+		$this->comments    = new ArrayCollection;
 		$this->parents     = new ArrayCollection;
 		$this->children    = new ArrayCollection;
 		$this->simulations = new ArrayCollection;
@@ -457,6 +469,28 @@ class Hint implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+    
+    /**
+     * Get comments.
+     *
+     * @return HintInterface.
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    /**
+     * Set comments.
+     *
+     * @param CommentInterface[] comments the value to set.
+     * @return HintInterface.
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
         return $this;
     }
     
@@ -804,6 +838,24 @@ class Hint implements
 				'route' => [
 				    'name'    => 'process/hint/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'comment',
+				'privilege'   => 'comment',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/detail/json',
+				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'comments',
+				'privilege'   => 'comments',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/detail/json',
+				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
 				],
 			],
 		];

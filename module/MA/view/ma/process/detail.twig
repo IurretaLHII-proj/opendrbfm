@@ -91,7 +91,7 @@
 		
 		<!-- HINTS TABLE -->
 		<div ng-if="current && current.hintsLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
-		<table ng-if="current && !current.hintsLoading" class="table table-bordered my-2">
+		<table ng-if="current && !current.hintsLoading" class="hint-table table table-bordered my-2">
 			<thead class="text-center">
 				<tr>
 					<th rowspan="2" colspan="2">Error</th>
@@ -120,6 +120,7 @@
 						<div class="small text-muted">
 							<a href="{[ hint._embedded._embedded.owner._links.self.href ]}">{[ hint._embedded._embedded.owner.name ]}</a> on {[ hint._embedded.created*1000 | date:"dd MMM yyyy HH:mm" ]}
 						</div>
+					   	<a href="" class="btn btn-sm btn-default comment-btn small" ng-click="addComment(hint)"><span class="fa fa-comment-o"></span> 3</a>
 					</td>
 					<td rowspan="{[hint.simulations.length+1]}" class="text-center">
 						<div class="btn-group btn-group-justified">
@@ -136,7 +137,7 @@
 				</tr>
 				<tr ng-repeat-end ng-repeat="s in hint.simulations">
 					<td>
-						<ul>
+						<ul class="m-0">
 							<!--
 							<li ng-repeat="sim in s.parents">
 							<span ng-repeat="inf in sim.influences">{[ sim.hint.name ]}</span>
@@ -148,14 +149,14 @@
 						</ul>
 					</td>
 					<td>
-						<ul>
+						<ul class="m-0">
 							<li ng-repeat="note in s._embedded._embedded.influences">
 								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
 							</li>
 						</ul>
 					</td>
 					<td>
-						<ul>
+						<ul class="m-0">
 							<li ng-repeat="note in s._embedded._embedded.suggestions">
 								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
 							</li>

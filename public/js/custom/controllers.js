@@ -1,3 +1,5 @@
+//import * as MA from '../models/comment.model';
+
 var _noneOption    = {id:null, name:'--- None ---'};
 var _createOption  = {id:-1,   name:'--- Create new ---'};
 var _defaultOption = {id:null, name:'--- Select one ---'};
@@ -433,6 +435,26 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.addComment = function(item) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/comment-form.html',
+			controller: 'CommentCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {item : item}
+		});
+
+		modal.result.then(
+			function(res) {
+				console.log(res);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {

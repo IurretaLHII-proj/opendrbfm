@@ -9,6 +9,9 @@ return [
 	Controller\Js\UserController::class => [
 		'repository' => Entity\User::class,
 	],
+	Controller\Js\CommentController::class => [
+		'repository' => Entity\Comment\Hint::class,//FIXME
+	],
 	Controller\CustomerController::class => [
 		'repository' => Entity\Customer::class,
 	],
