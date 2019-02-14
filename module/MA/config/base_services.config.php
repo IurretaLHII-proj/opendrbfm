@@ -10,6 +10,7 @@ return [
 				'services' => [
 					Service\ActionService::class, 
 					Service\ActionProcessService::class, 
+					Service\CommentService::class, 
 					Service\NoteService::class, 
 					Service\CustomerService::class, 
 					Service\MaterialService::class, 
@@ -22,7 +23,10 @@ return [
 					Service\OperationService::class, 
 					Service\OperationTypeService::class, 
 				],
-				'events'   => \Base\Service\AbstractService::EVENT_CREATE, 
+				'events'   => [
+					\Base\Service\AbstractService::EVENT_CREATE,
+					Service\CommentService::EVENT_REPLY,
+				],
 				'callback' => 'injectUser',
 				'priority' => 100,
 			],
@@ -78,6 +82,21 @@ return [
 			Entity\Note\HintSuggestion::class, 
 			Entity\Note\HintInfluence::class, 
 		],
+	],
+	Service\CommentService::class => [
+		'entities'  => [
+			Entity\Comment\Hint::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\CommentService::class, 
+				],
+				'events'   => Service\CommentService::EVENT_REPLY, 
+				'callback' => 'increaseCommentCount',
+				'priority' => 100,
+			],
+		]
 	],
 	Service\ActionService::class => [
 		'entities'  => [

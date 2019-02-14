@@ -139,3 +139,18 @@
 .nav-link.active a {
 	color: #212529;
 }
+/*************************************/
+.hint-table td {
+	position: relative;
+}
+.hint-table .comment-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+/*************************************/
+.modal-footer .reply {
+	position: absolute;
+	bottom: 5px;
+    right: 20px;
+}

@@ -156,6 +156,44 @@ return [
 					]
 				],
 			],
+			'comment' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/comment',
+					'defaults' => [
+						'controller' => Controller\CommentController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|delete|reply|comments',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\CommentController::class,
+									],
+								],
+							]
+						],
+					],
+				],
+			],
 			'stage' => [
 				'type' => 'Literal',
 				'options' => [
@@ -370,7 +408,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|simulate|actions',
+								'action' => 'detail|edit|delete|simulate|comments|comment|actions',
 							]
 						],
 						'may_terminate' => true,

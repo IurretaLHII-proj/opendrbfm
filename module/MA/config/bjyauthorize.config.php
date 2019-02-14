@@ -33,6 +33,7 @@ return [
 			Entity\Hint::class,
 			Entity\HintType::class,
 			Entity\Simulation::class,
+			Entity\Comment\Hint::class,
 		]
 	],
     'rule_providers' => [
