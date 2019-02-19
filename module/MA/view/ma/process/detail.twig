@@ -143,8 +143,9 @@
 							<span ng-repeat="inf in sim.influences">{[ sim.hint.name ]}</span>
 							</li>
 							-->
-							<li ng-repeat="note in s._embedded._embedded.reasons">
-								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
+							<li class="bg-light my-1 p-2 rounded" ng-repeat="note in s._embedded._embedded.reasons">
+					   			<a href="" class="btn btn-sm btn-default small" ng-click="addComment(note)"><span class="fa fa-comment-o"></span> 3</a>
+								<div>{[note.text]}</div>
 							</li>
 						</ul>
 					</td>

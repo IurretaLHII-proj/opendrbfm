@@ -1,16 +1,21 @@
 App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item) 
 {
 	item.comments = [];
-	$scope.item   = item;
+	if (typeof item != MANote) {
+		$scope.item   = new MAHint();
+		$scope.item.name  = item.name;
+		$scope.item.links = new MALinks(item._links);
+	}
 	$scope.values = {};
 	$scope.save = function() {
-		//$uibModalInstance.close(item);	
 		var war = $scope._addWarning("Saving...");
-		$api.hint.comment(item, $scope.values).then(
+		$api.hint.comment($scope.item, $scope.values).then(
 			function(comment) {
 				$scope.values = {};
 				$scope._closeWarning(war);
-				item.comments.push(comment);
+				$scope.item.comments.items.push(comment);
+				$scope.item.addComments(comment);
+				//$uibModalInstance.close(item);	
 			},		
 			function(err) {
 				console.log(err);
@@ -26,8 +31,8 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item)
 			function(child) {
 				comment.values = {};
 				comment.commentCount++;
-				$scope._closeWarning(war);
 				comment.addChild(child);
+				$scope._closeWarning(war);
 			},		
 			function(err) {
 				console.log(err);
@@ -37,16 +42,14 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item)
 		);	
 	};
 
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
-
 	$scope.replies = function(comment) {
 		var war = $scope._addWarning("Loading...");
-		comment.loaded = true;
 		$api.comment.replies(comment).then(
 			function(data) {
-				comment.addChildren(data);
+				data._embedded.items = data._embedded.items.map(function(values) {
+					return new MAComment(values);
+				}); 
+				comment.children.load(data);
 				$scope._closeWarning(war);
 			},		
 			function(err) {
@@ -56,16 +59,37 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item)
 		);	
 	};
 
-	$scope.init = function() {
-		$api.hint.comments(item).then(
+	$scope.more = function(coll) {
+		$api.collection.more(coll).then(
 			function(data) {
-				item.comments = item.comments.concat(data);
-				console.log(item);
+				data._embedded.items = data._embedded.items.map(function(values) {
+					return new MAComment(values);
+				}); 
+				coll.load(data);
 			},		
 			function(err) {
 				$scope.errors = err;
 			}
 		);	
+	}
+
+	$scope.init = function() {
+		$api.hint.comments($scope.item).then(
+			function(data) {
+				data._embedded.items = data._embedded.items.map(function(values) {
+					return new MAComment(values);
+				}); 
+				$scope.item.comments.load(data);
+				console.log($scope.item);
+			},		
+			function(err) {
+				$scope.errors = err;
+			}
+		);	
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
 	};
 });
 
@@ -73,36 +97,34 @@ App.service('$api', ['$resource', function($res) {
 	return {
 		hint: {
 			comment: function(item, values) {
-				return $res(item._links.comment.href).save(values).$promise.then(
+				return $res(item.links.getHref('comment')).save(values).$promise.then(
 					function(data) { return new MAComment(data); }, function(err) { throw err; }
 				);
 			},
 			comments: function(item) {
-				return $res(item._links.comments.href).get().$promise.then(
-					function(data) { 
-						return data._embedded.items.map(function(values) {
-							return new MAComment(values);
-						}); 
-					}, function(err) { throw err; }
+				return $res(item.links.getHref('comments')).get().$promise.then(
+					function(data) { return data}, function(err) { throw err; }
 				);
 			},
 		},
 		comment: {
 			reply: function(item, values) {
-				console.log(item, values);
 				return $res(item.links.getHref('reply')).save(values).$promise.then(
 					function(data) { return new MAComment(data); }, function(err) { throw err; }
 				);
 			},
 			replies: function(item) {
 				return $res(item.links.getHref('children')).get().$promise.then(
-					function(data) { 
-						return data._embedded.items.map(function(values) {
-							return new MAComment(values);
-						}); 
-					}, function(err) { throw err; }
+					function(data) { return data}, function(err) { throw err; }
 				);
 			},
-		}
+		},
+		collection: {
+			more: function(coll) {
+				return $res(coll.links.getHref('next')).get().$promise.then(
+					function(data) { return data}, function(err) { throw err; }
+				);
+			}
+		},
 	};
 }]);

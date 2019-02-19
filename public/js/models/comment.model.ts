@@ -1,7 +1,13 @@
 interface IMALinks {}
 interface IMACollection {
-	items: [],
-	links: IMALinks,
+	page:number,
+	page_count:number,
+	page_size:number,
+	total_items:number,
+	_embedded: {
+		items: [],
+	}
+	_links: IMALinks,
 }
 interface IMADate {
 	date: number, 
@@ -23,6 +29,41 @@ interface IMAComment {
 	},
 }
 
+class MACollection {
+	constructor() {
+		this.items = []; 
+		this.links = new MALinks({});;
+	}
+
+	isEmpty():boolean {
+		return this.items.length == 0;
+	}
+
+	has(name:string):boolean {
+		return this.links.has(name);
+	}
+
+	load(obj:IMACollection) {
+		this.page  		 = obj.page;
+		this.page_count  = obj.page_count;
+		this.page_size   = obj.page_size;
+		this.total_items = obj.total_items;
+		this.links = new MALinks(obj._links);
+		this.loaded 	 = true;
+		for (var i = 0; i < obj._embedded.items.length; i++) {
+			this.items.push(obj._embedded.items[i]);
+		}
+	}
+
+	items:any[];
+	links: MALinks;
+	page: number;
+	page_count:number;
+	page_size:number;
+	total_items:number;
+	loaded: boolean = false;
+}
+
 class MALinks {
 	constructor(obj: IMALinks) {
 		this.keys = obj;
@@ -34,11 +75,14 @@ class MALinks {
 		}
 	}
 
+	has(name:string):boolean {
+		return typeof this.keys[name] !== "undefined";
+	}
+
 	keys:{}
 }
 
 class MAUser {
-
 	constructor(obj: IMAUser) {
 		this.name  = obj.name;
 		this.links = new MALinks(obj._links);
@@ -48,8 +92,42 @@ class MAUser {
 	links: MALinks;
 }
 
-class MAComment {
+class MANote {
+	constructor() {
+		this.comments = new MACollection();
+	}
 
+	getComments():MACollection[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		this.comments.items.push(obj);
+	}
+
+	comments: MACollection;
+	links: MALinks;
+}
+
+class MAHint {
+	constructor() {
+		this.comments = new MACollection();
+	}
+
+	getComments():MACollection[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		this.comments.items.push(obj);
+	}
+
+	name: string;
+	comments: MACollection;
+	links: MALinks;
+}
+
+class MAComment {
 	constructor(obj: IMAComment) {
 		this.id				= obj.id;
 		this.body 			= obj.body;
@@ -57,26 +135,26 @@ class MAComment {
 		this.links 			= new MALinks(obj._links);
 		this.created 		= new Date(obj.created.date);
 		this.commentCount 	= obj.commentCount;
-		this.children 		= [];
+		this.children		= new MACollection();
 	}
 
-	addChildren(children: MAComment[]) {
+	/*addChildren(children: MAComment[]) {
 		for (var i = 0; i < children.length; i++) {
 			this.addChild(children[i]);
 		}
-	}
+	}*/
 
 	addChild(child: MAComment) {
 		child.parent = this;
-		this.children.push(child);
+		this.children.items.push(child);
 	}
 
 	hasChildren(): boolean {
-		return this.children.length > 0;
+		return !this.children.isEmpty();
 	}
 
-	getChildren(): MAComment[] {
-		return this.children;
+	getChildren():MACollection[] {
+		return this.children.items;
 	}
 
 	id:number;
@@ -84,7 +162,7 @@ class MAComment {
 	commentCount:number;
 	user: MAUser;
 	parent: MAComment;
-	children: MAComment[];
+	children: MACollection;
 	created: Date;
 	links: MALinks;
 }
