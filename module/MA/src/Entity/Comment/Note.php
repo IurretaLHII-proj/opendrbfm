@@ -8,18 +8,19 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
 
-use MA\Entity\HintInterface,
+use MA\Entity\NoteInterface,
+	MA\Entity\AbstractNote,
 	MA\Entity\AbstractComment;
 
 /**
  * @ORM\Entity()
  */
-class Hint extends AbstractComment
+class Note extends AbstractComment
 {
 	/**
 	 * @var PostComment
 	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\Comment\Hint",
+	 *	targetEntity = "MA\Entity\Comment\Note",
 	 *	inversedBy	 = "children",
 	 * )
 	 * @ORM\JoinColumn(
@@ -33,7 +34,7 @@ class Hint extends AbstractComment
 	/**
 	 * @var PostComment[]
 	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Comment\Hint",
+	 *	targetEntity = "MA\Entity\Comment\Note",
 	 *	mappedBy	 = "parent",
 	 *	cascade = {"remove"}
 	 * )
@@ -43,7 +44,7 @@ class Hint extends AbstractComment
 
 	/**
 	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\Hint",
+	 *	targetEntity = "MA\Entity\AbstractNote",
 	 *	inversedBy	 = "comments",
 	 * )
 	 * @ORM\JoinColumn(
@@ -56,7 +57,7 @@ class Hint extends AbstractComment
     /**
      * Get source.
      *
-     * @return HintInterface.
+     * @return NoteInterface.
      */
     public function getSource()
     {
@@ -66,10 +67,10 @@ class Hint extends AbstractComment
     /**
      * Set source.
      *
-     * @param HintInterface source the value to set.
-     * @return Hint.
+     * @param NoteInterface source the value to set.
+     * @return Note.
      */
-    public function setSource(HintInterface $source)
+    public function setSource(NoteInterface $source)
     {
         $this->source = $source;
         return $this;
@@ -78,9 +79,9 @@ class Hint extends AbstractComment
     /**
      * Get hint.
      *
-     * @return Hint.
+     * @return Note.
      */
-    public function getHint()
+    public function getNote()
     {
         return $this->getSource();
     }
@@ -88,10 +89,10 @@ class Hint extends AbstractComment
     /**
      * Set hint.
      *
-     * @param Hint hint the value to set.
-     * @return Hint.
+     * @param NoteInterface hint the value to set.
+     * @return Note.
      */
-    public function setHint(HintInterface $hint)
+    public function setNote(NoteInterface $hint)
     {
         $this->setSource($hint);
         return $this;

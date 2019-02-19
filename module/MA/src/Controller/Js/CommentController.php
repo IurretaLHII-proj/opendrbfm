@@ -22,10 +22,10 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 				['created' => 'DESC']
 			);
 
-		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'process/hint/detail/json');
+		$paginator = $this->getPaginator($collection);
 
 		return new HalJsonModel([
-			'payload' => $payload,
+			'payload' => $this->prepareHalCollection($paginator, 'process/comment/detail/json'),
 		]);
 	}
 

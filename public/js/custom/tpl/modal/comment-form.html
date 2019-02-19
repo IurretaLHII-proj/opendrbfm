@@ -8,12 +8,16 @@
 	</button>
 </div>
 <div class="modal-body" ng-init="init()">
-	<div ng-if="item.comments.length" 
-		ng-repeat="comment in item.comments" 
+	<div ng-if="!item.comments.isEmpty()" 
+		ng-repeat="comment in item.getComments()" 
 		ng-init="depth = 1;"
 		ng-include="'/js/custom/tpl/comment-list-item.html'"
 		class="pb-2 pt-2">
 	</div>
+</div>
+<p ng-if="item.comments.loaded" class="small text-center m-0">Showing {[ item.comments.items.length ]} items of {[ item.comments.total_items ]}</p>
+<div ng-if="item.comments.has('next')" class="text-center mt-1 small">
+        <a href="" ng-click="more(item.comments)">.. view previouses ..</a>
 </div>
 <div class="modal-footer" 
 	ng-if="true || entity._links.comment.allowed" 

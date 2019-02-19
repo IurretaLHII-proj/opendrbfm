@@ -143,6 +143,9 @@
 .hint-table td {
 	position: relative;
 }
+.hint-table td ul li{
+	position: relative;
+}
 .hint-table .comment-btn {
 	position: absolute;
 	top: 0;

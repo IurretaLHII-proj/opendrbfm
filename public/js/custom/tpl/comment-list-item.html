@@ -27,14 +27,14 @@
 				<!--<img ng-src="{[ comment._embedded.user._links.avatar.href ]}" height=30 width=30 style="border-radius:30px; margin-right:5px;">-->
 				<!--<span style="font-size:12px;" class="small fa fa-angle-up"> {[ comment.votesUp ]}</span>
 				<span style="font-size:12px;" class="small fa fa-angle-down"> {[ comment.votesDown ]}</span>-->
-				<a href="" 
+				<a href="" class="btn btn-sm"
 				   ng-click="replies(comment);" 
-				   ng-class="{disabled: comment.loaded}"
+				   ng-class="{disabled: comment.children.loaded}"
 				   ng-if="!comment.loaded && comment.commentCount && depth <= 2"
 				>
 					<span style="font-size:12px;" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
 				</a>
-				<span style="font-size:12px;" ng-if="comment.loaded || !comment.commentCount || depth > 2" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
+				<span style="font-size:12px;" ng-if="!comment.commentCount || depth > 2" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
 
 				<a style="font-size:12px; margin: 0.5px;" 
 					class="btn btn-sm btn-outline-default"
@@ -43,7 +43,7 @@
 					data-toggle="collapse">reply <span class="small glyphicon fa fa-reply"></span>
 				</a>
 
-				<span class="small" style="color:gray; margin:0 5px;">by <a href="{[ comment.user.links.getHref() ]}">{[ comment.user.name ]}</a> on {[ comment.created | date:'MMM d, H:mm' ]}</span>
+				<span class="small">by <a href="{[ comment.user.links.getHref() ]}">{[ comment.user.name ]}</a> on {[ comment.created | date:'MMM d, H:mm' ]}</span>
 				<!--<a href="" style="font-size:12px; margin:0 5px;" ng-click="commentModal(comment.id);" style="">view <span class="small fa fa-arrow-circle-o-right"></span>
 				</a>-->
 			</div>
@@ -90,7 +90,7 @@
         ng-init="comment = c; depth = depth+1;"
 >
 </div>
-<div ng-if="comment.comments._links.next" class="text-center mt-1">
-        <p class="small" style="margin: 0;">Showing {[ comment.comments.page * comment.comments.page_size ]} items of {[ comment.comments.total_items ]}</p>
-        <a href="" ng-click="replies(comment)">.. view previouses ..</a>
+<p ng-if="comment.children.loaded" class="small text-center m-0">Showing {[ comment.children.items.length  ]} items of {[ comment.children.total_items ]}</p>
+<div ng-if="comment.children.has('next')" class="text-center mt-1 small">
+        <a href="" ng-click="more(comment.children)">.. view previouses ..</a>
 </div>
