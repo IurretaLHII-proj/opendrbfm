@@ -9,7 +9,9 @@ use DateTime;
 /**
  * @ORM\Entity()
  */
-abstract class AbstractHintNote extends AbstractNote
+abstract class AbstractHintNote extends AbstractNote implements
+	CommentProviderInterface,
+   	\Base\Hal\LinkProvider
 {
 	/**
 	 * @var SimulationInterface
@@ -46,4 +48,31 @@ abstract class AbstractHintNote extends AbstractNote
     {
         return $this->simulation;
     }
+
+	/**
+  	 * @inheritDoc
+  	 */
+  	public function provideLinks()
+  	{
+		return [
+			[
+				'rel'   	  => 'comment',
+				'privilege'   => 'comment',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/note/detail/json',
+				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'comments',
+				'privilege'   => 'comments',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/note/detail/json',
+				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
+				],
+			],
+		];
+	}
 }

@@ -47,16 +47,19 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			_sm.suggestions = [];
 			_sm.influences  = [];
 			angular.forEach (sm._embedded.reasons, function(note, i) {
-				_sm.reasons[i] = angular.copy(note);
-				_sm.reasons[i]._embedded = note;
+				//_sm.reasons[i] = angular.copy(note);
+				//_sm.reasons[i]._embedded = note;
+				_sm.reasons[i] = new MANote(note);
 			});
 			angular.forEach (sm._embedded.suggestions, function(note, i) {
-				_sm.suggestions[i] = angular.copy(note);
-				_sm.suggestions[i]._embedded = note;
+				//_sm.suggestions[i] = angular.copy(note);
+				//_sm.suggestions[i]._embedded = note;
+				_sm.suggestions[i] = new MANote(note);
 			});
 			angular.forEach (sm._embedded.influences, function(note, i) {
-				_sm.influences[i] = angular.copy(note);
-				_sm.influences[i]._embedded = note;
+				//_sm.influences[i] = angular.copy(note);
+				//_sm.influences[i]._embedded = note;
+				_sm.influences[i] = new MANote(note);
 			});
 			_sm.hint = _hint;
 			_hint.simulations.push(_sm);

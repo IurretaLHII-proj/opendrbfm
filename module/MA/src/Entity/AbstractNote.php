@@ -4,6 +4,7 @@ namespace MA\Entity;
 
 use Doctrine\ORM\Mapping as ORM,
 	Doctrine\Common\Collections\ArrayCollection;
+use Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
 
@@ -20,6 +21,7 @@ use DateTime;
  */
 abstract class AbstractNote implements 
 	JsonSerializable, 
+	ResourceInterface,
 	\User\Entity\UserAwareInterface,
 	NoteInterface
 {
@@ -51,6 +53,23 @@ abstract class AbstractNote implements
 	protected $text;
 
 	/**
+	 * @var CommentInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\Comment\Note",
+	 *	mappedBy	 = "source",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"priority" = "DESC"})
+	 */
+	protected $comments;
+
+	/**
+	 * @var int
+	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+	 */
+	protected $commentCount = 0;
+
+	/**
 	 * @var int 
 	 * @ORM\Column(type="datetime")
 	 */
@@ -61,7 +80,8 @@ abstract class AbstractNote implements
 	 */
 	public function __construct()
 	{
-		$this->created = new DateTime;
+		$this->comments = new ArrayCollection;
+		$this->created  = new DateTime;
 	}
 
 	/**
@@ -118,6 +138,63 @@ abstract class AbstractNote implements
     }
     
     /**
+     * Get comments.
+     *
+     * @return HintInterface.
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    /**
+     * Set comments.
+     *
+     * @param CommentInterface[] comments the value to set.
+     * @return HintInterface.
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+        return $this;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function getCommentCount()
+    {
+        return $this->commentCount;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function setCommentCount($commentCount)
+    {
+        $this->commentCount = (int) $commentCount;
+        return $this;
+    }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function increaseCommentCount()
+	{
+		$this->commentCount++;
+		return $this;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function decreaseCommentCount()
+	{
+		$this->commentCount--;
+		return $this;
+	}
+    
+    /**
      * Get created.
      *
      * @return DateTime.
@@ -163,13 +240,22 @@ abstract class AbstractNote implements
 	/**
 	 * @inheritDoc
 	 */
+	public function getResourceId()
+	{
+		return self::class;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function jsonSerialize()
 	{
 		return [
-			'id'		=> $this->getId(),
-			//'owner'		=> $this->getUser(),
-			'text'		=> $this->getText(),
-			'created'	=> $this->getCreated()->getTimestamp(),
+			'id'		   => $this->getId(),
+			'owner'	   	   => $this->getUser(),
+			'text'		   => $this->getText(),
+			'commentCount' => $this->getCommentCount(),
+			'created'	   => $this->getCreated()->getTimestamp(),
 		];
 	
 	}

@@ -18,6 +18,11 @@ interface IMAUser {
 	name: string,
 	_links: IMALinks, 
 }
+interface IMANote {
+	text: string,
+	commentCount: number, 
+	_links: IMALinks, 
+}
 interface IMAComment {
 	id:number,
 	body: string,
@@ -93,7 +98,10 @@ class MAUser {
 }
 
 class MANote {
-	constructor() {
+	constructor(obj:IMANote) {
+		this.text = obj.text;
+		this.links = new MALinks(obj._links);
+		this.commentCount 	= obj.commentCount;
 		this.comments = new MACollection();
 	}
 
@@ -105,7 +113,9 @@ class MANote {
 		this.comments.items.push(obj);
 	}
 
+	text: string;
 	comments: MACollection;
+	commentCount:number;
 	links: MALinks;
 }
 

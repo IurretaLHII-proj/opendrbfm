@@ -17,6 +17,7 @@ class Hint implements
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
+	CommentProviderInterface,
 	HintInterface 
 {
 	/**
@@ -98,6 +99,12 @@ class Hint implements
 	 * @ORM\OrderBy({"priority" = "DESC"})
 	 */
 	protected $comments;
+
+	/**
+	 * @var int
+	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+	 */
+	protected $commentCount = 0;
 
 	/**
 	 * @var HintInterface[]
@@ -493,6 +500,41 @@ class Hint implements
         $this->comments = $comments;
         return $this;
     }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function getCommentCount()
+    {
+        return $this->commentCount;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function setCommentCount($commentCount)
+    {
+        $this->commentCount = (int) $commentCount;
+        return $this;
+    }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function increaseCommentCount()
+	{
+		$this->commentCount++;
+		return $this;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function decreaseCommentCount()
+	{
+		$this->commentCount--;
+		return $this;
+	}
     
     /**
      * Get parents.

@@ -16,7 +16,7 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$collection = $em->getRepository("MA\Entity\comment\Hint")
+		$collection = $em->getRepository("MA\Entity\AbstractComment")
 			->findBy(
 				['parent'  => $this->getEntity()],
 				['created' => 'DESC']
@@ -34,37 +34,31 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 	 */
 	public function replyAction()
 	{
-		$e	  = new \MA\Entity\Comment\Hint;
-		$em   = $this->getEntityManager();
-		$form = $this->getServiceLocator()
-			->get('FormElementManager')
-			->get(\MA\Form\CommentForm::class);
+		switch (true) {
+			case $this->entity instanceof \MA\Entity\Comment\Hint:
+				$forward = Comment\HintController::class;
+				break;
 
-		$e->setParent($this->getEntity());
-		$e->setHint($this->getEntity()->getHint());
-		$form->setHydrator(new DoctrineHydrator($em));
-		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
-		$form->bind($e);
+			case $this->entity instanceof \MA\Entity\Comment\Note:
+				$forward = Comment\NoteController::class;
+				break;
 
-		if ($this->getRequest()->isPost()) {
-			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
-			if ($form->isValid()) {
+			case $this->entity instanceof \MA\Entity\Comment\Simulation:
+				$forward = Comment\SimulationController::class;
+				break;
 
-				$this->triggerService(\MA\Service\CommentService::EVENT_REPLY, $e);
-
-				$em->persist($e);
-				$em->flush();
-				$payload = [
-					'payload' => $this->prepareHalEntity($e, "process/comment/detail/json")
-				];
-			}
-			else {
-				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
-				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
-				throw $ex;
-			}
+			default:
+				return $this->pageNotFound();
 		}
+		$this->getEvent()->setParam("forward", $forward);
 
-		return new HalJsonModel($payload);
+		return $this->forward()->dispatch($forward, [
+			'action' => $this->params()->fromRoute('action'),
+			'id'	 => $this->entity->getId(),
+			//FIXME: Controller for nav pages is losed on routeMatch after forward 
+			'controller' => self::class,
+			//FIXME: Cannot send more params that expecifieds on navigation
+			//'entity' => $this->entity,
+		]);
 	}
 }

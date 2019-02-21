@@ -18,6 +18,7 @@ class Simulation implements
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
+	CommentProviderInterface,
 	SimulationInterface 
 {
 	const STATE_CREATED	      = 0;
@@ -135,6 +136,23 @@ class Simulation implements
 	protected $prevention;
 
 	/**
+	 * @var CommentInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\Comment\Simulation",
+	 *	mappedBy	 = "source",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"priority" = "DESC"})
+	 */
+	protected $comments;
+
+	/**
+	 * @var int
+	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+	 */
+	protected $commentCount = 0;
+
+	/**
 	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
@@ -153,6 +171,7 @@ class Simulation implements
 	{
 		$this->created     = new DateTime;
 		$this->updated     = new DateTime;
+		$this->comments    = new ArrayCollection;
 		$this->reasons     = new ArrayCollection;
 		$this->suggestions = new ArrayCollection;
 		$this->influences  = new ArrayCollection;
@@ -304,7 +323,7 @@ class Simulation implements
      * Set hint.
      *
      * @param HintInterface hint the value to set.
-     * @return Simulation.
+     * @return SimulationInterface.
      */
     public function setHint(HintInterface $hint)
     {
@@ -315,7 +334,7 @@ class Simulation implements
 	/**
      * Get process.
      *
-	 * @return ProcessInterface
+     * @return SimulationInterface.
 	 */
 	public function getProcess()
 	{
@@ -344,6 +363,63 @@ class Simulation implements
     }
     
     /**
+     * Get comments.
+     *
+     * @return SimulationInterface.
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    /**
+     * Set comments.
+     *
+     * @param CommentInterface[] comments the value to set.
+     * @return SimulationInterface.
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+        return $this;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function getCommentCount()
+    {
+        return $this->commentCount;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function setCommentCount($commentCount)
+    {
+        $this->commentCount = (int) $commentCount;
+        return $this;
+    }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function increaseCommentCount()
+	{
+		$this->commentCount++;
+		return $this;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function decreaseCommentCount()
+	{
+		$this->commentCount--;
+		return $this;
+	}
+    
+    /**
      * Get reasons.
      *
      * @return Note\HintReason[].
@@ -357,7 +433,7 @@ class Simulation implements
      * Set reasons.
      *
      * @param Note\HintReason[] reasons the value to set.
-     * @return Hint.
+     * @return SimulationInterface.
      */
     public function setReasons($reasons)
     {
@@ -369,7 +445,7 @@ class Simulation implements
      * Add reason.
      *
      * @param Note\HintReason reason the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function addReason(Note\HintReason $reason)
     {
@@ -382,7 +458,7 @@ class Simulation implements
      * Add reasons.
      *
      * @param Note\HintReason[] reasons the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function addReasons($reasons)
     {
@@ -397,7 +473,7 @@ class Simulation implements
      * Add reason.
      *
      * @param Note\HintReason reason the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function removeReason(Note\HintReason $reason)
     {
@@ -410,7 +486,7 @@ class Simulation implements
      * Add reasons.
      *
      * @param Note\HintReason[] reasons the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function removeReasons($reasons)
     {
@@ -435,7 +511,7 @@ class Simulation implements
      * Set suggestions.
      *
      * @param Note\HintSuggestion[] suggestions the value to set.
-     * @return Hint.
+     * @return SimulationInterface.
      */
     public function setSuggestions($suggestions)
     {
@@ -447,7 +523,7 @@ class Simulation implements
      * Add suggestion.
      *
      * @param Note\HintSuggestion suggestion the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function addSuggestion(Note\HintSuggestion $suggestion)
     {
@@ -460,7 +536,7 @@ class Simulation implements
      * Add suggestions.
      *
      * @param Note\HintSuggestion[] suggestions the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function addSuggestions($suggestions)
     {
@@ -475,7 +551,7 @@ class Simulation implements
      * Add suggestion.
      *
      * @param Note\HintSuggestion suggestion the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function removeSuggestion(Note\HintSuggestion $suggestion)
     {
@@ -488,7 +564,7 @@ class Simulation implements
      * Add suggestions.
      *
      * @param Note\HintSuggestion[] suggestions the value to set.
-     * @return Stage.
+     * @return SimulationInterface.
      */
     public function removeSuggestions($suggestions)
     {
@@ -666,19 +742,20 @@ class Simulation implements
     public function jsonSerialize()
     {
         return array(
-            'id'          => $this->getId(),
-			'owner'   	  => $this->getUser(),
-            'description' => $this->getDescription(),
-            'created'     => $this->getCreated()->getTimestamp(),
-			'owner'   	  => $this->getUser(),
-			'state' 	  => $this->getState(),
-			'who' 	  	  => $this->getWho(),
-			'when' 	  	  => null !== ($w = $this->getWhen()) ? $w->getTimestamp() : $w,
-			'effect'	  => $this->getEffect(),
-			'prevention'  => $this->getPrevention(),
-			'reasons' 	  => new \ZF\Hal\Collection($this->getReasons()),
-			'suggestions' => new \ZF\Hal\Collection($this->getSuggestions()),
-			'influences'  => new \ZF\Hal\Collection($this->getInfluences()),
+            'id'           => $this->getId(),
+			'owner'   	   => $this->getUser(),
+            'description'  => $this->getDescription(),
+            'created'      => $this->getCreated()->getTimestamp(),
+			'owner'   	   => $this->getUser(),
+			'state' 	   => $this->getState(),
+			'who' 	  	   => $this->getWho(),
+			'when' 	  	   => null !== ($w = $this->getWhen()) ? $w->getTimestamp() : $w,
+			'effect'	   => $this->getEffect(),
+			'prevention'   => $this->getPrevention(),
+			'commentCount' => $this->getCommentCount(),
+			'reasons' 	   => new \ZF\Hal\Collection($this->getReasons()),
+			'suggestions'  => new \ZF\Hal\Collection($this->getSuggestions()),
+			'influences'   => new \ZF\Hal\Collection($this->getInfluences()),
         );
     }
 
@@ -728,11 +805,29 @@ class Simulation implements
 			],
 			[
 				'rel'   	  => 'delete',
-				'privilege'   => 'edit',
+				'privilege'   => 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/hint/simulation/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'comment',
+				'privilege'   => 'comment',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'comments',
+				'privilege'   => 'comments',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
 				],
 			],
 		];

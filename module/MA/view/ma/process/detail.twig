@@ -70,7 +70,7 @@
 					<i class="fa fa-pencil"></i>
 				</a>
 			</div>
-			<div class="row" ng-repeat="(i,stage) in values.versions">
+			<div class="row pb-2" ng-repeat="(i,stage) in values.versions">
 				<div class="col-sm-12 col-md-4">
 					<ng-include 
 						ng-if="stage == version"
@@ -120,11 +120,11 @@
 						<div class="small text-muted">
 							<a href="{[ hint._embedded._embedded.owner._links.self.href ]}">{[ hint._embedded._embedded.owner.name ]}</a> on {[ hint._embedded.created*1000 | date:"dd MMM yyyy HH:mm" ]}
 						</div>
-					   	<a href="" class="btn btn-sm btn-default comment-btn small" ng-click="addComment(hint)"><span class="fa fa-comment-o"></span> 3</a>
 					</td>
 					<td rowspan="{[hint.simulations.length+1]}" class="text-center">
 						<div class="btn-group btn-group-justified">
-							<a ng-href="{[ hint._embedded._links.self.href ]}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></a>
+							<button href="" ng-click="addComment(hint)" class="btn btn-sm btn-outline-primary"><i class="fa fa-comment"></i> {[ hint._embedded.commentCount ]}</button>
+							<button ng-href="{[ hint._embedded._links.self.href ]}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></button>
 							<button href="" ng-click="editHint(hint)" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></button>
 							<button href="" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm btn-outline-primary"><i class="fa fa-trash"></i></button>
 						</div>
@@ -143,23 +143,32 @@
 							<span ng-repeat="inf in sim.influences">{[ sim.hint.name ]}</span>
 							</li>
 							-->
-							<li class="bg-light my-1 p-2 rounded" ng-repeat="note in s._embedded._embedded.reasons">
-					   			<a href="" class="btn btn-sm btn-default small" ng-click="addComment(note)"><span class="fa fa-comment-o"></span> 3</a>
-								<div>{[note.text]}</div>
+							<!--<li ng-repeat="note in s._embedded._embedded.reasons">-->
+							<li ng-repeat="note in s.reasons">
+								<div class="bg-light my-1 d-flex">
+									<div class="mr-auto p-2 rounded">{[note.text]}</div>
+									<a href="" class="btn btn-sm btn-outline-secondary small" ng-click="addComment(note)"><span class="fa fa-comment-o"></span> {[ note.commentCount ]}</a>
+								</div>
 							</li>
 						</ul>
 					</td>
 					<td>
 						<ul class="m-0">
 							<li ng-repeat="note in s._embedded._embedded.influences">
-								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
+								<div class="bg-light my-1 d-flex">
+									<div class="mr-auto p-2 rounded">{[note.text]}</div>
+					   				<a href="" class="btn btn-sm btn-outline-secondary small" ng-click="addComment(note)"><span class="fa fa-comment-o"></span> {[ note.commentCount ]}</a>
+								</div>
 							</li>
 						</ul>
 					</td>
 					<td>
 						<ul class="m-0">
 							<li ng-repeat="note in s._embedded._embedded.suggestions">
-								<div class="bg-light my-1 p-2 rounded">{[note.text]}</div>
+								<div class="bg-light my-1 d-flex">
+									<div class="mr-auto p-2 rounded">{[note.text]}</div>
+					   				<a href="" class="btn btn-sm btn-outline-secondary small" ng-click="addComment(note)"><span class="fa fa-comment-o"></span> {[ note.commentCount ]}</a>
+								</div>
 							</li>
 						</ul>
 					</td>
@@ -192,9 +201,8 @@
 					</td>
 					<td class="bg-light text-center">
 						<div class="btn-group btn-group-justified">
-							<a ng-click="renderSimulation(s)" href="" class="btn btn-sm btn-outline-primary">
-								<i class="fa fa-pencil"></i>
-							</a>
+							<button href="" ng-click="addComment(s)" class="btn btn-sm btn-outline-primary"><i class="fa fa-comment"></i> {[ s._embedded.commentCount ]}</button>
+							<button href="" ng-click="renderSimulation(s)" class="btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></button>
 						</div>
 					</td>
 				</tr>

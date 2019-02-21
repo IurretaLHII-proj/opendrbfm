@@ -145,8 +145,7 @@ class HintController extends \Base\Controller\Js\AbstractActionController
 				$em->persist($e);
 				$em->flush();
 				$payload = [
-					//FIXME
-					'payload' => $this->prepareHalEntity($e, "process/hint/simulation/detail/json")
+					'payload' => $this->prepareHalEntity($e, "process/comment/detail/json")
 				];
 			}
 			else {

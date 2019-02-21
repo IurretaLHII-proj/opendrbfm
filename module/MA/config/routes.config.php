@@ -194,6 +194,44 @@ return [
 					],
 				],
 			],
+			'note' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/note',
+					'defaults' => [
+						'controller' => Controller\NoteController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|comments|comment',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\NoteController::class,
+									],
+								],
+							]
+						],
+					],
+				],
+			],
 			'stage' => [
 				'type' => 'Literal',
 				'options' => [
@@ -470,7 +508,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail|edit|delete|render',
+										'action' => 'detail|edit|delete|render|comments|comment',
 									]
 								],
 								'may_terminate' => true,

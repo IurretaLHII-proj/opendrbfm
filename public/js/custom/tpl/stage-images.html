@@ -1,5 +1,5 @@
-<div ng-if="stage._embedded" class="border" ng-class="{'border-primary':current==stage}">
-	<div class="text-center my-2">
+<div ng-if="stage._embedded" class="border" ng-class="{'bg-primary':current==stage,'text-light':current==stage,'bg-light':current!=stage}">
+	<div class="text-center my-1">
 		<a href="" 
 			class="btn btn-sm btn-outline-primary"
 			ng-click="setCurrent(stage)" 
