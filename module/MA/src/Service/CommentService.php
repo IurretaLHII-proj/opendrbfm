@@ -4,6 +4,7 @@ namespace MA\Service;
 
 use Zend\EventManager\EventInterface;
 use Base\Service\AbstractService;
+use MA\Entity\CommentProviderInterface;
 
 class CommentService extends AbstractService
 {
@@ -11,6 +12,14 @@ class CommentService extends AbstractService
 
 	public function increaseCommentCount(EventInterface $e) 
 	{ 
-		$e->getTarget()->getParent()->increaseCommentCount(); 
+		$target = $e->getName() == self::EVENT_REPLY ? 
+			$e->getTarget()->getParent() : $e->getTarget()->getSource();
+
+		if (!$target instanceof CommentProviderInterface) {
+			throw new \RuntimeException("%s expected, %s received", 
+				CommentProviderInterface::class, get_class($target));
+		}
+
+		$target->increaseCommentCount(); 
 	}
 }

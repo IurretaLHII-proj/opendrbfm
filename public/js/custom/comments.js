@@ -1,7 +1,9 @@
 App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item) 
 {
-	item.comments = [];
-	if (typeof item != MANote) {
+	if (item instanceof MANote) {
+		$scope.item = item;
+	}
+	else {
 		$scope.item   = new MAHint();
 		$scope.item.name  = item.name;
 		$scope.item.links = new MALinks(item._links);
@@ -13,8 +15,7 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item)
 			function(comment) {
 				$scope.values = {};
 				$scope._closeWarning(war);
-				$scope.item.comments.items.push(comment);
-				$scope.item.addComments(comment);
+				$scope.item.addComment(comment);
 				//$uibModalInstance.close(item);	
 			},		
 			function(err) {
@@ -74,13 +75,13 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item)
 	}
 
 	$scope.init = function() {
+		console.log($scope.item);
 		$api.hint.comments($scope.item).then(
 			function(data) {
 				data._embedded.items = data._embedded.items.map(function(values) {
 					return new MAComment(values);
 				}); 
 				$scope.item.comments.load(data);
-				console.log($scope.item);
 			},		
 			function(err) {
 				$scope.errors = err;
@@ -109,6 +110,7 @@ App.service('$api', ['$resource', function($res) {
 		},
 		comment: {
 			reply: function(item, values) {
+				console.log(item);
 				return $res(item.links.getHref('reply')).save(values).$promise.then(
 					function(data) { return new MAComment(data); }, function(err) { throw err; }
 				);

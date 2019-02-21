@@ -31,9 +31,15 @@ return [
 			Entity\Operation::class,
 			Entity\OperationType::class,
 			Entity\Hint::class,
+			Entity\AbstractNote::class,
+			Entity\Note\HintReason::class,
+			Entity\Note\HintSuggestion::class,
+			Entity\Note\HintInfluence::class,
 			Entity\HintType::class,
 			Entity\Simulation::class,
+			Entity\AbstractComment::class,
 			Entity\Comment\Hint::class,
+			Entity\Comment\Note::class,
 		]
 	],
     'rule_providers' => [

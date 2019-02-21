@@ -25,7 +25,7 @@ abstract class AbstractActionController extends BaseAbstractActionController
 			return parent::onDispatch($e);
 		}
 		catch (UnAuthorizedException $e) {
-			throw new \ZF\ApiProblem\Exception\DomainException('Ypu are not authorized', 403);
+			throw new \ZF\ApiProblem\Exception\DomainException('You are not authorized', 403);
 		}
     }
 

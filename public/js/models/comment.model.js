@@ -47,7 +47,10 @@ var MAUser = /** @class */ (function () {
     return MAUser;
 }());
 var MANote = /** @class */ (function () {
-    function MANote() {
+    function MANote(obj) {
+        this.text = obj.text;
+        this.links = new MALinks(obj._links);
+        this.commentCount = obj.commentCount;
         this.comments = new MACollection();
     }
     MANote.prototype.getComments = function () {

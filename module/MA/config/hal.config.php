@@ -78,21 +78,21 @@ return [
 			'max_depth' => 2,
 		],
 		'MA\Entity\Note\HintReason' => [
-			'route_name' => 'process/hint/detail', //FIXME
+			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
 		],
 		'MA\Entity\Note\HintSuggestion' => [
-			'route_name' => 'process/hint/detail', //FIXME
+			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
 		],
 		'MA\Entity\Note\HintInfluence' => [
-			'route_name' => 'process/hint/detail', //FIXME
+			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
@@ -127,6 +127,13 @@ return [
 			'max_depth' => 1,
 		],
 		'MA\Entity\Comment\Hint' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\Note' => [
 			'route_name' => 'process/comment/detail', 
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',

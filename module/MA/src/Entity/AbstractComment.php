@@ -18,15 +18,17 @@ use Base\Hal\LinkProvider;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- * 	"hint"     = "MA\Entity\Comment\Hint",
- * 	"note"     = "MA\Entity\Comment\Note",
+ * 	"hint"     		= "MA\Entity\Comment\Hint",
+ * 	"note"     		= "MA\Entity\Comment\Note",
+ * 	"simulation"	= "MA\Entity\Comment\Simulation",
  * })
  */
 abstract class AbstractComment implements 
 	JsonSerializable,
 	ResourceInterface, 
 	UserAwareInterface,
-	LinkProvider
+	LinkProvider,
+	CommentProviderInterface
 {
 	/**
 	 * @var int 
@@ -212,6 +214,23 @@ abstract class AbstractComment implements
     public function setChildren($comments)
     {
         $this->children = $comments;
+        return $this;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function getComments()
+    {
+        return $this->getChildren();
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function setComments($comments)
+    {
+        $this->setChildren($comments);
         return $this;
     }
 

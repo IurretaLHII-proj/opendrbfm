@@ -86,13 +86,16 @@ return [
 	Service\CommentService::class => [
 		'entities'  => [
 			Entity\Comment\Hint::class, 
+			Entity\Comment\Note::class, 
+			Entity\Comment\Simulation::class, 
 		],
 		'listeners' => [
 			[
-				'services' => [
-					Service\CommentService::class, 
+				'services' => Service\CommentService::class,
+				'events'   => [
+					Service\CommentService::EVENT_CREATE,
+					Service\CommentService::EVENT_REPLY,
 				],
-				'events'   => Service\CommentService::EVENT_REPLY, 
 				'callback' => 'increaseCommentCount',
 				'priority' => 100,
 			],

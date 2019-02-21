@@ -34,7 +34,7 @@
 				>
 					<span style="font-size:12px;" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
 				</a>
-				<span style="font-size:12px;" ng-if="!comment.commentCount || depth > 2" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
+				<a href="" class="btn btn-sm disabled" ng-if="!comment.commentCount || depth > 2"><span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span></a>
 
 				<a style="font-size:12px; margin: 0.5px;" 
 					class="btn btn-sm btn-outline-default"

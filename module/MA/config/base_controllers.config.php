@@ -9,8 +9,20 @@ return [
 	Controller\Js\UserController::class => [
 		'repository' => Entity\User::class,
 	],
+	Controller\Js\NoteController::class => [
+		'repository' => Entity\AbstractNote::class,
+	],
 	Controller\Js\CommentController::class => [
-		'repository' => Entity\Comment\Hint::class,//FIXME
+		'repository' => Entity\AbstractComment::class,
+	],
+	Controller\Js\Comment\HintController::class => [
+		'repository' => Entity\Comment\Hint::class,
+	],
+	Controller\Js\Comment\NoteController::class => [
+		'repository' => Entity\Comment\Note::class,
+	],
+	Controller\Js\Comment\SimulationController::class => [
+		'repository' => Entity\Comment\Simulation::class,
 	],
 	Controller\CustomerController::class => [
 		'repository' => Entity\Customer::class,
