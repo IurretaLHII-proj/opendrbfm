@@ -214,7 +214,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|comments|comment',
+								'action' => 'detail|edit|delete|comments|comment',
 							]
 						],
 						'may_terminate' => true,
@@ -508,7 +508,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail|edit|delete|render|comments|comment',
+										'action' => 'detail|edit|delete|render|reason|influence|suggestion|comments|comment',
 									]
 								],
 								'may_terminate' => true,

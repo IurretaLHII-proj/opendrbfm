@@ -1,13 +1,6 @@
 App.controller('CommentCtrl', function($scope, $uibModalInstance, $api, item) 
 {
-	if (item instanceof MANote) {
-		$scope.item = item;
-	}
-	else {
-		$scope.item   = new MAHint();
-		$scope.item.name  = item.name;
-		$scope.item.links = new MALinks(item._links);
-	}
+	$scope.item = item;
 	$scope.values = {};
 	$scope.save = function() {
 		var war = $scope._addWarning("Saving...");

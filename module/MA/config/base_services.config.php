@@ -72,6 +72,14 @@ return [
 	],
 	Service\SimulationService::class => [
 		'entities' => [Entity\Simulation::class],
+		'listeners' => [
+			[
+				'services' => Service\SimulationService::class, 
+				'events'   => \Base\Service\AbstractService::EVENT_CREATE, 
+				'callback' => 'createSimulation',
+				'priority' => 100,
+			]
+		],
 	],
 	Service\ImageService::class => [
 		'entities' => [Entity\Image\IStage::class],

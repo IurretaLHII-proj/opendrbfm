@@ -54,12 +54,12 @@ abstract class AbstractNote implements
 
 	/**
 	 * @var CommentInterface[]
-	 * @ORM\ManyToMany(
+	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Note",
 	 *	mappedBy	 = "source",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"priority" = "DESC"})
+	 * @ORM\OrderBy({"created" = "DESC"})
 	 */
 	protected $comments;
 
@@ -255,7 +255,7 @@ abstract class AbstractNote implements
 			'owner'	   	   => $this->getUser(),
 			'text'		   => $this->getText(),
 			'commentCount' => $this->getCommentCount(),
-			'created'	   => $this->getCreated()->getTimestamp(),
+			'created'	   => $this->getCreated(),
 		];
 	
 	}

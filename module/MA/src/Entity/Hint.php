@@ -91,12 +91,12 @@ class Hint implements
 
 	/**
 	 * @var CommentInterface[]
-	 * @ORM\ManyToMany(
+	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Hint",
 	 *	mappedBy	 = "source",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"priority" = "DESC"})
+	 * @ORM\OrderBy({"created" = "DESC"})
 	 */
 	protected $comments;
 

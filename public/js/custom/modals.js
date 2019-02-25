@@ -22,14 +22,49 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 	};
 });
 
+App.controller('_NoteModalCtrl', function($scope, $uibModalInstance, $resource, note, link)
+{
+	$scope.errors = {};
+	$scope.note   = note;
+	$scope.values = JSON.parse(JSON.stringify(note));
+	$scope.save = function() {
+		var uri = note.id ? note.links.getHref('edit') : link.href;
+		return $resource(uri).save({note:$scope.values}).$promise.then(
+			function(data) { 
+				note.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors.note;
+			}	
+		);
+	}
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
 App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, $resource, api, stage, hint)
 {
-	console.log(stage,hint);
 	$scope.errors = {};
 	$scope.stage  = stage;
-	$scope.values = hint;
+	$scope.values = JSON.parse(JSON.stringify(hint));
+
 	$scope.save = function() {
-		var raw  = angular.copy($scope.values);
+		var uri = hint.id ? hint.links.getHref('edit') : stage._links.hint.href;
+		return $resource(uri).save($scope.values).$promise.then(
+			function(data) { 
+				hint.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			}	
+		);
+		/*var raw  = angular.copy($scope.values);
 		raw.type = raw.type.id;
 		raw.operation = raw.operation._embedded ? raw.operation.id : null;
 		delete raw.stage;
@@ -50,44 +85,47 @@ App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, 
 				$scope.errors = err.data.errors;
 				return err;
 			},
-		);
+		);*/
 	};
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
+	$scope.operations = stage.operations.concat([{id:0, name:' --Select One-- '}]);
 	$scope.loadOperationTypes = function() {
-		$scope.operationTypes = [_defaultOption, _createOption];
-		if (hint.operation) {
-			api.operation.getHints(hint.operation).then(function(data) {
-				$scope.operationTypes = $scope.operationTypes.concat(data._embedded.items);
-				//angular.forEach(data._embedded.items, function(type) {
-				//	var _type = angular.copy(type);
-				//	_type._embedded = type;
-				//	$scope.operationTypes.push(_type);
-				//});
+		$scope.operationTypes = [{id:0, name:' --Select One-- '}, {id:-1, name: ' --Create New-- '}];
+		if ($scope.values.operation) {
+			angular.forEach(stage.operations, function(op) {
+				if (op.id == $scope.values.operation) {
+					api.operation.getHints(op).then(function(data) {
+						$scope.operationTypes = $scope.operationTypes.concat(data._embedded.items);
+					});
+				}	
 			});
 		}
 	}
 
 	$scope.createHint = function() {
 		var _type = {};
-	 	if ($scope.values.type && $scope.values.type.id < 0) {	
+	 	if ($scope.values.type < 0) {	
+			//var op = $scope.operations.find(function(e) {return e.id == $scope.values.operation})
+			var op = $scope.operations.find(e => {return e.id == $scope.values.operation})
 			var modal = $uibModal.open({
 				templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
 				controller: '_HintTypeModalCtrl',	
 				size: 'lg',
-				resolve: {op : $scope.values.operation, type: _type},
+				resolve: {op : op, type: _type},
 			});
 
 			modal.result.then(
 				function(res) {
 					$scope.operationTypes.push(_type);
-					hint.type = _type;
+					hint.type = _type.id;
 				},
 				function() {}
 			);
 		}
 	}
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
 	/*$scope.getPrevs = function(model) {
 		var options = [];
 		var current = stage;
@@ -109,18 +147,18 @@ App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, 
 });
 
 App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource, $filter, simulation) {
-	console.log(simulation);
 	$scope.stateOptions = _stateOptions;
-	$scope.errors = {};
-	$scope.values = simulation; 
-	$scope.values.state = simulation.state.toString();
+	$scope.values  		= JSON.parse(JSON.stringify(simulation));
+	$scope.values.state	= $scope.values.state.toString();
+	$scope.values.when  = $scope.values.when ? new Date($scope.values.when) : null;
+	$scope.errors  		= {};
+
 	$scope.save = function() {
 		var raw = angular.copy($scope.values);
-		delete raw.hint;
 		raw.when = raw.when ? $filter('date')(new Date($scope.values.when), 'yyyy-MM-dd') : null;
-		$resource(simulation._embedded._links.render.href).save(raw).$promise.then(
+		$resource(simulation.links.getHref('render')).save(raw).$promise.then(
 			function(data) {
-				simulation._embedded = data;
+				simulation.load(data);
 				$uibModalInstance.close(data);	
 			},
 			function(err) {
@@ -132,6 +170,7 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');	
 	};
+	console.log($scope.stateOptions, $scope.values, simulation);
 });
 
 App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, stage) {
@@ -462,31 +501,20 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 
 App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $resource, simulation)
 {
-	var hint = simulation.hint;
-	$scope.values = simulation;
-	$scope.errors = {};
-	$scope.hint = hint;
+	$scope.values  = JSON.parse(JSON.stringify(simulation));
+	$scope.errors  = {};
+
 	$scope.save = function() {
-		angular.forEach($scope.values.reasons, function(item) {
-			//if (item.id < 0) { item.id=1; item.name=item.text; }//item.hint: hint}
-		});
-		angular.forEach($scope.values.influences, function(item) {
-			//if (item.id < 0) { item.id=1; item.name=item.text; }//item.hint: hint}
-		});
-		var raw  = angular.copy($scope.values);
-		delete raw.hint;
-		var uri  = simulation._embedded ? 
-					simulation._embedded._links.edit.href : hint._embedded._links.simulate.href;
-		$resource(uri).save(raw).$promise.then(
+		var uri  = simulation.id ? 
+					simulation.links.getHref('edit') : simulation.hint.links.getHref('simulate');
+		$resource(uri).save($scope.values).$promise.then(
 			function(data) {
-				simulation._embedded = data;
+				simulation.load(data);
 				$uibModalInstance.close(data);	
-				return data;
 			},
 			function(err) {
 				console.log(err);
 				$scope.errors = err.data.errors;
-				return err;
 			},
 		);
 	};
@@ -495,11 +523,12 @@ App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $reso
 	};
 
 	$scope.addReason = function() {
-		var opt = {
+		/*var opt = {
 			stage: _noneOption,
 			simulation: angular.copy(_createOption),
 		}
-		$scope.values.reasons.push(opt);
+		$scope.values.reasons.push(opt);*/
+		$scope.values.reasons.push(new MANote({}));
 	}
 
 	$scope.addInfluence = function() {
@@ -573,4 +602,5 @@ App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $reso
 		return options;
 	};
 	*/
+	console.log(simulation, $scope.values);
 });

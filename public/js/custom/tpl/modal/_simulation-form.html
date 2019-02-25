@@ -9,6 +9,7 @@
 			ng-repeat="(i, note) in values.reasons"
 			>
 			<div class="col-md-11"> 
+				<!--
 				<div class="form-row">
 					<div class="form-group"
 					    ng-class="values.reasons[i].stage.id ? 'col-md-4':'col-md-12'" 
@@ -54,7 +55,8 @@
 							class="invalid-feedback">{[key]}. {[text]}</div>
 					</div>
 				</div>
-				<div class="form-group" ng-if="values.reasons[i].simulation.id<=0">
+				-->
+				<div class="form-group">
 					<textarea rows="2" 
 						ng-class="{'is-invalid': errors.reasons[i].text}"
 						ng-model="values.reasons[i].text"
@@ -85,6 +87,7 @@
 			ng-repeat="(i, note) in values.influences"
 			>
 			<div class="col-md-11"> 
+				<!--
 				<div class="form-row">
 					<div class="form-group"
 					    ng-class="values.influences[i].stage.id ? 'col-md-4':'col-md-12'" 
@@ -130,7 +133,8 @@
 							class="invalid-feedback">{[key]}. {[text]}</div>
 					</div>
 				</div>
-				<div class="form-group" ng-if="values.influences[i].simulation.id<=0">
+				-->
+				<div class="form-group">
 					<textarea rows="2" 
 						ng-class="{'is-invalid': errors.influences[i].text}"
 						ng-model="values.influences[i].text"
