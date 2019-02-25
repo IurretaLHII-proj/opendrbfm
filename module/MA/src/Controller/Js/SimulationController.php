@@ -123,6 +123,69 @@ class SimulationController extends \Base\Controller\Js\AbstractActionController
 	/**
 	 * @return JsonViewModel
 	 */
+	public function reasonAction()
+	{
+		return $this->noteAction(new \MA\Entity\Note\HintReason);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function influenceAction()
+	{
+		return $this->noteAction(new \MA\Entity\Note\HintInfluence);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function suggestionAction()
+	{
+		return $this->noteAction(new \MA\Entity\Note\HintSuggestion);
+	}
+
+	/**
+	 * @param AbstractNote $e
+	 * @return JsonViewModel
+	 */
+	protected function noteAction(\MA\Entity\AbstractNote $e)
+	{
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\NoteForm::class);
+
+		$e->setSimulation($this->getEntity());
+		$form->setHydrator(new DoctrineHydrator($em));
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$em->persist($e);
+				$em->flush();
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/note/detail/json")
+				];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
+	
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
 	public function commentAction()
 	{
 		$e	  = new \MA\Entity\Comment\Simulation;

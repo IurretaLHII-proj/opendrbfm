@@ -137,12 +137,12 @@ class Simulation implements
 
 	/**
 	 * @var CommentInterface[]
-	 * @ORM\ManyToMany(
+	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Simulation",
 	 *	mappedBy	 = "source",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"priority" = "DESC"})
+	 * @ORM\OrderBy({"created" = "DESC"})
 	 */
 	protected $comments;
 
@@ -745,11 +745,11 @@ class Simulation implements
             'id'           => $this->getId(),
 			'owner'   	   => $this->getUser(),
             'description'  => $this->getDescription(),
-            'created'      => $this->getCreated()->getTimestamp(),
+            'created'      => $this->getCreated(),
 			'owner'   	   => $this->getUser(),
 			'state' 	   => $this->getState(),
 			'who' 	  	   => $this->getWho(),
-			'when' 	  	   => null !== ($w = $this->getWhen()) ? $w->getTimestamp() : $w,
+			'when' 	  	   => $this->getWhen(),
 			'effect'	   => $this->getEffect(),
 			'prevention'   => $this->getPrevention(),
 			'commentCount' => $this->getCommentCount(),
@@ -810,6 +810,33 @@ class Simulation implements
 				'route' => [
 				    'name'    => 'process/hint/simulation/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'reason',
+				'privilege'   => 'reason',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'reason', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'influence',
+				'privilege'   => 'influence',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'influence', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'suggestion',
+				'privilege'   => 'suggestion',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/detail/json',
+				    'params'  => ['action' => 'suggestion', 'id' => $this->getId()],
 				],
 			],
 			[

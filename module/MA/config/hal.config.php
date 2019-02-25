@@ -60,7 +60,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 4,
+			'max_depth' => 5,
 			'hydrator' => Hydrator\HintHydrator::class,
 		],
 		'MA\Entity\HintType' => [
@@ -75,7 +75,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 2,
+			'max_depth' => 3,
 		],
 		'MA\Entity\Note\HintReason' => [
 			'route_name' => 'process/note/detail', //FIXME
@@ -127,6 +127,13 @@ return [
 			'max_depth' => 1,
 		],
 		'MA\Entity\Comment\Hint' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\Simulation' => [
 			'route_name' => 'process/comment/detail', 
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',

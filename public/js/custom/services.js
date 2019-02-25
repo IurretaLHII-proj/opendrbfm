@@ -50,21 +50,9 @@ App.service('api', ['$resource', function($res) {
 				);
 			}
 		},
-		hint: {
-			delete: function(item) {
-				return $res(item._links.delete.href).delete().$promise.then(
-					function(data) {
-						return data;
-					},
-					function(err) {
-						return err;
-					}
-				);
-			},
-		},
 		simulation: {
-			delete: function(sm) {
-				return $res(sm._links.delete.href).delete().$promise.then(
+			delete: function(item) {
+				return $res(item.links.getHref('delete')).delete().$promise.then(
 					function(data) {
 						return data;
 					},

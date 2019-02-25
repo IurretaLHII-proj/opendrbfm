@@ -383,6 +383,8 @@ class HintType implements
             'name'        => $this->getName(),
             'priority' 	  => $this->getPriority(),
             'description' => $this->getDescription(),
+			'operation'	  => $this->getOperation(),
+			'owner'		  => $this->getUser(),
             'created'     => $this->getCreated()->getTimestamp(),
         );
     }

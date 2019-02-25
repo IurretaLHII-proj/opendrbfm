@@ -56,6 +56,24 @@ abstract class AbstractHintNote extends AbstractNote implements
   	{
 		return [
 			[
+				'rel'   	  => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/note/detail/json',
+				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'delete',
+				'privilege'   => 'delete',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/note/detail/json',
+				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
 				'rel'   	  => 'comment',
 				'privilege'   => 'comment',
 				'resource'	  => $this,

@@ -2,6 +2,7 @@
     <h3 class="modal-title">{[ values.name ]}</h3>
 </div>
 <div class="modal-body">
+	{[ values ]}
 	<div class="form-row">
 		<div class="form-group col-md-4">
 		  	<label for="inputPriority">Priority</label>
@@ -20,8 +21,9 @@
 				ng-class="{'is-invalid': errors.operation}"
 				ng-model="values.operation"
 				ng-change="loadOperationTypes()"
-				ng-options="item as item._embedded.name for item in stage.operations track by item.id"
+				ng-options="item.id as item.name for item in operations"
 				>
+				<!--ng-options="item as item._embedded.name for item in stage.operations track by item.id"-->
 			</select>
 		</div>
 	</div>
@@ -33,8 +35,9 @@
 			ng-init="loadOperationTypes()"
 			ng-change="createHint()"
 			ng-model="values.type"
-			ng-options="item as item.name for item in operationTypes track by item.id"
+			ng-options="item.id as item.name for item in operationTypes"
 			>
+			<!--ng-options="item as item.name for item in operationTypes track by item.id"-->
 		</select>
 		<div ng-if="errors.type"
 			ng-repeat="(key, text) in errors.type"
