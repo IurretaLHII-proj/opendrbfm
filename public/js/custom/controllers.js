@@ -12,119 +12,65 @@ var _stateOptions = [
 	];
 
 App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, api) {
-
-	var _initVersion = function(version, items) {
-		version.children = [];
-		while(items.length) {
-			item = _prepareStage(items.shift(items));
-			item.parent = version;
-			version.children.push(item);
-			_initVersion(item, items);
-		}
-	}
-	var _prepareOperation = function(op) {
-		_op = angular.copy(op);
-		_op._embedded = op;
-		return _op;
-	}
-	
-	var _prepareHint = function(hint, stage) {
-		_hint = angular.copy(hint);
-		//_hint.operation   = hint._embedded.operation;
-		if ((i = stage.operations.map(function(item) {return item.id}).indexOf(hint._embedded.operation.id)) >= 0){
-			_hint.operation = stage.operations[i];
-		}
-		_hint._embedded   = hint;
-		_hint.type 		  = hint._embedded.type;
-		_hint.stage		  = stage;
-		_hint.parents     = [];
-		_hint.simulations = [];
-		angular.forEach (hint._embedded.simulations, function(sm) {
-
-			_sm = angular.copy(sm);
-			_sm._embedded 	= sm;
-			_sm.when	  	= sm.when ? new Date(sm.when*1000) : null,
-			_sm.reasons     = [];
-			_sm.suggestions = [];
-			_sm.influences  = [];
-			_sm.hint 		= _hint;
-
-			angular.forEach (sm._embedded.reasons, function(note, i) {
-				_sm.reasons[i] = angular.copy(note);
-				_sm.reasons[i]._embedded = note;
-			});
-			angular.forEach (sm._embedded.suggestions, function(note, i) {
-				_sm.suggestions[i] = angular.copy(note);
-				_sm.suggestions[i]._embedded = note;
-			});
-			angular.forEach (sm._embedded.influences, function(note, i) {
-				_sm.influences[i] = angular.copy(note);
-				_sm.influences[i]._embedded = note;
-			});
-
-			_hint.simulations.push(_sm);
-		});
-		return _hint;
-	}
-
-	var _prepareStage = function(stage) {
-		_stage = angular.copy(stage);
-		_stage._embedded  = stage;
-		_stage.material   = stage._embedded.material;
-		_stage.parent     = _noneOption,
-		_stage.operations = [];
-		_stage.process    = $scope.values;
-		angular.forEach(stage._embedded.operations, function(op, i) {
-			_stage.operations[i] = _prepareOperation(op);
-		});
-		if (!_stage.operations.length) _stage.operations.push({});
-
-		_stage.images = [];
-		angular.forEach(stage._embedded.images, function(image, i) {
-			_stage.images[i] = image;
-		});	
-		_stage.getName = function() {
-			//return 'Stage' + this.level;
-			var i=0;
-			var that = this;
-			while (that.parent.id) {
-				i++;
-				that = that.parent;
-			}
-			return 'Stage ' + i;
-		};
-		return _stage;
-	}
-
 	$scope.version = null;
 	$scope.current = null;
-	$scope.errors  = {};
-	$scope.values  = {versions: []};
+
+	$scope.loadVersion = function(stage, items) {
+		while(items.length) {
+			let child = MAStage.fromJSON(items.shift(items));
+			stage.addChild(child);
+			$scope.loadVersion(child, items);
+		}
+	}
+
+	$scope.setVersion = function(stage) {
+		if (!stage.isChildrenLoaded()) {
+			$resource(stage.links.getHref('children')).get().$promise.then(
+				function(data) {
+					stage.childrenLoaded = true;
+					$scope.version = stage;
+					$scope.loadVersion(stage, data._embedded.items);
+					$scope.setCurrent(stage);
+				},		
+				function(err) {
+				}		
+			);
+		}
+		else {
+			$scope.version = stage;
+			$scope.setCurrent(stage);
+		}
+	}
+
+	$scope.setCurrent = function(stage) {
+		if (!stage.isHintsLoaded()) {
+			$resource(stage.links.getHref('hints')).get().$promise.then(
+				function(data) {
+					stage.hintsLoaded = true;
+					angular.forEach(data._embedded.items, e => {stage.addHint(MAHint.fromJSON(e))});
+					$scope.current = stage;
+				},		
+				function(err) {
+				}		
+			);
+		}
+		else {
+			$scope.current = stage;
+		}
+	}
 
 	$scope.init = function(item, values) {
 		if (item) {
-			console.log(item);
-			$scope.values = angular.copy(item);
-			$scope.values._embedded = item;
-			$scope.values.versions  = [];
-			if (item._embedded &&
-				item._embedded.versions && 
-				item._embedded.versions.length) {
-
-				angular.forEach(item._embedded.versions, function(version, index) {
-					_stage = _prepareStage(version);
-					$scope.values.versions[index] = _stage;
-				});
-
-				if ($scope.current == null) {
-					$scope.setVersion($scope.values.versions[$scope.values.versions.length-1]);
-				}
+			let process    = MAProcess.fromJSON(item);
+			$scope.process = process;
+			if (process.versions.length) {
+				$scope.setVersion(process.versions[process.versions.length-1]);
 			}
+			console.log(process);
 		}
 		if (values) {
-			angular.merge($scope.values, values);
+			//angular.merge($scope.values, values);
 		}
-		console.log(item,$scope.values);
 	}
 
 	$scope.deleteVersion = function(version) {
@@ -169,48 +115,8 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		);
 	}
 
-	$scope.setVersion = function(version) {
-		$scope.version = version;
-		if (typeof version.children == "undefined") {
-			version.childrenLoading = true;
-			$resource(version._embedded._links.children.href).get().$promise.then(
-				function (data) {
-
-				//$timeout(function() {
-					version.childrenLoading = false;
-					_initVersion(version, data._embedded.items);
-					//$scope.setCurrent(version);
-				//}, 10);
-				},
-				function (err) {
-					console.log(err);
-					$scope.addError(err.data.title);
-				}	
-			);
-		}
-		$scope.setCurrent(version);
-	};
-
-	$scope.setCurrent = function(stage) {
-		$scope.current = stage;
-		console.log(stage);
-		if (typeof stage.hints === "undefined") {
-			stage.hints = [];
-			stage.hintsLoading = true;
-			api.stage.getHints(stage._embedded).then(function(data) {
-				//$timeout(function() {
-				angular.forEach(data._embedded.items, function(hint, i) {
-					//stage.hints[i] = _prepareHint(hint, stage);
-					stage.hints[i] = MAHint.fromJSON(hint);
-				});
-				stage.hintsLoading = false;
-				//}, 10);
-			},);
-		}
-	};
-
 	/** Stage **/
-	$scope.addStage = function(parentStage) {
+	/*$scope.addStage = function(parentStage) {
 		var _stage = {
 			version: $scope.values.versions.length+1,
 			level: 1,
@@ -251,6 +157,26 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			function(res) {},
 			function(err) {}
 		);
+	}*/
+	$scope.addStage = function(pr) {
+		let stage = new MAStage;
+		if (pr) stage.parent = pr;
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/stage-form.html',
+			controller: '_StageModalCtrl',	
+			scope: $scope,
+			size: 'lg',
+			resolve: {stage: stage}
+		});
+
+		modal.result.then(
+			function(res) {
+				//if (pr) pr.addChild(stage);
+				//else $scope.process.addVersion(stage);
+			},
+			function(err) {}
+		);
 	}
 
 	$scope.editStage = function(stage) {
@@ -260,12 +186,19 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			controller: '_StageModalCtrl',	
 			scope: $scope,
 			size: 'lg',
-			resolve: {stage: stage, process: $scope.values,}
+			resolve: {stage: stage}
 		});
 
 		modal.result.then(
 			function(res) {
-				//if (stage.process.versions.indexOf(stage) != -1) $scope.setVersion(stage);
+				console.log(stage);
+				$resource('/process/:id/json').get({id:stage.process.id}).$promise.then(
+					function(res) {
+						$scope.init(res);
+					},
+					function(err) {
+					}
+					);
 			},
 			function(err) {}
 		);
@@ -290,7 +223,27 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		}
 	}
 
-	/* ---------------------------------------------------------------------------------------- */
+	/* ------------------------------------------------------- */
+
+	$scope.editProcess = function(process) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/process-form.html',
+			controller: '_ProcessModalCtrl',	
+			scope: $scope,
+			size: 'lg',
+			resolve: {process: process,}
+		});
+
+		modal.result.then(
+			function(res) {
+				if (process.versions.length) {
+					$scope.setVersion(process.versions[process.versions.length-1]);
+				}
+			},
+			function(err) {}
+		);
+	}
 
 	/** Hints **/
 	$scope.addHint = function() {
@@ -522,7 +475,124 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 	}
 });
 
-App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal, api) {
+App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
+	$scope.collection = [];
+	$scope.init = function(collection) {
+		angular.forEach(collection._embedded.items, function(item, index) {
+			let group = MAOperationType.fromJSON(item);
+			$scope.collection.push(group); 
+		});
+	};
+
+	$scope.editGroup = function(group) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-type-form.html',
+			controller: '_OperationTypeModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {group: group}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
+	$scope.addOperation = function(type) {
+		let op = new MAOperation;
+		op.type = type;
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-form.html',
+			controller: '_OperationModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {op:op}
+		});
+
+		modal.result.then(
+			function(res) {
+				type.addOperation(op);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
+	$scope.editOperation = function(op) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-form.html',
+			controller: '_OperationModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {op:op}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
+	$scope.showHints = function(op) {
+		if (!op._sh) {
+			op.hints = [];
+			$resource(op.links.getHref('hints')).get().$promise.then(
+				function(data) {
+					angular.forEach(data._embedded.items, item => {
+						op.addHint(MAHintType.fromJSON(item));
+					});
+					op._sh=true;
+				});
+		}
+		op._sh = !op._sh;
+	};
+
+	$scope.addHint = function(op) {
+		let type = new MAHintType();
+		type.operation = op;
+		var modal = $uibModal.open({
+			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
+			controller: '_HintTypeModalCtrl',	
+			size: 'lg',
+			resolve: {type: type},
+		});
+
+		modal.result.then(
+			function(res) {
+				op.addHint(type);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
+	$scope.editHint = function(hint) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
+			controller: '_HintTypeModalCtrl',	
+			size: 'lg',
+			resolve: {type: hint} 
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+});
+
+App.controller('__OperationTypesCtrl', function($scope, $resource, $uibModal, api) {
 		
 	$scope.values = [];
 	$scope.init = function(collection) {

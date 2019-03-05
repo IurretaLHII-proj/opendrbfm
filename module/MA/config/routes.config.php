@@ -86,6 +86,16 @@ return [
 					]
 				],
 			],
+			'json' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/json',
+					'defaults' => [
+						'controller' => Controller\Js\CustomerController::class,
+						'action' => 'index' 
+					],
+				],
+			],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -96,6 +106,18 @@ return [
 					'constraints' => [
 						'id' => '\d+',
 						'action' => 'detail',
+					]
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\CustomerController::class,
+							],
+						],
 					]
 				],
 			],
@@ -482,7 +504,19 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail',
+										'action' => 'detail|edit',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\HintTypeController::class,
+											],
+										],
 									]
 								],
 							],

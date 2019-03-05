@@ -1,17 +1,16 @@
-App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, op, type) {
-	console.log(op, type);
-	$scope.operation = op;
-	$scope.values = type;
+App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, type) {
+	$scope.type   = type;
+	$scope.values = JSON.parse(JSON.stringify(type));
 	$scope.errors = {};
 	$scope.save = function() {
-		$resource(type._embedded ? type._embedded._links.edit.href : op._embedded._links.hint.href)
+		$resource(type.id ? type.links.getHref('edit') : type.operation.links.getHref('hint'))
 			.save($scope.values).$promise.then(
 				function(data) {
-					angular.copy(data, type);
-					type._embedded = data;
+					type.load(data);
 					$uibModalInstance.close();	
 				},
 				function(err) {
+					console.log(err);
 					$scope.errors = err.data.errors;
 				},
 			);
@@ -51,6 +50,43 @@ App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, 
 	$scope.errors = {};
 	$scope.stage  = stage;
 	$scope.values = JSON.parse(JSON.stringify(hint));
+	$scope.operations = stage.operations.concat([{id:null, name:' --Select One-- '}]);
+
+	$scope.loadOperationTypes = function() {
+		$scope.operationTypes = [{id:null, name:' --Select One-- '}, {id:-1, name: ' --Create New-- '}];
+		if ($scope.values.operation) {
+			angular.forEach(stage.operations, function(op) {
+				if (op.id == $scope.values.operation) {
+					$resource(op.links.getHref('hints')).get().$promise.then(function(data) {
+						$scope.operationTypes = $scope.operationTypes.concat(data._embedded.items);
+					});
+				}	
+			});
+		}
+	}
+
+	$scope.createHint = function() {
+	 	if ($scope.values.type < 0) {	
+			let type = new MAHintType();
+			var op = $scope.operations.find(e => {return e.id == $scope.values.operation})
+			type.operation = op;
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
+				controller: '_HintTypeModalCtrl',	
+				size: 'lg',
+				scope: $scope,
+				resolve: {type: type},
+			});
+
+			modal.result.then(
+				function(res) {
+					$scope.operationTypes.push(type);
+					$scope.values.type = type.id;
+				},
+				function() {}
+			);
+		}
+	}
 
 	$scope.save = function() {
 		var uri = hint.id ? hint.links.getHref('edit') : stage._links.hint.href;
@@ -87,45 +123,6 @@ App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, 
 			},
 		);*/
 	};
-	$scope.operations = stage.operations.concat([{id:0, name:' --Select One-- '}]);
-	$scope.loadOperationTypes = function() {
-		$scope.operationTypes = [{id:0, name:' --Select One-- '}, {id:-1, name: ' --Create New-- '}];
-		if ($scope.values.operation) {
-			angular.forEach(stage.operations, function(op) {
-				if (op.id == $scope.values.operation) {
-					api.operation.getHints(op).then(function(data) {
-						$scope.operationTypes = $scope.operationTypes.concat(data._embedded.items);
-					});
-				}	
-			});
-		}
-	}
-
-	$scope.createHint = function() {
-		var _type = {};
-	 	if ($scope.values.type < 0) {	
-			//var op = $scope.operations.find(function(e) {return e.id == $scope.values.operation})
-			var op = $scope.operations.find(e => {return e.id == $scope.values.operation})
-			var modal = $uibModal.open({
-				templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
-				controller: '_HintTypeModalCtrl',	
-				size: 'lg',
-				resolve: {op : op, type: _type},
-			});
-
-			modal.result.then(
-				function(res) {
-					$scope.operationTypes.push(_type);
-					hint.type = _type.id;
-				},
-				function() {}
-			);
-		}
-	}
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 	/*$scope.getPrevs = function(model) {
 		var options = [];
 		var current = stage;
@@ -144,6 +141,10 @@ App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, 
 	$scope.addPrev = function(){
 		$scope.values.parents.push(_defaultOption);
 	}*/
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
 });
 
 App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource, $filter, simulation) {
@@ -173,15 +174,163 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	console.log($scope.stateOptions, $scope.values, simulation);
 });
 
-App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, api, process, stage) {
+App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resource, process) {
+	$scope.errors  = {};
+	$scope.values  = JSON.parse(JSON.stringify(process));
+	$scope.complexityOptions = [
+		{id:MAProcess.COMPLEXITY_LOW,  	 name: "LOW"},
+		{id:MAProcess.COMPLEXITY_MEDIUM, name: "MEDIUM"},
+		{id:MAProcess.COMPLEXITY_HIGH,	 name: "HIGH"},
+	];
+
+	$scope.customers = [];
+	$scope.loadCustomers = function() {
+		$resource('/customer/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, function(item) {
+					$scope.customers.push(new MAUser(item));
+				});
+			}, 
+			function(err){}
+		);
+	};
+	$scope.save = function() {
+		var war = $scope._addWarning("Updating...");
+		$resource(process.links.getHref('edit')).save($scope.values).$promise.then(
+			function(data){
+				$scope._closeWarning(war);
+				process.load(data);
+				$uibModalInstance.close(data);	
+			}, 
+			function(err){
+				$scope._closeWarning(war);
+				console.log(err);
+				$scope.errors = err.data.errors;
+			}
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource, $uibModal, stage) {
+	$scope.stage  = stage;
+	$scope.values = JSON.parse(JSON.stringify(stage));
 	$scope.errors = {};
-	$scope.values = stage; 
-	$scope.values.operationTypes = [_defaultOption]; 
-	$scope._materials 	   		 = [_defaultOption];
-	$scope._operationTypes 		 = [_defaultOption];
-	_noneOption.getName = function() {return this.name;};
+	$scope.dflt   = {id:null, name:" --Select one-- "};
+	$scope.nw     = {id:-1, name:" --Create new-- "};
+	console.log(stage, $scope.values);
 
 	$scope.init = function() {
+		$scope.materials      		 = [$scope.dflt];
+		$scope.operationTypes 		 = [$scope.dflt];
+		$scope.stageOptions 		 = []; 
+		$scope.values.operationTypes = [];
+		if (!$scope.values.operations.length) {
+			$scope.values.operations 	 = [$scope.dflt];
+			$scope.values.operationTypes = [$scope.dflt];
+		}
+		$resource('/process/material/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, item => {
+					$scope.materials.push(new MAMaterial(item));
+				});
+			}, 
+			function(err){}
+		);
+		$resource('/process/op/type/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, item => {
+					let type = MAOperationType.fromJSON(item);
+					$scope.operationTypes.push(type);
+					angular.forEach($scope.values.operations, function(op, i) {
+						if (undefined !== (a = type.operations.find(e => {return e.id == op.id;}))) {
+							$scope.values.operationTypes[i] = type;
+						}
+					});
+				});
+			}, 
+			function(err){}
+		);
+		var item = stage;
+		while (item.parent) {
+			$scope.stageOptions.unshift(item.parent);
+			item = item.parent;
+		}
+		var item = stage;
+		while (item.children.length) {
+			$scope.stageOptions.push(item.children[0]);
+			item = item.children[0];
+		}
+		$scope.stageOptions.unshift({id:null, getName() {return " --None-- ";}});
+	}
+
+	$scope.stageChanged = function() {
+		if (!$scope.values.parent) {
+			$scope.values.children = stage.isVersion() ? 
+				[{id: stage.children[0].id}] : [{id: stage.getVersion().id}];
+		}
+		else {
+			var selected = $scope.stageOptions.find(e => {return e.id == $scope.values.parent});
+			if (stage.isVersion()) {
+				//FIXME:stage.version.parent = null
+			}
+			//TODO: if (selected == stage.parent) selected = stage.children[0];
+			$scope.values.children = [];
+			angular.forEach(selected.children, function(item, i) {
+				$scope.values.children[i] = {id: item.id}
+			});
+		}
+		console.log($scope.values);
+	}
+
+	$scope.createOperation = function(i) {
+	 	if ($scope.values.operations[i] < 0) {	
+			let op   = new MAOperation();
+			var type = $scope.operationTypes.find(e => {return e.id == $scope.values.operationTypes[i].id})
+			op.type = type;
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/operation-form.html',
+				controller: '_OperationModalCtrl',	
+				scope: $scope,
+				size: 'lg',
+				resolve: {op: op},
+			});
+
+			modal.result.then(
+				function(res) {
+					type.addOperation(op);
+					$scope.values.operations[i] = op;
+				},
+				function() {}
+			);
+		}
+	}
+
+	$scope.addOperation = function() {
+		$scope.values.operationTypes.push($scope.dflt);
+		$scope.values.operations.push($scope.dflt.id);
+	};
+
+	$scope.save = function() {
+		$resource(stage.id ? stage.links.getHref('edit') : stage.process.links.getHref('stage'))
+			.save({stage:$scope.values}).$promise.then(
+				function(data) {
+					stage.load(data);
+					$uibModalInstance.close();	
+				},
+				function(err) {
+					console.log(err);
+					$scope.errors = err.data.errors.stage;
+				},
+			);
+	}
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+	/*$scope.init = function() {
 		api.operationType.getAll().then(function(items) {
 			angular.forEach(items, function(type) {
 				var _type = angular.copy(type);
@@ -208,10 +357,6 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 		if (stage.parent.id) $scope.values._parent = stage.parent;
 		console.log(stage);
 	}
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 
 	var _previouses = [];
 	var _nexts = [];
@@ -390,24 +535,25 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 				 	stage.errors = err.data.errors;
                  }
              );
-    }
+    }*/
 });
 
 App.controller('_OperationTypeModalCtrl', function($scope, $uibModalInstance, $resource, group) {
-	console.log(group);
-	$scope.values = group;
+	$scope.values  = JSON.parse(JSON.stringify(group));
 	$scope.errors = {};
+	console.log($scope.values, group);
+	
 	$scope.save = function() {
 		var war = $scope._addWarning("Updating...");
-		$resource(group._links.edit.href).save($scope.values).$promise.then(
+		$resource(group.links.getHref('edit')).save($scope.values).$promise.then(
 			function(data) {
 				$scope._closeWarning(war);
-				group._embedded = data;
+				group.load(data);
 				$uibModalInstance.close(data);	
 			},
 			function(err) {
-				$scope._closeWarning(war);
 				console.log(err);
+				$scope._closeWarning(war);
 				$scope.errors = err.data.errors;
 			},
 		);
@@ -418,12 +564,76 @@ App.controller('_OperationTypeModalCtrl', function($scope, $uibModalInstance, $r
 	};
 });
 
-App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resource, group, op) {
-	console.log(op);
-	$scope.group  = group;
+App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resource, op) {
 	$scope.op	  = op;
-	$scope.values = op;
-	$scope.init = function() {
+	$scope.values =  JSON.parse(JSON.stringify(op));
+	console.log(op, $scope.values);
+
+	$scope.getOperations = function(i) {
+		$scope.operations = [{id: null, name: " --Select One-- "}];
+		angular.forEach(op.type.operations, e => {
+			var index = $scope.values.children.map(c => {return c.id}).indexOf(e.id);
+			if (e.children.length == 0 && (index == -1 || index == i) ) {
+				$scope.operations.push(JSON.parse(JSON.stringify(e)));
+			}
+		});
+		return $scope.operations;
+	}
+	
+	$scope.save = function() {
+		var war = $scope._addWarning("Updating...");
+		var uri  = op.id ? op.links.getHref('edit') : op.type.links.getHref('operation');
+		$resource(uri).save({operation:$scope.values}).$promise.then(
+			function(data) {
+				$scope._closeWarning(war);
+				op.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.errors = err.data.errors.operation;
+			},
+		);
+	};
+
+	$scope.reloadTitle = function() {
+		console.log($scope.values);
+		$scope.values.name = "";
+		angular.forEach($scope.values.children, function(child) {
+			if ($scope.values.name.length) $scope.values.name += " + ";
+			$scope.values.name += child.name;
+		});
+	}
+
+	$scope.mixed = function() {
+		if ($scope.values.children.length) {
+			$scope.values.children = [];
+		}
+		else {
+			$scope.values.children = [
+				{id: null, name: " --Select One-- "},
+				{id: null, name: " --Select One-- "},
+			];
+		}
+		$scope.reloadTitle();
+	}
+
+	$scope.addChild = function() {
+		$scope.values.children.push({id: null, name: " --Select One-- "});
+		$scope.reloadTitle();
+	}
+
+	$scope.rmChild = function(i) {
+		$scope.values.children.splice(i, 1);
+		$scope.reloadTitle();
+	}
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+
+	/*$scope.init = function() {
 		angular.forEach(op.children, function(child, index) {
 			var i = group.operations.map(function(item) {return item.id}).indexOf(child.id);
 			if (i >= 0) {
@@ -496,10 +706,60 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 		op.children.splice(i, 1);
 		$scope.reloadTitle();
 	}
-	$scope.init();
+	$scope.init();*/
 });
 
 App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $resource, simulation)
+{
+	$scope.values  = JSON.parse(JSON.stringify(simulation));
+	$scope.errors  = {};
+
+	$scope.save = function() {
+		var uri  = simulation.id ? 
+					simulation.links.getHref('edit') : simulation.hint.links.getHref('simulate');
+		$resource(uri).save($scope.values).$promise.then(
+			function(data) {
+				simulation.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+
+	$scope.previousStages = function() {
+		$scope.previouses = [];
+		var stage = simulation.hint.stage;
+		while (stage.parent) {
+			$scope.previouses.push(stage.parent);
+			stage = stage.parent;
+		}
+		console.log($scope.previouses);
+	}
+	
+	$scope.nextStages = function() {
+		$scope.nexts = [];
+		var stage = simulation.hint.stage;
+		while (stage.children.length) {
+			$scope.nexts.push(stage.children[0]);
+			stage = stage.children[0];
+		}
+		console.log($scope.nexts);
+	}
+
+	$scope.nextSimulations = function(i) {
+		$scope.nSimulations = $scope.nexts.find(e => {return e.id == $scope.values.nexts[i]}).hints;
+		$scope.nSimulations.push({id:0, name:" --Select One-- "});
+		console.log($scope.nSimulations);
+	}
+});
+
+App.controller('__SimulationModalCtrl', function($scope, $uibModalInstance, $resource, simulation)
 {
 	$scope.values  = JSON.parse(JSON.stringify(simulation));
 	$scope.errors  = {};
@@ -602,5 +862,9 @@ App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $reso
 		return options;
 	};
 	*/
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
 	console.log(simulation, $scope.values);
 });

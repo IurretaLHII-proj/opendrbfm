@@ -41,6 +41,18 @@ App.directive('compile', ['$compile', function ($compile) {
     };
 }]);
 
+App.filter('unique', function() {
+	return function(collection) {
+		var output = [];
+		angular.forEach(collection, e => {
+			if (output.indexOf(e) === -1) {
+				output.push(e);
+			}
+		});
+		return output;
+	}
+});
+
 App.directive('fileChange', ['$resource', '$parse', function($res, $parse) {
     return {
         restrict : 'A',

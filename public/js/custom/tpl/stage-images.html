@@ -1,17 +1,17 @@
-<div ng-if="stage._embedded" class="border" ng-class="{'bg-primary':current==stage,'text-light':current==stage,'bg-light':current!=stage}">
+<div class="" ng-class="{'bg-primary':current==stage,'text-light':current==stage,'bg-light':current!=stage}">
 	<div class="text-center my-1">
 		<a href="" 
 			class="btn btn-sm btn-outline-primary"
 			ng-click="setCurrent(stage)" 
-			ng-class="{'active':current==stage}" 
-		><span>Stage</span> {[level]}</a>
+			ng-class="{'active':current==stage}"
+			>{[ stage.getName() ]}</a>
 	</div>
 	<div ng-if="stage.images.length" 
 		 ng-repeat="img in stage.images" 
 		 class="text-center"
 	>
 		<a href="" ng-click="setCurrent(stage);">
-			<img ng-if="img._links" ng-src="{[ img._links.self.href ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail p-0 border-0 img-responsive stage-img"/>
+			<img ng-src="{[ img.links.getHref() ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail p-0 border-0 img-responsive stage-img"/>
 		</a>
 	</div>
 	<div ng-repeat="(i, op) in stage.operations" class="text-center">

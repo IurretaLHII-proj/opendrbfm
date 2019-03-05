@@ -1,5 +1,6 @@
 <div class="modal-header">
-	<h3 class="modal-title">{[ group.name ]}: {[ values.text ]}</h3>
+	<h3 class="modal-title" ng-if="op.id">{[ op.name ]} <span class="small">| edit</small></h3>
+	<h3 class="modal-title" ng-if="!op.id">New operation</h3>
 </div>
 <div class="modal-body">
 	<div class="form-group">
@@ -9,12 +10,12 @@
 				<input type="text"
 					class="form-control" 
 					placeholder="Name"
-					ng-class="{'is-invalid': errors.text}"
+					ng-class="{'is-invalid': errors.name}"
 					ng-disabled="values.children.length"
-					ng-model="values.text"
+					ng-model="values.name"
 					/>
-				<div ng-if="errors.text"
-					ng-repeat="(key, text) in errors.text"
+				<div ng-if="errors.name"
+					ng-repeat="(key, text) in errors.name"
 					class="invalid-feedback">{[key]}. {[text]}</div>
 			</div>
 			<div class="form-group col-md-1">
@@ -51,7 +52,7 @@
 				<select class="form-control"
 					ng-model="values.children[i]"
 					ng-change="reloadTitle()"
-					ng-options="item as item.name for item in getOperations(i)"
+					ng-options="item as item.name for item in getOperations(i) track by item.id"
 					>
 				</select>
 			</div>
@@ -113,7 +114,7 @@
 				</a>
 			</div>
 		</div>
-		<div ng-if="values.children.length || values.children[values.children.length - 1].id > 0" 
+		<div ng-if="values.children.length && values.children[values.children.length - 1].id > 0" 
 			class="form-group p-2 my-2 text-center">
 			<a href="" 
 				ng-click="addChild()" 

@@ -278,8 +278,8 @@ class OperationType implements
 			'owner'		  => $this->getUser(),
 			'description' => $this->getDescription(),
 			'operations'  => new \ZF\Hal\Collection($this->getOperations()),
-			'updated'	  => $this->getUpdated()->getTimestamp(),
-			'created'	  => $this->getCreated()->getTimestamp(),
+			'updated'	  => $this->getUpdated(),
+			'created'	  => $this->getCreated(),
 		];
 	}
 

@@ -16,7 +16,7 @@ class HintType implements
 	ResourceInterface, 
 	JsonSerializable,
 	\User\Entity\UserAwareInterface,
-	//\Base\Hal\LinkProvider,
+	\Base\Hal\LinkProvider,
 	//\Base\Hal\LinkPrepareAware,
 	HintTypeInterface 
 {
@@ -42,9 +42,9 @@ class HintType implements
 
 	/**
 	 * @var string 
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", name="title")
 	 */
-	protected $title;
+	protected $name;
 
     /**
 	 * @var string 
@@ -206,30 +206,30 @@ class HintType implements
      *
      * @return string.
      */
-    public function getName()
+    public function getTitle()
     {
-        return $this->getTitle();
+        return $this->getName();
     }
     
     /**
-     * Get title.
+     * Get name.
      *
      * @return string.
      */
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
     
     /**
-     * Set title.
+     * Set name.
      *
-     * @param string title the value to set.
+     * @param string name the value to set.
      * @return HintType.
      */
-    public function setTitle($title)
+    public function setName($name)
     {
-        $this->title = $title;
+        $this->name = (string) $name;
         return $this;
     }
     
@@ -385,7 +385,7 @@ class HintType implements
             'description' => $this->getDescription(),
 			'operation'	  => $this->getOperation(),
 			'owner'		  => $this->getUser(),
-            'created'     => $this->getCreated()->getTimestamp(),
+            'created'     => $this->getCreated(),
         );
     }
 
@@ -394,7 +394,7 @@ class HintType implements
 	 */
 	public function __toString()
 	{
-		return (string) $this->getTitle();
+		return (string) $this->getName();
 	}
 
 	/**
@@ -403,6 +403,24 @@ class HintType implements
 	public function getResourceId()
 	{
 		return self::class;
+	}
+
+	/**
+  	 * @inheritDoc
+  	 */
+  	public function provideLinks()
+  	{
+		return [
+			[
+				'rel'   	  => 'edit',
+				'privilege'   => 'edit',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/type/detail/json',
+				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
+				],
+			],
+		];
 	}
 }
 

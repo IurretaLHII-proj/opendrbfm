@@ -28,14 +28,14 @@ class HintTypeForm extends Form implements InputFilterProviderInterface
 
         $this->add([
              'type' => 'Text',
-             'name' => 'title',
+             'name' => 'name',
              'required' => true,
              'attributes' => [ 
                  'class' => 'form-control',
 				 'rows' => 4,
              ],
              'options' => [
-                 'label' => 'Title',
+                 'label' => 'Name',
              ],
         ], ['priority' => -9]);
 
@@ -73,7 +73,7 @@ class HintTypeForm extends Form implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return [
-			'title' => [
+			'name' => [
 				'required' => true,
 				'filters' => [
 					[

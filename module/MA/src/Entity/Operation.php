@@ -30,9 +30,9 @@ class Operation implements
 
 	/**
 	 * @var string 
-	 * @ORM\Column(type="string")
+	 * @ORM\Column(type="string", name="text")
 	 */
-	protected $text;
+	protected $name;
 
     /**
 	 * @var string 
@@ -175,24 +175,24 @@ class Operation implements
     }
     
     /**
-     * Get text.
+     * Get name.
      *
      * @return string.
      */
-    public function getText()
+    public function getName()
     {
-        return $this->text;
+        return $this->name;
     }
     
     /**
-     * Set text.
+     * Set name.
      *
-     * @param string text the value to set.
+     * @param string name the value to set.
      * @return Operation.
      */
-    public function setText($text)
+    public function setName($name)
     {
-        $this->text = $text;
+        $this->name = $name;
         return $this;
     }
     
@@ -471,7 +471,7 @@ class Operation implements
 	 */
 	public function __toString()
 	{
-		return (string) $this->getType() .'. '. $this->getText();
+		return (string) $this->getType() .'. '. $this->getName();
 	}
 
 	/**
@@ -481,13 +481,12 @@ class Operation implements
 	{
 		return [
 			'id' 		  => $this->getId(),
-			'name' 		  => (string) $this,
-			'text' 		  => $this->getText(),
+			'name' 		  => $this->getName(),
 			'owner'		  => $this->getUser(),
 			'description' => $this->getDescription(),
 			'children' 	  => new \ZF\Hal\Collection($this->getChildren()),
-			'updated'	  => $this->getUpdated()->getTimestamp(),
-			'created'	  => $this->getCreated()->getTimestamp(),
+			'updated'	  => $this->getUpdated(),
+			'created'	  => $this->getCreated(),
 		];
 	}
 

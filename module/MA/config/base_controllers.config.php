@@ -27,6 +27,9 @@ return [
 	Controller\CustomerController::class => [
 		'repository' => Entity\Customer::class,
 	],
+	Controller\Js\CustomerController::class => [
+		'repository' => Entity\Customer::class,
+	],
 	Controller\ProcessController::class => [
 		'repository' => Entity\Process::class,
 		'parent' => [
@@ -72,6 +75,9 @@ return [
 		'repository' => Entity\OperationType::class,
 	],
 	Controller\HintTypeController::class => [
+		'repository' => Entity\HintType::class,
+	],
+	Controller\Js\HintTypeController::class => [
 		'repository' => Entity\HintType::class,
 	],
 	Controller\HintController::class => [

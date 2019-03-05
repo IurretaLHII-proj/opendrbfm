@@ -15,7 +15,7 @@
 		<div class="d-flex flex-column">
 			<div class="d-flex">
 				<h2 class="mr-auto">{[ values._embedded.title ]}</h2>
-				<a href="" class="btn"><i class="fa fa-pencil"></i></a>
+				<a href="" ng-click="editProcess(process)" class="btn"><i class="fa fa-pencil"></i></a>
 			</div>
 			<div class="d-flex" ng-include="'/js/custom/tpl/process-content.html'">
 			</div>
@@ -24,13 +24,13 @@
 
 		<!-- VERSION LIST -->
 		<ul class="list-inline my-2">
-			<li ng-repeat="(i,v) in values.versions" class="list-inline-item">
+			<li ng-repeat="(i,v) in process.versions" class="list-inline-item">
 				<div class="btn-group btn-group-justified">
 					<a href=""
 					   class="btn btn-sm btn-outline-primary" 
 					   ng-class="{active: v == version}"
 					   ng-click="setVersion(v)"
-					>v{[i+1]} | {[ v._embedded._embedded.material.name ]}</a>
+					>v{[i+1]} | {[ v.material.name ]}</a>
 					<a href=""
 					   class="btn btn-sm btn-outline-primary" 
 					   ng-click="cloneVersion(v)"
@@ -51,7 +51,7 @@
 		<!-- END OF VERSION LIST -->
 
 		<!-- VERSION STAGE TABS -->
-		<ul ng-repeat="(i,stage) in values.versions" 
+		<ul ng-repeat="(i,stage) in process.versions" 
 			ng-if="stage == version"
 			ng-init="level = 0;"
 			ng-include="'/js/custom/tpl/stage-tabs.html'"
@@ -60,8 +60,8 @@
 		<!-- END OF VERSION STAGE TABS -->
 
 		<!-- VERSION STAGE CONTENT -->
-		<div ng-if="current && current.childrenLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
-		<div ng-if="current && !current.childrenLoading" class="d-flex flex-column border">
+		<div ng-if="!current" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
+		<div ng-if="current" class="d-flex flex-column border">
 			<div class="">
 				<!--<a href="" ng-confirm-click confirmed-click="deleteStage(current)" class="btn pull-right">
 					<i class="fa fa-trash"></i>
@@ -70,7 +70,7 @@
 					<i class="fa fa-pencil"></i>
 				</a>
 			</div>
-			<div class="row pb-2" ng-repeat="(i,stage) in values.versions">
+			<div class="row pb-2" ng-repeat="(i,stage) in process.versions">
 				<div class="col-sm-12 col-md-4">
 					<ng-include 
 						ng-if="stage == version"
@@ -91,7 +91,7 @@
 		
 		<!-- HINTS TABLE -->
 		<div ng-if="current && current.hintsLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
-		<table ng-if="current && !current.hintsLoading" class="hint-table table table-bordered my-2">
+		<table ng-if="current" class="hint-table table table-bordered my-2">
 			<thead class="text-center">
 				<tr>
 					<th rowspan="2" colspan="2">Error</th>
@@ -121,6 +121,7 @@
 						<a href="" class="btn btn-sm btn-{[badgeClass(hint.priority)]}" style="white-space:normal">
 							<span class="badge badge-light mr-2">{[ hint.priority ]}</span>{[ hint.name ]} 
 						</a>
+						<p class="small">{[ hint.description ]}</p>
 					</td>
 					<td rowspan="{[hint.simulations.length+1]}" class="text-center">
 						<div class="btn-group btn-group-vertical btn-group-justified" style="justify-content:start;">
@@ -133,12 +134,10 @@
 							<a href="{[ hint.user.links.getHref() ]}">{[ hint.user.name ]}</a>. {[ hint.created | date:"dd MMM yyyy HH:mm" ]}
 						</div>
 					</td>
-					<td colspan="9" class=" text-center">
-						<div class="bg-light border">
-							<a href="" ng-click="addSimulation(hint)" class="btn btn-sm">
-								<i class="fa fa-plus"></i>
-							</a>
-						</div>
+					<td colspan="9" class="text-center p-0">
+						<a href="" ng-click="addSimulation(hint)" class="btn btn-sm">
+							<i class="fa fa-plus"></i>
+						</a>
 					</td>
 				</tr>
 				<tr ng-repeat-end ng-repeat="s in hint.simulations">
@@ -150,7 +149,7 @@
 							</li>
 							-->
 							<!--<li ng-repeat="note in s._embedded._embedded.reasons">-->
-							<li ng-repeat="note in s.reasons" class="bg-light border my-1">
+							<li ng-repeat="note in s.reasons" class="bg-light my-1">
 								<div class="d-flex">
 									<div class="mr-auto p-2">{[note.text]}</div>
 									<div class="btn-group btn-group-vertical btn-group-justified pl-1" style="justify-content:start;">
@@ -163,12 +162,12 @@
 									<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMM yyyy HH:mm" ]}
 								</div>
 							</li>
-							<li class="bg-light border text-center"><a href="" ng-click="addReason(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
+							<li class="bg-light text-center"><a href="" ng-click="addReason(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
 						</ul>
 					</td>
 					<td>
 						<ul class="m-0">
-							<li ng-repeat="note in s.influences" class="bg-light border my-1">
+							<li ng-repeat="note in s.influences" class="bg-light my-1">
 								<div class="d-flex">
 									<div class="mr-auto p-2">{[note.text]}</div>
 									<div class="btn-group btn-group-vertical btn-group-justified pl-1" style="justify-content:start;">
@@ -181,12 +180,12 @@
 									<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMM yyyy HH:mm" ]}
 								</div>
 							</li>
-							<li class="bg-light border text-center"><a href="" ng-click="addInfluence(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
+							<li class="bg-light text-center"><a href="" ng-click="addInfluence(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
 						</ul>
 					</td>
 					<td>
 						<ul class="m-0">
-							<li ng-repeat="note in s.suggestions" class="bg-light border my-1">
+							<li ng-repeat="note in s.suggestions" class="bg-light my-1">
 								<div class="d-flex">
 									<div class="mr-auto p-2">{[note.text]}</div>
 									<div class="btn-group btn-group-vertical btn-group-justified pl-1" style="justify-content:start;">
@@ -199,7 +198,7 @@
 									<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMM yyyy HH:mm" ]}
 								</div>
 							</li>
-							<li class="bg-light border text-center"><a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
+							<li class="bg-light text-center"><a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
 						</ul>
 					</td>
 					<td class="bg-light text-{[textClass(s.state)]}" ng-switch="s.state">

@@ -3,7 +3,7 @@
 	<a href="" ng-click="setCurrent(stage);">Stage {[ level ]}</a>
 </li>
 
-<li ng-if="stage._embedded && !stage.children.length" class="nav-link">
+<li ng-if="!stage.children.length" class="nav-link">
 	<a href="" ng-click="addStage(stage)" class="btn-sm btn-default">
 		<span class="fa fa-plus"></span>
 	</a>
