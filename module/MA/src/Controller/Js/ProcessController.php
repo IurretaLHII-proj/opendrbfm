@@ -10,6 +10,15 @@ use ZF\Hal\View\HalJsonModel;
 class ProcessController extends \Base\Controller\Js\AbstractActionController
 {
 	/**
+	 * @return JsonViewModel
+	 */
+	public function detailAction()
+	{
+		return new HalJsonModel([
+			'payload' => $this->prepareHalEntity($this->getEntity(), "process/detail/json"),
+		]);
+	}
+	/**
 	 * @return ViewModel
 	 */
     public function indexAction()

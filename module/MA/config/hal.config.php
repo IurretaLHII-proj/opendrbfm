@@ -68,7 +68,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 0,
+			'max_depth' => 2,
 		],
 		'MA\Entity\Simulation' => [
 			'route_name' => 'process/hint/simulation/detail/json',

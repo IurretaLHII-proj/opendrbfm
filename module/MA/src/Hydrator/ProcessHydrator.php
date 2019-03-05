@@ -32,8 +32,8 @@ class ProcessHydrator extends \Zend\Hydrator\ClassMethods
 			'body' 	   	  	=> $object->getBody(),
 			'owner'    	  	=> $object->getUser(),
 			'customer'    	=> $object->getCustomer(),
-			'created'  	  	=> $object->getCreated()->getTimestamp(),
-			'updated'  	  	=> $object->getUpdated()->getTimestamp(),
+			'created'  	  	=> $object->getCreated(),
+			'updated'  	  	=> $object->getUpdated(),
 			'versions' 	  	=> new \ZF\Hal\Collection($object->getVersions()),
 			//'stages'   	  	=> new \ZF\Hal\Collection($object->getStages()),
 		];

@@ -31,7 +31,7 @@ class OperationFieldset extends Fieldset implements
 
         $this->add([
              'type' => 'Text',
-             'name' => 'text',
+             'name' => 'name',
              'required' => true,
              'attributes' => [ 
                  'class' => 'form-control',
@@ -83,7 +83,7 @@ class OperationFieldset extends Fieldset implements
 	public function getInputFilterSpecification()
 	{
 		return [
-			'text' => [
+			'name' => [
 				'required' => true,
 				'filters' => [
 					[

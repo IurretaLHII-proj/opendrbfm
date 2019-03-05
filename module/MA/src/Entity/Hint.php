@@ -816,7 +816,7 @@ class Hint implements
             'text'        => $this->getText(),
             'priority' 	  => $this->getPriority(),
             'description' => $this->getDescription(),
-            'created'     => $this->getCreated()->getTimestamp(),
+            'created'     => $this->getCreated(),
         );
     }
 

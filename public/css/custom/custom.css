@@ -140,6 +140,9 @@
 	color: #212529;
 }
 /*************************************/
+.hint-table th {
+	padding: 0.25em 0.75em;
+}
 .hint-table td {
 	position: relative;
 }

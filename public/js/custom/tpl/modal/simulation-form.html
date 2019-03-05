@@ -3,6 +3,58 @@
 	<!!--{[ values ]}-->
 </div>
 <div class="modal-body">
+	<div class="form-row my-2">
+		<div class="col-md-6">
+			<div class="form-group">
+		  		<label for="">Previouses</label>
+				<div class="form-row my-2">
+					<select class="form-control"
+						ng-class="{'is-invalid': errors.previouses[i]}"
+						ng-init="previousStages()"
+						ng-model="values.previouses[i]"
+						ng-options="item.id as item.getName() for item in previouses"
+						>
+					</select>
+					<div ng-if="errors.previouses[i]"
+						ng-repeat="(key, text) in errors.previouses[i]"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+		  		<label for="">Nexts</label>
+				<div class="form-row my-2">
+					<select class="form-control"
+						ng-class="{'is-invalid': errors.nexts[i]}"
+						ng-init="nextStages()"
+						ng-model="values.nexts[i]"
+						ng-options="item.id as item.getName() for item in nexts"
+						>
+					</select>
+					<div ng-if="errors.nexts[i]"
+						ng-repeat="(key, text) in errors.nexts[i]"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="form-group">
+		  		<label for="">Nexts</label>
+				<div class="form-row my-2">
+					<select class="form-control"
+						ng-class="{'is-invalid': errors.nexts[i]}"
+						ng-if="values.nexts[i]"
+						ng-init="nextSimulations(i)"
+						ng-model="values.nS[i]"
+						ng-options="item.id as item.name for item in nSimulations"
+						>
+					</select>
+					<div ng-if="errors.nexts[i]"
+						ng-repeat="(key, text) in errors.nexts[i]"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="form-group">
 	  	<label for="inputReasons">Reasons</label>
 		<div class="form-row my-2"

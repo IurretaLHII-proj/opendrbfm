@@ -1,31 +1,50 @@
 <div class="modal-header">
-	<h3 class="modal-title">Version {[ values.version ]}. Stage {[ values.level ]}</h3>
+	<h3 class="modal-title">Version {[ stage.version ]}. Stage {[ stage.level ]}</h3>
+	{# values #}
 </div>
 <div ng-init="init()" class="modal-body">
 
-	<div class="form-group" 
-		ng-if="values.parent.id"
-		ng-init="loadStages()">
-		<label for="inputParents">Previous stage</label>
-		<select class="form-control"
-			ng-class="{'is-invalid': errors.parent}"
-			ng-model="values._parent"
-			ng-change="stageChanged()"
-			ng-options="item as item.getName() for item in stageOptions"
+	<div ng-if="stageOptions.length>1" class="form-row">
+		<div class="form-group col-6" 
 			>
-		</select>
-		<div ng-if="errors.parent"
-			ng-repeat="(key, text) in errors.parent"
-			class="invalid-feedback">{[key]}. {[text]}</div>
+			<label for="inputParents">Previous stage</label>
+			<select class="form-control"
+				ng-disabled="!stage.parent"
+				ng-class="{'is-invalid': errors.parent}"
+				ng-model="values.parent"
+				ng-change="stageChanged()"
+				ng-options="item.id as item.getName() for item in stageOptions"
+				>
+			</select>
+			<div ng-if="errors.parent"
+				ng-repeat="(key, text) in errors.parent"
+				class="invalid-feedback">{[key]}. {[text]}</div>
+		</div>
+		<div class="form-group col-6" 
+			>
+			<label for="inputParents">Nexts stages</label>
+			<div ng-repeat="(i, child) in values.children" class="form-group">
+				<select class="form-control" disabled="disabled"
+					ng-class="{'is-invalid': errors.children[i]}"
+					ng-model="values.children[i].id"
+					ng-options="item.id as item.getName() for item in stageOptions"
+					>
+				</select>
+				<div ng-if="errors.children[i]"
+					ng-repeat="(key, text) in errors.children[i]"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+		</div>
 	</div>
 	<div class="form-row">
 		<div class="form-group col-md-6">
 			<label for="inputParents">Material</label>
 			<select class="form-control"
+				ng-init="loadMaterials()"
 				ng-class="{'is-invalid': errors.material}"
 				ng-model="values.material"
 				ng-disabled="values.level > 1"
-				ng-options="item as item.name for item in _materials track by item.id"
+				ng-options="item.id as item.name for item in materials"
 				>
 			</select>
 			<div ng-if="errors.material"
@@ -35,37 +54,35 @@
 		<div class="form-group col-md-6">
 			<label for="inputParents">Operations</label>
 			<div class="form-row"
-				ng-repeat="(_i, op) in values.operations"
+				ng-repeat="(i, op) in values.operations"
 				>
 				<div class="form-group col-md-5">
 					<select class="form-control"
-						ng-model="values.operationTypes[_i]"
-						ng-options="item as item.name 
-						for item in _operationTypes"
-						>
+						ng-model="values.operationTypes[i]"
+						ng-options="item as item.name for item in operationTypes">
 					</select>
 				</div>
 				<div class="form-group col-md-6">
 					<select class="form-control"
-						ng-class="{'is-invalid': errors.operations[_i]}"
-						ng-disabled="!values.operationTypes[_i].id"
-						ng-model="values.operations[_i]"
-						ng-options="item as item.name 
-						for item in getOperations(_i)"
+						ng-class="{'is-invalid': errors.operations[i]}"
+						ng-disabled="!values.operationTypes[i].id"
+						ng-change="createOperation(i)"
+						ng-model="values.operations[i].id"
+						ng-options="item.id as item.name for item in [dflt,nw].concat(values.operationTypes[i].operations)"
 						>
 					</select>
-					<div ng-if="errors.operations[_i]"
-						ng-repeat="(key, text) in errors.operations[_i].id"
+					<div ng-if="errors.operations[i]"
+						ng-repeat="(key, text) in errors.operations[i].id"
 						class="invalid-feedback">{[key]}. {[text]}</div>
 				</div>
-				<div ng-if="_i" class="form-group col-md-1">
+				<div ng-if="i" class="form-group col-md-1">
 					<a href="" class="btn-sm btn-default pull-right" 
-						ng-click="values.operations.splice(_i, 1);">
+						ng-click="values.operations.splice(i, 1);">
 						<span class="fa fa-close"></span>
 					</a>
 				</div>
 			</div>
-			<div ng-if="values.operations[values.operations.length-1].id">
+			<div ng-if="values.operations[values.operations.length-1]">
 				<a href="" class="btn-sm btn-default" 
 				ng-click="addOperation()">
 				<span class="fa fa-plus"></span></a>
@@ -142,6 +159,6 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
-	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+	<button class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-success" ng-click="save()">Save</button>
 </div>
