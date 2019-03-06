@@ -1,0 +1,147 @@
+<div class="modal-header">
+	<h3 class="modal-title">Version {[ stage.version.name ]}. Stage {[ stage.order ]}</h3>
+</div>
+<div ng-init="init()" class="modal-body">
+
+	<!--<div ng-if="stageOptions.length>1" class="form-row">
+		<div class="form-group col-6" 
+			>
+			<label for="inputParents">Previous stage</label>
+			<select class="form-control"
+				ng-disabled="!stage.parent"
+				ng-class="{'is-invalid': errors.parent}"
+				ng-model="values.parent"
+				ng-change="stageChanged()"
+				ng-options="item.id as item.getName() for item in stageOptions"
+				>
+			</select>
+			<div ng-if="errors.parent"
+				ng-repeat="(key, text) in errors.parent"
+				class="invalid-feedback">{[key]}. {[text]}</div>
+		</div>
+		<div class="form-group col-6" 
+			>
+			<label for="inputParents">Nexts stages</label>
+			<div ng-repeat="(i, child) in values.children" class="form-group">
+				<select class="form-control" disabled="disabled"
+					ng-class="{'is-invalid': errors.children[i]}"
+					ng-model="values.children[i].id"
+					ng-options="item.id as item.getName() for item in stageOptions"
+					>
+				</select>
+				<div ng-if="errors.children[i]"
+					ng-repeat="(key, text) in errors.children[i]"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+		</div>
+	</div>-->
+	<div class="form-group">
+		<label for="inputParents">Operations</label>
+		<div class="form-row"
+			ng-repeat="(i, op) in values.operations"
+			>
+			<div class="form-group col-md-5">
+				<select class="form-control"
+					ng-model="values.operationTypes[i]"
+					ng-options="item as item.name for item in operationTypes">
+				</select>
+			</div>
+			<div class="form-group col-md-6">
+				<select class="form-control"
+					ng-class="{'is-invalid': errors.operations[i]}"
+					ng-disabled="!values.operationTypes[i].id"
+					ng-change="createOperation(i)"
+					ng-model="values.operations[i]"
+					ng-options="item as item.name for item in [dflt,nw].concat(values.operationTypes[i].operations) track by item.id"
+					>
+				</select>
+				<div ng-if="errors.operations[i]"
+					ng-repeat="(key, text) in errors.operations[i].id"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div ng-if="i" class="form-group col-md-1">
+				<a href="" class="btn-sm btn-default pull-right" 
+					ng-click="values.operations.splice(i, 1);">
+					<span class="fa fa-close"></span>
+				</a>
+			</div>
+		</div>
+		<div ng-if="values.operations[values.operations.length-1].id">
+			<a href="" class="btn-sm btn-default" 
+			ng-click="addOperation()">
+			<span class="fa fa-plus"></span></a>
+		</div>
+	</div>
+	<div class="form-group">
+		<text-angular 
+		ng-model="values.body"
+		ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+		ta-text-editor-class="form-height form-control"
+		ng-class="{'is-invalid': errors.body}"
+		placeholder="Description"
+		>
+		</text-angular>
+
+		<div ng-if="errors.body"
+			ng-repeat="(key, text) in errors.body"
+			class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+	</div>
+
+	<div class="form-group">
+		<!--<label for="inputParents">Images</label>-->
+		<div class="d-flex flex-column">
+			<div ng-repeat="(index, image) in values.images" 
+				class="mt-1 mb-1 d-flex flex-fill" 
+				style="
+			">
+				<div style="
+					min-width: 120px;
+					background: lightgray;	
+				">
+					<img ng-if="image._links" ng-src="{[ image._links.self.href ]}" width=120 height=120 />
+					<img ng-if="!image._links" ng-src="/image/{[image.id]}" width=120 height=120 />
+				</div>
+				<div class="align-self-stretch flex-fill mx-4">
+					<textarea 
+						class="form-control" 
+						style="height:100%;"
+						ng-model="image.description"
+					></textarea>
+				</div>
+				<div class="align-self-center" style="">
+					<a href="" class="btn btn-default" ng-click="removeImage(values, index)"><span class="fa fa-remove"></span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label 
+			class=""
+			style="
+				padding: .5rem 1rem;
+			    font-size: 1.25rem;
+			    line-height: 1.5;
+			    border-radius: .3rem;
+			    cursor: pointer;
+				color: #fff;
+			    background-color: #007bff;
+			    border-color: #007bff;
+			">
+			<i class="fa fa-file-image-o"></i>
+			<input type="file"
+				file-change="uploadFile"
+				file-entity="values"
+				file-index="{[ values.images.length ]}"
+				style="display:none;"
+				/>
+		</label>
+		<div ng-if="errors.file"
+			ng-repeat="(key, text) in errors.file"
+			class="invalid-feedback" style="display:block;">{[key]}. {[text]}
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-secondary" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-success" ng-click="save()">Save</button>
+</div>

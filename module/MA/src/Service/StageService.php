@@ -7,5 +7,4 @@ use Base\Service\AbstractService;
 
 class StageService extends AbstractService
 {
-	const EVENT_CLONE = 'create';
 }

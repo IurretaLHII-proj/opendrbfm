@@ -825,12 +825,14 @@ class Hint implements
 	 */
 	public function __clone()
 	{
-		$this->id 		   = null;
-		$this->created     = new DateTime;
-		$this->updated     = new DateTime;
-		$this->parents     = new ArrayCollection;
-		$this->children    = new ArrayCollection;
-		$this->simulations = new ArrayCollection;
+		$this->id 		    = null;
+		$this->commentCount = 0;
+		$this->created      = new DateTime;
+		$this->updated      = new DateTime;
+		$this->parents      = new ArrayCollection;
+		$this->children     = new ArrayCollection;
+		$this->comments     = new ArrayCollection;
+		$this->simulations  = new ArrayCollection;
 	}
 
 	/**

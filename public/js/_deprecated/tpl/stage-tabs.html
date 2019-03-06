@@ -1,0 +1,16 @@
+<li class="nav-link" ng-class="{active:current==stage}">
+	<!--<a href="" ng-click="setCurrent(stage);">Stage {[ stage._embedded.level ]}</a>-->
+	<a href="" ng-click="setCurrent(stage);">Stage {[ level ]}</a>
+</li>
+
+<li ng-if="!stage.children.length" class="nav-link">
+	<a href="" ng-click="addStage(stage)" class="btn-sm btn-default">
+		<span class="fa fa-plus"></span>
+	</a>
+</li>
+
+<ul class="nav nav-tabs border-0" ng-include 
+	ng-repeat="child in stage.children" 
+	ng-init="stage=child;level=level+1;" 
+	src="'/js/custom/tpl/stage-tabs.html'"
+/>

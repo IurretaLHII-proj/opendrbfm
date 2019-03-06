@@ -764,12 +764,14 @@ class Simulation implements
 	 */
 	public function __clone()
 	{
-		$this->id 		   = null;
-		$this->created     = new DateTime;
-		$this->updated     = new DateTime;
-		$this->reasons     = new ArrayCollection;
-		$this->suggestions = new ArrayCollection;
-		$this->influences  = new ArrayCollection;
+		$this->id 		    = null;
+		$this->commentCount = 0;
+		$this->comments     = new ArrayCollection;
+		$this->reasons      = new ArrayCollection;
+		$this->suggestions  = new ArrayCollection;
+		$this->influences   = new ArrayCollection;
+		$this->created      = new DateTime;
+		$this->updated      = new DateTime;
 	}
 
 	/**

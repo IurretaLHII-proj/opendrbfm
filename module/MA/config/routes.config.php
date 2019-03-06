@@ -162,7 +162,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|stages|stage|actions',
+						'action' => 'detail|edit|version|actions',
 					]
 				],
 				'may_terminate' => true,
@@ -254,6 +254,44 @@ return [
 					],
 				],
 			],
+			'version' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/version',
+					'defaults' => [
+						'controller' => Controller\VersionController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|edit|delete|clone|stages|stage|comments|comment',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\VersionController::class,
+									],
+								],
+							]
+						],
+					],
+				],
+			],
 			'stage' => [
 				'type' => 'Literal',
 				'options' => [
@@ -284,7 +322,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|clone|image|hints|hint|children',
+								'action' => 'detail|edit|delete|image|hints|hint|comments|comment',
 							]
 						],
 						'may_terminate' => true,

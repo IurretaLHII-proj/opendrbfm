@@ -1,0 +1,25 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ item.name ]} <span class="small">| Note</span></h3>
+	<button ng-click="cancel()" type="button" class="close"
+		data-dismiss="modal" aria-label="Close" style="
+			position:absolute; top:5px; right:5px;
+		"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+	<div class="form-group">
+	  	<label for="inputDescription">Description</label>
+		<textarea rows="3" 
+			id="inputDescription"
+			class="form-control"
+			ng-class="{'is-invalid': errors.text}"
+			ng-model="values.text">
+		</textarea>
+		<div ng-if="errors.text"
+			ng-repeat="(key, text) in errors.text"
+			class="invalid-feedback">{[key]}. {[text]}</div>
+	</div>
+</div>
+<div class="modal-footer" >
+	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+</div>

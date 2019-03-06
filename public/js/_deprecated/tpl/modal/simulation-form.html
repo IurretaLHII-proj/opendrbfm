@@ -1,0 +1,247 @@
+<div class="modal-header">
+	<h3 class="modal-title">Modal title</h3>
+	<!!--{[ values ]}-->
+</div>
+<div class="modal-body">
+	<!--
+	<div class="form-row my-2">
+		<div class="col-md-6">
+			<div class="form-group">
+		  		<label for="">Previouses</label>
+				<div class="form-row my-2">
+					<select class="form-control"
+						ng-class="{'is-invalid': errors.previouses[i]}"
+						ng-init="previousStages()"
+						ng-model="values.previouses[i]"
+						ng-options="item.id as item.getName() for item in previouses"
+						>
+					</select>
+					<div ng-if="errors.previouses[i]"
+						ng-repeat="(key, text) in errors.previouses[i]"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="form-group">
+		  		<label for="">Nexts</label>
+				<div class="form-row my-2">
+					<select class="form-control"
+						ng-class="{'is-invalid': errors.nexts[i]}"
+						ng-init="nextStages()"
+						ng-model="values.nexts[i]"
+						ng-options="item.id as item.getName() for item in nexts"
+						>
+					</select>
+					<div ng-if="errors.nexts[i]"
+						ng-repeat="(key, text) in errors.nexts[i]"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="form-group">
+		  		<label for="">Nexts</label>
+				<div class="form-row my-2">
+					<select class="form-control"
+						ng-class="{'is-invalid': errors.nexts[i]}"
+						ng-if="values.nexts[i]"
+						ng-init="nextSimulations(i)"
+						ng-model="values.nS[i]"
+						ng-options="item.id as item.name for item in nSimulations"
+						>
+					</select>
+					<div ng-if="errors.nexts[i]"
+						ng-repeat="(key, text) in errors.nexts[i]"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
+	<div class="form-group">
+	  	<label for="inputReasons">Reasons</label>
+		<div class="form-row my-2"
+			ng-repeat="(i, note) in values.reasons"
+			>
+			<div class="col-md-11"> 
+				<!--
+				<div class="form-row">
+					<div class="form-group"
+					    ng-class="values.reasons[i].stage.id ? 'col-md-4':'col-md-12'" 
+						ng-init="stages = reasonStages()">
+						<label>Stage</label>
+						<select class="form-control"
+							ng-class="{'is-invalid': errors.reasons[i].stage}"
+							ng-model="values.reasons[i].stage"
+							ng-options="item as item.name for item in stages"
+							>
+						</select>
+						<div ng-if="errors.reasons[i].stage"
+							ng-repeat="(key, text) in errors.reasons[i].stage"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+					<div ng-if="values.reasons[i].stage.id" 
+						class="form-group" 
+						ng-class="values.reasons[i].hint ? 'col-md-4':'col-md-8'" 
+						>	
+						<label>Error</label>
+						<select class="form-control"
+							ng-class="{'is-invalid': errors.reasons[i].hint}"
+							ng-model="values.reasons[i].hint"
+							ng-options="item as item.name for item in values.reasons[i].stage.hints"
+							>
+						</select>
+						<div ng-if="errors.reasons[i]"
+							ng-repeat="(key, text) in errors.reasons[i]"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+					<div ng-if="values.reasons[i].hint" 
+						class="form-group col-md-4" 
+						ng-init="reasons = reasonOptions(i, values.reasons[i].stage)">
+						<label>Reason</label>
+						<select class="form-control"
+							ng-class="{'is-invalid': errors.reasons[i].simulation}"
+							ng-model="values.reasons[i].simulation"
+							ng-options="item as item.name for item in reasons"
+							>
+						</select>
+						<div ng-if="errors.reasons[i]"
+							ng-repeat="(key, text) in errors.reasons[i]"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+				</div>
+				-->
+				<div class="form-group">
+					<textarea rows="2" 
+						ng-class="{'is-invalid': errors.reasons[i].text}"
+						ng-model="values.reasons[i].text"
+						placeholder="Description"
+						class="form-control">
+					</textarea>
+					<div ng-if="errors.reasons[i].text"
+						ng-repeat="(key, text) in errors.reasons[i].text"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="form-group col-sm-1 my-auto text-center">
+				<a href="" class="btn btn-sm btn-outline-primary" 
+					ng-click="values.reasons.splice(i, 1);">
+					<span class="fa fa-close"></span>
+				</a>
+			</div>
+		</div>
+		<div>
+			<a href="" class="btn btn-sm btn-outline-primary" 
+			ng-click="addReason()">
+			<span class="fa fa-plus"></span></a>
+		</div>
+	</div>
+	<div class="form-group">
+	  	<label for="inputInfluences">Influences</label>
+		<div class="form-row"
+			ng-repeat="(i, note) in values.influences"
+			>
+			<div class="col-md-11"> 
+				<!--
+				<div class="form-row">
+					<div class="form-group"
+					    ng-class="values.influences[i].stage.id ? 'col-md-4':'col-md-12'" 
+						ng-init="stages = influenceStages()">
+						<label>Stage</label>
+						<select class="form-control"
+							ng-class="{'is-invalid': errors.influences[i].stage}"
+							ng-model="values.influences[i].stage"
+							ng-options="item as item.name for item in stages"
+							>
+						</select>
+						<div ng-if="errors.influences[i].stage"
+							ng-repeat="(key, text) in errors.influences[i].stage"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+					<div ng-if="values.influences[i].stage.id" 
+						class="form-group" 
+						ng-class="values.influences[i].hint ? 'col-md-4':'col-md-8'" 
+						>	
+						<label>Error</label>
+						<select class="form-control"
+							ng-class="{'is-invalid': errors.influences[i].hint}"
+							ng-model="values.influences[i].hint"
+							ng-options="item as item.name for item in values.influences[i].stage.hints"
+							>
+						</select>
+						<div ng-if="errors.influences[i]"
+							ng-repeat="(key, text) in errors.influences[i]"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+					<div ng-if="values.influences[i].hint" 
+						class="form-group col-md-4" 
+						ng-init="influences = influenceOptions(i, values.influences[i].stage)">
+						<label>Influence</label>
+						<select class="form-control"
+							ng-class="{'is-invalid': errors.influences[i].simulation}"
+							ng-model="values.influences[i].simulation"
+							ng-options="item as item.name for item in influences"
+							>
+						</select>
+						<div ng-if="errors.influences[i]"
+							ng-repeat="(key, text) in errors.influences[i]"
+							class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+				</div>
+				-->
+				<div class="form-group">
+					<textarea rows="2" 
+						ng-class="{'is-invalid': errors.influences[i].text}"
+						ng-model="values.influences[i].text"
+						class="form-control">
+					</textarea>
+					<div ng-if="errors.influences[i].text"
+						ng-repeat="(key, text) in errors.influences[i].text"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="col-sm-1 form-group my-auto text-center">
+				<a href="" class="btn btn-sm btn-outline-primary" 
+					ng-click="values.influences.splice(i, 1);">
+					<span class="fa fa-close"></span>
+				</a>
+			</div>
+		</div>
+		<div>
+			<a href="" class="btn btn-sm btn-outline-primary" 
+			ng-click="addInfluence()">
+			<span class="fa fa-plus"></span></a>
+		</div>
+	</div>
+	<div class="form-group">
+	  	<label for="inputSuggestions">Suggestions</label>
+		<div class="form-row"
+			ng-repeat="(_i, note) in values.suggestions"
+			>
+			<div class="form-group col-sm-11">
+				<textarea rows="2" 
+					ng-class="{'is-invalid': errors.suggestions[_i]}"
+					ng-model="values.suggestions[_i].text"
+					class="form-control">
+				</textarea>
+				<div ng-if="errors.suggestions[_i]"
+					ng-repeat="(key, text) in errors.suggestions[_i]"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div class="form-group col-sm-1 text-center">
+				<a href="" class="btn btn-sm btn-outline-primary" 
+					ng-click="values.suggestions.splice(_i, 1);">
+					<span class="fa fa-close"></span>
+				</a>
+			</div>
+		</div>
+		<div>
+			<a href="" class="btn btn-sm btn-outline-primary" 
+			ng-click="values.suggestions.push({})">
+			<span class="fa fa-plus"></span></a>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+</div>

@@ -89,8 +89,9 @@ abstract class AbstractNote implements
 	 */
 	public function __clone()
 	{
-		$this->id 	   = null;
-        $this->created = new DateTime;
+		$this->id 	   		= null;
+		$this->commentCount = 0;
+        $this->created 		= new DateTime;
 	}
 
     /**

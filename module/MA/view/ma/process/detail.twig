@@ -30,20 +30,32 @@
 					   class="btn btn-sm btn-outline-primary" 
 					   ng-class="{active: v == version}"
 					   ng-click="setVersion(v)"
-					>v{[i+1]} | {[ v.material.name ]}</a>
+					>{[ v.name ]} | {[ v.material.name ]}</a>
 					<a href=""
-					   class="btn btn-sm btn-outline-primary" 
-					   ng-click="cloneVersion(v)"
-					>clone</a>
+					   ng-if="v == version"
+					   class="btn btn-sm btn-outline-primary"
+					   ng-click="addComment(v)"
+					   ><i class="fa fa-comment"> {[ v.commentCount ]}</i></a>
 					<a href=""
+					   ng-if="v == version"
+					   class="btn btn-sm btn-outline-primary"
+					   ng-click="editVersion(v)"
+					   ><i class="fa fa-pencil"></i></a>
+					<a href=""
+					   ng-if="v == version"
 					   class="btn btn-sm btn-outline-primary"
 					   ng-confirm-click
 					   confirmed-click="deleteVersion(v)"
 					   ><i class="fa fa-trash"></i></a>
+					<a href=""
+					   ng-if="v == version"
+					   class="btn btn-sm btn-outline-primary" 
+					   ng-click="cloneVersion(v)"
+					>clone</a>
 				</div>
 			</li>
 			<li class="list-inline-item">
-				<a href="" ng-click="addStage()" class="btn btn-sm btn-outline-primary">
+				<a href="" ng-click="addVersion()" class="btn btn-sm btn-outline-primary">
 					<i class="fa fa-plus"></i>
 				</a>
 			</li>
@@ -51,46 +63,66 @@
 		<!-- END OF VERSION LIST -->
 
 		<!-- VERSION STAGE TABS -->
-		<ul ng-repeat="(i,stage) in process.versions" 
-			ng-if="stage == version"
-			ng-init="level = 0;"
-			ng-include="'/js/custom/tpl/stage-tabs.html'"
+		<ul ui-sortable
+			ng-if="version"
+			ng-model="version.stages" 
+			ui-sortable-stop="stagesUpdated(version)"
 			class="nav nav-tabs mt-2 border-0">
+			<li ng-repeat="(i,stage) in version.stages" 
+				class="nav-link" 
+				ng-class="{active:current==stage}"
+			>
+				<a href="" ng-click="setCurrent(stage);">{[ stage.getName() ]}</a>
+			</li>
+			<li class="nav-link">
+				<a href="" ng-click="addStage(version)" class="btn-sm btn-default">
+					<span class="fa fa-plus"></span>
+				</a>
+			</li>
 		</ul>
+
 		<!-- END OF VERSION STAGE TABS -->
 
 		<!-- VERSION STAGE CONTENT -->
-		<div ng-if="!current" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
+		<div ng-if="!version.isStagesLoaded()" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
+
 		<div ng-if="current" class="d-flex flex-column border">
 			<div class="">
-				<!--<a href="" ng-confirm-click confirmed-click="deleteStage(current)" class="btn pull-right">
+				<a href="" ng-confirm-click confirmed-click="deleteStage(current)" class="btn pull-right">
 					<i class="fa fa-trash"></i>
-				</a>-->
+				</a>
 				<a href="" ng-click="editStage(current)" class="btn pull-right">
 					<i class="fa fa-pencil"></i>
 				</a>
+				<a href="" class="btn pull-right" ng-click="addComment(current)">
+				   <i class="fa fa-comment"> {[ current.commentCount ]}</i>
+		  		</a>
 			</div>
-			<div class="row pb-2" ng-repeat="(i,stage) in process.versions">
+			<div class="row pb-2">
 				<div class="col-sm-12 col-md-4">
-					<ng-include 
-						ng-if="stage == version"
+					<ng-include ng-repeat="stage in version.stages" 
+						ng-if="stage === current"
 						src="'/js/custom/tpl/stage-content.html'"
 					/>
 				</div>
 				<div class="col-sm-12 col-md-8">
-					<ng-include 
-						ng-if="stage == version"
-						ng-init="level=0;"
-						class="d-flex"
-						src="'/js/custom/tpl/stage-images.html'"
-					/>
+					<div class="d-flex">
+						<div ng-repeat="stage in version.stages" 
+							ng-class="{
+								'bg-primary':current==stage,
+								'text-light':current==stage,
+								'bg-light':current!=stage
+							}"
+							ng-include="'/js/custom/tpl/stage-images.html'"
+							/>
+					</div>
 				</div>
 			</div>
 		</div>
 		<!-- END OF VERSION STAGE CONTENT -->
 		
 		<!-- HINTS TABLE -->
-		<div ng-if="current && current.hintsLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
+		<!--<div ng-if="current && current.hintsLoading" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>-->
 		<table ng-if="current" class="hint-table table table-bordered my-2">
 			<thead class="text-center">
 				<tr>
@@ -112,7 +144,7 @@
 			<tbody>
 				<tr>
 					<td class="p-0 text-center" colspan="12">
-						<a href="" ng-click="addHint()" class="btn"><i class="fa fa-plus"></i></a>
+						<a href="" ng-click="addHint(current)" class="btn"><i class="fa fa-plus"></i></a>
 					</td>
 				</tr>
 				<tr ng-repeat-start="(h, hint) in current.hints">

@@ -30,8 +30,15 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 4,
+			'max_depth' => 3,
 			'hydrator' => Hydrator\ProcessHydrator::class,
+		],
+		'MA\Entity\Version' => [
+			'route_name' => 'process/version/detail/json',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
 		],
 		'MA\Entity\Stage' => [
 			'route_name' => 'process/stage/detail',
@@ -121,6 +128,20 @@ return [
 		],
 		'MA\Entity\Action\Hint' => [
 			'route_name' => 'process/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\Version' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\Stage' => [
+			'route_name' => 'process/comment/detail', 
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],

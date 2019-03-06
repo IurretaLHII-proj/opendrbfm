@@ -52,7 +52,7 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	 */
     public function detailAction()
     {
-		$version  = $this->getEntity()->getVersions()->first();
+		/*$version  = $this->getEntity()->getVersions()->first();
 
 		if ($version) {
 			$children = $version->getChildren(true);
@@ -60,13 +60,13 @@ class ProcessController extends \Base\Controller\AbstractActionController
 		else {
 			$children = new ArrayCollection;
 		}
-		$paginator = $this->getPaginator($children->toArray(), $children->count());
+		$paginator = $this->getPaginator($children->toArray(), $children->count());*/
 
 		return new ViewModel([
 			//'stageId'     => $this->params()->fromQuery('stage'),
-			'version' 	  => $version,
-			'stage'		  => $version,
-			'childrenHal' => $this->prepareHalCollection($paginator, 'process/detail/json'),
+			//'version' 	  => $version,
+			//'stage'		  => $version,
+			//'childrenHal' => $this->prepareHalCollection($paginator, 'process/detail/json'),
 		]);
 	}
 

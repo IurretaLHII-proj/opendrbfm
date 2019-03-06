@@ -55,20 +55,33 @@ interface IMAProcess {
 	_embedded: {
 		customer: IMAUser,
 		owner: IMAUser,
-		versions: IMAStage[],
+		versions: IMAVersion[],
+	},
+}
+
+interface IMAVersion {
+	id: number,
+	name: string,
+	description: string,
+	commentCount: number,
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		material: IMAMaterial,
+		owner: IMAUser,
 	},
 }
 
 interface IMAStage {
 	id: number,
+	order: number,
 	body: string,
-	version: number,
+	commentCount: number,
 	created: IMADate,
 	_links: IMALinks, 
 	_embedded: {
 		operations: IMAOperation[],
 		images: IMAImage[],
-		material: IMAMaterial,
 		owner: IMAUser,
 	},
 }

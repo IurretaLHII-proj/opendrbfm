@@ -15,6 +15,12 @@ return [
 	Controller\Js\CommentController::class => [
 		'repository' => Entity\AbstractComment::class,
 	],
+	Controller\Js\Comment\VersionController::class => [
+		'repository' => Entity\Comment\Version::class,
+	],
+	Controller\Js\Comment\StageController::class => [
+		'repository' => Entity\Comment\Stage::class,
+	],
 	Controller\Js\Comment\HintController::class => [
 		'repository' => Entity\Comment\Hint::class,
 	],
@@ -52,6 +58,9 @@ return [
 	],
 	Controller\Js\ProcessController::class => [
 		'repository' => Entity\Process::class,
+	],
+	Controller\Js\VersionController::class => [
+		'repository' => Entity\Version::class,
 	],
 	Controller\Js\StageController::class => [
 		'repository' => Entity\Stage::class,

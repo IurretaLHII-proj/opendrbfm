@@ -1,5 +1,5 @@
 <div class="modal-header">
-	<h3 class="modal-title">{[ item.name ]} <span class="small">| Comments</span></h3>
+	<h3 class="modal-title">{[ source.name ]} <span class="small">| Comments</span></h3>
 	<button ng-click="cancel()" type="button" class="close"
 		data-dismiss="modal" aria-label="Close" style="
 			position:absolute; top:5px; right:5px;
@@ -8,16 +8,16 @@
 	</button>
 </div>
 <div class="modal-body" ng-init="init()">
-	<div ng-if="!item.comments.isEmpty()" 
-		ng-repeat="comment in item.getComments()" 
+	<div ng-if="!source.comments.isEmpty()" 
+		ng-repeat="comment in source.getComments()" 
 		ng-init="depth = 1;"
 		ng-include="'/js/custom/tpl/comment-list-item.html'"
 		class="pb-2 pt-2">
 	</div>
 </div>
-<p ng-if="item.comments.loaded" class="small text-center m-0">Showing {[ item.comments.items.length ]} items of {[ item.comments.total_items ]}</p>
-<div ng-if="item.comments.has('next')" class="text-center mt-1 small">
-        <a href="" ng-click="more(item.comments)">.. view previouses ..</a>
+<p ng-if="source.comments.loaded" class="small text-center m-0">Showing {[ source.comments.items.length ]} of {[ source.comments.total_items ]}</p>
+<div ng-if="source.comments.has('next')" class="text-center mt-1 small">
+        <a href="" ng-click="more(source.comments)">.. view previouses ..</a>
 </div>
 <div class="modal-footer" 
 	ng-if="true || entity._links.comment.allowed" 

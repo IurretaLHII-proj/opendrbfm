@@ -1,0 +1,149 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ process.title ]}<small class="text-secondary"> | edit</small></h3>
+</div>
+<div ng-init="init()" class="modal-body">
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			<div class="form-group" 
+				>
+				<label for="title">title</label>
+				<input type="text" class="form-control"
+					ng-class="{'is-invalid': errors.title}"
+					ng-model="values.title"
+					/>
+				<div ng-if="errors.title"
+					ng-repeat="(key, text) in errors.title"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div class="form-group" 
+				>
+				<label for="number">number</label>
+				<input type="number" class="form-control"
+					ng-class="{'is-invalid': errors.number}"
+					ng-model="values.number"
+					/>
+				<div ng-if="errors.number"
+					ng-repeat="(key, text) in errors.number"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6" 
+					>
+					<label for="machine">machine</label>
+					<input type="text" class="form-control"
+						ng-class="{'is-invalid': errors.machine}"
+						ng-model="values.machine"
+						/>
+					<div ng-if="errors.machine"
+						ng-repeat="(key, text) in errors.machine"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+				<div class="form-group col-md-6" 
+					>
+					<label for="line">line</label>
+					<input type="text" class="form-control"
+						ng-class="{'is-invalid': errors.line}"
+						ng-model="values.line"
+						/>
+					<div ng-if="errors.line"
+						ng-repeat="(key, text) in errors.line"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="form-group" 
+				>
+				<label for="code">code</label>
+				<input type="number" class="form-control"
+					ng-class="{'is-invalid': errors.code}"
+					ng-model="values.code"
+					/>
+				<div ng-if="errors.code"
+					ng-repeat="(key, text) in errors.code"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+		</div>
+		<div class="form-group col-md-6">
+			<div class="form-group" 
+				>
+				<label for="inputParents">Customer</label>
+				<select class="form-control"
+					ng-init="loadCustomers()"
+					ng-class="{'is-invalid': errors.parent}"
+					ng-model="values.customer"
+					ng-options="item.id as item.name for item in customers"
+					>
+				</select>
+				<div ng-if="errors.customer"
+					ng-repeat="(key, text) in errors.customer"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div class="form-group" 
+				>
+				<label for="plant">plant</label>
+				<input type="text" class="form-control"
+					ng-class="{'is-invalid': errors.plant}"
+					ng-model="values.plant"
+					/>
+				<div ng-if="errors.plant"
+					ng-repeat="(key, text) in errors.plant"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div class="form-group" 
+				>
+				<label for="pieceNumber">pieceNumber</label>
+				<input type="text" class="form-control"
+					ng-class="{'is-invalid': errors.pieceNumber}"
+					ng-model="values.pieceNumber"
+					/>
+				<div ng-if="errors.pieceNumber"
+					ng-repeat="(key, text) in errors.pieceNumber"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+			<div class="form-group" 
+				>
+				<label for="pieceName">pieceName</label>
+				<input type="text" class="form-control"
+					ng-class="{'is-invalid': errors.pieceName}"
+					ng-model="values.pieceName"
+					/>
+				<div ng-if="errors.pieceName"
+					ng-repeat="(key, text) in errors.pieceName"
+					class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group"> 
+		<label for="inputParents">Complexity</label>
+		<select class="form-control"
+			ng-class="{'is-invalid': errors.complexity}"
+			ng-model="values.complexity"
+			>
+				<option ng-repeat="option in complexityOptions" 
+					ng-selected="option.id == values.complexity" 
+					value="{[option.id]}">{[ option.name ]}</option>
+		</select>
+		<div ng-if="errors.complexity"
+			ng-repeat="(key, text) in errors.complexity"
+			class="invalid-feedback">{[key]}. {[text]}</div>
+	</div>
+	<div class="form-group">
+		<text-angular 
+		ng-model="values.body"
+		ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+		ta-text-editor-class="form-height form-control"
+		ng-class="{'is-invalid': errors.body}"
+		placeholder="Description"
+		>
+		</text-angular>
+
+		<div ng-if="errors.body"
+			ng-repeat="(key, text) in errors.body"
+			class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+</div>
+

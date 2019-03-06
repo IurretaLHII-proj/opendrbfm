@@ -15,6 +15,7 @@ return [
 					Service\CustomerService::class, 
 					Service\MaterialService::class, 
 					Service\ProcessService::class, 
+					Service\VersionService::class, 
 					Service\StageService::class, 
 					Service\HintTypeService::class, 
 					Service\HintService::class, 
@@ -40,6 +41,9 @@ return [
 	],
 	Service\ProcessService::class => [
 		'entities' => [Entity\Process::class],
+	],
+	Service\VersionService::class => [
+		'entities' => [Entity\Version::class],
 	],
 	Service\StageService::class => [
 		'entities' => [Entity\Stage::class],
@@ -93,6 +97,8 @@ return [
 	],
 	Service\CommentService::class => [
 		'entities'  => [
+			Entity\Comment\Version::class, 
+			Entity\Comment\Stage::class, 
 			Entity\Comment\Hint::class, 
 			Entity\Comment\Note::class, 
 			Entity\Comment\Simulation::class, 
