@@ -18,6 +18,8 @@ use Base\Hal\LinkProvider;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
+ * 	"version"     	= "MA\Entity\Comment\Version",
+ * 	"stage"     	= "MA\Entity\Comment\Stage",
  * 	"hint"     		= "MA\Entity\Comment\Hint",
  * 	"note"     		= "MA\Entity\Comment\Note",
  * 	"simulation"	= "MA\Entity\Comment\Simulation",

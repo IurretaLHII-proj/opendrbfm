@@ -30,11 +30,20 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 	}
 
 	/**
+	 * FIXME
 	 * @return JsonViewModel
 	 */
 	public function replyAction()
 	{
 		switch (true) {
+			case $this->entity instanceof \MA\Entity\Comment\Version:
+				$forward = Comment\VersionController::class;
+				break;
+
+			case $this->entity instanceof \MA\Entity\Comment\Stage:
+				$forward = Comment\StageController::class;
+				break;
+
 			case $this->entity instanceof \MA\Entity\Comment\Hint:
 				$forward = Comment\HintController::class;
 				break;

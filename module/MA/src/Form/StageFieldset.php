@@ -29,6 +29,15 @@ class StageFieldset extends Fieldset implements
         ], ['priority' => -1]);
 
         $this->add([
+             'type' => 'Number',
+             'name' => 'order',
+             'required' => true,
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+        ], ['priority' => -5]);
+
+        $this->add([
              'type' => 'TextArea',
              'name' => 'body',
              'required' => true,
@@ -41,7 +50,7 @@ class StageFieldset extends Fieldset implements
              ],
         ], ['priority' => -9]);
 
-        $this->add([
+        /*$this->add([
              'type' => 'ObjectSelect',
              'name' => 'parent',
              'attributes' => [ 
@@ -81,7 +90,7 @@ class StageFieldset extends Fieldset implements
 				 'empty_option' => 'Choose material',
 				 'target_class' => 'MA\Entity\Material',
              ],
-        ]);
+		 ]);*/
 
 		$this->add([
                 'type' => 'Collection',

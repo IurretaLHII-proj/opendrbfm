@@ -1,0 +1,49 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ item.name ]} <span class="small">| Comments</span></h3>
+	<button ng-click="cancel()" type="button" class="close"
+		data-dismiss="modal" aria-label="Close" style="
+			position:absolute; top:5px; right:5px;
+		">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="modal-body" ng-init="init()">
+	<div ng-if="!item.comments.isEmpty()" 
+		ng-repeat="comment in item.getComments()" 
+		ng-init="depth = 1;"
+		ng-include="'/js/custom/tpl/comment-list-item.html'"
+		class="pb-2 pt-2">
+	</div>
+</div>
+<p ng-if="item.comments.loaded" class="small text-center m-0">Showing {[ item.comments.items.length ]} items of {[ item.comments.total_items ]}</p>
+<div ng-if="item.comments.has('next')" class="text-center mt-1 small">
+        <a href="" ng-click="more(item.comments)">.. view previouses ..</a>
+</div>
+<div class="modal-footer" 
+	ng-if="true || entity._links.comment.allowed" 
+	style="
+">
+	<div class="ml-auto align-self-stretch" style="width:100%">
+		<div ng-if="errors.body"
+			 ng-repeat="(key, err) in errors.body">
+			 <p class="small error"><span>{[key]}:</span> {[err]}</p>
+		</div>
+		<div text-angular 
+			 ta-target-toolbars="toolbar" 
+			 ng-class="{'error': errors.body}"
+			 ng-model="values.body">
+		</div>
+		<div text-angular-toolbar 
+				ta-toolbar="[
+					['bold', 'italics', 'underline' ],
+					['ul', 'insertLink', ],
+				]"
+			 class=""
+   			 name="toolbar">
+		</div>
+	</div>
+	<div class="reply" style="">
+		<span class="input-group-addon btn btn-primary" 
+			ng-click="save()">Reply</span>
+	</div>
+</div>

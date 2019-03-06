@@ -1,0 +1,96 @@
+<div class="d-flex border-bottom">
+	<!--<div> 
+		<a href="{[ comment._embedded.user._links.self.href ]}">
+			<img ng-src="{[ comment._embedded.user._links.avatar.href ]}"
+				width="43" 
+				height="43" 
+				style="border-radius:40px; border:1px solid lightgray;"
+			/>
+		</a>
+	</div>-->
+	<div class="mr-auto pl-3 pr-2 align-self-stretch col">
+		<div class="d-flex flex-column" style="height:100%;">
+			<div class="mb-auto body">
+				<div ng-if="comment.expanded || comment.body.length <= 500"
+					compile="comment.body" 
+					 class="text-expanded" 
+					 style="">
+					 <!--compile="'<div style=\'float:left\'>' + comment.body + '</div> <a href=\'\' ng-click=\'commentModal(comment.id);\' class=\'small\'><i class=\'fa fa-arrow-circle-o-right\'></i></a>'"-->
+				</div>
+				<div ng-if="!comment.expanded && comment.body.length > 500"
+					compile="(comment.body | limitTo: 500) + '... <a href=\'\' ng-click=\'comment.expanded = true;\' class=\'small\'>view more</a>'" 
+					 class="text-collapsed" 
+					 style="">
+				</div>
+			</div>
+			<div class="">
+				<!--<img ng-src="{[ comment._embedded.user._links.avatar.href ]}" height=30 width=30 style="border-radius:30px; margin-right:5px;">-->
+				<!--<span style="font-size:12px;" class="small fa fa-angle-up"> {[ comment.votesUp ]}</span>
+				<span style="font-size:12px;" class="small fa fa-angle-down"> {[ comment.votesDown ]}</span>-->
+				<a href="" class="btn btn-sm"
+				   ng-click="replies(comment);" 
+				   ng-class="{disabled: comment.children.loaded}"
+				   ng-if="!comment.loaded && comment.commentCount && depth <= 2"
+				>
+					<span style="font-size:12px;" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
+				</a>
+				<a href="" class="btn btn-sm disabled" ng-if="!comment.commentCount || depth > 2"><span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span></a>
+
+				<a style="font-size:12px; margin: 0.5px;" 
+					class="btn btn-sm btn-outline-default"
+					ng-if="(true || comment._links.comment.allowed) && depth <= 2" 
+					href="#cmm-{[ comment.id ]}-form" 
+					data-toggle="collapse">reply <span class="small glyphicon fa fa-reply"></span>
+				</a>
+
+				<span class="small">by <a href="{[ comment.user.links.getHref() ]}">{[ comment.user.name ]}</a> on {[ comment.created | date:'MMM d, H:mm' ]}</span>
+				<!--<a href="" style="font-size:12px; margin:0 5px;" ng-click="commentModal(comment.id);" style="">view <span class="small fa fa-arrow-circle-o-right"></span>
+				</a>-->
+			</div>
+			<div id="cmm-{[ comment.id ]}-form" 
+				 ng-if="(true || comment._links.comment.allowed) && depth <= 2" 
+				 class="collapse" 
+				 style="
+				 float:left;
+				 clear:both;
+				 width:100%;
+				 padding:15px; 
+				 margin-top:10px;
+			">
+				<div class="input-group">
+					<textarea class="form-control" rows="2" ng-model="comment.values.body" style="resize:none"></textarea>     
+					<div class="input-group-append">
+						<button class="btn btn-success" ng-click="reply(comment)">Reply</button>
+					</div>
+				 </div>
+			</div>
+		</div>
+	</div>
+	<!--<div class="vote-col" style="
+		width: 40px;
+		text-align: center;
+	">
+		<div class="content">
+			<a href="" ng-if="comment._links.voteUp.allowed && !comment._embedded.vote" ng-click="voteUp(comment)" title="vote Up" class=""><span class="fa fa-caret-up"></span></a>
+			<a href="" ng-if="comment._embedded.vote && comment._embedded.vote.value > 0" ng-click="rmVote(comment)" title="remove vote" class="active"><span class="fa fa-close"></span></a>
+			<span ng-if="!comment._links.voteUp.allowed || comment._embedded.vote && comment._embedded.vote.value < 0" class="fa fa-caret-up disabled"></span>
+			<div class="reputation">{[ comment.reputation ]}</div>
+			<a href="" ng-if="comment._links.voteDown.allowed && !comment._embedded.vote" ng-click="voteDown(comment)" title="vote Down" class=""><span class="fa fa-caret-down"></span></a>
+			<a href="" ng-if="comment._embedded.vote && comment._embedded.vote.value < 0" ng-click="rmVote(comment)" title="remove vote" class="active"><span class="fa fa-close"></span></a>
+			<span ng-if="!comment._links.voteDown.allowed || comment._embedded.vote && comment._embedded.vote.value > 0" class="fa fa-caret-down disabled"></span>
+			<div><a href=""><span class="small fa fa-star-o"></span></a></div>
+		</div>
+	</div>-->
+</div>
+<div ng-if="comment.hasChildren()" ng-repeat="(j, c) in comment.getChildren()" 
+        id="cmm-{[ c.id ]}"
+        class="ml-5 pt-2 pb-2"
+        ng-class="{last: $last}"
+        ng-include="'/js/custom/tpl/comment-list-item.html'"
+        ng-init="comment = c; depth = depth+1;"
+>
+</div>
+<p ng-if="comment.children.loaded" class="small text-center m-0">Showing {[ comment.children.items.length  ]} items of {[ comment.children.total_items ]}</p>
+<div ng-if="comment.children.has('next')" class="text-center mt-1 small">
+        <a href="" ng-click="more(comment.children)">.. view previouses ..</a>
+</div>

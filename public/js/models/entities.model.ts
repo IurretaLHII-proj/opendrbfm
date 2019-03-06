@@ -24,6 +24,10 @@ class MACollection {
 		}
 	}
 
+	isLoaded():boolean {
+		return this.loaded;
+	}
+
 	items:any[];
 	links: MALinks;
 	page: number;
@@ -139,7 +143,7 @@ class MAProcess {
 		this.links = new MALinks(obj._links);
 		this.versions = [];
 		for (var i=0; i < obj._embedded.versions.length; i++) {
-			this.addVersion(MAStage.fromJSON(obj._embedded.versions[i]));	
+			this.addVersion(MAVersion.fromJSON(obj._embedded.versions[i]));	
 		}
 	}
 
@@ -161,9 +165,24 @@ class MAProcess {
 		};
 	}
 
-	addVersion(obj: MAStage) {
+	hasVersions():boolean {
+		return this.versions.length > 0;
+	}
+
+	addVersion(obj: MAVersion) {
 		obj.setProcess(this);
 		this.versions.push(obj);
+	}
+
+	removeVersion(obj: MAVersion) {
+		var i:number;
+		if (-1 !== (i = this.versions.indexOf(obj))) {
+			this.versions.splice(i, 1);
+		}
+	}
+
+	getActive():MAVersion {
+		return this.versions[this.versions.length-1];
 	}
 
 	id: number;
@@ -177,11 +196,100 @@ class MAProcess {
 	complexity: string;
 	pieceNumber: string;
 	pieceName: string;
-	versions: MAStage[];
+	versions: MAVersion[];
 	user: MAUser;
 	customer: MAUser;
 	created: Date;
 	links: MALinks;
+}
+
+class MAVersion {
+	static fromJSON(obj: IMAVersion): MAVersion{
+		let e = new MAVersion();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.stages   = [];
+		this.comments = new MACollection();
+		this.created  = new Date;
+	}
+
+	load(obj: IMAVersion) {
+		this.id = obj.id;
+		this.name = obj.name;
+		this.description = obj.description;
+		this.commentCount = obj.commentCount;
+		this.created = new Date(obj.created.date);
+		this.links = new MALinks(obj._links);
+		this.material = new MAMaterial(obj._embedded.material);
+		this.user = new MAUser(obj._embedded.owner);
+	}
+
+	toJSON(): {}{
+		var stages:{}[] = [];
+		for (var i=0; i < this.stages.length; i++) {
+			stages.push(this.stages[i].toJSON());
+		}
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			material: this.material ? this.material.id : null,
+			stages: stages,
+		};
+	}
+
+	setProcess(obj:MAProcess) {
+		this.process = obj;
+	}
+
+	isStagesLoaded():boolean {
+		return this.stagesLoaded;
+	}
+
+	addStage(obj:MAStage) {
+		obj.version = this;
+		this.stages.push(obj);
+	}
+
+	removeStage(obj: MAStage) {
+		var i:number;
+		if (-1 !== (i = this.stages.indexOf(obj))) {
+			this.stages.splice(i, 1);
+		}
+	}
+
+	hasStages():boolean {
+		return this.stages.length > 0;
+	}
+
+	getActive():MAStage {
+		return this.stages[this.stages.length-1];
+	}
+
+	getComments():MACollection[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		this.commentCount++;
+		this.comments.items.push(obj);
+	}
+
+	id: number;
+	name: string;
+	description: string;
+	process: MAProcess;
+	user: MAUser;
+	material: MAMaterial;
+	stages: MAStage[];
+	comments: MACollection;
+	commentCount: number=0;
+	created: Date;
+	links: MALinks;
+	stagesLoaded: boolean=false;
 }
 
 class MAStage {
@@ -192,20 +300,20 @@ class MAStage {
 	}
 
 	constructor() {
-		this.children = [];
-		this.hints = [];
+		this.hints 		= [];
 		this.operations = [];
-		this.images = [];
-		this.created = new Date;
+		this.images 	= [];
+		this.comments 	= new MACollection();
+		this.created  	= new Date;
 	}
 
 	load(obj: IMAStage) {
 		this.id = obj.id;
+		this.order = obj.order;
 		this.body = obj.body;
-		this.version = obj.version;
+		this.commentCount = obj.commentCount;
 		this.created = new Date(obj.created.date);
 		this.links = new MALinks(obj._links);
-		this.material = new MAMaterial(obj._embedded.material);
 		this.user = new MAUser(obj._embedded.owner);
 		this.operations = [];
 		this.images = [];
@@ -218,58 +326,27 @@ class MAStage {
 	}
 
 	toJSON(): {}{
-		var operations: number[] = [];
-		var children: {}[] = [];
+		var operations: {}[] = [];
 		for (var i=0; i < this.operations.length; i++) {
-		operations[i] = {id: this.operations[i].id};
-		}
-		for (var i=0; i < this.children.length; i++) {
-			children[i] = {id: this.children[i].id};
+			operations[i] = {id: this.operations[i].id};
 		}
 		return {
 			id: this.id,
+			order: this.order,
 			name: this.getName(),
 			body: this.body,
 			images: this.images,
 			operations: operations,
-			children: children,
-			parent: this.parent ? this.parent.id : null,
 			user: this.user ? this.user.id : null,
-			material: this.material ? this.material.id : null,
 		};
 	}
-
-	getName():string {
-		var i=0;
-		let that:MAStage = this;
-		while (that.parent !== null) {
-			i++;
-			that = that.parent;
-		}
-		return 'Stage ' + i;
-	};
 
 	setProcess(obj:MAProcess) {
 		this.process = obj;
 	}
 
-	isVersion():boolean {
-		return this.parent === null;
-	}
-
-	getVersion():MAStage {
-		let that:MAStage = this;
-		while (that.parent !== null) {
-			that = that.parent;
-		}
-		return that;
-	}
-
-	addChild(obj:MAStage) {
-		obj.parent  = this;
-		obj.version = this.version;
-		obj.process = this.process;
-		this.children.push(obj);
+	getName():string {
+		return "Stage " + this.order;
 	}
 
 	addHint(obj:MAHint) {
@@ -282,27 +359,32 @@ class MAStage {
 		this.images.push(obj);
 	}
 
-	isChildrenLoaded():boolean {
-		return this.childrenLoaded;
-	}
-
 	isHintsLoaded():boolean {
 		return this.hintsLoaded;
 	}
 
+	getComments():MACollection[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		obj.source = this;
+		this.commentCount++;
+		this.comments.items.push(obj);
+	}
+
 	id: number;
+	order:number = 0;
 	body: string;
-	version: number;
 	process: MAProcess;
 	user: MAUser;
+	version: MAVersion;
 	operations: MAOperation[];
 	images: MAImage[];
-	material: MAMaterial;
-	parent: MAStage=null;
-	children: MAStage[];
 	hints: MAHint[];
+	comments: MACollection;
+	commentCount: number=0;
 	created: Date;
-	childrenLoaded: boolean=false;
 	hintsLoaded: boolean=false;
 	links: MALinks;
 }
@@ -701,6 +783,7 @@ class MANote {
 }
 
 class MAComment {
+
 	constructor(obj: IMAComment) {
 		this.id				= obj.id;
 		this.body 			= obj.body;
@@ -708,7 +791,14 @@ class MAComment {
 		this.links 			= new MALinks(obj._links);
 		this.created 		= new Date(obj.created.date);
 		this.commentCount 	= obj.commentCount;
-		this.children		= new MACollection();
+		this.children 		= new MACollection();
+	}
+
+	toJSON():{} {
+		return {
+			id: this.id,
+			body: this.body,
+		};
 	}
 
 	/*addChildren(children: MAComment[]) {
@@ -732,7 +822,8 @@ class MAComment {
 
 	id:number;
 	body:string;
-	commentCount:number;
+	source:any;
+	commentCount:number=0;
 	user: MAUser;
 	parent: MAComment;
 	children: MACollection;

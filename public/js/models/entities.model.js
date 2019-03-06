@@ -22,6 +22,9 @@ var MACollection = /** @class */ (function () {
             this.items.push(obj._embedded.items[i]);
         }
     };
+    MACollection.prototype.isLoaded = function () {
+        return this.loaded;
+    };
     return MACollection;
 }());
 var MALinks = /** @class */ (function () {
@@ -103,7 +106,7 @@ var MAProcess = /** @class */ (function () {
         this.links = new MALinks(obj._links);
         this.versions = [];
         for (var i = 0; i < obj._embedded.versions.length; i++) {
-            this.addVersion(MAStage.fromJSON(obj._embedded.versions[i]));
+            this.addVersion(MAVersion.fromJSON(obj._embedded.versions[i]));
         }
     };
     MAProcess.prototype.toJSON = function () {
@@ -123,24 +126,103 @@ var MAProcess = /** @class */ (function () {
             customer: this.customer.id,
         };
     };
+    MAProcess.prototype.hasVersions = function () {
+        return this.versions.length > 0;
+    };
     MAProcess.prototype.addVersion = function (obj) {
         obj.setProcess(this);
         this.versions.push(obj);
+    };
+    MAProcess.prototype.removeVersion = function (obj) {
+        var i;
+        if (-1 !== (i = this.versions.indexOf(obj))) {
+            this.versions.splice(i, 1);
+        }
+    };
+    MAProcess.prototype.getActive = function () {
+        return this.versions[this.versions.length - 1];
     };
     MAProcess.COMPLEXITY_LOW = "AA";
     MAProcess.COMPLEXITY_MEDIUM = "BB";
     MAProcess.COMPLEXITY_HIGH = "A";
     return MAProcess;
 }());
+var MAVersion = /** @class */ (function () {
+    function MAVersion() {
+        this.commentCount = 0;
+        this.stagesLoaded = false;
+        this.stages = [];
+        this.comments = new MACollection();
+        this.created = new Date;
+    }
+    MAVersion.fromJSON = function (obj) {
+        var e = new MAVersion();
+        e.load(obj);
+        return e;
+    };
+    MAVersion.prototype.load = function (obj) {
+        this.id = obj.id;
+        this.name = obj.name;
+        this.description = obj.description;
+        this.commentCount = obj.commentCount;
+        this.created = new Date(obj.created.date);
+        this.links = new MALinks(obj._links);
+        this.material = new MAMaterial(obj._embedded.material);
+        this.user = new MAUser(obj._embedded.owner);
+    };
+    MAVersion.prototype.toJSON = function () {
+        var stages = [];
+        for (var i = 0; i < this.stages.length; i++) {
+            stages.push(this.stages[i].toJSON());
+        }
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            material: this.material ? this.material.id : null,
+            stages: stages,
+        };
+    };
+    MAVersion.prototype.setProcess = function (obj) {
+        this.process = obj;
+    };
+    MAVersion.prototype.isStagesLoaded = function () {
+        return this.stagesLoaded;
+    };
+    MAVersion.prototype.addStage = function (obj) {
+        obj.version = this;
+        this.stages.push(obj);
+    };
+    MAVersion.prototype.removeStage = function (obj) {
+        var i;
+        if (-1 !== (i = this.stages.indexOf(obj))) {
+            this.stages.splice(i, 1);
+        }
+    };
+    MAVersion.prototype.hasStages = function () {
+        return this.stages.length > 0;
+    };
+    MAVersion.prototype.getActive = function () {
+        return this.stages[this.stages.length - 1];
+    };
+    MAVersion.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAVersion.prototype.addComment = function (obj) {
+        this.commentCount++;
+        this.comments.items.push(obj);
+    };
+    return MAVersion;
+}());
 var MAStage = /** @class */ (function () {
     function MAStage() {
-        this.parent = null;
-        this.childrenLoaded = false;
+        this.order = 0;
+        this.commentCount = 0;
         this.hintsLoaded = false;
-        this.children = [];
         this.hints = [];
         this.operations = [];
         this.images = [];
+        this.comments = new MACollection();
         this.created = new Date;
     }
     MAStage.fromJSON = function (obj) {
@@ -150,11 +232,11 @@ var MAStage = /** @class */ (function () {
     };
     MAStage.prototype.load = function (obj) {
         this.id = obj.id;
+        this.order = obj.order;
         this.body = obj.body;
-        this.version = obj.version;
+        this.commentCount = obj.commentCount;
         this.created = new Date(obj.created.date);
         this.links = new MALinks(obj._links);
-        this.material = new MAMaterial(obj._embedded.material);
         this.user = new MAUser(obj._embedded.owner);
         this.operations = [];
         this.images = [];
@@ -167,53 +249,24 @@ var MAStage = /** @class */ (function () {
     };
     MAStage.prototype.toJSON = function () {
         var operations = [];
-        var children = [];
         for (var i = 0; i < this.operations.length; i++) {
             operations[i] = { id: this.operations[i].id };
         }
-        for (var i = 0; i < this.children.length; i++) {
-            children[i] = { id: this.children[i].id };
-        }
         return {
             id: this.id,
+            order: this.order,
             name: this.getName(),
             body: this.body,
             images: this.images,
             operations: operations,
-            children: children,
-            parent: this.parent ? this.parent.id : null,
             user: this.user ? this.user.id : null,
-            material: this.material ? this.material.id : null,
         };
     };
-    MAStage.prototype.getName = function () {
-        var i = 0;
-        var that = this;
-        while (that.parent !== null) {
-            i++;
-            that = that.parent;
-        }
-        return 'Stage ' + i;
-    };
-    ;
     MAStage.prototype.setProcess = function (obj) {
         this.process = obj;
     };
-    MAStage.prototype.isVersion = function () {
-        return this.parent === null;
-    };
-    MAStage.prototype.getVersion = function () {
-        var that = this;
-        while (that.parent !== null) {
-            that = that.parent;
-        }
-        return that;
-    };
-    MAStage.prototype.addChild = function (obj) {
-        obj.parent = this;
-        obj.version = this.version;
-        obj.process = this.process;
-        this.children.push(obj);
+    MAStage.prototype.getName = function () {
+        return "Stage " + this.order;
     };
     MAStage.prototype.addHint = function (obj) {
         obj.stage = this;
@@ -223,11 +276,16 @@ var MAStage = /** @class */ (function () {
         obj.stage = this;
         this.images.push(obj);
     };
-    MAStage.prototype.isChildrenLoaded = function () {
-        return this.childrenLoaded;
-    };
     MAStage.prototype.isHintsLoaded = function () {
         return this.hintsLoaded;
+    };
+    MAStage.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAStage.prototype.addComment = function (obj) {
+        obj.source = this;
+        this.commentCount++;
+        this.comments.items.push(obj);
     };
     return MAStage;
 }());
@@ -527,6 +585,7 @@ var MANote = /** @class */ (function () {
 }());
 var MAComment = /** @class */ (function () {
     function MAComment(obj) {
+        this.commentCount = 0;
         this.id = obj.id;
         this.body = obj.body;
         this.user = new MAUser(obj._embedded.owner);
@@ -535,6 +594,12 @@ var MAComment = /** @class */ (function () {
         this.commentCount = obj.commentCount;
         this.children = new MACollection();
     }
+    MAComment.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            body: this.body,
+        };
+    };
     /*addChildren(children: MAComment[]) {
         for (var i = 0; i < children.length; i++) {
             this.addChild(children[i]);

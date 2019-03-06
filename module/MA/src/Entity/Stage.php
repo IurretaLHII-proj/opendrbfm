@@ -16,6 +16,7 @@ class Stage implements
 	\User\Entity\UserAwareInterface,
 	\Base\Hal\LinkProvider,
 	\Base\Hal\LinkPrepareAware,
+	CommentProviderInterface,
 	StageInterface 
 {
 	/**
@@ -46,42 +47,17 @@ class Stage implements
 	protected $user;
 
 	/**
-	 * @var User
+	 * @var VersionInterface
 	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\Material",
+	 *	targetEntity = "MA\Entity\Version",
 	 *	inversedBy	 = "stages",
 	 * )
 	 * @ORM\JoinColumn(
-	 *	name= "mtl_id",
+	 *	name= "v_id",
 	 *	referencedColumnName = "id"
 	 * )
 	 */
-	protected $material;
-
-    /**
-	 * @var StageInterface
-     * @ORM\ManyToOne(
-     *     targetEntity="MA\Entity\Stage",
-     *     inversedBy="children"
-     * )
-     * @ORM\JoinColumn(
-     *     name = "stg_id",
-	 *     referencedColumnName = "id",
-	 *     nullable = true
-     * )
-     */
-    protected $parent;
-
-	/**
-	 * @var StageInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Stage",
-	 *	mappedBy	 = "parent",
-	 *	cascade = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $children;
+	protected $version;
 
 	/**
 	 * @var OperationInterface[]
@@ -130,18 +106,29 @@ class Stage implements
 	 */
 	protected $images;
 
-    /**
-	 * @var ProcessInterface
-     * @ORM\ManyToOne(
-     *     targetEntity="MA\Entity\Process",
-     *     inversedBy="stages"
-     * )
-     * @ORM\JoinColumn(
-     *     name = "prc_id",
-	 *     referencedColumnName = "id"
-     * )
-     */
-    protected $process;
+	/**
+	 * @var CommentInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Comment\Stage",
+	 *	mappedBy	 = "source",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $comments;
+
+	/**
+	 * @var int
+	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+	 */
+	protected $commentCount = 0;
+
+	/**
+	 * @var int 
+	 * @ORM\Column(type="integer", name="ord", options={"default":0})
+	 */
+	protected $order = 0;
+
 
 	/**
 	 * @var int 
@@ -163,7 +150,6 @@ class Stage implements
 		$this->created    = new DateTime;
 		$this->updated    = new DateTime;
 		$this->operations = new ArrayCollection;
-		$this->children   = new ArrayCollection;
 		$this->images     = new ArrayCollection;
 		$this->hints	  = new ArrayCollection;
 	}
@@ -213,46 +199,24 @@ class Stage implements
     }
     
     /**
-     * Get process.
+     * Get version.
      *
-     * @return ProcessInterface.
+     * @return VersionInterface.
      */
-    public function getProcess()
+    public function getVersion()
     {
-        return $this->process;
+        return $this->version;
     }
     
     /**
-     * Set process.
+     * Set version.
      *
-     * @param ProcessInterface process the value to set.
+     * @param VersionInterface version the value to set.
      * @return Stage.
      */
-    public function setProcess(ProcessInterface $process)
+    public function setVersion(VersionInterface $version)
     {
-        $this->process = $process;
-        return $this;
-    }
-    
-    /**
-     * Get material.
-     *
-     * @return MaterialInterface.
-     */
-    public function getMaterial()
-    {
-        return $this->material;
-    }
-    
-    /**
-     * Set material.
-     *
-     * @param MaterialInterface material the value to set.
-     * @return Stage.
-     */
-    public function setMaterial(MaterialInterface $material)
-    {
-        $this->material = $material;
+        $this->version = $version;
         return $this;
     }
     
@@ -274,134 +238,6 @@ class Stage implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
-        return $this;
-    }
-
-	/**
-	 * @return bool
-	 */
-	public function hasParent()
-	{
-		return $this->getParent() !== null;
-	}
-    
-    /**
-     * Get parent.
-     *
-     * @return StageInterface|null.
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-    
-    /**
-     * Set parent.
-     *
-     * @param StageInterface|null parent the value to set.
-     * @return StageInterface.
-     */
-    public function setParent(StageInterface $parent = null)
-    {
-        $this->parent = $parent;
-        return $this;
-    }
-    
-    /**
-     * Get children.
-     *
-     * @return StageInterface[].
-     */
-    public function getChildren($recursive = false)
-    {
-		$children = $this->children; 
-		if (!$recursive) {
-			return $children;
-		}
-
-		$allChildren = $children->toArray();
-		foreach ($this->getChildren() as $child) {
-			$allChildren = array_merge($allChildren, $child->getChildren($recursive)->toArray());
-		}
-
-		return new ArrayCollection($allChildren);
-    }
-    
-    /**
-     * Set children.
-     *
-     * @param StageInterface[] children the value to set.
-     * @return StageInterface.
-     */
-    public function setChildren($children)
-    {
-        $this->children = $children;
-        return $this;
-    }
-
-	/**
-	 * @param StageInterface $stage
-	 * @param boolean $recursive
-	 * @return boolean
-	 */
-	public function hasChild(StageInterface $stage, $recursive = true)
-	{
-		return $this->getChildren(true)->contains($stage);
-	}
-    
-    /**
-     * Add child.
-     *
-     * @param StageInterface child the value to set.
-     * @return Stage.
-     */
-    public function addChild(StageInterface $child)
-    {
-		$child->setParent($this);
-		$this->getChildren()->add($child);
-        return $this;
-    }
-    
-    /**
-     * Add children.
-     *
-     * @param StageInterface[] children the value to set.
-     * @return StageInterface.
-     */
-    public function addChildren($children)
-    {
-		foreach ($children as $child) {
-			$this->addChild($child);
-		}
-
-        return $this;
-    }
-    
-    /**
-     * Add child.
-     *
-     * @param StageInterface child the value to set.
-     * @return StageInterface.
-     */
-    public function removeChild(StageInterface $child)
-    {
-		$child->setParent();
-		$this->getChildren()->removeElement($child);
-        return $this;
-    }
-    
-    /**
-     * Add children.
-     *
-     * @param StageInterface[] children the value to set.
-     * @return StageInterface.
-     */
-    public function removeChildren($children)
-    {
-		foreach ($children as $child) {
-			$this->removeChild($child);
-		}
-
         return $this;
     }
     
@@ -608,28 +444,85 @@ class Stage implements
         $this->images = $images;
         return $this;
     }
+    
+    /**
+     * Get comments.
+     *
+     * @return StageInterface.
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    /**
+     * Set comments.
+     *
+     * @param CommentInterface[] comments the value to set.
+     * @return StageInterface.
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+        return $this;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function getCommentCount()
+    {
+        return $this->commentCount;
+    }
+    
+    /**
+	 * @inheritDoc
+     */
+    public function setCommentCount($commentCount)
+    {
+        $this->commentCount = (int) $commentCount;
+        return $this;
+    }
 
 	/**
-	 * @return int
+	 * @inheritDoc
 	 */
-	public function getLevel()
+	public function increaseCommentCount()
 	{
-		$level = 0;
-		$stage = $this;
-		while (null !== ($parent = $stage->getParent())) {
-			$stage = $parent;
-			$level++; 
-		}
-		return $level;
+		$this->commentCount++;
+		return $this;
 	}
 
 	/**
-	 * @return int|false
+	 * @inheritDoc
 	 */
-	public function getVersion()
+	public function decreaseCommentCount()
 	{
-		return $this->getProcess()->getVersion($this);
+		$this->commentCount--;
+		return $this;
 	}
+    
+    /**
+     * Get order.
+     *
+     * @return int.
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+    
+    /**
+     * Set order.
+     *
+     * @param int order the value to set.
+     * @return Stage.
+     */
+    public function setOrder($order)
+    {
+        $this->order = (int) $order;
+        return $this;
+    }
     
     /**
      * Get created.
@@ -697,12 +590,13 @@ class Stage implements
 	 */
 	public function __clone()
 	{
-		$this->id 		  = null;
-		$this->created    = new DateTime;
-		$this->updated    = new DateTime;
-		$this->hints  	  = new ArrayCollection;
-		$this->images  	  = new ArrayCollection;
-		$this->children	  = new ArrayCollection;
+		$this->id 		    = null;
+		$this->commentCount = 0;
+		$this->comments		= new ArrayCollection;
+		$this->hints  	  	= new ArrayCollection;
+		$this->images  	  	= new ArrayCollection;
+		$this->created    	= new DateTime;
+		$this->updated    	= new DateTime;
 	}
 
 	/**
@@ -732,16 +626,6 @@ class Stage implements
   	{
 		return [
 			[
-				'rel'   	  => 'process',
-				'privilege'   => 'detail',
-				'resource'	  => $this->getProcess(),
-				'route' => [
-				    'name'    => 'process/detail',
-				    'params'  => ['action' => 'detail', 'id' => $this->getProcess()->getId()],
-					'options' => ['query' => ['stage' => $this->getId()]],
-				],
-			],
-			[
 				'rel'   	  => 'edit',
 				'privilege'   => 'edit',
 				'resource'	  => $this,
@@ -757,15 +641,6 @@ class Stage implements
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'clone',
-				'privilege'   => 'clone',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/stage/detail/json',
-				    'params'  => ['action' => 'clone', 'id' => $this->getId()],
 				],
 			],
 			[
@@ -796,12 +671,21 @@ class Stage implements
 				],
 			],
 			[
-				'rel'   	  => 'children',
+				'rel'   	  => 'comment',
+				'privilege'   => 'comment',
 				'resource'	  => $this,
-				'privilege'   => 'detail',
 				'route' => [
 				    'name'    => 'process/stage/detail/json',
-				    'params'  => ['action' => 'children', 'id' => $this->getId()],
+				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'comments',
+				'privilege'   => 'comments',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/stage/detail/json',
+				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
 				],
 			],
 		];

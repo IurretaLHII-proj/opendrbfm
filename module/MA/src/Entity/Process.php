@@ -117,6 +117,17 @@ class Process implements
 	protected $user;
 
 	/**
+	 * @var VersionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Version",
+	 *	mappedBy	 = "process",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $versions;
+
+	/**
 	 * @var StageInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Stage",
@@ -146,6 +157,7 @@ class Process implements
 	{
 		$this->created  = new DateTime;
 		$this->updated  = new DateTime;
+		$this->versions = new ArrayCollection;
 		$this->stages   = new ArrayCollection;
 	}
     
@@ -434,37 +446,59 @@ class Process implements
         return $this;
     }
 
+    ///**
+    // * Get stages.
+    // *
+    // * @return StageInterface[]
+    // */
+	//public function getVersions()
+	//{
+	//	$levels = new ArrayCollection;
+
+	//	foreach ($this->getStages() as $stage) {
+	//		if (!$stage->hasParent()) $levels->add($stage);
+	//	}
+
+	//	return $levels;
+	//}
+
+	///**
+	// * @param StageInterface $stage
+	// * @return int|false
+	// */
+	//public function getVersion(StageInterface $stage)
+	//{
+	//	foreach ($this->getVersions() as $index => $version) {
+	//		if ($version === $stage || $version->hasChild($stage, true)) {
+	//			return $index + 1;
+	//		}
+	//	}
+
+	//	return false;
+	//}
+
     /**
-     * Get stages.
+     * Get versions.
      *
-     * @return StageInterface[]
+     * @return VersionInterface[]
      */
-	public function getVersions()
-	{
-		$levels = new ArrayCollection;
-
-		foreach ($this->getStages() as $stage) {
-			if (!$stage->hasParent()) $levels->add($stage);
-		}
-
-		return $levels;
-	}
-
-	/**
-	 * @param StageInterface $stage
-	 * @return int|false
-	 */
-	public function getVersion(StageInterface $stage)
-	{
-		foreach ($this->getVersions() as $index => $version) {
-			if ($version === $stage || $version->hasChild($stage, true)) {
-				return $index + 1;
-			}
-		}
-
-		return false;
-	}
+    public function getVersions()
+    {
+        return $this->versions;
+    }
     
+    /**
+     * Set versions.
+     *
+     * @param VersionInterface[] versions the value to set.
+     * @return Process.
+     */
+    public function setVersions($versions)
+    {
+        $this->versions = $versions;
+        return $this;
+    }
+
     /**
      * Get stages.
      *
@@ -485,6 +519,18 @@ class Process implements
 	{
 		return $this->getStages()->get($index);
 	}
+    
+    /**
+     * Set stages.
+     *
+     * @param StageInterface[] stages the value to set.
+     * @return Process.
+     */
+    public function setStages($stages)
+    {
+        $this->stages = $stages;
+        return $this;
+    }
 
 	/**
      * Add stages.
@@ -542,34 +588,17 @@ class Process implements
 
         return $this;
     }
-    
-    /**
-     * Set stages.
-     *
-     * @param StageInterface[] stages the value to set.
-     * @return Process.
-     */
-    public function setStages($stages)
-    {
-        $this->stages = $stages;
-        return $this;
-    }
 
 	/**
-	 * @return ImageInterface|false
+	 * @return ImageInterface|null
 	 */
 	public function getImage()
-	{
-		if (false === ($version = $this->getVersions()->last())) {
-			return $version;
+	{	
+		for ($i = $this->getVersions()->count()-1; $i >= 0; $i--) {
+			if (null !== ($image = $this->getVersions()->get($i)->getImage())) {
+				return $image;
+			}
 		}
-
-		$stage = $version;
-		while (!($stage->getChildren()->isEmpty()) && $stage->getImages()->isEmpty()) {
-			$stage = $stage->getChildren()->first();
-		}
-	
-		return $stage->getImages()->first();
 	}
     
     /**
@@ -664,26 +693,17 @@ class Process implements
 				],
 			],
 			[
-				'rel'   	  => 'stage',
-				'privilege'   => 'stage',
+				'rel'   	  => 'version',
+				'privilege'   => 'version',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/detail/json',
-				    'params'  => ['action' => 'stage', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'stages',
-				'privilege'   => 'stages',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/detail/json',
-				    'params'  => ['action' => 'stages', 'id' => $this->getId()],
+				    'params'  => ['action' => 'version', 'id' => $this->getId()],
 				],
 			],
 		];
 
-		if (false !== ($image = $this->getImage())) {
+		if (null !== ($image = $this->getImage())) {
 			$links[] = [
 				'rel'   	  => 'image',
 				'privilege'   => 'image',

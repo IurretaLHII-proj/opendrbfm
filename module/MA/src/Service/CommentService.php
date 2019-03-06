@@ -16,8 +16,8 @@ class CommentService extends AbstractService
 			$e->getTarget()->getParent() : $e->getTarget()->getSource();
 
 		if (!$target instanceof CommentProviderInterface) {
-			throw new \RuntimeException("%s expected, %s received", 
-				CommentProviderInterface::class, get_class($target));
+			throw new \RuntimeException(sprintf("%s expected, %s received", 
+				CommentProviderInterface::class, get_class($target)));
 		}
 
 		$target->increaseCommentCount(); 

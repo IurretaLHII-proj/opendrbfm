@@ -11,38 +11,30 @@ var _stateOptions = [
 		{id:MASimulation.CANCELlED, name: "CANCELlED"},
 	];
 
-App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, api) {
+App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	$scope.version = null;
 	$scope.current = null;
 
-	$scope.loadVersion = function(stage, items) {
-		while(items.length) {
-			let child = MAStage.fromJSON(items.shift(items));
-			stage.addChild(child);
-			$scope.loadVersion(child, items);
-		}
-	}
-
-	$scope.setVersion = function(stage) {
-		if (!stage.isChildrenLoaded()) {
-			$resource(stage.links.getHref('children')).get().$promise.then(
+	$scope.setVersion = function(version) {
+		$scope.version = version;
+		if (!version.isStagesLoaded()) {
+			$resource(version.links.getHref('stages')).get().$promise.then(
 				function(data) {
-					stage.childrenLoaded = true;
-					$scope.version = stage;
-					$scope.loadVersion(stage, data._embedded.items);
-					$scope.setCurrent(stage);
+					angular.forEach(data._embedded.items, e => {version.addStage(MAStage.fromJSON(e))});
+					version.stagesLoaded = true;
+					if (version.hasStages()) $scope.setCurrent(version.getActive());
+					else $scope.current = null;
 				},		
 				function(err) {
 				}		
 			);
 		}
-		else {
-			$scope.version = stage;
-			$scope.setCurrent(stage);
-		}
+		else if (version.hasStages()) $scope.setCurrent(version.getActive());
+		else $scope.current = null;
 	}
 
 	$scope.setCurrent = function(stage) {
+		$scope.current = stage;
 		if (!stage.isHintsLoaded()) {
 			$resource(stage.links.getHref('hints')).get().$promise.then(
 				function(data) {
@@ -54,113 +46,123 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 				}		
 			);
 		}
-		else {
-			$scope.current = stage;
-		}
+		else $scope.current = stage;
 	}
 
 	$scope.init = function(item, values) {
-		if (item) {
-			let process    = MAProcess.fromJSON(item);
-			$scope.process = process;
-			if (process.versions.length) {
-				$scope.setVersion(process.versions[process.versions.length-1]);
-			}
-			console.log(process);
+		let process    = MAProcess.fromJSON(item);
+		$scope.process = process;
+		if ($scope.process.hasVersions()) {
+			$scope.setVersion($scope.process.getActive());
 		}
-		if (values) {
-			//angular.merge($scope.values, values);
-		}
-	}
-
-	$scope.deleteVersion = function(version) {
-		var war = $scope._addWarning("Deleting version..");
-		$resource(version._embedded._links.delete.href).delete().$promise.then(
-			function (data) {
-				$scope._closeWarning(war);
-				$scope.addSuccess("Deleted succesfully");
-				var i = $scope.values.versions.indexOf(version);
-				$scope.values.versions.splice(i, 1);
-				if ($scope.values.versions.length) {
-					$scope.setVersion($scope.values.versions[$scope.values.versions.length-1]);
-				}
-				else {
-					$scope.version = null;
-					$scope.current = null;
-				}
-			},
-			function (err) {
-				//console.log(err);
-				$scope._closeWarning(war);
-				$scope.addError(err.data.title);
-			}	
-		);
+		console.log(process);
+		//if (values) {
+		//	angular.merge($scope.values, values);
+		//}
 	}
 
 	$scope.cloneVersion = function(version) {
 		var war = $scope._addWarning("Cloning version..");
-		$resource(version._embedded._links.clone.href).get().$promise.then(
+		$resource(version.links.getHref('clone')).get().$promise.then(
 			function (data) {
+				let active = MAVersion.fromJSON(data);
+				$scope.process.addVersion(active);
+				$scope.setVersion(active);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Saved succesfully");
-				_stage = _prepareStage(data);
-				$scope.values.versions.push(_stage);
-				$scope.setVersion(_stage);
 			},
 			function (err) {
-				//console.log(err);
+				console.log(err);
 				$scope._closeWarning(war);
 				$scope.addError(err.data.title);
 			}	
 		);
 	}
 
-	/** Stage **/
-	/*$scope.addStage = function(parentStage) {
-		var _stage = {
-			version: $scope.values.versions.length+1,
-			level: 1,
-			hints:[],
-			images:[],
-			children:[],
-			process: $scope.values,
-			parent: _noneOption,
-			material:_defaultOption,
-			operations:[_defaultOption],
-			_links: {image: {href: '/process/stage/image/json'}}
-		};
-		_stage.getName = function() {
-			var i=0;
-			var that = this;
-			while (that.parent.id) {
-				i++;
-				that = that.parent;
-			}
-			return 'Stage ' + i;
-		};
-		if (parentStage) {
-			_stage.parent   = parentStage;
-			_stage.level    = parentStage.level + 1;
-			_stage.version  = parentStage.version;
-			_stage.material = parentStage.material;
-		}
+	$scope.addVersion = function() {
+		let version = new MAVersion;
+		version.name = "Version " + ($scope.process.versions.length+1),
+		version.process = $scope.process;
 		var modal = $uibModal.open({
 			animation: true,
-			templateUrl : '/js/custom/tpl/modal/stage-form.html',
-			controller: '_StageModalCtrl',	
-			size: 'lg',
+			templateUrl : '/js/custom/tpl/modal/version-form.html',
+			controller: '_VersionModalCtrl',	
 			scope: $scope,
-			resolve: {stage: _stage, process: $scope.values,}
+			size: 'lg',
+			resolve: {version: version}
 		});
 
 		modal.result.then(
-			function(res) {},
+			function(res) {
+				$scope.process.addVersion(version);
+				$scope.setVersion(version);
+				$scope.addSuccess("Saved succesfully");
+			},
 			function(err) {}
 		);
-	}*/
-	$scope.addStage = function(pr) {
+	}
+
+	$scope.editVersion = function(version) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/version-form.html',
+			controller: '_VersionModalCtrl',	
+			scope: $scope,
+			size: 'lg',
+			resolve: {version: version}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
+	$scope.deleteVersion = function(version) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(version.links.getHref('delete')).delete().$promise.then(
+				function(data) {
+					$scope.process.removeVersion(version);
+					if ($scope.process.hasVersions()) {
+						$scope.setVersion($scope.process.getActive());
+					}
+					else {
+						$scope.version = null;
+						$scope.current = null;
+					}
+					$scope._closeWarning(war);
+					$scope.addSuccess("Succesfully deleted");
+				},
+				function(err) {
+					$scope._closeWarning(war);
+					$scope.addError(err.data.title);
+				},
+			);
+	}
+
+	$scope.stagesUpdated = function(version) {
+		$scope.values  = JSON.parse(JSON.stringify(version));
+		angular.forEach($scope.values.stages, function(e, i) { e.order = i; });
+		var war = $scope._addWarning("Updating...");
+		$resource(version.links.getHref('edit')).save($scope.values).$promise.then(
+				function(data) {
+					angular.forEach(version.stages, function(e, i) { e.order = i; });
+					$scope._closeWarning(war);
+					$scope.addSuccess("Saved succesfully");
+				},
+				function(err) {
+					$scope._closeWarning(war);
+					$scope.addError(err.data.title);
+				},
+			);
+	}
+
+	$scope.addStage = function(version) {
 		let stage = new MAStage;
-		if (pr) stage.parent = pr;
+		stage.version = version;
+		stage.order   = version.stages.length;
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/stage-form.html',
@@ -172,8 +174,9 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
-				//if (pr) pr.addChild(stage);
-				//else $scope.process.addVersion(stage);
+				version.addStage(stage);
+				$scope.setCurrent(stage);
+				$scope.addSuccess("Saved succesfully");
 			},
 			function(err) {}
 		);
@@ -191,36 +194,27 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
-				console.log(stage);
-				$resource('/process/:id/json').get({id:stage.process.id}).$promise.then(
-					function(res) {
-						$scope.init(res);
-					},
-					function(err) {
-					}
-					);
+				$scope.addSuccess("Saved succesfully");
 			},
 			function(err) {}
 		);
 	}
 
 	$scope.deleteStage = function(stage) {
-		if (stage.parent.id) {
-			stage.parent.children = stage.children;
-			angular.forEach(stage.parent.children, function(item) { item.parent = stage.parent; });
-			if (!stage.parent.parent.id) 
-				$scope.setVersion(stage.parent);
-			else
-				$scope.setCurrent(stage.parent);
-		}
-		else if (stage.children.length) {
-			stage.children[0].parent = _noneOption;
-			stage.process.versions[stage.process.versions.indexOf(stage)] = stage.children[0];
-			$scope.setVersion(stage.children[0]);
-		}
-		else {
-		//	deleteVersion(stage);
-		}
+		var war = $scope._addWarning("Deleting...");
+		$resource(stage.links.getHref('delete')).delete().$promise.then(
+				function(data) {
+					stage.version.removeStage(stage);
+					if (stage.version.hasStages()) $scope.setCurrent(stage.version.getActive());
+					else $scope.current = null;
+					$scope._closeWarning(war);
+					$scope.addSuccess("Succesfully deleted");
+				},
+				function(err) {
+					$scope._closeWarning(war);
+					$scope.addError(err.data.title);
+				},
+			);
 	}
 
 	/* ------------------------------------------------------- */
@@ -237,17 +231,19 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 
 		modal.result.then(
 			function(res) {
-				if (process.versions.length) {
-					$scope.setVersion(process.versions[process.versions.length-1]);
+				if (process.hasVersions()) {
+					$scope.setVersion(process.getActive());
 				}
+				$scope.addSuccess("Saved succesfully");
 			},
 			function(err) {}
 		);
 	}
 
 	/** Hints **/
-	$scope.addHint = function() {
+	$scope.addHint = function(stage) {
 		let hint = new MAHint();
+		hint.stage = stage;
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/hint-form.html',
@@ -257,7 +253,10 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		});
 
 		modal.result.then(
-			function(res) {$scope.current.hints.push(hint);},
+			function(res) {
+				stage.addHint(hint);
+				$scope.addSuccess("Saved succesfully");
+			},
 			function(err) {}
 		);
 	}
@@ -272,19 +271,24 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 		});
 
 		modal.result.then(
-			function(res) {},
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
 			function(err) {}
 		);
 	}
 
 	$scope.deleteHint = function(hint) {
+		var war = $scope._addWarning("Deleting...");
 		$resource(hint.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-				$scope.addSuccess("Succesfully deleted");
         		$scope.current.hints.splice($scope.current.hints.indexOf(hint), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
 			},
 			function (err) {
 				console.log(err);
+				$scope._closeWarning(war);
 				$scope.addError(err.data.title);
 			}	
 		);
@@ -330,13 +334,16 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 	}
 
 	$scope.deleteSimulation = function(sm) {
-		api.simulation.delete(sm).then(
+		var war = $scope._addWarning("Deleting...");
+		$resource(sm.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-				$scope.addSuccess("Succesfully deleted");
         		sm.hint.simulations.splice(sm.hint.simulations.indexOf(sm), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
 			},
 			function (err) {
 				console.log(err);
+				$scope._closeWarning(war);
 				$scope.addError(err.data.title);
 			}	
 		);
@@ -367,11 +374,12 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 			controller: 'CommentCtrl',	
 			size: 'lg',
 			scope: $scope,
-			resolve: {item : item}
+			resolve: {source : item}
 		});
 
 		modal.result.then(
 			function(res) {
+				item.addComment(comment);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
@@ -462,13 +470,16 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout, a
 	}
 
 	$scope.deleteNote = function(item) {
+		var war = $scope._addWarning("Deleting...");
 		$resource(item.links.getHref('delete')).delete().$promise.then(
 			function (data) {
 				item.simulation.removeNote(item);
+				$scope._closeWarning(war);
 				$scope.addSuccess("Removed succesfully");
 			},
 			function (err) {
 				console.log(err);
+				$scope._closeWarning(war);
 				$scope.addError(err.data.title);
 			}	
 		);
@@ -581,163 +592,6 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
 			controller: '_HintTypeModalCtrl',	
 			size: 'lg',
 			resolve: {type: hint} 
-		});
-
-		modal.result.then(
-			function(res) {
-				$scope.addSuccess("Saved succesfully");
-			},
-			function(err) {}
-		);
-	}
-});
-
-App.controller('__OperationTypesCtrl', function($scope, $resource, $uibModal, api) {
-		
-	$scope.values = [];
-	$scope.init = function(collection) {
-		$scope.collection = collection._embedded.items;
-		angular.forEach($scope.collection, function(item, index) {
-			var group = angular.copy(item);
-			group._embedded = item;
-			group.operations = [];
-			angular.forEach(item._embedded.operations, function(op, i) {
-				group.operations[i] = angular.copy(op);
-				group.operations[i]._embedded = op;
-				group.operations[i].type = group;
-				group.operations[i].children = [];
-				angular.forEach(op._embedded.children, function(ch) {
-					group.operations[i].children.push(angular.copy(ch));
-				});
-			});
-			$scope.values.push(group); 
-		});
-		console.log(collection, $scope.values);
-	};
-
-	$scope.showHints = function(op) {
-		if (!op.loaded) {
-			op.loaded = true;
-			op.hints  = [];
-			api.operation.getHints(op._embedded).then(function(data) {
-				angular.forEach(data._embedded.items, function(item, i) {
-					op.hints[i] = angular.copy(item);
-					op.hints[i]._embedded = item;
-					
-				});
-				op._sh=true;
-			});
-		}
-		op._sh = !op._sh;
-		console.log(op);
-	};
-
-	$scope.editGroup = function(group) {
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/operation-type-form.html',
-			controller: '_OperationTypeModalCtrl',	
-			size: 'lg',
-			scope: $scope,
-			resolve: {group: group}
-		});
-
-		modal.result.then(
-			function(res) {
-				$scope.addSuccess("Saved succesfully");
-			},
-			function(err) {}
-		);
-	}
-	$scope.deleteGroup = function(group) {
-		var war = $scope._addWarning("Deleting...");
-		$resource(group._embedded._links.delete.href).delete().$promise.then(
-			function (data) {
-				$scope._closeWarning(war);
-        		$scope.values.splice($scope.values.indexOf(group), 1);
-				$scope.addSuccess("Succesfully deleted");
-			},
-			function (err) {
-				$scope._closeWarning(war);
-				$scope.addError(err.data.title);
-			}	
-		);
-	}
-	$scope.addOperation = function(group) {
-		var op = {type: group, children: []};
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/operation-form.html',
-			controller: '_OperationModalCtrl',	
-			size: 'lg',
-			scope: $scope,
-			resolve: {group: group, op:op}
-		});
-
-		modal.result.then(
-			function(res) {
-				group.operations.push(op);
-				$scope.addSuccess("Saved succesfully");
-			},
-			function(err) {}
-		);
-	}
-	$scope.editOperation = function(group, op) {
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/operation-form.html',
-			controller: '_OperationModalCtrl',	
-			size: 'lg',
-			scope: $scope,
-			resolve: {group: group, op:op}
-		});
-
-		modal.result.then(
-			function(res) {
-				$scope.addSuccess("Saved succesfully");
-			},
-			function(err) {}
-		);
-	}
-	$scope.deleteOperation = function(group, op) {
-		var war = $scope._addWarning("Deleting...");
-		api.operation.delete(op._embedded).then(
-			function (data) {
-				$scope._closeWarning(war);
-        		group.operations.splice(group.operations.indexOf(op), 1);
-				$scope.addSuccess("Succesfully deleted");
-			},
-			function (err) {
-				$scope._closeWarning(war);
-				$scope.addError(err.data.title);
-			}	
-		);
-	}
-	$scope.addHint = function(op) {
-		var _type = {};
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
-			controller: '_HintTypeModalCtrl',	
-			size: 'lg',
-			resolve: {op: op, type: _type} 
-		});
-
-		modal.result.then(
-			function(res) {
-				op.hints.push(_type);
-				$scope.addSuccess("Saved succesfully");
-			},
-			function(err) {}
-		);
-	}
-	$scope.editHint = function(op, hint) {
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-type-form.html',
-			controller: '_HintTypeModalCtrl',	
-			size: 'lg',
-			resolve: {op: op, type: hint} 
 		});
 
 		modal.result.then(

@@ -142,53 +142,6 @@ class StageController extends \Base\Controller\Js\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
-    public function _cloneAction($entity)
-    {
-		$c = clone $entity;
-
-		foreach ($entity->getImages() as $img) {
-			$c->addImage(clone $img);
-		}
-
-		foreach ($entity->getHints() as $hint) {
-			$_hint = clone $hint;
-			foreach ($hint->getSimulations() as $sm) {
-				$_sm = clone $sm;
-				foreach ($sm->getReasons() as $r) 		$_sm->addReason(clone $r);
-				foreach ($sm->getInfluences() as $r) 	$_sm->addInfluence(clone $r);
-				foreach ($sm->getSuggestions() as $r) 	$_sm->addSuggestion(clone $r);
-				$_hint->addSimulation($_sm);
-			}
-			$c->addHint($_hint);
-		}
-
-		foreach ($entity->getChildren() as $child) {
-			$c->addChild($this->_cloneAction($child));
-		}
-
-		return $c;
-	}
-
-	/**
-	 * @return ViewModel
-	 */
-    public function cloneAction($entity = null)
-    {
-		$c = $this->_cloneAction($this->getEntity());
-
-		$this->triggerService(\MA\Service\StageService::EVENT_CLONE, $c);
-
-		$this->getEntityManager()->persist($c);
-		$this->getEntityManager()->flush();
-
-		return new HalJsonModel([
-			'payload' => $this->prepareHalEntity($c, "process/stage/detail/json")
-		]);
-	}
-
-	/**
-	 * @return ViewModel
-	 */
     public function hintsAction()
     {
 		$e  = $this->getEntity();
@@ -216,5 +169,63 @@ class StageController extends \Base\Controller\Js\AbstractActionController
 		$em->flush();
 
 		return new HalJsonModel(['payload' => []]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function commentsAction()
+    {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$paginator = $this->getPaginator($em->getRepository("MA\Entity\comment\Stage")
+			->findBy(
+				['source'  => $this->getEntity(), 'parent' => null],
+				['created' => 'DESC']
+			));
+
+		$payload = $this->prepareHalCollection($paginator, 'process/stage/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function commentAction()
+	{
+		$e	  = new \MA\Entity\Comment\Stage;
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\CommentForm::class);
+
+		$e->setStage($this->getEntity());
+		$form->setHydrator(new DoctrineHydrator($em));
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$em->persist($e);
+				$em->flush();
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/comment/detail/json")
+				];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
 	}
 }
