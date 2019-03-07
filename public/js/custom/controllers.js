@@ -17,20 +17,21 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 	$scope.setVersion = function(version) {
 		$scope.version = version;
+		$scope.current = null;
 		if (!version.isStagesLoaded()) {
 			$resource(version.links.getHref('stages')).get().$promise.then(
 				function(data) {
+					//$timeout(function(){
 					angular.forEach(data._embedded.items, e => {version.addStage(MAStage.fromJSON(e))});
 					version.stagesLoaded = true;
 					if (version.hasStages()) $scope.setCurrent(version.getActive());
-					else $scope.current = null;
+					//}, 1000);
 				},		
 				function(err) {
 				}		
 			);
 		}
 		else if (version.hasStages()) $scope.setCurrent(version.getActive());
-		else $scope.current = null;
 	}
 
 	$scope.setCurrent = function(stage) {
@@ -38,15 +39,16 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		if (!stage.isHintsLoaded()) {
 			$resource(stage.links.getHref('hints')).get().$promise.then(
 				function(data) {
+					//$timeout(function(){
 					stage.hintsLoaded = true;
 					angular.forEach(data._embedded.items, e => {stage.addHint(MAHint.fromJSON(e))});
 					$scope.current = stage;
+					//}, 1000);
 				},		
 				function(err) {
 				}		
 			);
 		}
-		else $scope.current = stage;
 	}
 
 	$scope.init = function(item, values) {

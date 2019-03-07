@@ -1,5 +1,6 @@
 <div class="modal-header">
-	<h3 class="modal-title">Version {[ stage.version.name ]}. Stage {[ stage.order ]}</h3>
+	<h3 class="modal-title" ng-if="stage.id">{[ stage.name ]} <small class="text-secondary">| edit</small></h3>
+	<h3 class="modal-title" ng-if="!stage.id">{[ stage.version.name ]} <small class="text-secondary">| New Stage</small></h3>
 </div>
 <div ng-init="init()" class="modal-body">
 

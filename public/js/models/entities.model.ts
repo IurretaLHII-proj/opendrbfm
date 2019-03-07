@@ -275,7 +275,7 @@ class MAVersion {
 
 	addComment(obj:MAComment) {
 		this.commentCount++;
-		this.comments.items.push(obj);
+		this.comments.items.unshift(obj);
 	}
 
 	id: number;
@@ -333,7 +333,7 @@ class MAStage {
 		return {
 			id: this.id,
 			order: this.order,
-			name: this.getName(),
+			name: this.name,
 			body: this.body,
 			images: this.images,
 			operations: operations,
@@ -345,7 +345,7 @@ class MAStage {
 		this.process = obj;
 	}
 
-	getName():string {
+	get name():string {
 		return "Stage " + this.order;
 	}
 
@@ -370,7 +370,7 @@ class MAStage {
 	addComment(obj:MAComment) {
 		obj.source = this;
 		this.commentCount++;
-		this.comments.items.push(obj);
+		this.comments.items.unshift(obj);
 	}
 
 	id: number;
@@ -457,6 +457,7 @@ class MAOperation {
 	load(obj: IMAOperation) {
 		this.id = obj.id;
 		this.name = obj.name;
+		this.longName = obj.longName;
 		this.description = obj.description;
 		this.links = new MALinks(obj._links);
 		this.children = [];
@@ -494,6 +495,7 @@ class MAOperation {
 
 	id: number;
 	name: string;
+	longName: string;
 	description: string;
 	user: MAUser;
 	type: MAOperationType=null;
@@ -585,7 +587,7 @@ class MAHint {
 
 	addComment(obj:MAComment) {
 		this.commentCount++;
-		this.comments.items.push(obj);
+		this.comments.items.unshift(obj);
 	}
 
 	toJSON(): {}{
@@ -674,6 +676,10 @@ class MASimulation {
 		};
 	}
 
+	get name():string {
+		return this.hint.name + ' | Simulation';
+	}
+
 	setHint(obj:MAHint) {
 		this.hint = obj;
 	}
@@ -710,7 +716,7 @@ class MASimulation {
 
 	addComment(obj:MAComment) {
 		this.commentCount++;
-		this.comments.items.push(obj);
+		this.comments.items.unshift(obj);
 	}
 
 	id: number;
@@ -752,6 +758,10 @@ class MANote {
 		this.links = new MALinks(obj._links);
 	}
 
+	get name():string {
+		return this.simulation.name + ' | Note';
+	}
+
 	setSimulation(obj:MASimulation) {
 		this.simulation = obj;
 	}
@@ -762,7 +772,7 @@ class MANote {
 
 	addComment(obj:MAComment) {
 		this.commentCount++;
-		this.comments.items.push(obj);
+		this.comments.items.unshift(obj);
 	}
 
 	toJSON(): {}{

@@ -3,7 +3,7 @@
 		class="btn btn-sm btn-outline-primary"
 		ng-click="setCurrent(stage)" 
 		ng-class="{'active':current==stage}"
-		>{[ stage.getName() ]}</a>
+		>{[ stage.name ]}</a>
 </div>
 <div ng-if="stage.images.length" 
 	 ng-repeat="img in stage.images" 

@@ -2,19 +2,17 @@
 <div class="d-flex flex-column mx-2">
 	<div class="d-flex mb-1">
 		<div class="bg-light px-4">Version</div>
-		<div class="px-4 bg-whiter flex-fill">{[ stage.version.name ]}</div>
-	</div>
-	<div class="d-flex my-2">
+		<div class="px-4 bg-whiter">{[ stage.version.name ]}</div>
 		<div class="bg-light px-4">Material</div>
-		<div class="pl-2 pr-4 bg-white">{[ stage.material.name ]}</div>
-		<div class="px-4 bg-light">Stage</div>
-		<div class="px-4 bg-white flex-fill">{[ stage.getName() ]}</div>
+		<div class="pl-2 pr-4 bg-white flex-fill">{[ stage.version.material.name ]}</div>
 	</div>
 	<div class="d-flex my-2">
+		<div class="px-4 bg-light">Stage</div>
+		<div class="px-4 bg-white">{[ stage.order ]}</div>
 		<div class="bg-light px-4">Operations</div>
 		<div class="px-4 bg-white flex-fill">
-			<ul class="m-0 p-0" style="list-style:none;">
-				<li ng-repeat="op in stage.operations">{[op.name]}</li>
+			<ul class="m-0 p-0" style="">
+				<li ng-repeat="op in stage.operations">{[op.longName]}</li>
 			</ul>
 		</div>
 	</div>

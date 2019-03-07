@@ -48,6 +48,7 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, $resource, stage, hint)
 {
 	$scope.errors = {};
+	$scope.hint   = hint;
 	$scope.stage  = stage;
 	$scope.values = JSON.parse(JSON.stringify(hint));
 	$scope.operations = stage.operations.concat([{id:null, name:' --Select One-- '}]);
@@ -445,8 +446,9 @@ App.controller('_OperationModalCtrl', function($scope, $uibModalInstance, $resou
 
 App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $resource, simulation)
 {
-	$scope.values  = JSON.parse(JSON.stringify(simulation));
-	$scope.errors  = {};
+	$scope.simulation = simulation;
+	$scope.values     = JSON.parse(JSON.stringify(simulation));
+	$scope.errors     = {};
 
 	$scope.save = function() {
 		var uri  = simulation.id ? 

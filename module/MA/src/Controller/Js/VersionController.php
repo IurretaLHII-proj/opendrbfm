@@ -51,6 +51,7 @@ class VersionController extends \Base\Controller\Js\AbstractActionController
     {
 		$e = $this->getEntity();
 		$c = clone $e;
+		$c->setName("Clone of " . $e->getName());
 
 		foreach ($e->getStages() as $stage) {
 			$s = clone $stage;

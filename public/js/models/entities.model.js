@@ -210,7 +210,7 @@ var MAVersion = /** @class */ (function () {
     };
     MAVersion.prototype.addComment = function (obj) {
         this.commentCount++;
-        this.comments.items.push(obj);
+        this.comments.items.unshift(obj);
     };
     return MAVersion;
 }());
@@ -255,7 +255,7 @@ var MAStage = /** @class */ (function () {
         return {
             id: this.id,
             order: this.order,
-            name: this.getName(),
+            name: this.name,
             body: this.body,
             images: this.images,
             operations: operations,
@@ -265,9 +265,13 @@ var MAStage = /** @class */ (function () {
     MAStage.prototype.setProcess = function (obj) {
         this.process = obj;
     };
-    MAStage.prototype.getName = function () {
-        return "Stage " + this.order;
-    };
+    Object.defineProperty(MAStage.prototype, "name", {
+        get: function () {
+            return "Stage " + this.order;
+        },
+        enumerable: true,
+        configurable: true
+    });
     MAStage.prototype.addHint = function (obj) {
         obj.stage = this;
         this.hints.push(obj);
@@ -285,7 +289,7 @@ var MAStage = /** @class */ (function () {
     MAStage.prototype.addComment = function (obj) {
         obj.source = this;
         this.commentCount++;
-        this.comments.items.push(obj);
+        this.comments.items.unshift(obj);
     };
     return MAStage;
 }());
@@ -341,6 +345,7 @@ var MAOperation = /** @class */ (function () {
     MAOperation.prototype.load = function (obj) {
         this.id = obj.id;
         this.name = obj.name;
+        this.longName = obj.longName;
         this.description = obj.description;
         this.links = new MALinks(obj._links);
         this.children = [];
@@ -439,7 +444,7 @@ var MAHint = /** @class */ (function () {
     };
     MAHint.prototype.addComment = function (obj) {
         this.commentCount++;
-        this.comments.items.push(obj);
+        this.comments.items.unshift(obj);
     };
     MAHint.prototype.toJSON = function () {
         return {
@@ -504,6 +509,13 @@ var MASimulation = /** @class */ (function () {
             suggestions: this.suggestions,
         };
     };
+    Object.defineProperty(MASimulation.prototype, "name", {
+        get: function () {
+            return this.hint.name + ' | Simulation';
+        },
+        enumerable: true,
+        configurable: true
+    });
     MASimulation.prototype.setHint = function (obj) {
         this.hint = obj;
     };
@@ -537,7 +549,7 @@ var MASimulation = /** @class */ (function () {
     };
     MASimulation.prototype.addComment = function (obj) {
         this.commentCount++;
-        this.comments.items.push(obj);
+        this.comments.items.unshift(obj);
     };
     MASimulation.NOT_PROCESSED = 0;
     MASimulation.IN_PROGRESS = 1;
@@ -565,6 +577,13 @@ var MANote = /** @class */ (function () {
         this.created = new Date(obj.created.date);
         this.links = new MALinks(obj._links);
     };
+    Object.defineProperty(MANote.prototype, "name", {
+        get: function () {
+            return this.simulation.name + ' | Note';
+        },
+        enumerable: true,
+        configurable: true
+    });
     MANote.prototype.setSimulation = function (obj) {
         this.simulation = obj;
     };
@@ -573,7 +592,7 @@ var MANote = /** @class */ (function () {
     };
     MANote.prototype.addComment = function (obj) {
         this.commentCount++;
-        this.comments.items.push(obj);
+        this.comments.items.unshift(obj);
     };
     MANote.prototype.toJSON = function () {
         return {

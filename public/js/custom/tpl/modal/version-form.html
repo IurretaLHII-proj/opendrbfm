@@ -1,6 +1,6 @@
 <div class="modal-header">
-	<h3 class="modal-title" ng-if="version.id">{[ version.name ]} <span class="small">| edit</small></h3>
-	<h3 class="modal-title" ng-if="!version.id">New version</h3>
+	<h3 class="modal-title" ng-if="version.id">{[ process.title ]} ({[ version.name ]}) <small class="text-secondary">| edit</small></h3>
+	<h3 class="modal-title" ng-if="!version.id">{[ process.title ]} <small class="text-secondary">| New version</small></h3>
 </div>
 <div class="modal-body" ng-init="init()">
 	<div class="form-group">
@@ -48,6 +48,6 @@
 	</div>
 </div>
 <div class="modal-footer">
-	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
 	<a href="" class="btn btn-success" ng-click="save()">Save</a>
 </div>

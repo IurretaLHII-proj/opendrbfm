@@ -112,6 +112,7 @@ interface IMAOperationType {
 interface IMAOperation {
 	id: number,
 	name: string,
+	longName: string,
 	description: string,
 	created: IMADate,
 	_links: IMALinks, 
