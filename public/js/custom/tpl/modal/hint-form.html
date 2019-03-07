@@ -1,5 +1,6 @@
 <div class="modal-header">
-    <h3 class="modal-title">{[ values.name ]}</h3>
+	<h3 class="modal-title" ng-if="hint.id">{[ hint.name ]} <small class="text-secondary">| edit</small></h3>
+	<h3 class="modal-title" ng-if="!hint.id">{[ hint.stage.name ]} <small class="text-secondary">| New Error</small></h3>
 </div>
 <div class="modal-body">
 	<div class="form-row">
@@ -54,138 +55,10 @@
 			ng-repeat="(key, text) in errors.description"
 			class="invalid-feedback">{[key]}. {[text]}</div>
 	</div>
-	<!--
-	<div ng-if="stage.parent" class="form-group">
-		<label for="inputParents">Prevs</label>
-		<div class="form-row"
-			ng-repeat="(_i, parent) in values.parents"
-			>
-			<div class="form-group col-md-11">
-				<select class="form-control"
-					ng-class="{'is-invalid': errors.parents[_i]}"
-					ng-model="values.parents[_i]"
-					ng-options="item as 'Stage ' + item.level + ': ' + item.name 
-					for item in getPrevs(values.parents[_i]) 
-					track by item.id"
-					>
-				</select>
-				<div ng-if="errors.parents[_i]"
-					ng-repeat="(key, text) in errors.parents[_i].id"
-					class="invalid-feedback">{[key]}. {[text]}</div>
-			</div>
-			<div class="form-group col-md-1">
-				<a href="" class="btn-sm btn-default pull-right" 
-					ng-click="values.parents.splice(_i, 1);">
-					<span class="fa fa-close"></span>
-				</a>
-			</div>
-		</div>
-		<div ng-if="!values.parents.length || values.parents[values.parents.length-1].id">
-			<a href="" class="btn-sm btn-default" 
-			ng-click="addPrev()">
-			<span class="fa fa-plus"></span></a>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="inputText">Text</label>
-		<input type="text"
-		  	id="inputText" 
-			class="form-control" 
-			ng-class="{'is-invalid': errors.text}"
-			ng-model="values.text"/>
-		<div ng-if="errors.text"
-			ng-repeat="(key, text) in errors.text"
-			class="invalid-feedback">{[key]}. {[text]}</div>
-
-	</div>
-	<div class="form-group">
-	  	<label for="inputReasons">Reasons</label>
-		<div class="form-row"
-			ng-repeat="(_i, note) in values.reasons"
-			>
-			<div class="form-group col-md-11">
-				<textarea rows="2" 
-					ng-class="{'is-invalid': errors.reasons[_i]}"
-					ng-model="values.reasons[_i].text"
-					class="form-control">
-				</textarea>
-				<div ng-if="errors.reasons[_i]"
-					ng-repeat="(key, text) in errors.reasons[_i]"
-					class="invalid-feedback">{[key]}. {[text]}</div>
-			</div>
-			<div class="form-group col-sm-1 text-center">
-				<a href="" class="btn btn-sm btn-outline-secondary" 
-					ng-click="values.reasons.splice(_i, 1);">
-					<span class="fa fa-close"></span>
-				</a>
-			</div>
-		</div>
-		<div>
-			<a href="" class="btn btn-sm btn-outline-info" 
-			ng-click="values.reasons.push({})">
-			<span class="fa fa-plus"></span></a>
-		</div>
-	</div>
-	<div class="form-group">
-	  	<label for="inputInfluences">Influences</label>
-		<div class="form-row"
-			ng-repeat="(_i, note) in values.influences"
-			>
-			<div class="form-group col-md-11">
-				<textarea rows="2" 
-					ng-class="{'is-invalid': errors.influences[_i]}"
-					ng-model="values.influences[_i].text"
-					class="form-control">
-				</textarea>
-				<div ng-if="errors.influences[_i]"
-					ng-repeat="(key, text) in errors.influences[_i]"
-					class="invalid-feedback">{[key]}. {[text]}</div>
-			</div>
-			<div class="form-group col-sm-1 text-center">
-				<a href="" class="btn btn-sm btn-outline-secondary" 
-					ng-click="values.influences.splice(_i, 1);">
-					<span class="fa fa-close"></span>
-				</a>
-			</div>
-		</div>
-		<div>
-			<a href="" class="btn btn-sm btn-outline-info" 
-			ng-click="values.influences.push({})">
-			<span class="fa fa-plus"></span></a>
-		</div>
-	</div>
-	<div class="form-group">
-	  	<label for="inputSuggestions">Suggestions</label>
-		<div class="form-row"
-			ng-repeat="(_i, note) in values.suggestions"
-			>
-			<div class="form-group col-sm-11">
-				<textarea rows="2" 
-					ng-class="{'is-invalid': errors.suggestions[_i]}"
-					ng-model="values.suggestions[_i].text"
-					class="form-control">
-				</textarea>
-				<div ng-if="errors.suggestions[_i]"
-					ng-repeat="(key, text) in errors.suggestions[_i]"
-					class="invalid-feedback">{[key]}. {[text]}</div>
-			</div>
-			<div class="form-group col-sm-1 text-center">
-				<a href="" class="btn btn-sm btn-outline-secondary" 
-					ng-click="values.suggestions.splice(_i, 1);">
-					<span class="fa fa-close"></span>
-				</a>
-			</div>
-		</div>
-		<div>
-			<a href="" class="btn btn-sm btn-outline-info" 
-			ng-click="values.suggestions.push({})">
-			<span class="fa fa-plus"></span></a>
-		</div>
-	-->
 	</div>
 </div>
 <div class="modal-footer">
-	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
 	<a href="" class="btn btn-success" ng-click="save()">Save</a>
 </div>
 

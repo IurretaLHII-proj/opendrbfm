@@ -1,4 +1,4 @@
-App.controller('CommentCtrl', function($scope, $uibModalInstance, $resource, $api, source) 
+App.controller('CommentCtrl', function($scope, $uibModalInstance, $resource, source) 
 {
 	$scope.source  = source;
 	$scope.values  = {};
@@ -18,7 +18,7 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $resource, $ap
 	};
 
 	$scope.more = function(coll) {
-		$api.collection.more(coll).then(
+		$resource(coll.links.getHref('next')).get().$promise.then(
 			function(data) {
 				data._embedded.items = data._embedded.items.map(raw => {return new MAComment(raw);}); 
 				coll.load(data);

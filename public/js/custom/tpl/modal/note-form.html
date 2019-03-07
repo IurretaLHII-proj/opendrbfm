@@ -1,5 +1,6 @@
 <div class="modal-header">
-	<h3 class="modal-title">{[ item.name ]} <span class="small">| Note</span></h3>
+	<h3 class="modal-title" ng-if="note.id">{[ note.name ]} <small class="text-secondary">| edit</small></h3>
+	<h3 class="modal-title" ng-if="!note.id">{[ note.simulation.name ]} <small class="text-secondary">| New Note</small></h3>
 	<button ng-click="cancel()" type="button" class="close"
 		data-dismiss="modal" aria-label="Close" style="
 			position:absolute; top:5px; right:5px;
@@ -20,6 +21,6 @@
 	</div>
 </div>
 <div class="modal-footer" >
-	<a href="" class="btn btn-default" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
 	<a href="" class="btn btn-success" ng-click="save()">Save</a>
 </div>

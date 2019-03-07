@@ -482,6 +482,7 @@ class Operation implements
 		return [
 			'id' 		  => $this->getId(),
 			'name' 		  => $this->getName(),
+			'longName' 	  => (string) $this->getType() . '. ' . $this->getName(),
 			'owner'		  => $this->getUser(),
 			'description' => $this->getDescription(),
 			'children' 	  => new \ZF\Hal\Collection($this->getChildren()),
