@@ -58,7 +58,7 @@ App.controller('CommentCtrl', function($scope, $uibModalInstance, $resource, sou
 			function(err) {
 				console.log(err);
 				$scope._closeWarning(war);
-				$scope.errors = err.data.errors;
+				comment.errors = err.data.errors;
 			}
 		);	
 	};

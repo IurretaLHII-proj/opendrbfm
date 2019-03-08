@@ -1,5 +1,7 @@
-<div class="modal-header">
+<div class="modal-header flex-column">
+	<div><a href="{[ source.user.links.getHref() ]}">{[ source.user.name ]}</a> on <small>{[ source.created | date:"dd MMM yyyy HH:mm" ]}</small></div>
 	<h3 class="modal-title">{[ source.name ]} <span class="small text-secondary">| Comments</span></h3>
+	<div ng-if="source.description" ng-bind-html="source.description"></div>
 	<button ng-click="cancel()" type="button" class="close"
 		data-dismiss="modal" aria-label="Close" style="
 			position:absolute; top:5px; right:5px;
@@ -15,12 +17,12 @@
 		class="pb-2 pt-2">
 	</div>
 </div>
-<p ng-if="source.comments.loaded" class="small text-center m-0">Showing {[ source.comments.items.length ]} of {[ source.comments.total_items ]}</p>
+<p ng-if="source.comments.loaded" class="small text-center m-0">Showing <span class="text-secondary">{[ source.comments.items.length ]}</span> of <span class="text-secondary">{[ source.comments.total_items ]}</span></p>
 <div ng-if="source.comments.has('next')" class="text-center mt-1 small">
         <a href="" ng-click="more(source.comments)">.. view previouses ..</a>
 </div>
 <div class="modal-footer" 
-	ng-if="true || entity._links.comment.allowed" 
+	ng-if="true || entity.links.comment.allowed" 
 	style="
 ">
 	<div class="ml-auto align-self-stretch" style="width:100%">

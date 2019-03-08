@@ -91,7 +91,7 @@ class Stage implements
 	 *	mappedBy	 = "stage",
 	 *	cascade = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
+	 * @ORM\OrderBy({"priority" = "DESC"})
 	 */
 	protected $hints;
 

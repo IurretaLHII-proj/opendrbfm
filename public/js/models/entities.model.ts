@@ -349,6 +349,18 @@ class MAStage {
 		return "Stage " + this.order;
 	}
 
+	get description():string {
+		return this.body;
+	}
+
+	getHints():MAHint[] {
+		return this.hints.sort((a, b) => {
+			if (a.priority < b.priority) return 1;
+			else if (a.priority > b.priority) return -1;
+			else return 0;
+		});	
+	}
+
 	addHint(obj:MAHint) {
 		obj.stage = this;
 		this.hints.push(obj);
@@ -427,6 +439,11 @@ class MAOperationType {
 	addOperation(obj: MAOperation) {
 		obj.type = this;
 		this.operations.push(obj);
+	}
+
+	removeOperation(obj: MAOperation) {
+		obj.type = null;
+		this.operations.splice(this.operations.indexOf(obj, 1));
 	}
 
 	id: number;
@@ -762,6 +779,10 @@ class MANote {
 		return this.simulation.name + ' | Note';
 	}
 
+	get description():string {
+		return this.text;
+	}
+
 	setSimulation(obj:MASimulation) {
 		this.simulation = obj;
 	}
@@ -819,7 +840,7 @@ class MAComment {
 
 	addChild(child: MAComment) {
 		child.parent = this;
-		this.children.items.push(child);
+		this.children.items.unshift(child);
 	}
 
 	hasChildren(): boolean {

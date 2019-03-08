@@ -8,7 +8,7 @@
 			/>
 		</a>
 	</div>-->
-	<div class="mr-auto pl-3 pr-2 align-self-stretch col">
+	<div class="mr-auto px-0 align-self-stretch col" ng-class="{'pl-3': depth > 1;}">
 		<div class="d-flex flex-column" style="height:100%;">
 			<div class="mb-auto body">
 				<div ng-if="comment.expanded || comment.body.length <= 500"
@@ -32,38 +32,52 @@
 				   ng-class="{disabled: comment.children.loaded}"
 				   ng-if="!comment.loaded && comment.commentCount && depth <= 2"
 				>
-					<span style="font-size:12px;" class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
+					<span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
 				</a>
 				<a href="" class="btn btn-sm disabled" ng-if="!comment.commentCount || depth > 2"><span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span></a>
 
-				<a style="font-size:12px; margin: 0.5px;" 
-					class="btn btn-sm btn-outline-default"
+				<a  class="btn btn-sm btn-outline-default"
 					ng-if="(true || comment._links.comment.allowed) && depth <= 2" 
 					href="#cmm-{[ comment.id ]}-form" 
 					data-toggle="collapse">reply <span class="small glyphicon fa fa-reply"></span>
 				</a>
 
 				<span class="small">by <a href="{[ comment.user.links.getHref() ]}">{[ comment.user.name ]}</a> on {[ comment.created | date:'MMM d, H:mm' ]}</span>
-				<!--<a href="" style="font-size:12px; margin:0 5px;" ng-click="commentModal(comment.id);" style="">view <span class="small fa fa-arrow-circle-o-right"></span>
-				</a>-->
 			</div>
+
 			<div id="cmm-{[ comment.id ]}-form" 
 				 ng-if="(true || comment.links.comment.allowed) && depth <= 2" 
-				 class="collapse" 
-				 style="
-				 float:left;
-				 clear:both;
-				 width:100%;
-				 padding:15px; 
-				 margin-top:10px;
-			">
-				<div class="input-group">
-					<textarea class="form-control" rows="2" ng-model="comment.values.body" style="resize:none"></textarea>     
-					<div class="input-group-append">
-						<button class="btn btn-success" ng-click="reply(comment)">Reply</button>
+				 class="collapse py-2" 
+			>
+				<div class="d-flex flex-column">
+					<div class="mr-2 flex-fill">
+						<div text-angular 
+							 ta-target-toolbars="comment-{[comment.id]}-reply" 
+							 ng-class="{'error': errors.body}"
+							 ng-model="comment.values.body">
+						</div>
 					</div>
-				 </div>
+					<div class="mr-2 flex-fill" ng-if="comment.errors.body"
+						 ng-repeat="(key, err) in comment.errors.body">
+						 <p class="small error"><span>{[key]}:</span> {[err]}</p>
+					</div>
+					<div class="d-flex py-2">
+						<div text-angular-toolbar 
+							 name="comment-{[comment.id]}-reply"
+							 ta-toolbar="[
+								['bold', 'italics', 'underline' ],
+								['ul', 'insertLink', ],
+							 ]"
+							 class="flex-fill"
+   							 name="toolbar">
+						</div>
+						<div class="reply" style="">
+							<span class="btn btn-primary" ng-click="reply(comment)">Reply</span>
+						</div>
+					</div>
+				</div>
 			</div>
+
 		</div>
 	</div>
 	<!--<div class="vote-col" style="
@@ -90,7 +104,7 @@
         ng-init="comment = c; depth = depth+1;"
 >
 </div>
-<p ng-if="comment.children.loaded" class="small text-center m-0">Showing {[ comment.children.items.length  ]} items of {[ comment.children.total_items ]}</p>
+<p ng-if="comment.children.loaded" class="small text-center m-0">Showing <span class="text-secondary">{[ comment.children.items.length  ]}</span> items of <span class="text-secondary">{[ comment.children.total_items ]}</span></p>
 <div ng-if="comment.children.has('next')" class="text-center mt-1 small">
         <a href="" ng-click="more(comment.children)">.. view previouses ..</a>
 </div>

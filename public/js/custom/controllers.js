@@ -554,6 +554,22 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
 		);
 	}
 
+	$scope.deleteOperation = function(op) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(op.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		op.type.removeOperation(op);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+
 	$scope.showHints = function(op) {
 		if (!op._sh) {
 			op.hints = [];

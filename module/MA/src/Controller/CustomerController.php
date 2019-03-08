@@ -76,6 +76,15 @@ class CustomerController extends \Base\Controller\AbstractActionController
 	}
 
 	/**
+	 * @return ViewModel
+	 */
+    public function detailAction()
+    {
+		return new ViewModel([
+		]);
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	protected function _injectDefaultVariables(ModelInterface $model)

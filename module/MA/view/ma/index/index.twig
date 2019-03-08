@@ -65,7 +65,7 @@
 							<td>
 								<a href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a>
 							</td>
-							<td>{[ item.created*1000 | date:"dd MMM yyyy HH:mm" ]}</td>
+							<td>{[ item.created.date*1000 | date:"dd MMM yyyy HH:mm" ]}</td>
 							<td>
 								<div class="btn-group">
 									<a ng-href="{[ item._links.self.href ]}" class="btn btn-sm">
