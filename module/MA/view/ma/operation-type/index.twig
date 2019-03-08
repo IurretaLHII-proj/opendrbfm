@@ -103,10 +103,25 @@
 									data-target="#op-{[op.id]}-hints"
 									aria-expanded="false"
 								>
+									<i class="fa fa-warning"></i>
+								</a>
+								<!--<a href="" 
+									ng-click="showHints(op)" 
+									ng-class="{active:op._sh}"
+									class="btn btn-sm btn-outline-primary"
+									data-toggle="collapse"
+									data-target="#op-{[op.id]}-hints"
+									aria-expanded="false"
+								>
 									<i class="fa" 
 										ng-class="op._sh ? 'fa-eye-slash' : 'fa-eye'"
 										>
 									</i>
+								</a>-->
+								<a href="{[ op.links.getHref() ]}"
+									class="btn btn-sm btn-outline-primary"
+								>
+									<i class="fa fa-eye"></i>
 								</a>
 								<a href="" ng-click="editOperation(op)" 
 									class="btn btn-sm btn-outline-primary"
@@ -114,14 +129,17 @@
 								<a href=""
 									class="btn btn-sm btn-outline-primary"
 									ng-confirm-click
-									confirmed-click="deleteOperation(group, op)"
+									confirmed-click="deleteOperation(op)"
 								><i class="fa fa-trash"></i></a>
 							</div>
 						</div>
 
 						<!-- HINT TYPES -->
 						<div id="op-{[op.id]}-hints" class="collapse col-md-12">
-							<div ng-if="op.hints" 
+							<div ng-if="op.hints && !op.hints.length">
+								<p class="text-center p-2">No error type defined</p>
+							</div>
+							<div ng-if="op.hints && op.hints.length" 
 								ng-repeat="hint in op.hints" 
 								class="p-2 border-top"
 							>

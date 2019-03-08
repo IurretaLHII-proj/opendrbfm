@@ -1,31 +1,35 @@
 <!--<div class="d-flex flex-column align-self-center flex-fill mr-2">-->
 <div class="d-flex flex-column mx-2">
 	<div class="d-flex mb-1">
-		<div class="bg-light px-4">Version</div>
-		<div class="px-4 bg-whiter">{[ stage.version.name ]}</div>
-		<div class="bg-light px-4">Material</div>
-		<div class="pl-2 pr-4 bg-white flex-fill">{[ stage.version.material.name ]}</div>
+		<div class="bg-light px-4 border-bottom border-left">Version</div>
+		<div class="px-4 bg-white border-bottom mr-2">{[ stage.version.name ]}</div>
+		<div class="bg-light px-4 border-bottom border-left">Material</div>
+		<div class="pl-2 pr-4 bg-white flex-fill border-bottom"><a href="{[ stage.version.material.links.getHref() ]}">{[ stage.version.material.name ]}</a></div>
 	</div>
 	<div class="d-flex my-2">
-		<div class="px-4 bg-light">Stage</div>
-		<div class="px-4 bg-white">{[ stage.order ]}</div>
-		<div class="bg-light px-4">Operations</div>
-		<div class="px-4 bg-white flex-fill">
+		<div class="bg-light px-4 border-bottom border-left">Version description</div>
+		<div class="px-4 bg-white flex-fill border-bottom" ng-bind-html="stage.version.description"></div>
+	</div>
+	<div class="d-flex my-2">
+		<div class="px-4 bg-light border-bottom border-left">Stage</div>
+		<div class="px-4 bg-white border-bottom mr-2">{[ stage.order ]}</div>
+		<div class="bg-light px-4 border-bottom border-left">Operations</div>
+		<div class="px-4 bg-white flex-fill border-bottom">
 			<ul class="m-0 p-0" style="">
-				<li ng-repeat="op in stage.operations">{[op.longName]}</li>
+				<li ng-repeat="op in stage.operations"><a href="{[ op.links.getHref() ]}">{[op.longName]}</a></li>
 			</ul>
 		</div>
 	</div>
 	<div class="d-flex mt-2 mb-1">
-		<div class="px-4 bg-light">Owner</div>
-		<div class="px-4 bg-white flex-fill">
+		<div class="px-4 bg-light border-bottom border-left">Owner</div>
+		<div class="px-4 bg-white flex-fill border-bottom mr-2">
 			<a href="{[ stage.user.links.getHref() ]}">{[ stage.user.name ]}</a>
 		</div>
-		<div class="px-4 bg-light">Created</div>
-		<div class="px-4 bg-white flex-fill"><small>{[ stage.created | date:"dd MMM yyyy HH:mm" ]}</small></div>
+		<div class="px-4 bg-light border-bottom border-left">Created</div>
+		<div class="px-4 bg-white flex-fill border-bottom"><small>{[ stage.created | date:"dd MMM yyyy HH:mm" ]}</small></div>
 	</div>
 	<div class="d-flex my-2">
-		<div class="bg-light px-4">Description</div>
-		<div class="px-4 bg-white flex-fill" ng-bind-html="stage.body"></div>
+		<div class="bg-light px-4 border-bottom border-left">Stage Description</div>
+		<div class="px-4 bg-white flex-fill border-bottom" ng-bind-html="stage.body"></div>
 	</div>
 </div>

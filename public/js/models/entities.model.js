@@ -272,6 +272,23 @@ var MAStage = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(MAStage.prototype, "description", {
+        get: function () {
+            return this.body;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MAStage.prototype.getHints = function () {
+        return this.hints.sort(function (a, b) {
+            if (a.priority < b.priority)
+                return 1;
+            else if (a.priority > b.priority)
+                return -1;
+            else
+                return 0;
+        });
+    };
     MAStage.prototype.addHint = function (obj) {
         obj.stage = this;
         this.hints.push(obj);
@@ -326,6 +343,10 @@ var MAOperationType = /** @class */ (function () {
     MAOperationType.prototype.addOperation = function (obj) {
         obj.type = this;
         this.operations.push(obj);
+    };
+    MAOperationType.prototype.removeOperation = function (obj) {
+        obj.type = null;
+        this.operations.splice(this.operations.indexOf(obj, 1));
     };
     return MAOperationType;
 }());
@@ -584,6 +605,13 @@ var MANote = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(MANote.prototype, "description", {
+        get: function () {
+            return this.text;
+        },
+        enumerable: true,
+        configurable: true
+    });
     MANote.prototype.setSimulation = function (obj) {
         this.simulation = obj;
     };
@@ -626,7 +654,7 @@ var MAComment = /** @class */ (function () {
     }*/
     MAComment.prototype.addChild = function (child) {
         child.parent = this;
-        this.children.items.push(child);
+        this.children.items.unshift(child);
     };
     MAComment.prototype.hasChildren = function () {
         return !this.children.isEmpty();

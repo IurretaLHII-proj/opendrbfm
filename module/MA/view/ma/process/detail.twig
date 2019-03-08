@@ -68,7 +68,7 @@
 				ng-class="{active:current===stage}"
 			>
 			<a href="" ng-click="setCurrent(stage);">
-				<span class="mr-2 fa fa-arrows" ng-if="current===stage"></span>{[ stage.name ]}</a>
+				<small class="mr-2 fa fa-arrows" ng-if="current===stage" style="font-size:12px;"></small>{[ stage.name ]}</a>
 			</li>
 			<li class="nav-link">
 				<a href="" ng-click="addStage(version)" class="btn-sm btn-default">
@@ -147,13 +147,13 @@
 					<tr ng-if="!current.hints.length">
 						<td class="text-center" colspan="12">No errors registered</td>
 					</tr>
-					<tr ng-if="current.hints.length" ng-repeat-start="(h, hint) in current.hints">
+					<tr ng-if="current.hints.length" ng-repeat-start="(h, hint) in current.getHints()">
 						<td rowspan="{[hint.simulations.length+1]}">
 							<div class="small text-muted">{[ hint.type.operation.longName ]}</div>
 							<a href="" class="btn btn-sm btn-{[badgeClass(hint.priority)]}" style="white-space:normal">
 								<span class="badge badge-light mr-2">{[ hint.priority ]}</span>{[ hint.name ]} 
 							</a>
-							<p class="small">{[ hint.description ]}</p>
+							<p class="small py-2 text-center text-secondary">{[ hint.description ]}</p>
 							<div class="btn-group btn-group-justified" style="justify-content:start;">
 								<button href="" ng-click="addComment(hint)" class="btn btn-sm btn-outline-primary"><i class="fa fa-comment"></i> {[ hint.commentCount ]}</button>
 								<button ng-href="{[ hint.links.getHref() ]}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i></button>
