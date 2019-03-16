@@ -14,9 +14,13 @@ use DateTime;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- * 	"hint-reason"     = "MA\Entity\Note\HintReason",
- * 	"hint-suggestion" = "MA\Entity\Note\HintSuggestion",
- * 	"hint-influence"  = "MA\Entity\Note\HintInfluence"
+ * 	"hint-reason"     	= "MA\Entity\Note\HintReason",
+ * 	"hint-influence"  	= "MA\Entity\Note\HintInfluence",
+ * 	"hint-suggestion" 	= "MA\Entity\Note\HintSuggestion",
+ * 	"hint-effect" 		= "MA\Entity\Note\HintEffect",
+ * 	"hint-prevention" 	= "MA\Entity\Note\HintPrevention",
+ * 	"context-reason"    = "MA\Entity\Note\ContextReason",
+ * 	"context-influence" = "MA\Entity\Note\ContextInfluence",
  * })
  */
 abstract class AbstractNote implements 

@@ -231,21 +231,23 @@ var MAStage = /** @class */ (function () {
         return e;
     };
     MAStage.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.order = obj.order;
-        this.body = obj.body;
-        this.commentCount = obj.commentCount;
-        this.created = new Date(obj.created.date);
+        if (obj.id) {
+            this.id = obj.id;
+            this.order = obj.order;
+            this.body = obj.body;
+            this.commentCount = obj.commentCount;
+            this.created = new Date(obj.created.date);
+            this.user = new MAUser(obj._embedded.owner);
+            this.operations = [];
+            this.images = [];
+            for (var i = 0; i < obj._embedded.images.length; i++) {
+                this.addImage(new MAImage(obj._embedded.images[i]));
+            }
+            for (var i = 0; i < obj._embedded.operations.length; i++) {
+                this.operations.push(MAOperation.fromJSON(obj._embedded.operations[i]));
+            }
+        }
         this.links = new MALinks(obj._links);
-        this.user = new MAUser(obj._embedded.owner);
-        this.operations = [];
-        this.images = [];
-        for (var i = 0; i < obj._embedded.images.length; i++) {
-            this.addImage(new MAImage(obj._embedded.images[i]));
-        }
-        for (var i = 0; i < obj._embedded.operations.length; i++) {
-            this.operations.push(MAOperation.fromJSON(obj._embedded.operations[i]));
-        }
     };
     MAStage.prototype.toJSON = function () {
         var operations = [];
@@ -288,6 +290,11 @@ var MAStage = /** @class */ (function () {
             else
                 return 0;
         });
+    };
+    MAStage.prototype.addHints = function (items) {
+        for (var i = 0; i < items.length; i++) {
+            this.addHint(items[i]);
+        }
     };
     MAStage.prototype.addHint = function (obj) {
         obj.stage = this;
@@ -410,13 +417,15 @@ var MAHintType = /** @class */ (function () {
         return e;
     };
     MAHintType.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.priority = obj.priority;
-        this.user = new MAUser(obj._embedded.owner);
-        this.operation = MAOperation.fromJSON(obj._embedded.operation);
-        this.description = obj.description;
-        this.created = new Date(obj.created.date);
+        if (obj._embedded) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.priority = obj.priority;
+            this.user = new MAUser(obj._embedded.owner);
+            this.operation = MAOperation.fromJSON(obj._embedded.operation);
+            this.description = obj.description;
+            this.created = new Date(obj.created.date);
+        }
         this.links = new MALinks(obj._links);
     };
     MAHintType.prototype.toJSON = function () {
@@ -429,11 +438,136 @@ var MAHintType = /** @class */ (function () {
     };
     return MAHintType;
 }());
+var MAHintContextRel = /** @class */ (function () {
+    function MAHintContextRel(obj) {
+        this.id = obj.id;
+        this.stage = MAStage.fromJSON(obj._embedded.stage);
+        this.hint = MAHint.fromJSON(obj._embedded.hint);
+        this.links = new MALinks(obj._links);
+    }
+    MAHintContextRel.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            hint: this.hint.id,
+            stage: this.stage.id,
+        };
+    };
+    return MAHintContextRel;
+}());
+var MAHintContext = /** @class */ (function () {
+    function MAHintContext() {
+        this.commentCount = 0;
+        this.parents = [];
+        this.children = [];
+        this.reasons = [];
+        this.influences = [];
+        this.simulations = [];
+        this.comments = new MACollection();
+    }
+    MAHintContext.fromJSON = function (obj) {
+        var e = new MAHintContext();
+        e.load(obj);
+        return e;
+    };
+    MAHintContext.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.created = new Date(obj.created.date);
+            this.hint = MAHint.fromJSON(obj._embedded.hint);
+            this.user = new MAUser(obj._embedded.owner);
+            this.commentCount = obj.commentCount;
+            this.links = new MALinks(obj._links);
+            this.parents = [];
+            this.children = [];
+            this.reasons = [];
+            this.influences = [];
+            this.simulations = [];
+            for (var i = 0; i < obj._embedded.simulations.length; i++) {
+                this.addSimulation(MASimulation.fromJSON(obj._embedded.simulations[i]));
+            }
+            for (var i = 0; i < obj._embedded.reasons.length; i++) {
+                this.addReason(MANote.fromJSON(obj._embedded.reasons[i]));
+            }
+            for (var i = 0; i < obj._embedded.influences.length; i++) {
+                this.addInfluence(MANote.fromJSON(obj._embedded.influences[i]));
+            }
+            for (var i = 0; i < obj._embedded.parents.length; i++) {
+                if (obj._embedded.parents[i].id) {
+                    this.parents.push(new MAHintContextRel(obj._embedded.parents[i]));
+                }
+            }
+            for (var i = 0; i < obj._embedded.children.length; i++) {
+                if (obj._embedded.children[i].id) {
+                    this.children.push(new MAHintContextRel(obj._embedded.children[i]));
+                }
+            }
+        }
+        this.links = new MALinks(obj._links);
+    };
+    Object.defineProperty(MAHintContext.prototype, "name", {
+        get: function () {
+            return this.hint.name + ' | Context';
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MAHintContext.prototype.setHint = function (obj) {
+        this.hint = obj;
+    };
+    MAHintContext.prototype.addSimulation = function (obj) {
+        obj.setContext(this);
+        this.simulations.push(obj);
+    };
+    MAHintContext.prototype.addReason = function (obj) {
+        obj.setSource(this);
+        this.reasons.push(obj);
+    };
+    MAHintContext.prototype.addInfluence = function (obj) {
+        obj.setSource(this);
+        this.influences.push(obj);
+    };
+    MAHintContext.prototype.removeNote = function (obj) {
+        var index;
+        if ((index = this.reasons.indexOf(obj)) >= 0) {
+            var res = this.reasons.splice(index, 1);
+        }
+        else if ((index = this.influences.indexOf(obj)) >= 0) {
+            var res = this.influences.splice(index, 1);
+        }
+        console.log(index, this, res);
+    };
+    MAHintContext.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAHintContext.prototype.addComment = function (obj) {
+        this.commentCount++;
+        this.comments.items.unshift(obj);
+    };
+    MAHintContext.prototype.toJSON = function () {
+        var parents = [];
+        var children = [];
+        for (var i = 0; i < this.parents.length; i++) {
+            parents.push(this.parents[i].toJSON());
+        }
+        for (var i = 0; i < this.children.length; i++) {
+            children.push(this.children[i].toJSON());
+        }
+        return {
+            id: this.id,
+            hint: this.hint ? this.hint.id : null,
+            reasons: this.reasons,
+            influences: this.influences,
+            parents: parents,
+            children: children,
+        };
+    };
+    return MAHintContext;
+}());
 var MAHint = /** @class */ (function () {
     function MAHint() {
         this.priority = 0;
         this.comments = new MACollection();
-        this.simulations = [];
+        this.contexts = [];
         this.created = new Date;
     }
     MAHint.fromJSON = function (obj) {
@@ -442,23 +576,27 @@ var MAHint = /** @class */ (function () {
         return e;
     };
     MAHint.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.priority = obj.priority;
-        this.type = MAHintType.fromJSON(obj._embedded.type);
-        this.user = new MAUser(obj._embedded.owner);
-        this.description = obj.description;
-        this.commentCount = obj.commentCount;
-        this.created = new Date(obj.created.date);
-        this.links = new MALinks(obj._links);
-        this.simulations = [];
-        for (var i = 0; i < obj._embedded.simulations.length; i++) {
-            this.addSimulation(MASimulation.fromJSON(obj._embedded.simulations[i]));
+        if (obj._embedded) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.priority = obj.priority;
+            this.type = MAHintType.fromJSON(obj._embedded.type);
+            this.operation = MAOperation.fromJSON(obj._embedded.operation);
+            this.user = new MAUser(obj._embedded.owner);
+            this.description = obj.description;
+            this.commentCount = obj.commentCount;
+            this.stageOrder = obj.stageOrder;
+            this.created = new Date(obj.created.date);
+            this.contexts = [];
+            for (var i = 0; i < obj._embedded.contexts.length; i++) {
+                this.addContext(MAHintContext.fromJSON(obj._embedded.contexts[i]));
+            }
         }
+        this.links = new MALinks(obj._links);
     };
-    MAHint.prototype.addSimulation = function (obj) {
-        obj.setHint(this);
-        this.simulations.push(obj);
+    MAHint.prototype.addContext = function (obj) {
+        obj.hint = this;
+        this.contexts.push(obj);
     };
     MAHint.prototype.getComments = function () {
         return this.comments.items;
@@ -467,14 +605,22 @@ var MAHint = /** @class */ (function () {
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
+    MAHint.prototype.getSimulations = function () {
+        var items = [];
+        for (var i = 0; i < this.contexts.length; i++) {
+            items = items.concat(this.contexts[i].simulations);
+        }
+        return items;
+    };
     MAHint.prototype.toJSON = function () {
         return {
             id: this.id,
             name: this.name,
+            stageOrder: this.stageOrder,
             priority: this.priority,
             description: this.description,
             type: this.type ? this.type.id : null,
-            operation: this.type ? this.type.operation.id : null,
+            operation: this.operation ? this.operation.id : null,
         };
     };
     return MAHint;
@@ -482,9 +628,9 @@ var MAHint = /** @class */ (function () {
 var MASimulation = /** @class */ (function () {
     function MASimulation() {
         this.state = MASimulation.NOT_PROCESSED;
-        this.reasons = [];
+        this.effects = [];
         this.suggestions = [];
-        this.influences = [];
+        this.preventions = [];
         this.comments = new MACollection();
         this.created = new Date;
     }
@@ -494,26 +640,28 @@ var MASimulation = /** @class */ (function () {
         return s;
     };
     MASimulation.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.state = obj.state;
-        this.prevention = obj.prevention;
-        this.effect = obj.effect;
-        this.commentCount = obj.commentCount;
-        this.when = obj.when ? new Date(obj.when.date) : null;
-        this.who = obj.who;
-        this.user = new MAUser(obj._embedded.owner);
-        this.created = new Date(obj.created.date);
-        this.reasons = [];
-        this.suggestions = [];
-        this.influences = [];
-        for (var i = 0; i < obj._embedded.reasons.length; i++) {
-            this.addReason(MANote.fromJSON(obj._embedded.reasons[i]));
-        }
-        for (var i = 0; i < obj._embedded.influences.length; i++) {
-            this.addInfluence(MANote.fromJSON(obj._embedded.influences[i]));
-        }
-        for (var i = 0; i < obj._embedded.suggestions.length; i++) {
-            this.addSuggestion(MANote.fromJSON(obj._embedded.suggestions[i]));
+        if (obj.id) {
+            this.id = obj.id;
+            this.state = obj.state;
+            this.prevention = obj.prevention;
+            this.effect = obj.effect;
+            this.commentCount = obj.commentCount;
+            this.when = obj.when ? new Date(obj.when.date) : null;
+            this.who = obj.who;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+            this.effects = [];
+            this.suggestions = [];
+            this.preventions = [];
+            for (var i = 0; i < obj._embedded.effects.length; i++) {
+                this.addEffect(MANote.fromJSON(obj._embedded.effects[i]));
+            }
+            for (var i = 0; i < obj._embedded.preventions.length; i++) {
+                this.addPrevention(MANote.fromJSON(obj._embedded.preventions[i]));
+            }
+            for (var i = 0; i < obj._embedded.suggestions.length; i++) {
+                this.addSuggestion(MANote.fromJSON(obj._embedded.suggestions[i]));
+            }
         }
         this.links = new MALinks(obj._links);
     };
@@ -525,43 +673,43 @@ var MASimulation = /** @class */ (function () {
             when: this.when ? this.when.toString() : null,
             prevention: this.prevention,
             effect: this.effect,
-            reasons: this.reasons,
-            influences: this.influences,
+            effects: this.effects,
+            preventions: this.preventions,
             suggestions: this.suggestions,
         };
     };
     Object.defineProperty(MASimulation.prototype, "name", {
         get: function () {
-            return this.hint.name + ' | Simulation';
+            return this.context.name + ' | Simulation';
         },
         enumerable: true,
         configurable: true
     });
-    MASimulation.prototype.setHint = function (obj) {
-        this.hint = obj;
+    MASimulation.prototype.setContext = function (obj) {
+        this.context = obj;
     };
-    MASimulation.prototype.addReason = function (obj) {
-        obj.setSimulation(this);
-        this.reasons.push(obj);
+    MASimulation.prototype.addEffect = function (obj) {
+        obj.setSource(this);
+        this.effects.push(obj);
     };
-    MASimulation.prototype.addInfluence = function (obj) {
-        obj.setSimulation(this);
-        this.influences.push(obj);
+    MASimulation.prototype.addPrevention = function (obj) {
+        obj.setSource(this);
+        this.preventions.push(obj);
     };
     MASimulation.prototype.addSuggestion = function (obj) {
-        obj.setSimulation(this);
+        obj.setSource(this);
         this.suggestions.push(obj);
     };
     MASimulation.prototype.removeNote = function (obj) {
         var index;
-        if ((index = this.reasons.indexOf(obj)) >= 0) {
-            var res = this.reasons.splice(index, 1);
+        if ((index = this.effects.indexOf(obj)) >= 0) {
+            var res = this.effects.splice(index, 1);
         }
         else if ((index = this.suggestions.indexOf(obj)) >= 0) {
             var res = this.suggestions.splice(index, 1);
         }
-        else if ((index = this.influences.indexOf(obj)) >= 0) {
-            var res = this.influences.splice(index, 1);
+        else if ((index = this.preventions.indexOf(obj)) >= 0) {
+            var res = this.preventions.splice(index, 1);
         }
         console.log(index, this, res);
     };
@@ -591,16 +739,18 @@ var MANote = /** @class */ (function () {
         return s;
     };
     MANote.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.text = obj.text;
-        this.commentCount = obj.commentCount;
-        this.user = new MAUser(obj._embedded.owner);
-        this.created = new Date(obj.created.date);
+        if (obj.id) {
+            this.id = obj.id;
+            this.text = obj.text;
+            this.commentCount = obj.commentCount;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+        }
         this.links = new MALinks(obj._links);
     };
     Object.defineProperty(MANote.prototype, "name", {
         get: function () {
-            return this.simulation.name + ' | Note';
+            return this.source.name + ' | Note';
         },
         enumerable: true,
         configurable: true
@@ -612,8 +762,8 @@ var MANote = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    MANote.prototype.setSimulation = function (obj) {
-        this.simulation = obj;
+    MANote.prototype.setSource = function (obj) {
+        this.source = obj;
     };
     MANote.prototype.getComments = function () {
         return this.comments.items;

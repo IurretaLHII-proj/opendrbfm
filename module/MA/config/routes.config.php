@@ -506,7 +506,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|simulate|comments|comment|actions',
+								'action' => 'detail|edit|delete|context|comments|comment|actions',
 							]
 						],
 						'may_terminate' => true,
@@ -560,6 +560,44 @@ return [
 							],
 						],
 					],
+					'context' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/context',
+							'defaults' => [
+								'controller' => Controller\HintContextController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail|edit|delete|reason|influence|simulate|comments|comment',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\HintContextController::class,
+											],
+										],
+									]
+								],
+							],
+						],
+					],
 					'simulation' => [
 						'type' => 'Literal',
 						'options' => [
@@ -580,7 +618,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail|edit|delete|render|reason|influence|suggestion|comments|comment',
+										'action' => 'detail|edit|delete|render|suggestion|effect|prevention|comments|comment',
 									]
 								],
 								'may_terminate' => true,

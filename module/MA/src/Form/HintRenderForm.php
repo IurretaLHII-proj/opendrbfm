@@ -60,29 +60,50 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
              ],
         ], ['priority' => -9]);
 
-        $this->add([
-             'type' => 'Textarea',
-             'name' => 'effect',
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'rows' => 4,
-             ],
-             'options' => [
-                 'label' => 'Effect',
-             ],
-        ], ['priority' => -9]);
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'suggestions',
+				'options' => [
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintSuggestion::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
 
-        $this->add([
-             'type' => 'Textarea',
-             'name' => 'prevention',
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'rows' => 4,
-             ],
-             'options' => [
-                 'label' => 'Prevention',
-             ],
-        ], ['priority' => -9]);
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'effects',
+				'options' => [
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintEffect::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'preventions',
+				'options' => [
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintPrevention::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
 
         $this->add([
                 'type' => 'Submit',

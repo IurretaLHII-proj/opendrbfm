@@ -13,8 +13,11 @@
 		</div>
 	{% endif %}
 	<div class="hint flex-fill align-self-center mx-auto">
-		<p class="level">Stage {{ item.stage.level }}</p>
-		<p><a href="{{url('process/hint/detail', {id: item.id}) }}">{{ item.name }}</a></p>
+		<p class="level">Stage {{ item.stage.order }}</p>
+		<div class="small text-muted">{{ item.operation }}</div>
+		<a href="{{url('process/hint/detail', {id: item.id}) }}" class="btn btn-sm" style="white-space:normal">
+			<span class="badge badge-light mr-2">{{ item.priority }}</span> {{ item.name }}
+		</a>
 	</div>
 	{% if sChildren and not item.children.isEmpty %}
 		<div class="d-flex flex-column">

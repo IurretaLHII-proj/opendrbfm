@@ -62,26 +62,26 @@ class Simulation implements
     /**
 	 * @var HintInterface
      * @ORM\ManyToOne(
-     *     targetEntity="MA\Entity\Hint",
+     *     targetEntity="MA\Entity\HintContext",
      *     inversedBy="simulations"
      * )
      * @ORM\JoinColumn(
-     *     name = "hint_id",
+     *     name = "src_id",
 	 *     referencedColumnName = "id"
      * )
      */
-    protected $hint;
+    protected $context;
 
 	/**
-	 * @var Note\HintReason[]
+	 * @var Note\HintEffect[]
 	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintReason",
+	 *	targetEntity = "MA\Entity\Note\HintEffect",
 	 *	mappedBy	 = "simulation",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
-	protected $reasons;
+	protected $effects;
 
 	/**
 	 * @var Note\HintSuggestion[]
@@ -95,15 +95,15 @@ class Simulation implements
 	protected $suggestions;
 
 	/**
-	 * @var Note\HintInfluence[]
+	 * @var Note\HintPrevention[]
 	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintInfluence",
+	 *	targetEntity = "MA\Entity\Note\HintPrevention",
 	 *	mappedBy	 = "simulation",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
-	protected $influences;
+	protected $preventions;
 
 	/**
 	 * @var int
@@ -172,9 +172,9 @@ class Simulation implements
 		$this->created     = new DateTime;
 		$this->updated     = new DateTime;
 		$this->comments    = new ArrayCollection;
-		$this->reasons     = new ArrayCollection;
+		$this->effects     = new ArrayCollection;
 		$this->suggestions = new ArrayCollection;
-		$this->influences  = new ArrayCollection;
+		$this->preventions = new ArrayCollection;
 	}
     
     /**
@@ -316,18 +316,28 @@ class Simulation implements
      */
     public function getHint()
     {
-        return $this->hint;
+        return $this->getContext()->getHint();
     }
     
     /**
-     * Set hint.
+     * Get context.
      *
-     * @param HintInterface hint the value to set.
+     * @return HintContextInterface.
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+    
+    /**
+     * Set context.
+     *
+     * @param HintContextInterface context the value to set.
      * @return SimulationInterface.
      */
-    public function setHint(HintInterface $hint)
+    public function setContext(HintContextInterface $context)
     {
-        $this->hint = $hint;
+        $this->context = $context;
         return $this;
     }
 
@@ -420,78 +430,78 @@ class Simulation implements
 	}
     
     /**
-     * Get reasons.
+     * Get effects.
      *
-     * @return Note\HintReason[].
+     * @return Note\HintEffect[].
      */
-    public function getReasons()
+    public function getEffects()
     {
-        return $this->reasons;
+        return $this->effects;
     }
     
     /**
-     * Set reasons.
+     * Set effects.
      *
-     * @param Note\HintReason[] reasons the value to set.
+     * @param Note\HintEffect[] effects the value to set.
      * @return SimulationInterface.
      */
-    public function setReasons($reasons)
+    public function setEffects($effects)
     {
-        $this->reasons = $reasons;
+        $this->effects = $effects;
         return $this;
     }
     
     /**
-     * Add reason.
+     * Add effect.
      *
-     * @param Note\HintReason reason the value to set.
+     * @param Note\HintEffect effect the value to set.
      * @return SimulationInterface.
      */
-    public function addReason(Note\HintReason $reason)
+    public function addEffect(Note\HintEffect $effect)
     {
-		$reason->setSimulation($this);
-		$this->getReasons()->add($reason);
+		$effect->setSimulation($this);
+		$this->getEffects()->add($effect);
         return $this;
     }
     
     /**
-     * Add reasons.
+     * Add effects.
      *
-     * @param Note\HintReason[] reasons the value to set.
+     * @param Note\HintEffect[] effects the value to set.
      * @return SimulationInterface.
      */
-    public function addReasons($reasons)
+    public function addEffects($effects)
     {
-		foreach ($reasons as $reason) {
-			$this->addReason($reason);
+		foreach ($effects as $effect) {
+			$this->addEffect($effect);
 		}
 
         return $this;
     }
     
     /**
-     * Add reason.
+     * Add effect.
      *
-     * @param Note\HintReason reason the value to set.
+     * @param Note\HintEffect effect the value to set.
      * @return SimulationInterface.
      */
-    public function removeReason(Note\HintReason $reason)
+    public function removeEffect(Note\HintEffect $effect)
     {
-		$reason->setSimulation();
-		$this->getReasons()->removeElement($reason);
+		$effect->setSimulation();
+		$this->getEffects()->removeElement($effect);
         return $this;
     }
     
     /**
-     * Add reasons.
+     * Add effects.
      *
-     * @param Note\HintReason[] reasons the value to set.
+     * @param Note\HintEffect[] effects the value to set.
      * @return SimulationInterface.
      */
-    public function removeReasons($reasons)
+    public function removeEffects($effects)
     {
-		foreach ($reasons as $reason) {
-			$this->removeReason($reason);
+		foreach ($effects as $effect) {
+			$this->removeEffect($effect);
 		}
 
         return $this;
@@ -576,78 +586,78 @@ class Simulation implements
     }
     
     /**
-     * Get influences.
+     * Get preventions.
      *
-     * @return Note\HintInfluence[].
+     * @return Note\HintPrevention[].
      */
-    public function getInfluences()
+    public function getPreventions()
     {
-        return $this->influences;
+        return $this->preventions;
     }
     
     /**
-     * Set influences.
+     * Set preventions.
      *
-     * @param Note\HintInfluence[] influences the value to set.
+     * @param Note\HintPrevention[] preventions the value to set.
      * @return Hint.
      */
-    public function setInfluences($influences)
+    public function setPreventions($preventions)
     {
-        $this->influences = $influences;
+        $this->preventions = $preventions;
         return $this;
     }
     
     /**
-     * Add influence.
+     * Add prevention.
      *
-     * @param Note\HintInfluence influence the value to set.
+     * @param Note\HintPrevention prevention the value to set.
      * @return Stage.
      */
-    public function addInfluence(Note\HintInfluence $influence)
+    public function addPrevention(Note\HintPrevention $prevention)
     {
-		$influence->setSimulation($this);
-		$this->getInfluences()->add($influence);
+		$prevention->setSimulation($this);
+		$this->getPreventions()->add($prevention);
         return $this;
     }
     
     /**
-     * Add influences.
+     * Add preventions.
      *
-     * @param Note\HintInfluence[] influences the value to set.
+     * @param Note\HintPrevention[] preventions the value to set.
      * @return Stage.
      */
-    public function addInfluences($influences)
+    public function addPreventions($preventions)
     {
-		foreach ($influences as $influence) {
-			$this->addInfluence($influence);
+		foreach ($preventions as $prevention) {
+			$this->addPrevention($prevention);
 		}
 
         return $this;
     }
     
     /**
-     * Add influence.
+     * Add prevention.
      *
-     * @param Note\HintInfluence influence the value to set.
+     * @param Note\HintPrevention prevention the value to set.
      * @return Stage.
      */
-    public function removeInfluence(Note\HintInfluence $influence)
+    public function removePrevention(Note\HintPrevention $prevention)
     {
-		$influence->setSimulation();
-		$this->getInfluences()->removeElement($influence);
+		$prevention->setSimulation();
+		$this->getPreventions()->removeElement($prevention);
         return $this;
     }
     
     /**
-     * Add influences.
+     * Add preventions.
      *
-     * @param Note\HintInfluence[] influences the value to set.
+     * @param Note\HintPrevention[] preventions the value to set.
      * @return Stage.
      */
-    public function removeInfluences($influences)
+    public function removePreventions($preventions)
     {
-		foreach ($influences as $influence) {
-			$this->removeInfluence($influence);
+		foreach ($preventions as $prevention) {
+			$this->removePrevention($prevention);
 		}
 
         return $this;
@@ -753,9 +763,9 @@ class Simulation implements
 			'effect'	   => $this->getEffect(),
 			'prevention'   => $this->getPrevention(),
 			'commentCount' => $this->getCommentCount(),
-			'reasons' 	   => new \ZF\Hal\Collection($this->getReasons()),
+			'effects' 	   => new \ZF\Hal\Collection($this->getEffects()),
 			'suggestions'  => new \ZF\Hal\Collection($this->getSuggestions()),
-			'influences'   => new \ZF\Hal\Collection($this->getInfluences()),
+			'preventions'  => new \ZF\Hal\Collection($this->getPreventions()),
         );
     }
 
@@ -767,9 +777,9 @@ class Simulation implements
 		$this->id 		    = null;
 		$this->commentCount = 0;
 		$this->comments     = new ArrayCollection;
-		$this->reasons      = new ArrayCollection;
+		$this->effects      = new ArrayCollection;
 		$this->suggestions  = new ArrayCollection;
-		$this->influences   = new ArrayCollection;
+		$this->preventions  = new ArrayCollection;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
 	}
@@ -815,21 +825,21 @@ class Simulation implements
 				],
 			],
 			[
-				'rel'   	  => 'reason',
-				'privilege'   => 'reason',
+				'rel'   	  => 'effect',
+				'privilege'   => 'effect',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'reason', 'id' => $this->getId()],
+				    'params'  => ['action' => 'effect', 'id' => $this->getId()],
 				],
 			],
 			[
-				'rel'   	  => 'influence',
-				'privilege'   => 'influence',
+				'rel'   	  => 'prevention',
+				'privilege'   => 'prevention',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'influence', 'id' => $this->getId()],
+				    'params'  => ['action' => 'prevention', 'id' => $this->getId()],
 				],
 			],
 			[

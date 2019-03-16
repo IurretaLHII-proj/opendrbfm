@@ -8,12 +8,34 @@ var _stateOptions = [
 		{id:MASimulation.IN_PROGRESS,  name: "IN PROGRESS"},
 		{id:MASimulation.FINISHED,  name: "FINISHED"},
 		{id:MASimulation.NOT_NECESSARY, name: "NOT NECESSARY"},
-		{id:MASimulation.CANCELlED, name: "CANCELlED"},
+		{id:MASimulation.CANCELLED, name: "CANCELLED"},
 	];
 
 App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	$scope.version = null;
 	$scope.current = null;
+	$scope.commons = {
+		stage: {
+			getHints: function(stage, callback) {
+				if (stage.isHintsLoaded()) {
+					if (callback) callback();
+				}
+				else {
+					stage.hintsLoaded = true;
+					$resource(stage.links.getHref('hints')).get().$promise.then(
+						function(data) {
+							//$timeout(function(){
+							stage.addHints(data._embedded.items.map(e => {return MAHint.fromJSON(e)}));
+							//}, 1000);
+							if (callback) callback();
+						},		
+						function(err) {
+						}		
+					);
+				}
+			}
+		}
+	};
 
 	$scope.setVersion = function(version) {
 		$scope.version = version;
@@ -35,20 +57,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	}
 
 	$scope.setCurrent = function(stage) {
-		$scope.current = stage;
-		if (!stage.isHintsLoaded()) {
-			$resource(stage.links.getHref('hints')).get().$promise.then(
-				function(data) {
-					//$timeout(function(){
-					stage.hintsLoaded = true;
-					angular.forEach(data._embedded.items, e => {stage.addHint(MAHint.fromJSON(e))});
-					$scope.current = stage;
-					//}, 1000);
-				},		
-				function(err) {
-				}		
-			);
-		}
+		$scope.commons.stage.getHints(stage, function() {$scope.current = stage; console.log(stage)});
 	}
 
 	$scope.init = function(item, values) {
@@ -250,6 +259,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/hint-form.html',
 			controller: '_HintModalCtrl',	
+			scope: $scope,
 			size: 'lg',
 			resolve: {hint: hint, stage: $scope.current}
 		});
@@ -268,6 +278,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/hint-form.html',
 			controller: '_HintModalCtrl',	
+			scope: $scope,
 			size: 'lg',
 			resolve: {hint: hint, stage: $scope.current}
 		});
@@ -296,20 +307,21 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.addSimulation = function(hint) {
-		let simulation = new MASimulation();
-		simulation.setHint(hint);
+	$scope.addContext = function(hint) {
+		let context = new MAHintContext();
+		context.setHint(hint);
 		var modal = $uibModal.open({
 			animation: true,
-			templateUrl : '/js/custom/tpl/modal/simulation-form.html',
-			controller: '_SimulationModalCtrl',	
+			templateUrl : '/js/custom/tpl/modal/hint-context-form.html',
+			controller: '_HintContextModalCtrl',	
+			scope: $scope,
 			size: 'lg',
-			resolve: {simulation : simulation}
+			resolve: {e : context}
 		});
 
 		modal.result.then(
 			function() {
-				hint.addSimulation(simulation);
+				hint.addContext(context);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
@@ -317,17 +329,21 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.editSimulation = function(simulation) {
+	$scope.editContext = function(context) {
+		let h = context.hint;
 		var modal = $uibModal.open({
 			animation: true,
-			templateUrl : '/js/custom/tpl/modal/simulation-form.html',
-			controller: '_SimulationModalCtrl',	
+			templateUrl : '/js/custom/tpl/modal/hint-context-form.html',
+			controller: '_HintContextModalCtrl',	
+			scope: $scope,
 			size: 'lg',
-			resolve: {simulation : simulation}
+			resolve: {e : context}
 		});
 
 		modal.result.then(
 			function() {
+				//fixme
+				context.hint = h;
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
@@ -335,11 +351,11 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.deleteSimulation = function(sm) {
+	$scope.deleteContext = function(c) {
 		var war = $scope._addWarning("Deleting...");
-		$resource(sm.links.getHref('delete')).delete().$promise.then(
+		$resource(c.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-        		sm.hint.simulations.splice(sm.hint.simulations.indexOf(sm), 1);
+        		c.hint.contexts.splice(c.hint.contexts.indexOf(c), 1);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Succesfully deleted");
 			},
@@ -351,7 +367,9 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.renderSimulation = function(simulation) {
+	$scope.addSimulation = function(context) {
+		let simulation = new MASimulation();
+		simulation.setContext(context);
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/render-form.html',
@@ -361,11 +379,46 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		});
 
 		modal.result.then(
-			function(res) {
+			function() {
+				context.addSimulation(simulation);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
 			}
+		);
+	}
+
+	$scope.editSimulation = function(simulation) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/render-form.html',
+			controller: '_RenderModalCtrl',	
+			size: 'lg',
+			resolve: {simulation : simulation}
+		});
+
+		modal.result.then(
+			function() {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.deleteSimulation = function(s) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(s.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		s.context.simulations.splice(s.context.simulations.indexOf(s), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
 		);
 	}
 
@@ -391,7 +444,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 	$scope.addReason = function(s) {
 		let item  = new MANote;
-		item.setSimulation(s);
+		item.setSource(s);
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/note-form.html',
@@ -403,7 +456,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 		modal.result.then(
 			function(res) {
-				item.simulation.reasons.push(item);
+				item.source.reasons.push(item);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {}
@@ -412,7 +465,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 	$scope.addInfluence = function(s) {
 		let item  = new MANote;
-		item.setSimulation(s);
+		item.setSource(s);
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/note-form.html',
@@ -424,7 +477,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 		modal.result.then(
 			function(res) {
-				item.simulation.influences.push(item);
+				item.source.influences.push(item);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {}
@@ -433,7 +486,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 	$scope.addSuggestion = function(s) {
 		let item  = new MANote;
-		item.setSimulation(s);
+		item.setSource(s);
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/note-form.html',
@@ -445,7 +498,49 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 		modal.result.then(
 			function(res) {
-				item.simulation.suggestions.push(item);
+				item.source.suggestions.push(item);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {}
+		);
+	}
+
+	$scope.addEffect = function(s) {
+		let item  = new MANote;
+		item.setSource(s);
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/note-form.html',
+			controller: '_NoteModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {note : item, link: s.links.keys['effect']}
+		});
+
+		modal.result.then(
+			function(res) {
+				item.source.effects.push(item);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {}
+		);
+	}
+
+	$scope.addPrevention = function(s) {
+		let item  = new MANote;
+		item.setSource(s);
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/note-form.html',
+			controller: '_NoteModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {note : item, link: s.links.keys['prevention']}
+		});
+
+		modal.result.then(
+			function(res) {
+				item.source.preventions.push(item);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {}
@@ -475,7 +570,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		var war = $scope._addWarning("Deleting...");
 		$resource(item.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-				item.simulation.removeNote(item);
+				item.source.removeNote(item);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Removed succesfully");
 			},

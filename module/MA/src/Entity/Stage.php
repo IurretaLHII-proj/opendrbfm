@@ -199,6 +199,16 @@ class Stage implements
     }
     
     /**
+     * Get process.
+     *
+     * @return ProcessInterface.
+     */
+    public function getProcess()
+    {
+        return $this->getVersion()->getProcess();
+    }
+    
+    /**
      * Get version.
      *
      * @return VersionInterface.

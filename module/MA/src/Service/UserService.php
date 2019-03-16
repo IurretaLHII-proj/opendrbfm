@@ -20,12 +20,15 @@ class UserService extends AbstractService
 				get_class($source)));
 		}
 
-		if (null === ($user = $this->getAuthService()->getIdentity())) {
-			throw new \RuntimeException(sprintf("no user for given UserAwareInterface on %s",
-				get_class($source)));
-		}
+		if (null === ($user = $source->getUser())) {
 
-		$source->setUser($user);
+			if (null === ($user = $this->getAuthService()->getIdentity())) {
+				throw new \RuntimeException(sprintf("no user for given UserAwareInterface on %s",
+					get_class($source)));
+			}
+
+			$source->setUser($user);
+		}
 	}
 
 	/**

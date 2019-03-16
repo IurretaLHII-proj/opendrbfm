@@ -1,5 +1,6 @@
 App.controller('_NoteModalCtrl', function($scope, $uibModalInstance, $resource, note, link)
 {
+	console.log(note);
 	$scope.errors = {};
 	$scope.note   = note;
 	$scope.values = JSON.parse(JSON.stringify(note));
@@ -38,6 +39,64 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 					$scope.errors = err.data.errors;
 				},
 			);
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_HintContextModalCtrl', function($scope, $uibModalInstance, $resource, e) {
+	$scope.context = e;
+	$scope.values  = JSON.parse(JSON.stringify(e));
+	$scope.errors  = {};
+	console.log(e, $scope.values);
+
+	var dflt    = {id:null, name:" --Select one-- "};
+	$scope.dflt = dflt;
+
+	$scope.init = function() {
+		let stage 		  = e.hint.stage;
+		$scope.prevStages = stage.version.stages.filter(s => {return s.order<stage.order});
+		$scope.nextStages = stage.version.stages.filter(s => {return s.order>stage.order});
+	}
+
+	$scope.prevHints = function(i) {
+		let prev = $scope.prevStages.find(e => {return e.id == $scope.values.parents[i].stage});
+		if (prev) {
+			$scope.commons.stage.getHints(prev);
+			return prev.hints;
+		}
+		else return [];
+	}
+
+	$scope.nextHints = function(i) {
+		let next = $scope.nextStages.find(e => {return e.id == $scope.values.children[i].stage});
+		if (next) {
+			$scope.commons.stage.getHints(next);
+			return next.hints;
+		}
+		else return [];
+	}
+
+	$scope.addParent    = function() {$scope.values.parents.push({stage: null, hint:null})}
+	$scope.addReason    = function() {$scope.values.reasons.push({})}
+	$scope.addChild	    = function() {$scope.values.children.push({stage: null, hint:null})}
+	$scope.addInfluence	= function() {$scope.values.influences.push({})}
+
+	$scope.save = function() {
+		var uri = e.id ? e.links.getHref('edit') : e.hint.links.getHref('context');
+		return $resource(uri).save($scope.values).$promise.then(
+			function(data) { 
+				e.load(data);
+				console.log(data, e);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			}	
+		);
 	};
 
 	$scope.cancel = function() {
@@ -114,11 +173,15 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	$scope.values.state	= $scope.values.state.toString();
 	$scope.values.when  = $scope.values.when ? new Date($scope.values.when) : null;
 	$scope.errors  		= {};
+	console.log(simulation, $scope.values);
 
 	$scope.save = function() {
 		var raw = angular.copy($scope.values);
+		var uri = simulation.id ? 
+			simulation.links.getHref('edit') : simulation.context.links.getHref('simulate');
+
 		raw.when = raw.when ? $filter('date')(new Date($scope.values.when), 'yyyy-MM-dd') : null;
-		$resource(simulation.links.getHref('render')).save(raw).$promise.then(
+		$resource(uri).save(raw).$promise.then(
 			function(data) {
 				simulation.load(data);
 				$uibModalInstance.close(data);	
@@ -132,7 +195,7 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');	
 	};
-	console.log($scope.stateOptions, $scope.values, simulation);
+	console.log($scope.values, simulation);
 });
 
 App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resource, process) {

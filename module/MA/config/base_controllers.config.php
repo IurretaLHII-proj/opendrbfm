@@ -24,6 +24,9 @@ return [
 	Controller\Js\Comment\HintController::class => [
 		'repository' => Entity\Comment\Hint::class,
 	],
+	Controller\Js\Comment\HintContextController::class => [
+		'repository' => Entity\Comment\HintContext::class,
+	],
 	Controller\Js\Comment\NoteController::class => [
 		'repository' => Entity\Comment\Note::class,
 	],
@@ -114,6 +117,9 @@ return [
 	],
 	Controller\Js\HintController::class => [
 		'repository' => Entity\Hint::class,
+	],
+	Controller\Js\HintContextController::class => [
+		'repository' => Entity\HintContext::class,
 	],
 	Controller\SimulationController::class => [
 		'repository' => Entity\Simulation::class,

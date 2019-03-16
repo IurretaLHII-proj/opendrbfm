@@ -14,13 +14,13 @@ class SimulationService extends AbstractService
 	{
 		$source = $e->getTarget();
 
-		foreach ($source->getReasons() as $note) {
-			$this->getNavService()->triggerService(self::EVENT_CREATE, $note);
-		}
-		foreach ($source->getInfluences() as $note) {
-			$this->getNavService()->triggerService(self::EVENT_CREATE, $note);
-		}
 		foreach ($source->getSuggestions() as $note) {
+			$this->getNavService()->triggerService(self::EVENT_CREATE, $note);
+		}
+		foreach ($source->getEffects() as $note) {
+			$this->getNavService()->triggerService(self::EVENT_CREATE, $note);
+		}
+		foreach ($source->getPreventions() as $note) {
 			$this->getNavService()->triggerService(self::EVENT_CREATE, $note);
 		}
 	}

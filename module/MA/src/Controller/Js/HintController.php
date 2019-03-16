@@ -49,13 +49,13 @@ class HintController extends \Base\Controller\Js\AbstractActionController
 	/**
 	 * @return JsonViewModel
 	 */
-	public function simulateAction()
+	public function contextAction()
 	{
-		$e	  = new \MA\Entity\Simulation;
+		$e	  = new \MA\Entity\HintContext;
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\SimulationForm::class);
+			->get(\MA\Form\HintContextForm::class);
 
 		$e->setHint($this->getEntity());
 		$form->setHydrator(new DoctrineHydrator($em));

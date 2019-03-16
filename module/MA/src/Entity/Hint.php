@@ -107,50 +107,15 @@ class Hint implements
 	protected $commentCount = 0;
 
 	/**
-	 * @var HintInterface[]
-	 * @ORM\ManyToMany(
-	 *	targetEntity = "MA\Entity\Hint",
-	 *	mappedBy	 = "parents",
-	 * )
-	 * @ORM\OrderBy({"priority" = "DESC"})
-	 */
-	protected $children;
-
-	/**
-	 * @var HintInterface[]
-	 * @ORM\ManyToMany(
-	 *	targetEntity = "MA\Entity\Hint",
-	 *	inversedBy = "children"
-	 * )
-	 * @ORM\JoinTable(
-	 *	name = "process_hint_rel",
-	 *	joinColumns = {
-	 *		@ORM\JoinColumn(
-	 *			name = "parent_id",
-	 *			referencedColumnName = "id",
-	 *		)
-	 *	},
-	 *	inverseJoinColumns = {
-	 *		@ORM\JoinColumn(
-	 *			name = "child_id",
-	 *			referencedColumnName = "id",
-	 *		)
-	 *	}
-	 * )
-	 * @ORM\OrderBy({"priority" = "DESC"})
-	 */
-	protected $parents;
-
-	/**
-	 * @var SimulationInterface[]
+	 * @var HintContextInterface[]
 	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Simulation",
+	 *	targetEntity = "MA\Entity\HintContext",
 	 *	mappedBy	 = "hint",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
-	protected $simulations;
+	protected $contexts;
 
 	/**
 	 * @var int
@@ -202,9 +167,6 @@ class Hint implements
 		$this->created     = new DateTime;
 		$this->updated     = new DateTime;
 		$this->comments    = new ArrayCollection;
-		$this->parents     = new ArrayCollection;
-		$this->children    = new ArrayCollection;
-		$this->simulations = new ArrayCollection;
 	}
     
     /**
@@ -543,19 +505,13 @@ class Hint implements
      */
     public function getParents()
     {
-        return $this->parents;
-    }
-    
-    /**
-     * Set parents.
-     *
-     * @param HintInterface[] parents the value to set.
-     * @return HintInterface.
-     */
-    public function setParents($parents)
-    {
-        $this->parents = $parents;
-        return $this;
+		$parents = new ArrayCollection;
+		foreach ($this->getContexts() as $context) {
+			foreach ($context->getParents()->map(function($e){ return $e->getHint(); }) as $hint) {
+				if (!$parents->contains($hint)) $parents->add($hint);
+			}
+		}
+		return $parents;
     }
     
     /**
@@ -565,31 +521,13 @@ class Hint implements
      */
     public function getChildren()
     {
-        return $this->children;
-    }
-    
-    /**
-     * Set children.
-     *
-     * @param HintInterface[] children the value to set.
-     * @return HintInterface.
-     */
-    public function setChildren($children)
-    {
-        $this->children = $children;
-        return $this;
-    }
-    
-    /**
-     * Add child.
-     *
-     * @param HintInterface child the value to set.
-     * @return HintInterface.
-     */
-    public function addChild(HintInterface $child)
-    {
-		$this->getChildren()->add($child);
-        return $this;
+		$children = new ArrayCollection;
+		foreach ($this->getContexts() as $context) {
+			foreach ($context->getChildren()->map(function($e){ return $e->getHint(); }) as $hint) {
+				if (!$children->contains($hint)) $children->add($hint);
+			}
+		}
+		return $children;
     }
 
 	/**
@@ -627,60 +565,6 @@ class Hint implements
 	}
     
     /**
-     * Add parent.
-     *
-     * @param HintInterface parent the value to set.
-     * @return HintInterface.
-     */
-    public function addParent(HintInterface $parent)
-    {
-		$this->getParents()->add($parent);
-        return $this;
-    }
-    
-    /**
-     * Add parents.
-     *
-     * @param HintInterface[] parents the value to set.
-     * @return HintInterface.
-     */
-    public function addParents($parents)
-    {
-		foreach ($parents as $parent) {
-			$this->addParent($parent);
-		}
-
-        return $this;
-    }
-    
-    /**
-     * Add parent.
-     *
-     * @param HintInterface parent the value to set.
-     * @return HintInterface.
-     */
-    public function removeParent(HintInterface $parent)
-    {
-		$this->getParents()->removeElement($parent);
-        return $this;
-    }
-    
-    /**
-     * Add parents.
-     *
-     * @param HintInterface[] parents the value to set.
-     * @return HintInterface.
-     */
-    public function removeParents($parents)
-    {
-		foreach ($parents as $parent) {
-			$this->removeParent($parent);
-		}
-
-        return $this;
-    }
-    
-    /**
      * Get description.
      *
      * @return string.
@@ -703,37 +587,24 @@ class Hint implements
     }
     
     /**
-     * Get simulations.
+     * Get contexts.
      *
-     * @return Simulation[].
+     * @return Context[].
      */
-    public function getSimulations()
+    public function getContexts()
     {
-        return $this->simulations;
+        return $this->contexts;
     }
     
     /**
-     * Set simulations.
+     * Set contexts.
      *
-     * @param Simulation[] simulations the value to set.
+     * @param Context[] contexts the value to set.
      * @return Hint.
      */
-    public function setSimulations($simulations)
+    public function setContexts($contexts)
     {
-        $this->simulations = $simulations;
-        return $this;
-    }
-    
-    /**
-     * Add simulations.
-     *
-     * @param SimulationInterface simulation the value to set.
-     * @return Hint.
-     */
-    public function addSimulation($simulation)
-    {
-		$simulation->setHint($this);
-        $this->getSimulations()->add($simulation);
+        $this->contexts = $contexts;
         return $this;
     }
 
@@ -829,10 +700,7 @@ class Hint implements
 		$this->commentCount = 0;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
-		$this->parents      = new ArrayCollection;
-		$this->children     = new ArrayCollection;
 		$this->comments     = new ArrayCollection;
-		$this->simulations  = new ArrayCollection;
 	}
 
 	/**
@@ -848,22 +716,13 @@ class Hint implements
   	public function provideLinks()
   	{
 		return [
-			//[
-			//	'rel'   	  => 'render',
-			//	'privilege'   => 'render',
-			//	'resource'	  => $this,
-			//	'route' => [
-			//	    'name'    => 'process/hint/detail/json',
-			//	    'params'  => ['action' => 'render', 'id' => $this->getId()],
-			//	],
-			//],
 			[
-				'rel'   	  => 'simulate',
-				'privilege'   => 'simulate',
+				'rel'   	  => 'context',
+				'privilege'   => 'context',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'simulate', 'id' => $this->getId()],
+				    'params'  => ['action' => 'context', 'id' => $this->getId()],
 				],
 			],
 			[

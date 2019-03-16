@@ -48,6 +48,10 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 				$forward = Comment\HintController::class;
 				break;
 
+			case $this->entity instanceof \MA\Entity\Comment\HintContext:
+				$forward = Comment\HintContextController::class;
+				break;
+
 			case $this->entity instanceof \MA\Entity\Comment\Note:
 				$forward = Comment\NoteController::class;
 				break;
@@ -57,7 +61,7 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 				break;
 
 			default:
-				return $this->pageNotFound();
+				return $this->notFoundAction();
 		}
 		$this->getEvent()->setParam("forward", $forward);
 
