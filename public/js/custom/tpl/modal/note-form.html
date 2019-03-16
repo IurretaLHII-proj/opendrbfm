@@ -8,16 +8,20 @@
 </div>
 <div class="modal-body">
 	<div class="form-group">
-	  	<label for="inputDescription">Description</label>
-		<textarea rows="3" 
-			id="inputDescription"
-			class="form-control"
+		<text-angular 
+			ng-model="values.text"
+			ta-toolbar="[
+				['bold', 'italics', 'underline' ],
+		   		['ul', 'insertLink', 'html'],
+			]"
+			ta-text-editor-class="form-height form-control"
 			ng-class="{'is-invalid': errors.text}"
-			ng-model="values.text">
-		</textarea>
+			class=""
+		>
+		</text-angular>
 		<div ng-if="errors.text"
 			ng-repeat="(key, text) in errors.text"
-			class="invalid-feedback">{[key]}. {[text]}</div>
+			class="text-danger">{[key]}. {[text]}</div>
 	</div>
 </div>
 <div class="modal-footer" >

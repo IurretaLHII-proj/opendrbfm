@@ -185,6 +185,16 @@ class Operation implements
     }
     
     /**
+     * Get longName.
+     *
+     * @return string.
+     */
+    public function getLongName()
+    {
+        return sprintf("%s . %s", (string) $this->getType(), $this->getName());
+    }
+    
+    /**
      * Set name.
      *
      * @param string name the value to set.
@@ -471,7 +481,7 @@ class Operation implements
 	 */
 	public function __toString()
 	{
-		return (string) $this->getType() .'. '. $this->getName();
+		return (string) $this->getLongName();
 	}
 
 	/**
@@ -482,7 +492,7 @@ class Operation implements
 		return [
 			'id' 		  => $this->getId(),
 			'name' 		  => $this->getName(),
-			'longName' 	  => (string) $this->getType() . '. ' . $this->getName(),
+			'longName' 	  => $this->getLongName(),
 			'owner'		  => $this->getUser(),
 			'description' => $this->getDescription(),
 			'children' 	  => new \ZF\Hal\Collection($this->getChildren()),

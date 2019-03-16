@@ -135,9 +135,35 @@ interface IMAHintType {
 	},
 }
 
+interface IMAHintContextRel {
+	id: number,
+	_links: IMALinks, 
+	_embedded: {
+		stage: IMAStage,
+		hint:  IMAHint,
+	},
+}
+
+interface IMAHintContext {
+	id: number,
+	commentCount: number, 
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+		hint: IMAHint,
+		parents: IMAHintContextRel[],
+		children: IMAHintContextRel[],
+		influences: IMANote[],
+		reasons: IMANote[],
+		simulations: IMASimulation[],
+	},
+}
+
 interface IMAHint {
 	id: number,
 	name: string,
+	stageOrder: number,
 	description: string,
 	priority: number,
 	commentCount: number, 
@@ -145,8 +171,9 @@ interface IMAHint {
 	_links: IMALinks, 
 	_embedded: {
 		type: IMAHintType,
+		operation: IMAOperation,
 		owner: IMAUser,
-		simulations: IMASimulation[],
+		contexts: IMAHintContext[],
 	},
 }
 
@@ -172,8 +199,8 @@ interface IMASimulation {
 	created: IMADate,
 	_embedded: {
 		owner: IMAUser,
-		reasons: IMANote[],
-		influences: IMANote[],
+		effects: IMANote[],
+		preventions: IMANote[],
 		suggestions: IMANote[],
 	},
 	_links: IMALinks, 

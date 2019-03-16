@@ -7,7 +7,7 @@ use Zend\Json\Json;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use ZF\Hal\View\HalJsonModel;
 
-class SimulationController extends \Base\Controller\Js\AbstractActionController
+class HintContextController extends \Base\Controller\Js\AbstractActionController
 {
 	/**
 	 * @return JsonViewModel
@@ -18,24 +18,23 @@ class SimulationController extends \Base\Controller\Js\AbstractActionController
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\HintRenderForm::class);
+			->get(\MA\Form\HintContextForm::class);
 
 		$form->setHydrator(new DoctrineHydrator($em));
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
 		$form->bind($e);
 
 		if ($this->getRequest()->isPost()) {
-			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
-			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Simulation::STATE_CREATED ? \Zend\Form\FormInterface::VALIDATE_ALL : ['state', 'effect', 'prevention']; 
-			$form->setValidationGroup($validationGroup);
-			$form->setData($data);
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
 			if ($form->isValid()) {
 
 				$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
 
 				$em->flush();
 
-				$payload = ['payload' => $this->prepareHalEntity($e, "process/hint/simulation/detail/json")];
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/hint/context/detail/json"),
+				];
 			}
 			else {
 				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
@@ -64,47 +63,59 @@ class SimulationController extends \Base\Controller\Js\AbstractActionController
 	}
 
 	/**
-	 * @return ViewModel
+	 * @return JsonViewModel
 	 */
-    public function commentsAction()
-    {
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+	public function simulateAction()
+	{
+		$e	  = new \MA\Entity\Simulation;
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\HintRenderForm::class);
 
-		$paginator = $this->getPaginator($em->getRepository("MA\Entity\comment\Simulation")
-			->findBy(
-				['source'  => $this->getEntity(), 'parent' => null],
-				['created' => 'DESC']
-			));
+		$e->setContext($this->getEntity());
+		$form->setHydrator(new DoctrineHydrator($em));
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		$form->bind($e);
 
-		$payload = $this->prepareHalCollection($paginator, 'process/hint/simulation/detail/json');
+		if ($this->getRequest()->isPost()) {
+			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Simulation::STATE_CREATED ? \Zend\Form\FormInterface::VALIDATE_ALL : ['state', 'effect', 'prevention']; 
+			$form->setValidationGroup($validationGroup);
+			$form->setData($data);
+			if ($form->isValid()) {
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
 
-		return new HalJsonModel([
-			'payload' => $payload,
-		]);
+				$em->persist($e);
+				$em->flush();
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/hint/simulation/detail/json")
+				];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
 	}
 
 	/**
 	 * @return JsonViewModel
 	 */
-	public function effectAction()
+	public function reasonAction()
 	{
-		return $this->noteAction(new \MA\Entity\Note\HintEffect);
+		return $this->noteAction(new \MA\Entity\Note\ContextReason);
 	}
 
 	/**
 	 * @return JsonViewModel
 	 */
-	public function preventionAction()
+	public function influenceAction()
 	{
-		return $this->noteAction(new \MA\Entity\Note\HintPrevention);
-	}
-
-	/**
-	 * @return JsonViewModel
-	 */
-	public function suggestionAction()
-	{
-		return $this->noteAction(new \MA\Entity\Note\HintSuggestion);
+		return $this->noteAction(new \MA\Entity\Note\ContextInfluence);
 	}
 
 	/**
@@ -118,7 +129,7 @@ class SimulationController extends \Base\Controller\Js\AbstractActionController
 			->get('FormElementManager')
 			->get(\MA\Form\NoteForm::class);
 
-		$e->setSimulation($this->getEntity());
+		$e->setContext($this->getEntity());
 		$form->setHydrator(new DoctrineHydrator($em));
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
 		$form->bind($e);
@@ -151,13 +162,13 @@ class SimulationController extends \Base\Controller\Js\AbstractActionController
 	 */
 	public function commentAction()
 	{
-		$e	  = new \MA\Entity\Comment\Simulation;
+		$e	  = new \MA\Entity\Comment\HintContext;
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
 			->get(\MA\Form\CommentForm::class);
 
-		$e->setSimulation($this->getEntity());
+		$e->setContext($this->getEntity());
 		$form->setHydrator(new DoctrineHydrator($em));
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
 		$form->bind($e);
@@ -182,5 +193,25 @@ class SimulationController extends \Base\Controller\Js\AbstractActionController
 		}
 
 		return new HalJsonModel($payload);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function commentsAction()
+    {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$paginator = $this->getPaginator($em->getRepository("MA\Entity\Comment\HintContext")
+			->findBy(
+				['source'  => $this->getEntity(), 'parent' => null],
+				['created' => 'DESC']
+			));
+
+		$payload = $this->prepareHalCollection($paginator, 'process/hint/context/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
 	}
 }

@@ -18,6 +18,7 @@ return [
 					Service\VersionService::class, 
 					Service\StageService::class, 
 					Service\HintTypeService::class, 
+					Service\HintContextService::class, 
 					Service\HintService::class, 
 					Service\SimulationService::class, 
 					Service\ImageService::class, 
@@ -74,12 +75,29 @@ return [
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],
 	],
+	Service\HintContextService::class => [
+		'entities' => [Entity\HintContext::class],
+		'listeners' => [
+			[
+				'services' => Service\HintContextService::class, 
+				'events'   => [
+					Service\HintContextService::EVENT_CREATE, 
+					Service\HintContextService::EVENT_UPDATE,
+				],
+				'callback' => 'createContext',
+				'priority' => 100,
+			]
+		],
+	],
 	Service\SimulationService::class => [
 		'entities' => [Entity\Simulation::class],
 		'listeners' => [
 			[
 				'services' => Service\SimulationService::class, 
-				'events'   => \Base\Service\AbstractService::EVENT_CREATE, 
+				'events'   => [
+					Service\SimulationService::EVENT_CREATE, 
+					Service\SimulationService::EVENT_UPDATE, 
+				],
 				'callback' => 'createSimulation',
 				'priority' => 100,
 			]
@@ -90,8 +108,12 @@ return [
 	],
 	Service\NoteService::class => [
 		'entities'  => [
-			Entity\Note\HintReason::class, 
+			Entity\Note\ContextReason::class, 
+			Entity\Note\ContextInfluence::class, 
 			Entity\Note\HintSuggestion::class, 
+			Entity\Note\HintEffect::class, 
+			Entity\Note\HintPrevention::class, 
+			Entity\Note\HintReason::class, 
 			Entity\Note\HintInfluence::class, 
 		],
 	],
@@ -100,6 +122,7 @@ return [
 			Entity\Comment\Version::class, 
 			Entity\Comment\Stage::class, 
 			Entity\Comment\Hint::class, 
+			Entity\Comment\HintContext::class, 
 			Entity\Comment\Note::class, 
 			Entity\Comment\Simulation::class, 
 		],

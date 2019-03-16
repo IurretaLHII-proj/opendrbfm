@@ -67,7 +67,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 5,
+			'max_depth' => 7,
 			'hydrator' => Hydrator\HintHydrator::class,
 		],
 		'MA\Entity\HintType' => [
@@ -77,6 +77,20 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
 		],
+		'MA\Entity\HintContext' => [
+			'route_name' => 'process/hint/context/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 4,
+		],
+		'MA\Entity\HintContextRel' => [
+			'route_name' => 'process/hint/context/detail',//TODO
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
 		'MA\Entity\Simulation' => [
 			'route_name' => 'process/hint/simulation/detail/json',
 			'route_identifier_name' => 'id',
@@ -84,7 +98,28 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 3,
 		],
-		'MA\Entity\Note\HintReason' => [
+		'MA\Entity\Note\ContextReason' => [
+			'route_name' => 'process/note/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Note\ContextInfluence' => [
+			'route_name' => 'process/note/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Note\HintEffect' => [
+			'route_name' => 'process/note/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Note\HintPrevention' => [
 			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
@@ -148,6 +183,13 @@ return [
 			'max_depth' => 1,
 		],
 		'MA\Entity\Comment\Hint' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\HintContext' => [
 			'route_name' => 'process/comment/detail', 
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',

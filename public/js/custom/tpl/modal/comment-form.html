@@ -21,10 +21,7 @@
 <div ng-if="source.comments.has('next')" class="text-center mt-1 small">
         <a href="" ng-click="more(source.comments)">.. view previouses ..</a>
 </div>
-<div class="modal-footer" 
-	ng-if="true || entity.links.comment.allowed" 
-	style="
-">
+<div class="modal-footer">
 	<div class="ml-auto align-self-stretch" style="width:100%">
 		<div ng-if="errors.body"
 			 ng-repeat="(key, err) in errors.body">
@@ -45,6 +42,7 @@
 		</div>
 	</div>
 	<div class="reply" style="">
-		<span class="input-group-addon btn btn-primary" ng-click="save()">Comment</span>
+		<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
+		<span class="input-group-addon btn btn-success" ng-click="save()">Comment</span>
 	</div>
 </div>
