@@ -1,19 +1,20 @@
 <div class="modal-header">
-	<h3 class="modal-title" ng-if="context.id">{[ context.name ]} <small class="text-secondary">| edit</small></h3>
-	<h3 class="modal-title" ng-if="!context.id">{[ context.hint.name ]} <small class="text-secondary">| New Context</small></h3>
+	<h3 class="modal-title">{[ context.name ]} <small class="text-secondary" ng-if="context.id">| edit description</small><small class="text-secondary" ng-if="!context.id">| new description</small></h3>
 </div>
-<div class="modal-body" ng-init="init()">
+<div class="modal-body">
 	<div class="form-group">
-		<div class="btn-group btn-group-sm">
-			<a href="" class="btn btn-secondary active disabled"><span class="fa fa-plus"></span> Reason</a>
-			<a href="" ng-if="prevStages.length" class="btn btn-outline-primary" ng-click="addParent()">Stage</a>
-			<a href="" class="btn btn-outline-primary" ng-click="addReason()">Note</a>
+		<div class="btn-group">
+			<a href="" class="btn btn-primary disabled">Reason</a>
+			<a href="" ng-class="{disabled:!prevStages.length}" class="btn btn-outline-primary" ng-click="addParent()"><span class="fa fa-plus"></span> Previous stage</a>
+			<a href="" class="btn btn-outline-primary" ng-click="addReason()"><span class="fa fa-plus"></span> Note</a>
 		</div>
-		<div class="form-row my-2" ng-repeat="(i, stage) in values.parents">
+		<div class="form-row my-2 border-bottom" ng-repeat="(i, value) in values.relateds">
 			<div class="form-group col-4">
 				<select class="form-control"
-					ng-model="values.parents[i].stage"
+					ng-model="value.source.stage"
 					ng-options="item.id as item.name for item in [dflt].concat(prevStages)"
+					ng-init="loadPreviousHints(i)"
+					ng-change="loadPreviousHints(i)"
 					>
 				</select>
 			</div>
@@ -21,61 +22,98 @@
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text border-right-0">
-							<i class="fa fa-circle-o-notch fa-spin"></i>
+							<i class="fa fa-circle-o-notch" ng-class="{'fa-spin': prevsLoading[i]}"></i>
 						</span>
 			    	</div>
 					<select class="form-control"
-						ng-disabled="!values.parents[i].stage"
-						ng-class="{'is-invalid': errors.parents[i].hint}"
-						ng-model="values.parents[i].hint"
-						ng-options="item.id as item.name for item in [dflt].concat(prevHints(i))"
+						ng-disabled="!value.source.stage"
+						ng-class="{'is-invalid': errors.relateds[i].source.hint}"
+						ng-model="value.source.hint"
+						ng-options="item.id as item.name for item in previouses[i]"
 						>
 					</select>
 					<div class="input-group-append">
 						<span class="input-group-button">
-							<button class="btn" ng-click="values.parents.splice(i, 1);">
+							<a href="" class="btn" ng-click="values.relateds.splice(i, 1);">
 								<span class="fa fa-close"></span>
-							</button>
+							</a>
 						</span>
 			    	</div>
-					<div ng-if="errors.parents[i].hint"
-						ng-repeat="(key, text) in errors.parents[i].hint"
+					<div ng-if="errors.relateds[i].source.hint"
+						ng-repeat="(key, text) in errors.relateds[i].source.hint"
 						class="invalid-feedback">{[key]}. {[text]}</div>
 					</div>
 			</div>
-		</div>
-		<div class="form-grop my-2" ng-repeat="(i, reason) in values.reasons">
-			<div class="input-group">
-				<textarea rows="2" 
-					ng-class="{'is-invalid': errors.reasons[i].text}"
-					ng-model="reason.text"
-					placeholder="Describe reason.."
-					class="form-control">
-				</textarea>
-				<div class="input-group-append">
-					<span class="input-group-button">
-						<button class="btn" ng-click="values.reasons.splice(i, 1);">
-							<span class="fa fa-close"></span>
-						</button>
-					</span>
-		    	</div>
-				<div ng-if="errors.reasons[i].text"
-					ng-repeat="(key, text) in errors.reasons[i].text"
-					class="invalid-feedback">{[key]}. {[text]}</div>
+			<div class="form-group col-12">
+				<text-angular 
+					ng-model="value.description"
+					ta-toolbar="[
+						['bold', 'italics', 'underline' ],
+				   		['ul', 'insertLink', 'html'],
+					]"
+					ta-text-editor-class="form-height form-control"
+					ng-class="{'is-invalid': errors.relateds[i].description}"
+					placeholder="Describe relation.."
+				>
+				</text-angular>
+				<div ng-if="errors.relateds[i].description"
+					ng-repeat="(key, text) in errors.relateds[i].description"
+					class="text-danger">{[key]}. {[text]}</div>
 			</div>
+		</div>
+		<div class="form-row my-2 border-bottom" ng-repeat="(i, reason) in values.reasons">
+			<div class="form-group col-11">
+				<div class="input-group">
+					<text-angular 
+						ng-model="reason.text"
+						ta-toolbar="[
+							['bold', 'italics', 'underline' ],
+					   		['ul', 'insertLink', 'html'],
+						]"
+						ta-text-editor-class="form-height form-control"
+						ng-class="{'is-invalid': errors.reasons[i].text}"
+						placeholder="Describe reason.."
+						class="small-area"
+					>
+					</text-angular>
+					<div ng-if="errors.reasons[i].text"
+						ng-repeat="(key, text) in errors.reasons[i].text"
+						class="small text-danger">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="form-group col-1 m-auto">
+				<a href="" class="btn pull-right" ng-click="values.reasons.splice(i, 1);">
+					<span class="fa fa-close"></span>
+				</a>
+			</div>
+			<!--<textarea rows="2" 
+				ng-class="{'is-invalid': errors.reasons[i].text}"
+				ng-model="reason.text"
+				placeholder="Describe reason.."
+				class="form-control">
+			</textarea>
+			<div class="input-group-append">
+				<span class="input-group-button">
+					<button class="btn" ng-click="values.reasons.splice(i, 1);">
+						<span class="fa fa-close"></span>
+					</button>
+				</span>
+		    </div>-->
 		</div>
 	</div>
 	<div class="form-group">
-		<div class="btn-group btn-group-sm">
-			<a href="" class="btn btn-secondary active disabled"><span class="fa fa-plus"></span> Influence</a>
-			<a href="" ng-if="nextStages.length" class="btn btn-outline-primary" ng-click="addChild()">Stage</a>
-			<a href="" class="btn btn-outline-primary" ng-click="addInfluence()">Note</a>
+		<div class="btn-group">
+			<a href="" class="btn btn-primary disabled">Influence</a>
+			<a href="" ng-class="{disabled:!nextStages.length}" class="btn btn-outline-primary" ng-click="addChild()"><span class="fa fa-plus"></span> Next stage</a>
+			<a href="" class="btn btn-outline-primary" ng-click="addInfluence()"><span class="fa fa-plus"></span> Note</a>
 		</div>
-		<div class="form-row my-2" ng-repeat="(i, stage) in values.children">
+		<div class="form-row my-2" ng-repeat="(i, value) in values.relations">
 			<div class="form-group col-4">
 				<select class="form-control"
-					ng-model="values.children[i].stage"
+					ng-model="value.relation.stage"
 					ng-options="item.id as item.name for item in [dflt].concat(nextStages)"
+					ng-init="loadNextHints(i)"
+					ng-change="loadNextHints(i)"
 					>
 				</select>
 			</div>
@@ -83,76 +121,102 @@
 				<div class="input-group">
 					<div class="input-group-prepend">
 						<span class="input-group-text border-right-0">
-							<i class="fa fa-circle-o-notch fa-spin"></i>
+							<i class="fa fa-circle-o-notch" ng-class="{'fa-spin': nextsLoading[i]}"></i>
 						</span>
 			    	</div>
 					<select class="form-control"
-						ng-disabled="!values.children[i].stage"
-						ng-class="{'is-invalid': errors.children[i].hint}"
-						ng-model="values.children[i].hint"
-						ng-options="item.id as item.name for item in [dflt].concat(nextHints(i))"
+						ng-disabled="!value.relation.stage"
+						ng-class="{'is-invalid': errors.relations[i].relation.hint}"
+						ng-model="value.relation.hint"
+						ng-options="item.id as item.name for item in nexts[i]"
 						>
 					</select>
 					<div class="input-group-append">
 						<span class="input-group-button">
-							<button class="btn" ng-click="values.children.splice(i, 1);">
+							<a href="" class="btn" ng-click="values.relations.splice(i, 1);">
 								<span class="fa fa-close"></span>
-							</button>
+							</a>
 						</span>
 			    	</div>
+					<div ng-if="errors.relations[i].relation.hint"
+						ng-repeat="(key, text) in errors.relations[i].relation.hint"
+						class="invalid-feedback">{[key]}. {[text]}</div>
+					</div>
+			</div>
+			<div class="form-group col-12">
+				<text-angular 
+					ng-model="value.description"
+					ta-toolbar="[
+						['bold', 'italics', 'underline' ],
+				   		['ul', 'insertLink', 'html'],
+					]"
+					ta-text-editor-class="form-height form-control"
+					ng-class="{'is-invalid': errors.relations[i].description}"
+					placeholder="Description.."
+				>
+				</text-angular>
+				<div ng-if="errors.relations[i].description"
+					ng-repeat="(key, text) in errors.relations[i].description"
+					class="text-danger">{[key]}. {[text]}</div>
+			</div>
+		</div>
+		<div class="form-row my-2 border-bottom" ng-repeat="(i, influence) in values.influences">
+			<div class="form-group col-11">
+				<div class="input-group">
+					<text-angular 
+						ng-model="influence.text"
+						ta-toolbar="[
+							['bold', 'italics', 'underline' ],
+					   		['ul', 'insertLink', 'html'],
+						]"
+						ta-text-editor-class="form-height form-control"
+						ng-class="{'is-invalid': errors.influences[i].text}"
+						placeholder="Describe influence.."
+						class="small-area"
+					>
+					</text-angular>
+					<div ng-if="errors.influences[i].text"
+						ng-repeat="(key, text) in errors.influences[i].text"
+						class="small text-danger">{[key]}. {[text]}</div>
 				</div>
-				<div ng-if="errors.children[i].hint"
-					ng-repeat="(key, text) in errors.children[i].hint"
-					class="invalid-feedback">{[key]}. {[text]}</div>
 			</div>
-		</div>
-		<div class="form-grop my-2" ng-repeat="(i, influence) in values.influences">
-			<div class="input-group">
-				<textarea rows="2" 
-					ng-class="{'is-invalid': errors.influences[i].text}"
-					ng-model="influence.text"
-					placeholder="Describe influence.."
-					class="form-control">
-				</textarea>
-				<div class="input-group-append">
-					<span class="input-group-button">
-						<button class="btn" ng-click="values.influences.splice(i, 1);">
-							<span class="fa fa-close"></span>
-						</button>
-					</span>
-		    	</div>
-				<div ng-if="errors.influences[i].text"
-					ng-repeat="(key, text) in errors.influences[i].text"
-					class="invalid-feedback">{[key]}. {[text]}</div>
-			</div>
-		</div>
-	</div>
-	<div class="form-group">
-	  	<label for="inputSuggestions">Suggestions</label>
-		<div class="form-row"
-			ng-repeat="(_i, note) in values.suggestions"
-			>
-			<div class="form-group col-sm-11">
-				<textarea rows="2" 
-					ng-class="{'is-invalid': errors.suggestions[_i]}"
-					ng-model="values.suggestions[_i].text"
-					class="form-control">
-				</textarea>
-				<div ng-if="errors.suggestions[_i]"
-					ng-repeat="(key, text) in errors.suggestions[_i]"
-					class="invalid-feedback">{[key]}. {[text]}</div>
-			</div>
-			<div class="form-group col-sm-1 text-center">
-				<a href="" class="btn btn-sm btn-outline-primary" 
-					ng-click="values.suggestions.splice(_i, 1);">
+			<div class="form-group col-1 m-auto">
+				<a href="" class="btn pull-right" ng-click="values.influences.splice(i, 1);">
 					<span class="fa fa-close"></span>
 				</a>
 			</div>
 		</div>
-		<div>
-			<a href="" class="btn btn-sm btn-outline-primary" 
-			ng-click="values.suggestions.push({})">
-			<span class="fa fa-plus"></span></a>
+	</div>
+	<div class="form-group">
+		<div class="btn-group">
+			<a href="" class="btn btn-primary disabled">Suggestion</a>
+			<a href="" class="btn btn-outline-primary" ng-click="addSimulation()"><span class="fa fa-plus"></span> Note</a>
+		</div>
+		<div class="form-row my-2 border-bottom" ng-repeat="(i, simulation) in values.simulations">
+			<div class="form-group col-11">
+				<div class="input-group">
+					<text-angular 
+						ng-model="simulation.suggestions[0].text"
+						ta-toolbar="[
+							['bold', 'italics', 'underline' ],
+					   		['ul', 'insertLink', 'html'],
+						]"
+						ta-text-editor-class="form-height form-control"
+						ng-class="{'is-invalid': errors.simulations[i].suggestions[0].text}"
+						placeholder="Describe influence.."
+						class="small-area"
+					>
+					</text-angular>
+					<div ng-if="errors.simulations[i].suggestions[0].text"
+						ng-repeat="(key, text) in errors.simulations[i].suggestions[0].text"
+						class="small text-danger">{[key]}. {[text]}</div>
+				</div>
+			</div>
+			<div class="form-group col-1 m-auto">
+				<a href="" class="btn pull-right" ng-click="values.simulations.splice(i, 1);">
+					<span class="fa fa-close"></span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

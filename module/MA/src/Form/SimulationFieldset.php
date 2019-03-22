@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface,
 use Zend\InputFilter\InputFilterProviderInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
-class HintContextFieldset extends Fieldset implements 
+class SimulationFieldset extends Fieldset implements 
 	ServiceLocatorAwareInterface, InputFilterProviderInterface
 {
     /**
@@ -28,17 +28,24 @@ class HintContextFieldset extends Fieldset implements
              ],
         ], ['priority' => -1]);
 
-        $this->add([
-             'type' => 'ObjectSelect',
-             'name' => 'hint',
-             'attributes' => [ 
-                 'class' => 'form-control',
-             ],
-             'options' => [
-				 'empty_option' => 'Choose hint',
-				 'target_class' => 'MA\Entity\Hint',
-             ],
-        ]);
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'suggestions',
+                'attributes' => [ 
+                    'class' => 'suggestions'
+				],
+				'options' => [
+					'label' => 'Suggestions',
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintSuggestion::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
 
         $em = $this->getServiceLocator()
                    ->get('Doctrine\ORM\EntityManager');

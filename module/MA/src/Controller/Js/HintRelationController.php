@@ -7,7 +7,7 @@ use Zend\Json\Json;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use ZF\Hal\View\HalJsonModel;
 
-class ProcessController extends \Base\Controller\Js\AbstractActionController
+class HintRelationController extends \Base\Controller\Js\AbstractActionController
 {
 	/**
 	 * @return JsonViewModel
@@ -18,41 +18,21 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 			'payload' => $this->prepareHalEntity($this->getEntity(), "process/detail/json"),
 		]);
 	}
-
+	
 	/**
-	 * @return ViewModel
+	 * @return JsonViewModel
 	 */
-    public function indexAction()
-    {
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+	public function deleteAction()
+	{
+		$e	  = $this->getEntity();
+		$em   = $this->getEntityManager();
 
-		$collection = $em->getRepository("MA\Entity\Process")->findBy([],['created' => 'DESC']);
+		//$this->triggerService(\Base\Service\AbstractService::EVENT_DELETE, $e);
 
-		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'process/json');
+		$em->remove($e);
+		$em->flush();
 
-		return new HalJsonModel([
-			'payload' => $payload,
-		]);
-	}
-
-	/**
-	 * @return ViewModel
-	 */
-    public function actionsAction()
-    {
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-		$collection = $em->getRepository("MA\Entity\AbstractProcessAction")
-			->findBy(
-				['process' => $this->getEntity()],
-				['created' => 'DESC']
-			);
-
-		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'process/detail/json');
-
-		return new HalJsonModel([
-			'payload' => $payload,
-		]);
+		return new HalJsonModel(['payload' => []]);
 	}
 
 	/**
@@ -64,7 +44,7 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\ProcessForm::class);
+			->get(\MA\Form\HintRelationForm::class);
 
 		$form->setHydrator(new DoctrineHydrator($em));
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
@@ -78,7 +58,9 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 
 				$em->flush();
 
-				$payload = ['payload' => $this->prepareHalEntity($e, "process/detail/json")];
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/hint/relation/detail/json"),
+				];
 			}
 			else {
 				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
@@ -93,19 +75,17 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 	/**
 	 * @return JsonViewModel
 	 */
-	public function versionAction()
+	public function commentAction()
 	{
-		$e    = new \MA\Entity\Version;
+		$e	  = new \MA\Entity\Comment\HintRelation;
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\VersionForm::class);
+			->get(\MA\Form\CommentForm::class);
 
-		$e->setProcess($this->getEntity());
-		
+		$e->setRelation($this->getEntity());
+		$form->setHydrator(new DoctrineHydrator($em));
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
-		//$form->get('operations')->setAllowRemove(false);
-        $form->setHydrator(new DoctrineHydrator($em));
 		$form->bind($e);
 
 		if ($this->getRequest()->isPost()) {
@@ -116,8 +96,9 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 
 				$em->persist($e);
 				$em->flush();
-
-				$payload = ['payload' => $this->prepareHalEntity($e, "process/version/detail/json")];
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/comment/detail/json")
+				];
 			}
 			else {
 				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
@@ -127,5 +108,25 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 		}
 
 		return new HalJsonModel($payload);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function commentsAction()
+    {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$paginator = $this->getPaginator($em->getRepository("MA\Entity\Comment\HintRelation")
+			->findBy(
+				['source'  => $this->getEntity(), 'parent' => null],
+				['created' => 'DESC']
+			));
+
+		$payload = $this->prepareHalCollection($paginator, 'process/hint/context/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
 	}
 }

@@ -4,72 +4,57 @@ var _noneOption    = {id:null, name:'--- None ---'};
 var _createOption  = {id:-1,   name:'--- Create new ---'};
 var _defaultOption = {id:null, name:'--- Select one ---'};
 var _stateOptions = [
-		{id:MASimulation.NOT_PROCESSED,  name: "NOT PROCESSED"},
-		{id:MASimulation.IN_PROGRESS,  name: "IN PROGRESS"},
-		{id:MASimulation.FINISHED,  name: "FINISHED"},
+		{id:MASimulation.NOT_PROCESSED, name: "NOT PROCESSED"},
+		{id:MASimulation.IN_PROGRESS,  	name: "IN PROGRESS"},
+		{id:MASimulation.FINISHED,  	name: "FINISHED"},
 		{id:MASimulation.NOT_NECESSARY, name: "NOT NECESSARY"},
-		{id:MASimulation.CANCELLED, name: "CANCELLED"},
+		{id:MASimulation.CANCELLED, 	name: "CANCELLED"},
 	];
 
 App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	$scope.version = null;
 	$scope.current = null;
-	$scope.commons = {
-		stage: {
-			getHints: function(stage, callback) {
-				if (stage.isHintsLoaded()) {
-					if (callback) callback();
-				}
-				else {
-					stage.hintsLoaded = true;
-					$resource(stage.links.getHref('hints')).get().$promise.then(
-						function(data) {
-							//$timeout(function(){
-							stage.addHints(data._embedded.items.map(e => {return MAHint.fromJSON(e)}));
-							//}, 1000);
-							if (callback) callback();
-						},		
-						function(err) {
-						}		
-					);
-				}
-			}
-		}
-	};
-
 	$scope.setVersion = function(version) {
 		$scope.version = version;
 		$scope.current = null;
 		if (!version.isStagesLoaded()) {
 			$resource(version.links.getHref('stages')).get().$promise.then(
 				function(data) {
-					//$timeout(function(){
 					angular.forEach(data._embedded.items, e => {version.addStage(MAStage.fromJSON(e))});
 					version.stagesLoaded = true;
 					if (version.hasStages()) $scope.setCurrent(version.getActive());
-					//}, 1000);
 				},		
 				function(err) {
+					$scope.addError("Unable toobtain version stages");
 				}		
 			);
 		}
 		else if (version.hasStages()) $scope.setCurrent(version.getActive());
 	}
 
-	$scope.setCurrent = function(stage) {
-		$scope.commons.stage.getHints(stage, function() {$scope.current = stage; console.log(stage)});
+	$scope.setCurrent = function(item) {
+		let stage = $scope.version.stages.find(e => {return e.id == item.id});
+		$resource(stage.links.getHref('hints')).get().$promise.then(
+			function(data) {
+				stage.hints = [];
+				stage.addHints(data._embedded.items.map(e => {return MAHint.fromJSON(e)}));
+				$scope.current = stage;
+			},		
+			function(err) {
+				$scope.addError("Unable to obtain stage errors");
+			}		
+		);
 	}
 
 	$scope.init = function(item, values) {
-		let process    = MAProcess.fromJSON(item);
-		$scope.process = process;
+		$scope.process = MAProcess.fromJSON(item);
 		if ($scope.process.hasVersions()) {
 			$scope.setVersion($scope.process.getActive());
 		}
-		console.log(process);
-		//if (values) {
+		if (values) {
 		//	angular.merge($scope.values, values);
-		//}
+		}
+		console.log($scope.process);
 	}
 
 	$scope.cloneVersion = function(version) {
@@ -342,8 +327,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 		modal.result.then(
 			function() {
-				//fixme
-				context.hint = h;
+				context.hint = h; //FIXME
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
@@ -356,6 +340,127 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		$resource(c.links.getHref('delete')).delete().$promise.then(
 			function (data) {
         		c.hint.contexts.splice(c.hint.contexts.indexOf(c), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+
+	$scope.addRelatedReason = function(ctx) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/g-hint-relation-form.html',
+			controller: '_GHintRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {e : ctx, r: true}
+		});
+
+		modal.result.then(
+			function() {
+				ctx.addRelated(e);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.addRelated = function(ctx) {
+		let e      = new MAHintRelation(); 
+		let rel    = new MAHintContextRel();
+		e.relation = rel;
+		e.context  = ctx;
+		rel.setContext(ctx);
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-relation-form.html',
+			controller: '_HintRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {e : e, r: true}
+		});
+
+		modal.result.then(
+			function() {
+				ctx.addRelated(e);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.addRelation = function(ctx) {
+		let e      = new MAHintRelation(); 
+		let rel    = new MAHintContextRel();
+		e.source   = rel;
+		e.context  = ctx;
+		rel.setContext(ctx);
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-relation-form.html',
+			controller: '_HintRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {e : e, r: false}
+		});
+
+		modal.result.then(
+			function() {
+				ctx.addRelation(e);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.editRelation = function(rel, mode) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-relation-form.html',
+			controller: '_HintRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {e: rel, r: mode}
+		});
+
+		modal.result.then(
+			function() {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.deleteRelated = function(r) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(r.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		r.context.relateds.splice(r.context.relateds.indexOf(r), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+
+	$scope.deleteRelation = function(r) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(r.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		r.context.relations.splice(r.context.relations.indexOf(r), 1);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Succesfully deleted");
 			},

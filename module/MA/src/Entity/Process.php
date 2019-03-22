@@ -258,6 +258,16 @@ class Process implements
     {
         return $this->title;
     }
+
+    /**
+     * Get name.
+     *
+     * @return string.
+     */
+    public function getName()
+    {
+        return $this->getTitle();
+    }
     
     /**
      * Set title.

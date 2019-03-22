@@ -19,6 +19,7 @@ return [
 					Service\StageService::class, 
 					Service\HintTypeService::class, 
 					Service\HintContextService::class, 
+					Service\HintRelationService::class, 
 					Service\HintService::class, 
 					Service\SimulationService::class, 
 					Service\ImageService::class, 
@@ -75,6 +76,17 @@ return [
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],
 	],
+	Service\HintRelationService::class => [
+		'entities' => [Entity\HintRelation::class],
+		'listeners' => [
+			[
+				'services' => Service\HintRelationService::class, 
+				'events'   => \Base\Service\AbstractService::EVENT_CREATE, 
+				'callback' => 'createRelation',
+				'priority' => 100,
+			],
+		],
+	],
 	Service\HintContextService::class => [
 		'entities' => [Entity\HintContext::class],
 		'listeners' => [
@@ -123,6 +135,7 @@ return [
 			Entity\Comment\Stage::class, 
 			Entity\Comment\Hint::class, 
 			Entity\Comment\HintContext::class, 
+			Entity\Comment\HintRelation::class, 
 			Entity\Comment\Note::class, 
 			Entity\Comment\Simulation::class, 
 		],

@@ -3,6 +3,7 @@
 {% block content %}
 
 	<h2>{{ entity.name }}</h2>
+	<p><a href="{{ url('process/detail', {id:entity.process.id}) }}">{{ entity.process.name }}</a></p>
 
 	<div class="btn-group">
 		<a href="" class="btn btn-sm btn-primary" ng-class="{active: !tab || tab == 'x'}" ng-click="tab = 'x'"><i class="fa fa-eye"></i> x</a>

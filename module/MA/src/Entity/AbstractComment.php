@@ -22,6 +22,7 @@ use Base\Hal\LinkProvider;
  * 	"stage"     	= "MA\Entity\Comment\Stage",
  * 	"hint"     		= "MA\Entity\Comment\Hint",
  * 	"context"     	= "MA\Entity\Comment\HintContext",
+ * 	"relation"     	= "MA\Entity\Comment\HintRelation",
  * 	"note"     		= "MA\Entity\Comment\Note",
  * 	"simulation"	= "MA\Entity\Comment\Simulation",
  * })

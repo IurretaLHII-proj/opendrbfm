@@ -17,6 +17,18 @@ class NoteFieldset extends Fieldset implements
     public function init()
     {
         $this->add([
+             'type' => 'Number',
+             'name' => 'id',
+             'required' => true,
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Id',
+             ],
+        ], ['priority' => -1]);
+
+        $this->add([
              'type' => 'Text',
              'name' => 'text',
              'required' => true,
@@ -42,6 +54,9 @@ class NoteFieldset extends Fieldset implements
 	public function getInputFilterSpecification()
 	{
 		return [
+			'id' => [
+				'required' => false,
+			],
 			'text' => [
 				'required' => true,
 			],

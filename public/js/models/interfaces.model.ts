@@ -135,6 +135,19 @@ interface IMAHintType {
 	},
 }
 
+interface IMAHintRelation {
+	id: number,
+	description: string,
+	commentCount: number, 
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+		source: IMAHintContextRel,
+		relation: IMAHintContextRel,
+	},
+}
+
 interface IMAHintContextRel {
 	id: number,
 	_links: IMALinks, 
@@ -152,17 +165,18 @@ interface IMAHintContext {
 	_embedded: {
 		owner: IMAUser,
 		hint: IMAHint,
-		parents: IMAHintContextRel[],
-		children: IMAHintContextRel[],
 		influences: IMANote[],
 		reasons: IMANote[],
 		simulations: IMASimulation[],
+		relations: IMAHintRelation[],
+		relateds: IMAHintRelation[],
 	},
 }
 
 interface IMAHint {
 	id: number,
 	name: string,
+	color: string,
 	stageOrder: number,
 	description: string,
 	priority: number,

@@ -507,7 +507,7 @@ class Hint implements
     {
 		$parents = new ArrayCollection;
 		foreach ($this->getContexts() as $context) {
-			foreach ($context->getParents()->map(function($e){ return $e->getHint(); }) as $hint) {
+			foreach ($context->getRelateds()->map(function($e){ return $e->getSource()->getHint(); }) as $hint) {
 				if (!$parents->contains($hint)) $parents->add($hint);
 			}
 		}
@@ -523,7 +523,7 @@ class Hint implements
     {
 		$children = new ArrayCollection;
 		foreach ($this->getContexts() as $context) {
-			foreach ($context->getChildren()->map(function($e){ return $e->getHint(); }) as $hint) {
+			foreach ($context->getRelations()->map(function($e){ return $e->getRelation()->getHint(); }) as $hint) {
 				if (!$children->contains($hint)) $children->add($hint);
 			}
 		}
@@ -659,6 +659,25 @@ class Hint implements
 	public function preUpdate()
 	{
 		return $this->setUpdated(new DateTime);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getColor()
+	{
+		switch (true) {
+			case $this->priority >= 6:
+				return 'danger';
+			case $this->priority >= 4:
+				return 'warning';
+			case $this->priority >= 2:
+				return 'success';
+			case $this->priority >= 0:
+				return 'secondary';
+			default:
+				return 'light';
+		}
 	}
 
 	/**

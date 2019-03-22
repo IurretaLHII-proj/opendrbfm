@@ -38,6 +38,20 @@
     src: url('../../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
 /*****************************/
+.large-area,
+.small-area{
+	width: 100%;
+}
+.large-area .ta-editor{
+    /*height: 300px;*/
+}
+.small-area .ta-editor{
+    /*height: 100px;*/
+}
+.is-invalid .ta-editor {
+	border-color: #dc3545;
+}
+/*****************************/
 
 .alert {
 	z-index: 1000;
@@ -159,4 +173,8 @@
 	position: absolute;
 	bottom: 5px;
     right: 20px;
+}
+/*************************************/
+.desc p {
+	margin-bottom: 0;
 }

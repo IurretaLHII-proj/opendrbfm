@@ -20,6 +20,7 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 		return [
 			'id' 	 	   => $object->getId(),
 			'priority' 	   => $object->getPriority(),
+			'color'		   => $object->getColor(),
 			'type'		   => $object->getType(),
 			//'text' 	  	   => $object->getType()->getTitle(),
 			//'level'		   => $object->getStage()->getLevel(),

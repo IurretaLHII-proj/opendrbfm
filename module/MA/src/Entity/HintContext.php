@@ -92,6 +92,28 @@ class HintContext implements
 	protected $children;
 
 	/**
+	 * @var HintRelationInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\HintRelation",
+	 *	mappedBy	 = "source",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $relations;
+
+	/**
+	 * @var HintRelationInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\HintRelation",
+	 *	mappedBy	 = "relation",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $relateds;
+
+	/**
 	 * @var Note\ContextReason[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Note\ContextReason",
@@ -161,6 +183,8 @@ class HintContext implements
 		$this->updated     = new DateTime;
 		$this->parents     = new ArrayCollection;
 		$this->children    = new ArrayCollection;
+		$this->relations   = new ArrayCollection;
+		$this->relateds    = new ArrayCollection;
 		$this->comments    = new ArrayCollection;
 		$this->reasons     = new ArrayCollection;
 		$this->influences  = new ArrayCollection;
@@ -229,6 +253,160 @@ class HintContext implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+    
+    /**
+     * Get relations.
+     *
+     * @return HintRelation.
+     */
+    public function getRelations()
+    {
+        return $this->relations;
+    }
+    
+    /**
+     * Set relations.
+     *
+     * @param HintRelation[] relations the value to set.
+     * @return HintContext.
+     */
+    public function setRelations($relations)
+    {
+        $this->relations = $relations;
+        return $this;
+    }
+    
+    /**
+     * Add relation.
+     *
+     * @param HintRelationInterface relation the value to set.
+     * @return HintContextInterface.
+     */
+    public function addRelation(HintRelationInterface $relation)
+    {
+		$relation->setSource($this);
+		$this->getRelations()->add($relation);
+        return $this;
+    }
+    
+    /**
+     * Add relations.
+     *
+     * @param HintRelationInterface[] relations the value to set.
+     * @return HintContextInterface.
+     */
+    public function addRelations($relations)
+    {
+		foreach ($relations as $relation) {
+			$this->addRelation($relation);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add relation.
+     *
+     * @param HintRelationInterface relation the value to set.
+     * @return HintContextInterface.
+     */
+    public function removeRelation(HintRelationInterface $relation)
+    {
+		$this->getRelations()->removeElement($relation);
+        return $this;
+    }
+    
+    /**
+     * Add relations.
+     *
+     * @param HintRelationInterface[] relations the value to set.
+     * @return HintContextInterface.
+     */
+    public function removeRelations($relations)
+    {
+		foreach ($relations as $relation) {
+			$this->removeRelation($relation);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Get relateds.
+     *
+     * @return HintRelated.
+     */
+    public function getRelateds()
+    {
+        return $this->relateds;
+    }
+    
+    /**
+     * Set relateds.
+     *
+     * @param HintRelated[] relateds the value to set.
+     * @return HintContext.
+     */
+    public function setRelateds($relateds)
+    {
+        $this->relateds = $relateds;
+        return $this;
+   }
+    
+    /**
+     * Add related.
+     *
+     * @param HintRelationInterface related the value to set.
+     * @return HintContextInterface.
+     */
+    public function addRelated(HintRelationInterface $related)
+    {
+		$related->setRelation($this);
+		$this->getRelateds()->add($related);
+        return $this;
+    }
+    
+    /**
+     * Add relateds.
+     *
+     * @param HintRelationInterface[] relateds the value to set.
+     * @return HintContextInterface.
+     */
+    public function addRelateds($relateds)
+    {
+		foreach ($relateds as $related) {
+			$this->addRelated($related);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add related.
+     *
+     * @param HintRelationInterface related the value to set.
+     * @return HintContextInterface.
+     */
+    public function removeRelated(HintRelationInterface $related)
+    {
+		$this->getRelateds()->removeElement($related);
+        return $this;
+    }
+    
+    /**
+     * Add relateds.
+     *
+     * @param HintRelationInterface[] relateds the value to set.
+     * @return HintContextInterface.
+     */
+    public function removeRelateds($relateds)
+    {
+		foreach ($relateds as $related) {
+			$this->removeRelated($related);
+		}
+
         return $this;
     }
     
@@ -605,10 +783,53 @@ class HintContext implements
      * @param SimulationInterface simulation the value to set.
      * @return HintContext.
      */
-    public function addSimulation($simulation)
+    public function addSimulation(SimulationInterface $simulation)
     {
 		$simulation->setContext($this);
         $this->getSimulations()->add($simulation);
+        return $this;
+    }
+    
+    /**
+     * Add simulations.
+     *
+     * @param SimulationInterface simulation the value to set.
+     * @return HintContext.
+     */
+    public function removeSimulation(SimulationInterface $simulation)
+    {
+		//$simulation->setContext($this);
+        $this->getSimulations()->removeElement($simulation);
+        return $this;
+    }
+    
+    /**
+     * Add simulations.
+     *
+     * @param SimulationInterface[] simulations the value to set.
+     * @return HintContextInterface.
+     */
+    public function addSimulations($simulations)
+    {
+		foreach ($simulations as $simulation) {
+			$this->addSimulation($simulation);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add simulations.
+     *
+     * @param SimulationInterface[] simulations the value to set.
+     * @return HintContextInterface.
+     */
+    public function removeSimulations($simulations)
+    {
+		foreach ($simulations as $simulation) {
+			$this->removeSimulation($simulation);
+		}
+
         return $this;
     }
     
@@ -754,10 +975,10 @@ class HintContext implements
 			'commentCount' => $this->getCommentCount(),
 			'reasons' 	   => new \ZF\Hal\Collection($this->getReasons()),
 			'influences'   => new \ZF\Hal\Collection($this->getInfluences()),
-			//'parents'    	 => new \ZF\Hal\Collection($this->getParents()),
-			//'children'   	 => new \ZF\Hal\Collection($this->getChildren()),
 			'parents'      => new \ZF\Hal\Collection($this->getPreviouses()),
 			'children'     => new \ZF\Hal\Collection($this->getNexts()),
+			'relations'    => new \ZF\Hal\Collection($this->getRelations()),
+			'relateds'     => new \ZF\Hal\Collection($this->getRelateds()),
 			'simulations'  => new \ZF\Hal\Collection($this->getSimulations()),
         );
     }
@@ -786,6 +1007,15 @@ class HintContext implements
 				'route' => [
 				    'name'    => 'process/hint/context/detail/json',
 				    'params'  => ['action' => 'simulate', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'relation',
+				'privilege'   => 'relation',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/context/detail/json',
+				    'params'  => ['action' => 'relation', 'id' => $this->getId()],
 				],
 			],
 			[

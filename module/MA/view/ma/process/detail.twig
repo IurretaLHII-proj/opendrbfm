@@ -118,17 +118,18 @@
 			<!-- END OF VERSION STAGE CONTENT -->
 		
 			<!-- HINTS TABLE -->
-			<div ng-if="current && !current.isHintsLoaded()" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>
-			<div ng-if="current && current.isHintsLoaded()" class="p-2 pt-4"><table ng-if="current" class="hint-table table table-bordered m-0">
+			<!--<div ng-if="current && !current.isHintsLoaded()" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>-->
+			<div ng-if="current" class="p-2 pt-4"><table ng-if="current" class="hint-table table table-bordered m-0">
 				<thead class="text-center">
-					<tr>
+					<!--<tr>
 						<th rowspan="2">Error</th>
 						<th colspan="3">Description</th>
 						<th colspan="3">Simulation</th>
-					</tr>
+					</tr>-->
 					<tr>
-						<th>Reasons</th>
-						<th>Influences</th>
+						<th></th>
+						<th colspan="2">Reasons</th>
+						<th colspan="2">Influences</th>
 						<th>Suggestions</th>
 						<th>State</th>
 						<th>Effect</th>
@@ -137,105 +138,72 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td class="p-0 text-center" colspan="12">
+						<td class="p-0 text-center plus" colspan="9">
 							<a href="" ng-click="addHint(current)" class="btn btn-sm">
 								<i class="fa fa-plus"></i>
 							</a>
 						</td>
 					</tr>
 					<tr ng-if="!current.hints.length">
-						<td class="text-center" colspan="12">No errors registered</td>
+						<td class="text-center" colspan="9">No errors registered</td>
 					</tr>
 					<tr ng-if="current.hints.length" ng-repeat-start="(h, hint) in current.getHints()">
-						<td rowspan="{[hint.getSimulations().length*2 + hint.contexts.length*2 + 1]}">
+						<td rowspan="{[hint.getSimulations().length*3 + hint.contexts.length*3 + 1]}">
 							<div class="small text-muted">{[ hint.operation.longName ]}</div>
-							<a href="{[ hint.links.getHref() ]}" class="btn btn-sm btn-{[badgeClass(hint.priority)]}" style="white-space:normal">
+							<a href="{[ hint.links.getHref() ]}" class="btn btn-sm btn-{[hint.color]}" style="white-space:normal">
 								<span class="badge badge-light mr-2">{[ hint.priority ]}</span>{[ hint.name ]} 
 							</a>
 							<p class="small py-2 text-secondary">{[ hint.description ]}</p>
-							<div class="small text-muted">
-								<a href="{[ hint.user.links.getHref() ]}">{[ hint.user.name ]}</a>. {[ hint.created | date:"dd MMMyy HH:mm" ]}
-							</div>
-							<div class="btn-group btn-group-justified" style="justify-content:start;">
-								<a href="" ng-click="addComment(hint)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ hint.commentCount ]}</a>
-								<a href="" ng-click="editHint(hint)" class="btn btn-sm"><i class="fa fa-pencil"></i></a>
-								<a href="" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
-							</div>
 						</td>
-						<td colspan="9" class="text-center p-0">
+						<td colspan="8" class="text-center p-0 plus">
 							<a href="" ng-click="addContext(hint)" class="btn btn-sm">
 								<i class="fa fa-plus"></i>
 							</a>
 						</td>
 					</tr>
 					<tr ng-repeat-start="ctx in hint.contexts">
-						<td rowspan="{[ctx.simulations.length*2 + 1]}">
-							<ul class="m-0">
-								<li ng-repeat="c in ctx.parents" class="my-1 pb-2 bg-light">
-									<div class="small text-muted"><a href="">{[ c.stage.name ]}</a>. {[ c.hint.operation.longName ]}</div>
-									<a href="{[ c.hint.links.getHref() ]}" class="btn btn-sm btn-{[badgeClass(c.hint.priority)]}" style="white-space:normal">
-										<span class="badge badge-light mr-2">{[ c.hint.priority ]}</span>{[ c.hint.name ]} 
-									</a>
-									<div class="small p-2 text-muted">
-										<a href="" class="">Todo</a>. 14 Mar19 00:00
-									</div>
-									<div class="btn-group btn-group-sm btn-group-vertical ml-1" style="justify-content:start;">
-										<a href="" ng-click="addComment(c.hint)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ c.hint.commentCount ]}</a>
-									</div>
-								</li>
-								<li ng-repeat="note in ctx.reasons" class="my-1 bg-light">
-									<div class="mr-auto p-2" ng-bind-html="note.text"></div>
-									<div class="small px-2 text-muted">
-										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
-									</div>
-									<div class="btn-group btn-group-sm">
-										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
-									</div>
-								</li>
-								<li class="bg-white text-center"><a href="" ng-click="addReason(ctx)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
-							</ul>
+						<td class="bg-white text-center py-0 plus">
+							<a href="" ng-class="{disabled:version.isFirst(ctx.hint.stage)}" ng-click="addRelated(ctx)" class="btn btn-sm">
+								<span class="fa fa-caret-left"></span>
+							</a>
 						</td>
-						<td rowspan="{[ctx.simulations.length*2 + 1]}">
-							<ul class="m-0">
-								<li ng-repeat="c in ctx.children" class="my-1 pb-2 bg-light">
-									<div class="small text-muted"><a href="">{[ c.stage.name ]}</a>. {[ c.hint.operation.longName ]}</div>
-									<a href="{[ c.hint.links.getHref() ]}" class="btn btn-sm btn-{[badgeClass(c.hint.priority)]}" style="white-space:normal">
-										<span class="badge badge-light mr-2">{[ c.hint.priority ]}</span>{[ c.hint.name ]} 
-									</a>
-									<div class="small p-2 text-muted">
-										<a href="" class="">Todo</a>. 14 Mar19 00:00
-									</div>
-									<div class="btn-group btn-group-sm btn-group-vertical ml-1" style="justify-content:start;">
-										<a href="" ng-click="addComment(c.hint)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ c.hint.commentCount ]}</a>
-									</div>
-								</li>
-								<li ng-repeat="note in ctx.influences" class="my-1 bg-light">
-									<div class="mr-auto p-2" ng-bind-html="note.text"></div>
-									<div class="small px-2 text-muted">
-										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
-									</div>
-									<div class="btn-group btn-group-sm">
-										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
-									</div>
-								</li>
-								<li class="bg-white text-center"><a href="" ng-click="addInfluence(ctx)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
-							</ul>
+						<td class="bg-white text-center py-0 plus">
+							<a href="" ng-click="addReason(ctx)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
 						</td>
-						<td colspan="6" class="text-center p-0">
+						<td class="bg-white text-center py-0 plus">
+							<a href="" ng-click="addInfluence(ctx)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
+						</td>
+						<td class="bg-white text-center py-0 plus">
+							<a href="" ng-class="{disabled:version.isLast(ctx.hint.stage)}" ng-click="addRelation(ctx)" class="btn btn-sm">
+								<span class="fa fa-caret-right"></span>
+							</a>
+						</td>
+						<td colspan="4" class="text-center py-0 plus">
 							<a href="" ng-click="addSimulation(ctx)" class="btn btn-sm">
 								<i class="fa fa-plus"></i>
 							</a>
 						</td>
 					</tr>
-					<tr ng-repeat-start="s in ctx.simulations">
-						<td>
+					<tr>
+						<td rowspan="{[ctx.simulations.length*3 + 1]}" colspan="2">
 							<ul class="m-0">
-								<li ng-repeat="note in s.suggestions" class="my-1 bg-light">
-									<div class="mr-auto p-2" ng-bind-html="note.text"></div>
+								<li ng-repeat="r in ctx.relateds" class="my-1 pb-2 bg-light">
+									<div class="small text-muted"><a href="" ng-click="setCurrent(r.source.stage)">{[ r.source.stage.name ]}</a>. {[ r.source.hint.operation.longName ]}</div>
+									<a href="{[ r.source.hint.links.getHref() ]}" class="btn btn-sm btn-{[r.source.hint.color]}" style="white-space:normal">
+										<span class="badge badge-light mr-2">{[ r.source.hint.priority ]}</span>{[ r.source.hint.name ]} 
+									</a>
+									<div class="p-2 desc" ng-if="r.description" ng-bind-html="r.description"></div>
+									<div class="small p-2 text-muted">
+										<a href="{[ r.user.links.getHref() ]}" class="">{[ r.user.name ]}</a>. {[ r.created | date:"dd MMMyy HH:mm" ]}
+									</div>
+									<div class="btn-group btn-group-sm">
+										<a href="" class="btn btn-sm" ng-click="addComment(r)"><span class="fa fa-comment"></span> {[ r.commentCount ]}</a>
+										<a href="" class="btn btn-sm" ng-click="editRelation(r, true)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteRelated(r)"><span class="fa fa-trash"></span></a>
+									</div>
+								</li>
+								<li ng-repeat="note in ctx.reasons" class="my-1 bg-light">
+									<div class="p-2 desc" ng-bind-html="note.text"></div>
 									<div class="small px-2 text-muted">
 										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
 									</div>
@@ -245,10 +213,46 @@
 										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
-								<li class="bg-white text-center"><a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
 							</ul>
 						</td>
-						<td class="bg-light text-center" ng-switch="s.state">
+						<td rowspan="{[ctx.simulations.length*3 + 1]}" colspan="2">
+							<ul class="m-0">
+								<li ng-repeat="r in ctx.relations" class="my-1 pb-2 bg-light">
+									<div class="small text-muted"><a href="" ng-click="setCurrent(r.relation.stage)">{[ r.relation.stage.name ]}</a>. {[ r.relation.hint.operation.longName ]}</div>
+									<a href="{[ r.relation.hint.links.getHref() ]}" class="btn btn-sm btn-{[r.relation.hint.color]}" style="white-space:normal">
+										<span class="badge badge-light mr-2">{[ r.relation.hint.priority ]}</span>{[ r.relation.hint.name ]} 
+									</a>
+									<div class="p-2 desc" ng-if="r.description" ng-bind-html="r.description"></div>
+									<div class="small p-2 text-muted">
+										<a href="{[ r.user.links.getHref() ]}" class="">{[ r.user.name ]}</a>. {[ r.created | date:"dd MMMyy HH:mm" ]}
+									</div>
+									<div class="btn-group btn-group-sm">
+										<a href="" class="btn btn-sm" ng-click="addComment(r)"><span class="fa fa-comment"></span> {[ r.commentCount ]}</a>
+										<a href="" class="btn btn-sm" ng-click="editRelation(r, false)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteRelation(r)"><span class="fa fa-trash"></span></a>
+									</div>
+								</li>
+								<li ng-repeat="note in ctx.influences" class="my-1 bg-light">
+									<div class="p-2 desc" ng-bind-html="note.text"></div>
+									<div class="small px-2 text-muted">
+										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
+									</div>
+									<div class="btn-group btn-group-sm">
+										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
+										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+									</div>
+								</li>
+							</ul>
+						</td>
+						<td colspan="4" class="m-0 p-0" style="border:none;"></td>
+					</tr>
+
+					<tr ng-repeat-start="s in ctx.simulations">
+						<td class="bg-white text-center p-0 plus">
+							<a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
+						</td>
+						<td class="bg-light text-center" rowspan="2" ng-switch="s.state" style="vertical-align:middle;">
 							<div class="bg-secondary text-light p-2 rounded" ng-switch-when="-1">Not necessary</div>
 							<div class="bg-danger text-light p-2 rounded" ng-switch-when="-2">Canceled</div>
 							<div class="bg-dark text-light p-2 rounded" ng-switch-when="1">In progress</div>
@@ -256,13 +260,21 @@
 							<div class="bg-secondary text-light p-2 rounded" ng-switch-default>Not processed</div>
 							<div class="" ng-if="s.who">
 								<p class="my-1 text-center">{[ s.who ]}</p>
-								<span ng-if="s.when"class="small text-muted">{[ s.when | date:"dd MMMyy"]}</span>
+								<span ng-if="s.when"class="small text-muted text-center">{[ s.when | date:"dd MMMyy"]}</span>
 							</div>
 						</td>
-						<td class="bg-light">
+						<td class="bg-white p-0 text-center plus">
+							<a href="" ng-click="addEffect(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
+						</td>
+						<td class="bg-white p-0 text-center plus">
+							<a href="" ng-click="addPrevention(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<ul class="m-0">
-								<li ng-repeat="note in s.effects" class="my-1 bg-white">
-									<div class="mr-auto p-2" ng-bind-html="note.text"></div>
+								<li ng-repeat="note in s.suggestions" class="my-1 bg-light">
+									<div class="p-2 desc" ng-bind-html="note.text"></div>
 									<div class="small px-2 text-muted">
 										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
 									</div>
@@ -272,13 +284,30 @@
 										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
-								<li class="text-center"><a href="" ng-click="addEffect(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
+							</ul>
+						</td>
+						<!--<td class="bg-light text-center">
+						</td>
+-->
+						<td class="bg-light">
+							<ul class="m-0">
+								<li ng-repeat="note in s.effects" class="my-1 bg-white">
+									<div class="p-2 desc" ng-bind-html="note.text"></div>
+									<div class="small px-2 text-muted">
+										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
+									</div>
+									<div class="btn-group btn-group-sm">
+										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
+										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+									</div>
+								</li>
 							</ul>
 						</td>
 						<td class="bg-light">
 							<ul class="m-0">
 								<li ng-repeat="note in s.preventions" class="my-1 bg-white">
-									<div class="mr-auto p-2" ng-bind-html="note.text"></div>
+									<div class="p-2 desc" ng-bind-html="note.text"></div>
 									<div class="small px-2 text-muted">
 										<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
 									</div>
@@ -288,12 +317,11 @@
 										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
-								<li class="text-center"><a href="" ng-click="addPrevention(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a></li>
 							</ul>
 						</td>
 					</tr>
 					<tr ng-repeat-end>
-						<td colspan="6" class="py-0">
+						<td colspan="4" class="py-0">
 							<div class="d-flex">
 							<div class="small px-2 text-muted align-self-center">
 								<a href="{[ s.user.links.getHref() ]}" class="">{[ s.user.name ]}</a>. {[ s.created | date:"dd MMMyy HH:mm" ]}
@@ -309,7 +337,7 @@
 						</td>
 					</tr>
 					<tr ng-repeat-end>
-						<td colspan="9" class="py-0">
+						<td colspan="8" class="py-0">
 							<div class="d-flex">
 								<div class="small px-2 text-muted align-self-center">
 									<a href="{[ ctx.user.links.getHref() ]}" class="">{[ ctx.user.name ]}</a>. {[ ctx.created | date:"dd MMMyy HH:mm" ]}
@@ -322,7 +350,20 @@
 							</div>
 						</td>
 					</tr>
-					<tr ng-repeat-end ng-hide="true"></tr>
+					<tr ng-repeat-end>
+						<td colspan="9" class="py-0">
+							<div class="d-flex">
+								<div class="small px-2 text-muted align-self-center">
+									<a href="{[ hint.user.links.getHref() ]}" class="">{[ hint.user.name ]}</a>. {[ hint.created | date:"dd MMMyy HH:mm" ]}
+								</div>
+								<div class="btn-group btn-group-sm">
+									<a href="" ng-click="addComment(hint)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ hint.commentCount ]}</a>
+									<a href="" ng-click="editHint(hint)" class="btn btn-sm"><i class="fa fa-pencil"></i></a>
+									<a href="" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
+								</div>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table></div>
 		</div>
@@ -347,6 +388,9 @@
 	}
 	table td {
 		/*max-width: 250px;*/
+	}
+	table td.plus {
+		vertical-align: middle;
 	}
 	table ul {
 		padding:0;

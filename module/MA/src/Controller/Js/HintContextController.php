@@ -80,7 +80,7 @@ class HintContextController extends \Base\Controller\Js\AbstractActionController
 
 		if ($this->getRequest()->isPost()) {
 			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
-			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Simulation::STATE_CREATED ? \Zend\Form\FormInterface::VALIDATE_ALL : ['state', 'effect', 'prevention']; 
+			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Simulation::STATE_CREATED ? \Zend\Form\FormInterface::VALIDATE_ALL : ['state', 'suggestions', 'effects', 'preventions']; 
 			$form->setValidationGroup($validationGroup);
 			$form->setData($data);
 			if ($form->isValid()) {
@@ -90,6 +90,43 @@ class HintContextController extends \Base\Controller\Js\AbstractActionController
 				$em->flush();
 				$payload = [
 					'payload' => $this->prepareHalEntity($e, "process/hint/simulation/detail/json")
+				];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function relationAction()
+	{
+		$e	  = new \MA\Entity\HintRelation;
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\HintRelationForm::class);
+
+		$form->setHydrator(new DoctrineHydrator($em));
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+			$form->setData($data);
+			if ($form->isValid()) {
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$em->persist($e);
+				$em->flush();
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/hint/relation/detail/json")
 				];
 			}
 			else {
@@ -182,7 +219,7 @@ class HintContextController extends \Base\Controller\Js\AbstractActionController
 				$em->persist($e);
 				$em->flush();
 				$payload = [
-					'payload' => $this->prepareHalEntity($e, "process/hint/simulation/detail/json")
+					'payload' => $this->prepareHalEntity($e, "process/comment/detail/json")
 				];
 			}
 			else {
