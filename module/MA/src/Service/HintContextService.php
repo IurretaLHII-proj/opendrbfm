@@ -14,6 +14,13 @@ class HintContextService extends AbstractService
 	{
 		$source = $e->getTarget();
 
+		foreach ($source->getRelations() as $relation) {
+			if (!$relation->getUser()) $this->getNavService()->triggerService(self::EVENT_CREATE, $relation);
+		}
+		foreach ($source->getRelateds() as $relation) {
+			if (!$relation->getUser()) $this->getNavService()->triggerService(self::EVENT_CREATE, $relation);
+		}
+
 		foreach ($source->getParents() as $context) {
 			if (!$context->getUser()) $this->getNavService()->triggerService(self::EVENT_CREATE, $context);
 		}
@@ -26,6 +33,10 @@ class HintContextService extends AbstractService
 		}
 		foreach ($source->getInfluences() as $note) {
 			if (!$note->getUser()) $this->getNavService()->triggerService(self::EVENT_CREATE, $note);
+		}
+
+		foreach ($source->getSimulations() as $simulation) {
+			if (!$simulation->getUser()) $this->getNavService()->triggerService(self::EVENT_CREATE, $simulation);
 		}
 	}
 }

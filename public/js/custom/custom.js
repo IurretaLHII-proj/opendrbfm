@@ -134,21 +134,11 @@ App.controller('MainCtrl', function($scope, $timeout) {
 		warnings: [],
 	};
 
-	$scope.badgeClass = function(number) {
-		switch (true) {
-			case number > 6: return 'danger';
-			case number >= 4: return 'warning';
-			case number >= 2: return 'success';
-			case number > 0: return 'secondary';
-			default: return 'light';
-		}
-	};
-
 	$scope.textClass = function(number) {
 		switch (true) {
-			case number == 1: return 'dark';
 			case number == 2: return 'success';
-			case number == 0: 
+			case number == 1: return 'dark';
+			case number == 0: return 'light'; 
 			case number == -1: return 'muted';
 			default: return 'danger';
 		}

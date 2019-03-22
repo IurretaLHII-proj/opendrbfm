@@ -47,42 +47,66 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 });
 
 App.controller('_HintContextModalCtrl', function($scope, $uibModalInstance, $resource, e) {
-	$scope.context = e;
-	$scope.values  = JSON.parse(JSON.stringify(e));
-	$scope.errors  = {};
-	console.log(e, $scope.values);
+	$scope.context 	  	= e;
+	$scope.values  	  	= JSON.parse(JSON.stringify(e));
+	$scope.errors  	  	= {};
 
-	var dflt    = {id:null, name:" --Select one-- "};
-	$scope.dflt = dflt;
+	var dflt       	  	= {id:null, name:" --Select one-- "};
+	$scope.dflt    	  	= dflt;
 
-	$scope.init = function() {
-		let stage 		  = e.hint.stage;
-		$scope.prevStages = stage.version.stages.filter(s => {return s.order<stage.order});
-		$scope.nextStages = stage.version.stages.filter(s => {return s.order>stage.order});
-	}
-
-	$scope.prevHints = function(i) {
-		let prev = $scope.prevStages.find(e => {return e.id == $scope.values.parents[i].stage});
-		if (prev) {
-			$scope.commons.stage.getHints(prev);
-			return prev.hints;
-		}
-		else return [];
-	}
-
-	$scope.nextHints = function(i) {
-		let next = $scope.nextStages.find(e => {return e.id == $scope.values.children[i].stage});
-		if (next) {
-			$scope.commons.stage.getHints(next);
-			return next.hints;
-		}
-		else return [];
-	}
-
-	$scope.addParent    = function() {$scope.values.parents.push({stage: null, hint:null})}
+	let stage 		  	= e.hint.stage;
+	$scope.prevStages 	= $scope.version.stages.filter(s => {return s.order < stage.order});
+	$scope.nextStages 	= $scope.version.stages.filter(s => {return s.order > stage.order});
 	$scope.addReason    = function() {$scope.values.reasons.push({})}
-	$scope.addChild	    = function() {$scope.values.children.push({stage: null, hint:null})}
 	$scope.addInfluence	= function() {$scope.values.influences.push({})}
+	$scope.addParent  	= function() {
+		$scope.values.relateds.push({source: {stage:null, hint:null}, relation: {hint: e.hint.id}});
+	}
+	$scope.addChild	  	= function() {
+		$scope.values.relations.push({relation: {stage:null, hint:null}, source: {hint: e.hint.id}});
+	}
+	$scope.addSimulation = function() {
+		$scope.values.simulations.push({suggestions:[]});
+	}
+
+	$scope.previouses 		 = [];
+	$scope.prevsLoading 	 = [];
+	$scope.loadPreviousHints = function(i) {
+		$scope.previouses[i] = [dflt];
+		if ($scope.values.relateds[i].source.stage) {
+			$scope.prevsLoading[i] = true;
+			let prev = $scope.prevStages.find(e => {return e.id==$scope.values.relateds[i].source.stage});
+			$resource(prev.links.getHref('hints')).get().$promise.then(
+				function(data) {
+					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
+						$scope.previouses[i].push(e);
+					});
+					$scope.prevsLoading[i] = false;
+				},
+				function(err) {
+				},
+			);
+		}
+	}
+	$scope.nexts 		 = [];
+	$scope.nextsLoading  = [];
+	$scope.loadNextHints = function(i) {
+		$scope.nexts[i] = [dflt];
+		if ($scope.values.relations[i].relation.stage) {
+			$scope.nextsLoading[i] = true;
+			let next = $scope.nextStages.find(e => {return e.id==$scope.values.relations[i].relation.stage});
+			$resource(next.links.getHref('hints')).get().$promise.then(
+				function(data) {
+					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
+						$scope.nexts[i].push(e);
+					});
+					$scope.nextsLoading[i] = false;
+				},
+				function(err) {
+				},
+			);
+		}
+	}
 
 	$scope.save = function() {
 		var uri = e.id ? e.links.getHref('edit') : e.hint.links.getHref('context');
@@ -102,6 +126,88 @@ App.controller('_HintContextModalCtrl', function($scope, $uibModalInstance, $res
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');	
 	};
+	console.log(e, $scope.values);
+});
+
+App.controller('_HintRelationModalCtrl', function($scope, $uibModalInstance, $resource, e, r) {
+	$scope.r 		  = r;
+	$scope.relation   = e;
+	$scope.values     = JSON.parse(JSON.stringify(e));
+	$scope.errors     = {};
+
+	var dflt    	  = {id:null, name:" --Select one-- "};
+	$scope.dflt 	  = dflt;
+
+	let stage 		  = e.context.hint.stage;
+	$scope.prevStages = $scope.version.stages.filter(s => {return s.order < stage.order});
+	$scope.nextStages = $scope.version.stages.filter(s => {return s.order > stage.order});
+	$scope.previouses = [dflt];
+	$scope.nexts 	  = [dflt];
+	if (!$scope.values.source.stage) {
+	 	$scope.values.source.stage = null;
+	 	$scope.values.source.hint  = null;
+	}
+	if (!$scope.values.relation.stage) {
+		$scope.values.relation.stage = null;
+	 	$scope.values.relation.hint  = null;
+	}
+
+	$scope.loadPreviousHints = function() {
+		$scope.previouses 	 = [dflt];
+		if ($scope.values.source.stage) {
+			$scope.prevsLoading  = true;
+			let prev = $scope.prevStages.find(e => {return e.id == $scope.values.source.stage});
+			$resource(prev.links.getHref('hints')).get().$promise.then(
+				function(data) {
+					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
+						$scope.previouses.push(e);
+					});
+					$scope.prevsLoading = false;
+				},
+				function(err) {
+				},
+			);
+		}
+	}
+
+	$scope.loadNextHints = function() {
+		$scope.nexts = [dflt];
+		if ($scope.values.relation.stage) {
+			$scope.nextsLoading = true;
+			let next = $scope.nextStages.find(e => {return e.id == $scope.values.relation.stage});
+			$resource(next.links.getHref('hints')).get().$promise.then(
+				function(data) {
+					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
+						$scope.nexts.push(e);
+					});
+					$scope.nextsLoading = false;
+				},
+				function(err) {
+				},
+			);
+		}
+	}
+
+	$scope.save = function() {
+		console.log($scope.values);
+		var uri = e.id ? e.links.getHref('edit') : e.context.links.getHref('relation');
+		return $resource(uri).save({relation:$scope.values}).$promise.then(
+			function(data) { 
+				e.load(data);
+				console.log(data, e);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors.relation;
+			}	
+		);
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+
 });
 
 App.controller('_HintModalCtrl', function($scope, $uibModal, $uibModalInstance, $resource, stage, hint)
@@ -530,30 +636,4 @@ App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $reso
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');	
 	};
-
-	$scope.previousStages = function() {
-		$scope.previouses = [];
-		var stage = simulation.hint.stage;
-		while (stage.parent) {
-			$scope.previouses.push(stage.parent);
-			stage = stage.parent;
-		}
-		console.log($scope.previouses);
-	}
-	
-	$scope.nextStages = function() {
-		$scope.nexts = [];
-		var stage = simulation.hint.stage;
-		while (stage.children.length) {
-			$scope.nexts.push(stage.children[0]);
-			stage = stage.children[0];
-		}
-		console.log($scope.nexts);
-	}
-
-	$scope.nextSimulations = function(i) {
-		$scope.nSimulations = $scope.nexts.find(e => {return e.id == $scope.values.nexts[i]}).hints;
-		$scope.nSimulations.push({id:0, name:" --Select One-- "});
-		console.log($scope.nSimulations);
-	}
 });

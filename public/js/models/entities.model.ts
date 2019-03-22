@@ -265,6 +265,14 @@ class MAVersion {
 		return this.stages.length > 0;
 	}
 
+	isFirst(obj:MAStage): boolean {
+		return this.stages.length && this.stages[0] === obj;
+	}
+
+	isLast(obj:MAStage): boolean {
+		return this.stages.length && this.stages[this.stages.length-1] === obj;
+	}
+
 	getActive():MAStage {
 		return this.stages[this.stages.length-1];
 	}
@@ -573,19 +581,94 @@ class MAHintType {
 	links: MALinks;
 }
 
+class MAHintRelation {
+	static fromJSON(obj: IMAHintRelation): MAHintRelation{
+		let e = new MAHintRelation();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.comments = new MACollection();
+	}
+
+	load(obj: IMAHintRelation) {
+		if (obj.id) {
+			this.id = obj.id;
+			this.description = obj.description;
+			this.commentCount = obj.commentCount;
+			this.user = new MAUser(obj._embedded.owner);
+			this.source = MAHintContextRel.fromJSON(obj._embedded.source);
+			this.relation = MAHintContextRel.fromJSON(obj._embedded.relation);
+			this.created = new Date(obj.created.date);
+		}
+		this.links = new MALinks(obj._links);
+	}
+
+	get name():string {
+		return this.context.name;
+	}
+
+	getComments():MACollection[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		this.commentCount++;
+		this.comments.items.unshift(obj);
+	}
+
+	toJSON(): {}{
+		return {
+			id: this.id,
+			description: this.description,
+			source: this.source ? this.source.toJSON() : {},
+			relation: this.relation ? this.relation.toJSON() : {},
+		}
+	}
+
+	id:number;
+	description:string;
+	user:MAUser;
+	context: MAHintContext;
+	created: Date;
+	source: MAHintContextRel;
+	relation: MAHintContextRel;
+	commentCount: number=0;
+	comments: MACollection;
+	links: MALinks;
+}
+
 class MAHintContextRel {
-	constructor(obj: IMAHintContextRel) {
+	static fromJSON(obj: IMAHintContextRel): MAHintContextRel{
+		let e = new MAHintContextRel();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+	}
+
+	setContext(obj:MAHintContext) {
 		this.id = obj.id;
-		this.stage = MAStage.fromJSON(obj._embedded.stage);
-		this.hint = MAHint.fromJSON(obj._embedded.hint);
+		this.hint = obj.hint;
+		this.stage = obj.hint.stage;
+	}
+
+	load(obj: IMAHintContextRel) {
+		if (obj.id) {
+			this.id = obj.id;
+			this.stage = MAStage.fromJSON(obj._embedded.stage);
+			this.hint = MAHint.fromJSON(obj._embedded.hint);
+		}
 		this.links = new MALinks(obj._links);
 	}
 
 	toJSON(): {}{
 		return {
 			id: this.id,
-			hint: this.hint.id,
-			stage: this.stage.id,
+			hint: this.hint ? this.hint.id : null,
+			stage: this.stage ? this.stage.id : null,
 		}
 	}
 
@@ -603,27 +686,27 @@ class MAHintContext {
 	}
 	
 	constructor() {
-		this.parents     = [];
-		this.children    = [];
 		this.reasons     = [];
 		this.influences  = [];
 		this.simulations = [];
+		this.relations   = [];
+		this.relateds    = [];
 		this.comments    = new MACollection();
 	}
 
 	load(obj: IMAHintContext) {
 		if (obj.id) {
-			this.id 	 = obj.id;
-			this.created = new Date(obj.created.date);
-			this.hint    = MAHint.fromJSON(obj._embedded.hint);
-			this.user    = new MAUser(obj._embedded.owner);
+			this.id 	 	 = obj.id;
+			this.created 	 = new Date(obj.created.date);
+			this.hint    	 = MAHint.fromJSON(obj._embedded.hint);
+			this.user    	 = new MAUser(obj._embedded.owner);
 			this.commentCount = obj.commentCount;
-			this.links   = new MALinks(obj._links);
-			this.parents = [];
-			this.children = [];
-			this.reasons = [];
-			this.influences = [];
+			this.links   	 = new MALinks(obj._links);
+			this.reasons 	 = [];
+			this.influences  = [];
 			this.simulations = [];
+			this.relations   = [];
+			this.relateds    = [];
 			for (var i=0; i < obj._embedded.simulations.length; i++) {
 				this.addSimulation(MASimulation.fromJSON(obj._embedded.simulations[i]));	
 			}
@@ -633,14 +716,14 @@ class MAHintContext {
 			for (var i=0; i < obj._embedded.influences.length; i++) {
 				this.addInfluence(MANote.fromJSON(obj._embedded.influences[i]));	
 			}
-			for (var i=0; i < obj._embedded.parents.length; i++) {
-				if (obj._embedded.parents[i].id) {
-					this.parents.push(new MAHintContextRel(obj._embedded.parents[i]));	
+			for (var i=0; i < obj._embedded.relations.length; i++) {
+				if (obj._embedded.relations[i].id) {
+					this.addRelation(MAHintRelation.fromJSON(obj._embedded.relations[i]));	
 				}
 			}
-			for (var i=0; i < obj._embedded.children.length; i++) {
-				if (obj._embedded.children[i].id) {
-					this.children.push(new MAHintContextRel(obj._embedded.children[i]));	
+			for (var i=0; i < obj._embedded.relateds.length; i++) {
+				if (obj._embedded.relateds[i].id) {
+					this.addRelated(MAHintRelation.fromJSON(obj._embedded.relateds[i]));	
 				}
 			}
 		}
@@ -648,7 +731,7 @@ class MAHintContext {
 	}
 
 	get name():string {
-		return this.hint.name + ' | Context';
+		return this.hint.name;
 	}
 
 	setHint(obj:MAHint) {
@@ -658,6 +741,16 @@ class MAHintContext {
 	addSimulation(obj: MASimulation) {
 		obj.setContext(this);
 		this.simulations.push(obj);
+	}
+
+	addRelation(obj:MAHintRelation) {
+		obj.context = this;
+		this.relations.push(obj);
+	}
+
+	addRelated(obj:MAHintRelation) {
+		obj.context = this;
+		this.relateds.push(obj);
 	}
 
 	addReason(obj:MANote) {
@@ -690,28 +783,33 @@ class MAHintContext {
 	}
 
 	toJSON(): {}{
-		var parents:{}[] = [];
-		var children:{}[] = [];
-		for (var i=0; i < this.parents.length; i++) {
-			parents.push(this.parents[i].toJSON());
+		var simulations:{}[] = [];
+		var relations:{}[] = [];
+		var relateds:{}[] = [];
+		for (var i=0; i < this.relations.length; i++) {
+			relations.push(this.relations[i].toJSON());
 		}
-		for (var i=0; i < this.children.length; i++) {
-			children.push(this.children[i].toJSON());
+		for (var i=0; i < this.relateds.length; i++) {
+			relateds.push(this.relateds[i].toJSON());
+		}
+		for (var i=0; i < this.simulations.length; i++) {
+			simulations.push(this.simulations[i].toJSON());
 		}
 		return {
 			id: this.id,
 			hint: this.hint ? this.hint.id : null,
 			reasons: this.reasons,
 			influences: this.influences,
-			parents: parents,
-			children: children,
+			relations: relations,
+			relateds: relateds,
+			simulations: simulations,
 		};
 	}
 
 	id: number;
 	hint: MAHint;
-	parents:MAHintContextRel[];
-	children:MAHintContextRel[];
+	relations:MAHintRelation[];
+	relateds:MAHintRelation[];
 	reasons: MANote[];
 	influences: MANote[];
 	simulations: MASimulation[];
@@ -739,6 +837,7 @@ class MAHint {
 		if (obj._embedded) {
 			this.id = obj.id;
 			this.name = obj.name;
+			this.color = obj.color;
 			this.priority = obj.priority;
 			this.type = MAHintType.fromJSON(obj._embedded.type);
 			this.operation = MAOperation.fromJSON(obj._embedded.operation);
@@ -781,6 +880,7 @@ class MAHint {
 		return {
 			id: this.id,
 			name: this.name,
+			color: this.color,
 			stageOrder: this.stageOrder,
 			priority: this.priority,
 			description: this.description,
@@ -791,6 +891,7 @@ class MAHint {
 
 	id: number;
 	name: string;
+	color: string;
 	stage: MAStage;
 	stageOrder: number;
 	type: MAHintType;
@@ -869,7 +970,7 @@ class MASimulation {
 	}
 
 	get name():string {
-		return this.context.name + ' | Simulation';
+		return this.context.name;
 	}
 
 	setContext(obj:MAHintContext) {
@@ -953,7 +1054,7 @@ class MANote {
 	}
 
 	get name():string {
-		return this.source.name + ' | Note';
+		return this.source.name;
 	}
 
 	get description():string {

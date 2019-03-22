@@ -14,6 +14,48 @@ class HintContextForm extends Form implements InputFilterProviderInterface
     {
 		$this->add([
                 'type' => 'Collection',
+                'name' => 'relateds',
+				'options' => [
+					'count' => 1,
+					'target_element' => [
+						'type' => \MA\Form\HintRelationFieldset::class,
+						'object' => \MA\Entity\HintRelation::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'relations',
+				'options' => [
+					'count' => 1,
+					'target_element' => [
+						'type' => \MA\Form\HintRelationFieldset::class,
+						'object' => \MA\Entity\HintRelation::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'simulations',
+				'options' => [
+					'count' => 1,
+					'target_element' => [
+						'type' => \MA\Form\SimulationFieldset::class,
+						'object' => \MA\Entity\Simulation::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
                 'name' => 'parents',
 				'options' => [
 					'count' => 0,

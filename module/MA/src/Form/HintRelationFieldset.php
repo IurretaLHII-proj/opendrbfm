@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface,
 use Zend\InputFilter\InputFilterProviderInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
-class HintContextFieldset extends Fieldset implements 
+class HintRelationFieldset extends Fieldset implements 
 	ServiceLocatorAwareInterface, InputFilterProviderInterface
 {
     /**
@@ -17,27 +17,18 @@ class HintContextFieldset extends Fieldset implements
     public function init()
     {
         $this->add([
-             'type' => 'Number',
-             'name' => 'id',
-             'required' => true,
-             'attributes' => [ 
-                 'class' => 'form-control',
-             ],
-             'options' => [
-                 'label' => 'Id',
-             ],
-        ], ['priority' => -1]);
+             'type' => \MA\Form\HintContextFieldset::class,
+             'name' => 'source',
+        ]);
 
         $this->add([
-             'type' => 'ObjectSelect',
-             'name' => 'hint',
-             'attributes' => [ 
-                 'class' => 'form-control',
-             ],
-             'options' => [
-				 'empty_option' => 'Choose hint',
-				 'target_class' => 'MA\Entity\Hint',
-             ],
+             'type' => \MA\Form\HintContextFieldset::class,
+             'name' => 'relation',
+        ]);
+
+        $this->add([
+             'type' => 'Textarea',
+             'name' => 'description',
         ]);
 
         $em = $this->getServiceLocator()
@@ -54,8 +45,22 @@ class HintContextFieldset extends Fieldset implements
 	public function getInputFilterSpecification()
 	{
 		return [
-			'id' => [
+			'description' => [
 				'required' => false,
+				'filters' => [
+					[
+						'name' => \Zend\Filter\StringTrim::class,
+					],
+					[
+						'name' => \Zend\Filter\ToNull::class,
+					],
+				],
+				'validators' => [
+					[
+						'name' => \Zend\Validator\StringLength::class,
+						'options' => ['min' => 3, 'max' => 800],
+					],
+				],
 			],
 		];
 	}

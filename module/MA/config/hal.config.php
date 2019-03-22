@@ -82,7 +82,14 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 4,
+			'max_depth' => 5,
+		],
+		'MA\Entity\HintRelation' => [
+			'route_name' => 'process/hint/relation/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 3,
 		],
 		'MA\Entity\HintContextRel' => [
 			'route_name' => 'process/hint/context/detail',//TODO
@@ -190,6 +197,13 @@ return [
 			'max_depth' => 1,
 		],
 		'MA\Entity\Comment\HintContext' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\HintRelation' => [
 			'route_name' => 'process/comment/detail', 
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',

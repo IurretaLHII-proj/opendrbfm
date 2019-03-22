@@ -1,6 +1,5 @@
 <div class="modal-header">
-	<h3 class="modal-title" ng-if="simulation.id">{[ simulation.name ]} <small class="text-secondary">| edit</small></h3>
-	<h3 class="modal-title" ng-if="!simulation.id">{[ simulation.hint.name ]} <small class="text-secondary">| New Simulation</small></h3>
+	<h3 class="modal-title">{[ simulation.name ]} <small class="text-secondary" ng-if="simulation.id">| edit simulation</small><small class="text-secondary" ng-if="!simulation.id">| new simulation</small></h3>
 </div>
 <div class="modal-body">
 	<div class="form-group">

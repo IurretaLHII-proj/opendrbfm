@@ -580,7 +580,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail|edit|delete|reason|influence|simulate|comments|comment',
+										'action' => 'detail|edit|delete|reason|relation|influence|simulate|comments|comment',
 									]
 								],
 								'may_terminate' => true,
@@ -591,6 +591,44 @@ return [
 											'route' => '/json',
 											'defaults' => [
 												'controller' => Controller\Js\HintContextController::class,
+											],
+										],
+									]
+								],
+							],
+						],
+					],
+					'relation' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/relation',
+							'defaults' => [
+								'controller' => Controller\HintRelationController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail|edit|delete|comments|comment',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\HintRelationController::class,
 											],
 										],
 									]

@@ -202,6 +202,12 @@ var MAVersion = /** @class */ (function () {
     MAVersion.prototype.hasStages = function () {
         return this.stages.length > 0;
     };
+    MAVersion.prototype.isFirst = function (obj) {
+        return this.stages.length && this.stages[0] === obj;
+    };
+    MAVersion.prototype.isLast = function (obj) {
+        return this.stages.length && this.stages[this.stages.length - 1] === obj;
+    };
     MAVersion.prototype.getActive = function () {
         return this.stages[this.stages.length - 1];
     };
@@ -438,18 +444,78 @@ var MAHintType = /** @class */ (function () {
     };
     return MAHintType;
 }());
-var MAHintContextRel = /** @class */ (function () {
-    function MAHintContextRel(obj) {
-        this.id = obj.id;
-        this.stage = MAStage.fromJSON(obj._embedded.stage);
-        this.hint = MAHint.fromJSON(obj._embedded.hint);
-        this.links = new MALinks(obj._links);
+var MAHintRelation = /** @class */ (function () {
+    function MAHintRelation() {
+        this.commentCount = 0;
+        this.comments = new MACollection();
     }
+    MAHintRelation.fromJSON = function (obj) {
+        var e = new MAHintRelation();
+        e.load(obj);
+        return e;
+    };
+    MAHintRelation.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.description = obj.description;
+            this.commentCount = obj.commentCount;
+            this.user = new MAUser(obj._embedded.owner);
+            this.source = MAHintContextRel.fromJSON(obj._embedded.source);
+            this.relation = MAHintContextRel.fromJSON(obj._embedded.relation);
+            this.created = new Date(obj.created.date);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    Object.defineProperty(MAHintRelation.prototype, "name", {
+        get: function () {
+            return this.context.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MAHintRelation.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAHintRelation.prototype.addComment = function (obj) {
+        this.commentCount++;
+        this.comments.items.unshift(obj);
+    };
+    MAHintRelation.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            description: this.description,
+            source: this.source ? this.source.toJSON() : {},
+            relation: this.relation ? this.relation.toJSON() : {},
+        };
+    };
+    return MAHintRelation;
+}());
+var MAHintContextRel = /** @class */ (function () {
+    function MAHintContextRel() {
+    }
+    MAHintContextRel.fromJSON = function (obj) {
+        var e = new MAHintContextRel();
+        e.load(obj);
+        return e;
+    };
+    MAHintContextRel.prototype.setContext = function (obj) {
+        this.id = obj.id;
+        this.hint = obj.hint;
+        this.stage = obj.hint.stage;
+    };
+    MAHintContextRel.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.stage = MAStage.fromJSON(obj._embedded.stage);
+            this.hint = MAHint.fromJSON(obj._embedded.hint);
+        }
+        this.links = new MALinks(obj._links);
+    };
     MAHintContextRel.prototype.toJSON = function () {
         return {
             id: this.id,
-            hint: this.hint.id,
-            stage: this.stage.id,
+            hint: this.hint ? this.hint.id : null,
+            stage: this.stage ? this.stage.id : null,
         };
     };
     return MAHintContextRel;
@@ -457,11 +523,11 @@ var MAHintContextRel = /** @class */ (function () {
 var MAHintContext = /** @class */ (function () {
     function MAHintContext() {
         this.commentCount = 0;
-        this.parents = [];
-        this.children = [];
         this.reasons = [];
         this.influences = [];
         this.simulations = [];
+        this.relations = [];
+        this.relateds = [];
         this.comments = new MACollection();
     }
     MAHintContext.fromJSON = function (obj) {
@@ -477,11 +543,11 @@ var MAHintContext = /** @class */ (function () {
             this.user = new MAUser(obj._embedded.owner);
             this.commentCount = obj.commentCount;
             this.links = new MALinks(obj._links);
-            this.parents = [];
-            this.children = [];
             this.reasons = [];
             this.influences = [];
             this.simulations = [];
+            this.relations = [];
+            this.relateds = [];
             for (var i = 0; i < obj._embedded.simulations.length; i++) {
                 this.addSimulation(MASimulation.fromJSON(obj._embedded.simulations[i]));
             }
@@ -491,14 +557,14 @@ var MAHintContext = /** @class */ (function () {
             for (var i = 0; i < obj._embedded.influences.length; i++) {
                 this.addInfluence(MANote.fromJSON(obj._embedded.influences[i]));
             }
-            for (var i = 0; i < obj._embedded.parents.length; i++) {
-                if (obj._embedded.parents[i].id) {
-                    this.parents.push(new MAHintContextRel(obj._embedded.parents[i]));
+            for (var i = 0; i < obj._embedded.relations.length; i++) {
+                if (obj._embedded.relations[i].id) {
+                    this.addRelation(MAHintRelation.fromJSON(obj._embedded.relations[i]));
                 }
             }
-            for (var i = 0; i < obj._embedded.children.length; i++) {
-                if (obj._embedded.children[i].id) {
-                    this.children.push(new MAHintContextRel(obj._embedded.children[i]));
+            for (var i = 0; i < obj._embedded.relateds.length; i++) {
+                if (obj._embedded.relateds[i].id) {
+                    this.addRelated(MAHintRelation.fromJSON(obj._embedded.relateds[i]));
                 }
             }
         }
@@ -506,7 +572,7 @@ var MAHintContext = /** @class */ (function () {
     };
     Object.defineProperty(MAHintContext.prototype, "name", {
         get: function () {
-            return this.hint.name + ' | Context';
+            return this.hint.name;
         },
         enumerable: true,
         configurable: true
@@ -517,6 +583,14 @@ var MAHintContext = /** @class */ (function () {
     MAHintContext.prototype.addSimulation = function (obj) {
         obj.setContext(this);
         this.simulations.push(obj);
+    };
+    MAHintContext.prototype.addRelation = function (obj) {
+        obj.context = this;
+        this.relations.push(obj);
+    };
+    MAHintContext.prototype.addRelated = function (obj) {
+        obj.context = this;
+        this.relateds.push(obj);
     };
     MAHintContext.prototype.addReason = function (obj) {
         obj.setSource(this);
@@ -544,21 +618,26 @@ var MAHintContext = /** @class */ (function () {
         this.comments.items.unshift(obj);
     };
     MAHintContext.prototype.toJSON = function () {
-        var parents = [];
-        var children = [];
-        for (var i = 0; i < this.parents.length; i++) {
-            parents.push(this.parents[i].toJSON());
+        var simulations = [];
+        var relations = [];
+        var relateds = [];
+        for (var i = 0; i < this.relations.length; i++) {
+            relations.push(this.relations[i].toJSON());
         }
-        for (var i = 0; i < this.children.length; i++) {
-            children.push(this.children[i].toJSON());
+        for (var i = 0; i < this.relateds.length; i++) {
+            relateds.push(this.relateds[i].toJSON());
+        }
+        for (var i = 0; i < this.simulations.length; i++) {
+            simulations.push(this.simulations[i].toJSON());
         }
         return {
             id: this.id,
             hint: this.hint ? this.hint.id : null,
             reasons: this.reasons,
             influences: this.influences,
-            parents: parents,
-            children: children,
+            relations: relations,
+            relateds: relateds,
+            simulations: simulations,
         };
     };
     return MAHintContext;
@@ -579,6 +658,7 @@ var MAHint = /** @class */ (function () {
         if (obj._embedded) {
             this.id = obj.id;
             this.name = obj.name;
+            this.color = obj.color;
             this.priority = obj.priority;
             this.type = MAHintType.fromJSON(obj._embedded.type);
             this.operation = MAOperation.fromJSON(obj._embedded.operation);
@@ -616,6 +696,7 @@ var MAHint = /** @class */ (function () {
         return {
             id: this.id,
             name: this.name,
+            color: this.color,
             stageOrder: this.stageOrder,
             priority: this.priority,
             description: this.description,
@@ -680,7 +761,7 @@ var MASimulation = /** @class */ (function () {
     };
     Object.defineProperty(MASimulation.prototype, "name", {
         get: function () {
-            return this.context.name + ' | Simulation';
+            return this.context.name;
         },
         enumerable: true,
         configurable: true
@@ -750,7 +831,7 @@ var MANote = /** @class */ (function () {
     };
     Object.defineProperty(MANote.prototype, "name", {
         get: function () {
-            return this.source.name + ' | Note';
+            return this.source.name;
         },
         enumerable: true,
         configurable: true

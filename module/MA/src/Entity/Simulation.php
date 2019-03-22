@@ -73,17 +73,6 @@ class Simulation implements
     protected $context;
 
 	/**
-	 * @var Note\HintEffect[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintEffect",
-	 *	mappedBy	 = "simulation",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $effects;
-
-	/**
 	 * @var Note\HintSuggestion[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Note\HintSuggestion",
@@ -93,6 +82,17 @@ class Simulation implements
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
 	protected $suggestions;
+
+	/**
+	 * @var Note\HintEffect[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Note\HintEffect",
+	 *	mappedBy	 = "simulation",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $effects;
 
 	/**
 	 * @var Note\HintPrevention[]

@@ -8,18 +8,18 @@ use Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
 
-use MA\Entity\HintContextInterface,
+use MA\Entity\HintRelationInterface,
 	MA\Entity\AbstractComment;
 
 /**
  * @ORM\Entity()
  */
-class HintContext extends AbstractComment
+class HintRelation extends AbstractComment
 {
 	/**
 	 * @var PostComment
 	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\Comment\HintContext",
+	 *	targetEntity = "MA\Entity\Comment\HintRelation",
 	 *	inversedBy	 = "children",
 	 * )
 	 * @ORM\JoinColumn(
@@ -33,7 +33,7 @@ class HintContext extends AbstractComment
 	/**
 	 * @var PostComment[]
 	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Comment\HintContext",
+	 *	targetEntity = "MA\Entity\Comment\HintRelation",
 	 *	mappedBy	 = "parent",
 	 *	cascade = {"remove"}
 	 * )
@@ -43,7 +43,7 @@ class HintContext extends AbstractComment
 
 	/**
 	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\HintContext",
+	 *	targetEntity = "MA\Entity\HintRelation",
 	 *	inversedBy	 = "comments",
 	 * )
 	 * @ORM\JoinColumn(
@@ -56,7 +56,7 @@ class HintContext extends AbstractComment
     /**
      * Get source.
      *
-     * @return HintContextInterface.
+     * @return HintRelationInterface.
      */
     public function getSource()
     {
@@ -66,10 +66,10 @@ class HintContext extends AbstractComment
     /**
      * Set source.
      *
-     * @param HintContextInterface source the value to set.
-     * @return HintContext.
+     * @param HintRelationInterface source the value to set.
+     * @return HintRelation.
      */
-    public function setSource(HintContextInterface $source)
+    public function setSource(HintRelationInterface $source)
     {
         $this->source = $source;
         return $this;
@@ -78,9 +78,9 @@ class HintContext extends AbstractComment
     /**
      * Get hint.
      *
-     * @return HintContext.
+     * @return HintRelation.
      */
-    public function getContext()
+    public function getRelation()
     {
         return $this->getSource();
     }
@@ -88,10 +88,10 @@ class HintContext extends AbstractComment
     /**
      * Set hint.
      *
-     * @param HintContext hint the value to set.
-     * @return HintContext.
+     * @param HintRelation hint the value to set.
+     * @return HintRelation.
      */
-    public function setContext(HintContextInterface $hint)
+    public function setRelation(HintRelationInterface $hint)
     {
         $this->setSource($hint);
         return $this;

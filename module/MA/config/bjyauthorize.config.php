@@ -34,6 +34,7 @@ return [
 			Entity\Hint::class,
 			Entity\HintType::class,
 			Entity\HintContext::class,
+			Entity\HintRelation::class,
 			Entity\AbstractNote::class,
 			Entity\Note\HintReason::class,
 			Entity\Note\HintSuggestion::class,
