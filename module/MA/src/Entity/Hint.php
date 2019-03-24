@@ -166,6 +166,7 @@ class Hint implements
 	{
 		$this->created     = new DateTime;
 		$this->updated     = new DateTime;
+		$this->contexts    = new ArrayCollection;
 		$this->comments    = new ArrayCollection;
 	}
     

@@ -133,16 +133,6 @@ App.controller('MainCtrl', function($scope, $timeout) {
 		errors: [],
 		warnings: [],
 	};
-
-	$scope.textClass = function(number) {
-		switch (true) {
-			case number == 2: return 'success';
-			case number == 1: return 'dark';
-			case number == 0: return 'light'; 
-			case number == -1: return 'muted';
-			default: return 'danger';
-		}
-	};
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {
