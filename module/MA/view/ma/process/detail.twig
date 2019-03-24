@@ -127,7 +127,7 @@
 						<th colspan="3">Simulation</th>
 					</tr>-->
 					<tr>
-						<th></th>
+						<th>Error</th>
 						<th colspan="2">Reasons</th>
 						<th colspan="2">Influences</th>
 						<th>Suggestions</th>
@@ -253,7 +253,7 @@
 							<a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
 						</td>
 						<td class="bg-light text-center" rowspan="2" ng-switch="s.state" style="vertical-align:middle;">
-							<div class="bg-secondary text-light p-2 rounded" ng-switch-when="-1">Not necessary</div>
+							<div class="bg-light p-2 rounded" ng-switch-when="-1">Not necessary</div>
 							<div class="bg-danger text-light p-2 rounded" ng-switch-when="-2">Canceled</div>
 							<div class="bg-dark text-light p-2 rounded" ng-switch-when="1">In progress</div>
 							<div class="bg-success text-light p-2 rounded" ng-switch-when="2">Finished</div>

@@ -18,6 +18,7 @@
 		<a href="{{url('process/hint/detail', {id: item.id}) }}" class="btn btn-sm btn-{{ item.color }}" style="white-space:normal">
 			<span class="badge badge-light mr-2">{{ item.priority }}</span> {{ item.name }}
 		</a>
+		<div class="small">{{ item.description | raw }}</div>
 	</div>
 	{% if sChildren and not item.children.isEmpty %}
 		<div class="d-flex flex-column">
