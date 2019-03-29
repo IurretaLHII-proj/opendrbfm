@@ -42,7 +42,7 @@ class HintRelation implements
 	 * @var User
 	 * @ORM\ManyToOne(
 	 *	targetEntity = "MA\Entity\User",
-	 *	inversedBy	 = "hints",
+	 *	inversedBy	 = "relations",
 	 * )
 	 * @ORM\JoinColumn(
 	 *	name= "uid",
@@ -54,7 +54,7 @@ class HintRelation implements
     /**
 	 * @var HintContextInterface
      * @ORM\ManyToOne(
-     *     targetEntity = "MA\Entity\HintContext",
+     *     targetEntity = "MA\Entity\HintReason",
      *     inversedBy   = "relations",
 	 *	   cascade 	 = {"persist"}
      * )
@@ -68,8 +68,8 @@ class HintRelation implements
     /**
 	 * @var HintContextInterface
      * @ORM\ManyToOne(
-     *     targetEntity = "MA\Entity\HintContext",
-	 *     inversedBy   = "relateds",
+     *     targetEntity = "MA\Entity\HintInfluence",
+	 *     inversedBy   = "relations",
 	 *	   cascade 	 = {"persist"}
      * )
      * @ORM\JoinColumn(
@@ -156,7 +156,7 @@ class HintRelation implements
      * @param HintContextInterface source the value to set.
      * @return Hint.
      */
-    public function setSource(HintContextInterface $source)
+    public function setSource(HintReasonInterface $source)
     {
         $this->source = $source;
         return $this;
@@ -178,7 +178,7 @@ class HintRelation implements
      * @param HintContextInterface relation the value to set.
      * @return Hint.
      */
-    public function setRelation(HintContextInterface $relation)
+    public function setRelation(HintInfluenceInterface $relation)
     {
         $this->relation = $relation;
         return $this;
@@ -357,8 +357,8 @@ class HintRelation implements
 			'commentCount' => $this->getCommentCount(),
 			'owner'		   => $this->getUser(),
             'created'      => $this->getCreated(),
-			'source'	   => new HintContextRel($this->getSource()),
-			'relation'	   => new HintContextRel($this->getRelation()),
+			'source'	   => new HintReasonRel($this->getSource()),
+			'relation'	   => new HintInfluenceRel($this->getRelation()),
         );
     }
 

@@ -90,6 +90,17 @@ class Hint implements
     protected $type;
 
 	/**
+	 * @var HintReasonInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\HintReason",
+	 *	mappedBy	 = "hint",
+	 *	cascade 	 = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $reasons;
+
+	/**
 	 * @var CommentInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Hint",
@@ -118,36 +129,6 @@ class Hint implements
 	protected $contexts;
 
 	/**
-	 * @var int
-	 * @ORM\Column(type="integer", options={"default":0})
-	 */
-	protected $state = 0;
-
-	/**
-	 * @var string 
-	 * @ORM\Column(type="string", options={"nullable":true})
-	 */
-	protected $who;
-
-	/**
-	 * @var DateTime 
-	 * @ORM\Column(type="datetime", name="whn", options={"nullable":true})
-	 */
-	protected $when;
-
-	/**
-	 * @var string 
-	 * @ORM\Column(type="string", name="eff", options = {"nullable":true})
-	 */
-	protected $effect;
-
-	/**
-	 * @var string 
-	 * @ORM\Column(type="string", name="prev", options = {"nullable":true})
-	 */
-	protected $prevention;
-
-	/**
 	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
@@ -164,10 +145,11 @@ class Hint implements
 	 */
 	public function __construct()
 	{
-		$this->created     = new DateTime;
-		$this->updated     = new DateTime;
-		$this->contexts    = new ArrayCollection;
-		$this->comments    = new ArrayCollection;
+		$this->created   = new DateTime;
+		$this->updated   = new DateTime;
+		$this->contexts  = new ArrayCollection;
+		$this->reasons   = new ArrayCollection;
+		$this->comments  = new ArrayCollection;
 	}
     
     /**
@@ -211,116 +193,6 @@ class Hint implements
     public function setPriority($priority)
     {
         $this->priority = (int) $priority;
-        return $this;
-    }
-    
-    /**
-     * Set state.
-     *
-     * @param int state the value to set.
-     * @return Hint.
-     */
-    public function setState($state)
-    {
-        $this->state = (int) $state;
-        return $this;
-    }
-    
-    /**
-     * Get state.
-     *
-     * @return int.
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-    
-    /**
-     * Get who.
-     *
-     * @return string.
-     */
-    public function getWho()
-    {
-        return $this->who;
-    }
-    
-    /**
-     * Set who.
-     *
-     * @param string who the value to set.
-     * @return Hint.
-     */
-    public function setWho($who = null)
-    {
-        $this->who = $who ? (string) $who : $who;
-        return $this;
-    }
-    
-    /**
-     * Get when.
-     *
-     * @return DateTime.
-     */
-    public function getWhen()
-    {
-        return $this->when;
-    }
-    
-    /**
-     * Set when.
-     *
-     * @param DateTime when the value to set.
-     * @return Hint.
-     */
-    public function setWhen(DateTime $when = null)
-    {
-        $this->when = $when;
-        return $this;
-    }
-    
-    /**
-     * Get effect.
-     *
-     * @return string|null.
-     */
-    public function getEffect()
-    {
-        return $this->effect;
-    }
-    
-    /**
-     * Set effect.
-     *
-     * @param strin|nullg effect the value to set.
-     * @return Hint.
-     */
-    public function setEffect($effect = null)
-    {
-		$this->effect = $effect ? (string) $effect : $effect;
-        return $this;
-    }
-    
-    /**
-     * Get prevention.
-     *
-     * @return string|null.
-     */
-    public function getPrevention()
-    {
-        return $this->prevention;
-    }
-    
-    /**
-     * Set prevention.
-     *
-     * @param strin|nullg prevention the value to set.
-     * @return Hint.
-     */
-    public function setPrevention($prevention = null)
-    {
-		$this->prevention = $prevention ? (string) $prevention : $prevention;
         return $this;
     }
     
@@ -420,6 +292,17 @@ class Hint implements
 		//	$this->getType()->getTitle()
 		//);
 	}
+
+	/**
+	 * @param HintReasonInterface $reason
+	 * @return HintInterface
+	 */
+	public function addReason(HintReasonInterface $reason)
+	{
+		$reason->setHint($this);
+		$this->getReasons()->add($reason);
+		return $this;
+	}
     
     /**
      * Get user.
@@ -507,10 +390,10 @@ class Hint implements
     public function getParents()
     {
 		$parents = new ArrayCollection;
-		foreach ($this->getContexts() as $context) {
-			foreach ($context->getRelateds()->map(function($e){ return $e->getSource()->getHint(); }) as $hint) {
+		foreach ($this->getReasons() as $reason) {
+			foreach ($reason->getRelations()->map(function($r) { return $r->getRelation()->getHint(); }) as $hint) {
 				if (!$parents->contains($hint)) $parents->add($hint);
-			}
+			}	
 		}
 		return $parents;
     }
@@ -523,10 +406,12 @@ class Hint implements
     public function getChildren()
     {
 		$children = new ArrayCollection;
-		foreach ($this->getContexts() as $context) {
-			foreach ($context->getRelations()->map(function($e){ return $e->getRelation()->getHint(); }) as $hint) {
-				if (!$children->contains($hint)) $children->add($hint);
-			}
+		foreach ($this->getReasons() as $reason) {
+			foreach ($reason->getInfluences() as $infl) {
+				foreach ($infl->getRelations()->map(function($r) { return $r->getSource()->getHint(); }) as $hint) {
+					if (!$children->contains($hint)) $children->add($hint);
+				}	
+			}	
 		}
 		return $children;
     }
@@ -584,6 +469,28 @@ class Hint implements
     public function setDescription($descr = null)
     {
         $this->description = $descr ? (string) $descr : $descr;
+        return $this;
+    }
+    
+    /**
+     * Get reasons.
+     *
+     * @return HintReasonInterface[].
+     */
+    public function getReasons()
+    {
+        return $this->reasons;
+    }
+    
+    /**
+     * Set reasons.
+     *
+     * @param HintReasonInterface[] reasons the value to set.
+     * @return Hint.
+     */
+    public function setReasons($reasons)
+    {
+        $this->reasons = $reasons;
         return $this;
     }
     
@@ -743,6 +650,15 @@ class Hint implements
 				'route' => [
 				    'name'    => 'process/hint/detail/json',
 				    'params'  => ['action' => 'context', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'reason',
+				'privilege'   => 'reason',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/detail/json',
+				    'params'  => ['action' => 'reason', 'id' => $this->getId()],
 				],
 			],
 			[

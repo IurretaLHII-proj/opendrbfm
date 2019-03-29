@@ -460,15 +460,18 @@ var MAHintRelation = /** @class */ (function () {
             this.description = obj.description;
             this.commentCount = obj.commentCount;
             this.user = new MAUser(obj._embedded.owner);
-            this.source = MAHintContextRel.fromJSON(obj._embedded.source);
-            this.relation = MAHintContextRel.fromJSON(obj._embedded.relation);
+            this.source = MAHintReasonRel.fromJSON(obj._embedded.source);
+            this.relation = MAHintInfluenceRel.fromJSON(obj._embedded.relation);
             this.created = new Date(obj.created.date);
         }
         this.links = new MALinks(obj._links);
     };
     Object.defineProperty(MAHintRelation.prototype, "name", {
         get: function () {
-            return this.context.name;
+            if (this.reason)
+                return this.reason.name;
+            else if (this.influence)
+                return this.influence.name;
         },
         enumerable: true,
         configurable: true
@@ -489,6 +492,74 @@ var MAHintRelation = /** @class */ (function () {
         };
     };
     return MAHintRelation;
+}());
+var MAHintReasonRel = /** @class */ (function () {
+    function MAHintReasonRel() {
+    }
+    MAHintReasonRel.fromJSON = function (obj) {
+        var e = new MAHintReasonRel();
+        e.load(obj);
+        return e;
+    };
+    MAHintReasonRel.prototype.setReason = function (obj) {
+        this.id = obj.id;
+        this.hint = obj.hint;
+        this.stage = obj.hint.stage;
+    };
+    MAHintReasonRel.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.stage = MAStage.fromJSON(obj._embedded.stage);
+            this.hint = MAHint.fromJSON(obj._embedded.hint);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    MAHintReasonRel.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            hint: this.hint ? this.hint.id : null,
+            stage: this.stage ? this.stage.id : null,
+        };
+    };
+    return MAHintReasonRel;
+}());
+var MAHintInfluenceRel = /** @class */ (function () {
+    function MAHintInfluenceRel() {
+        this.reason = new MAHintReasonRel();
+    }
+    MAHintInfluenceRel.fromJSON = function (obj) {
+        var e = new MAHintInfluenceRel();
+        e.load(obj);
+        return e;
+    };
+    MAHintInfluenceRel.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.reason = MAHintReasonRel.fromJSON(obj._embedded.reason);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    Object.defineProperty(MAHintInfluenceRel.prototype, "hint", {
+        get: function () {
+            return this.reason.hint;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MAHintInfluenceRel.prototype, "stage", {
+        get: function () {
+            return this.reason.stage;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MAHintInfluenceRel.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            reason: this.reason,
+        };
+    };
+    return MAHintInfluenceRel;
 }());
 var MAHintContextRel = /** @class */ (function () {
     function MAHintContextRel() {
@@ -642,10 +713,185 @@ var MAHintContext = /** @class */ (function () {
     };
     return MAHintContext;
 }());
+var MAHintReason = /** @class */ (function () {
+    function MAHintReason() {
+        this.commentCount = 0;
+        this.notes = [];
+        this.relations = [];
+        this.influences = [];
+        this.comments = new MACollection();
+        this.created = new Date;
+    }
+    MAHintReason.fromJSON = function (obj) {
+        var e = new MAHintReason();
+        e.load(obj);
+        return e;
+    };
+    MAHintReason.prototype.load = function (obj) {
+        if (obj._embedded) {
+            this.id = obj.id;
+            this.created = new Date(obj.created.date);
+            this.user = new MAUser(obj._embedded.owner);
+            this.commentCount = obj.commentCount;
+            this.notes = [];
+            for (var i = 0; i < obj._embedded.notes.length; i++) {
+                this.addNote(MANote.fromJSON(obj._embedded.notes[i]));
+            }
+            for (var i = 0; i < obj._embedded.influences.length; i++) {
+                this.addInfluence(MAHintInfluence.fromJSON(obj._embedded.influences[i]));
+            }
+            for (var i = 0; i < obj._embedded.relations.length; i++) {
+                if (obj._embedded.relations[i].id) {
+                    this.addRelation(MAHintRelation.fromJSON(obj._embedded.relations[i]));
+                }
+            }
+        }
+        this.links = new MALinks(obj._links);
+    };
+    Object.defineProperty(MAHintReason.prototype, "name", {
+        get: function () {
+            return this.hint.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MAHintReason.prototype.addNote = function (obj) {
+        obj.setSource(this);
+        this.notes.push(obj);
+    };
+    MAHintReason.prototype.removeNote = function (obj) {
+        var index;
+        if ((index = this.notes.indexOf(obj)) >= 0) {
+            var res = this.notes.splice(index, 1);
+        }
+    };
+    MAHintReason.prototype.addRelation = function (obj) {
+        obj.reason = this;
+        this.relations.push(obj);
+    };
+    MAHintReason.prototype.addInfluence = function (obj) {
+        obj.setReason(this);
+        this.influences.push(obj);
+    };
+    MAHintReason.prototype.getSimulations = function () {
+        var items = [];
+        for (var i = 0; i < this.influences.length; i++) {
+            items = items.concat(this.influences[i].simulations);
+        }
+        return items;
+    };
+    MAHintReason.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAHintReason.prototype.addComment = function (obj) {
+        this.commentCount++;
+        this.comments.items.unshift(obj);
+    };
+    MAHintReason.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            hint: this.hint ? this.hint.id : null,
+            notes: this.notes,
+            relations: this.relations,
+            influences: this.influences,
+        };
+    };
+    return MAHintReason;
+}());
+var MAHintInfluence = /** @class */ (function () {
+    function MAHintInfluence() {
+        this.commentCount = 0;
+        this.notes = [];
+        this.relations = [];
+        this.simulations = [];
+        this.comments = new MACollection();
+        this.created = new Date;
+    }
+    MAHintInfluence.fromJSON = function (obj) {
+        var e = new MAHintInfluence();
+        e.load(obj);
+        return e;
+    };
+    MAHintInfluence.prototype.load = function (obj) {
+        if (obj._embedded) {
+            this.id = obj.id;
+            this.created = new Date(obj.created.date);
+            this.user = new MAUser(obj._embedded.owner);
+            this.commentCount = obj.commentCount;
+            this.notes = [];
+            this.simulations = [];
+            this.relations = [];
+            for (var i = 0; i < obj._embedded.notes.length; i++) {
+                this.addNote(MANote.fromJSON(obj._embedded.notes[i]));
+            }
+            for (var i = 0; i < obj._embedded.simulations.length; i++) {
+                this.addSimulation(MASimulation.fromJSON(obj._embedded.simulations[i]));
+            }
+            for (var i = 0; i < obj._embedded.relations.length; i++) {
+                if (obj._embedded.relations[i].id) {
+                    this.addRelation(MAHintRelation.fromJSON(obj._embedded.relations[i]));
+                }
+            }
+        }
+        this.links = new MALinks(obj._links);
+    };
+    Object.defineProperty(MAHintInfluence.prototype, "name", {
+        get: function () {
+            return this.reason.name;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MAHintInfluence.prototype, "hint", {
+        get: function () {
+            return this.reason.hint;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MAHintInfluence.prototype.setReason = function (obj) {
+        this.reason = obj;
+    };
+    MAHintInfluence.prototype.addRelation = function (obj) {
+        obj.influence = this;
+        this.relations.push(obj);
+    };
+    MAHintInfluence.prototype.addNote = function (obj) {
+        obj.setSource(this);
+        this.notes.push(obj);
+    };
+    MAHintInfluence.prototype.removeNote = function (obj) {
+        var index;
+        if ((index = this.notes.indexOf(obj)) >= 0) {
+            var res = this.notes.splice(index, 1);
+        }
+    };
+    MAHintInfluence.prototype.addSimulation = function (obj) {
+        obj.influence = this;
+        this.simulations.push(obj);
+    };
+    MAHintInfluence.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAHintInfluence.prototype.addComment = function (obj) {
+        this.commentCount++;
+        this.comments.items.unshift(obj);
+    };
+    MAHintInfluence.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            notes: this.notes,
+            relations: this.relations,
+            simulations: this.simulations,
+        };
+    };
+    return MAHintInfluence;
+}());
 var MAHint = /** @class */ (function () {
     function MAHint() {
         this.priority = 0;
         this.comments = new MACollection();
+        this.reasons = [];
         this.contexts = [];
         this.created = new Date;
     }
@@ -671,8 +917,15 @@ var MAHint = /** @class */ (function () {
             for (var i = 0; i < obj._embedded.contexts.length; i++) {
                 this.addContext(MAHintContext.fromJSON(obj._embedded.contexts[i]));
             }
+            for (var i = 0; i < obj._embedded.reasons.length; i++) {
+                this.addReason(MAHintReason.fromJSON(obj._embedded.reasons[i]));
+            }
         }
         this.links = new MALinks(obj._links);
+    };
+    MAHint.prototype.addReason = function (obj) {
+        obj.hint = this;
+        this.reasons.push(obj);
     };
     MAHint.prototype.addContext = function (obj) {
         obj.hint = this;
@@ -685,10 +938,18 @@ var MAHint = /** @class */ (function () {
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
+    MAHint.prototype.getInfluences = function () {
+        var items = [];
+        for (var i = 0; i < this.reasons.length; i++) {
+            items = items.concat(this.reasons[i].influences);
+        }
+        return items;
+    };
     MAHint.prototype.getSimulations = function () {
         var items = [];
-        for (var i = 0; i < this.contexts.length; i++) {
-            items = items.concat(this.contexts[i].simulations);
+        var infls = this.getInfluences();
+        for (var i = 0; i < infls.length; i++) {
+            items = items.concat(infls[i].simulations);
         }
         return items;
     };
@@ -761,7 +1022,7 @@ var MASimulation = /** @class */ (function () {
     };
     Object.defineProperty(MASimulation.prototype, "name", {
         get: function () {
-            return this.context.name;
+            return this.influence.name;
         },
         enumerable: true,
         configurable: true

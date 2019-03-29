@@ -67,7 +67,7 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 7,
+			'max_depth' => 9,
 			'hydrator' => Hydrator\HintHydrator::class,
 		],
 		'MA\Entity\HintType' => [
@@ -76,6 +76,20 @@ return [
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
+		],
+		'MA\Entity\HintReason' => [
+			'route_name' => 'process/hint/reason/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 8,
+		],
+		'MA\Entity\HintInfluence' => [
+			'route_name' => 'process/hint/influence/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 6,
 		],
 		'MA\Entity\HintContext' => [
 			'route_name' => 'process/hint/context/detail',
@@ -89,10 +103,24 @@ return [
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
-			'max_depth' => 3,
+			'max_depth' => 4,
 		],
 		'MA\Entity\HintContextRel' => [
 			'route_name' => 'process/hint/context/detail',//TODO
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\HintReasonRel' => [
+			'route_name' => 'process/hint/reason/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\HintInfluenceRel' => [
+			'route_name' => 'process/hint/influence/detail',
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
@@ -105,14 +133,14 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 3,
 		],
-		'MA\Entity\Note\ContextReason' => [
+		'MA\Entity\Note\HintReason' => [
 			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
 		],
-		'MA\Entity\Note\ContextInfluence' => [
+		'MA\Entity\Note\HintInfluence' => [
 			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
@@ -134,6 +162,13 @@ return [
 			'max_depth' => 2,
 		],
 		'MA\Entity\Note\HintSuggestion' => [
+			'route_name' => 'process/note/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
+		'MA\Entity\Note\HintReason' => [
 			'route_name' => 'process/note/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
@@ -190,6 +225,20 @@ return [
 			'max_depth' => 1,
 		],
 		'MA\Entity\Comment\Hint' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\HintReason' => [
+			'route_name' => 'process/comment/detail', 
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Comment\HintInfluence' => [
 			'route_name' => 'process/comment/detail', 
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',

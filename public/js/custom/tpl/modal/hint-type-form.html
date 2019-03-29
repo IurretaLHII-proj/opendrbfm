@@ -1,5 +1,6 @@
 <div class="modal-header">
-    <h3 class="modal-title">{[ hint.name ]}</h3>
+	<h3 class="modal-title" ng-if="type.id">{[ type.name ]} <small class="text-secondary">| edit error type</small></h3>
+	<h3 class="modal-title" ng-if="!type.id">{[ type.operation.name ]} <small class="text-secondary">| new error type</small></h3>
 </div>
 <div class="modal-body">
 	<div class="form-row">

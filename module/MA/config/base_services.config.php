@@ -18,6 +18,8 @@ return [
 					Service\VersionService::class, 
 					Service\StageService::class, 
 					Service\HintTypeService::class, 
+					Service\HintReasonService::class, 
+					Service\HintInfluenceService::class, 
 					Service\HintContextService::class, 
 					Service\HintRelationService::class, 
 					Service\HintService::class, 
@@ -87,6 +89,34 @@ return [
 			],
 		],
 	],
+	Service\HintReasonService::class => [
+		'entities' => [Entity\HintReason::class],
+		'listeners' => [
+			[
+				'services' => Service\HintReasonService::class, 
+				'events'   => [
+					Service\HintContextService::EVENT_CREATE, 
+					Service\HintContextService::EVENT_UPDATE,
+				],
+				'callback' => 'createDependencies',
+				'priority' => 100,
+			]
+		],
+	],
+	Service\HintInfluenceService::class => [
+		'entities' => [Entity\HintInfluence::class],
+		'listeners' => [
+			[
+				'services' => Service\HintInfluenceService::class, 
+				'events'   => [
+					Service\HintContextService::EVENT_CREATE, 
+					Service\HintContextService::EVENT_UPDATE,
+				],
+				'callback' => 'createDependencies',
+				'priority' => 100,
+			]
+		],
+	],
 	Service\HintContextService::class => [
 		'entities' => [Entity\HintContext::class],
 		'listeners' => [
@@ -135,6 +165,8 @@ return [
 			Entity\Comment\Stage::class, 
 			Entity\Comment\Hint::class, 
 			Entity\Comment\HintContext::class, 
+			Entity\Comment\HintReason::class, 
+			Entity\Comment\HintInfluence::class, 
 			Entity\Comment\HintRelation::class, 
 			Entity\Comment\Note::class, 
 			Entity\Comment\Simulation::class, 

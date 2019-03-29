@@ -1,0 +1,13 @@
+{% extends 'layout/base-layout.twig' %}
+
+{% block content %}
+
+	<div class="col-md-12" ng-init="init()">
+
+		<h1>{{ translate("New process") }}</h1>
+
+		{{ partial('partial/form/process', {'form': form}) }}
+
+	</div>
+
+{% endblock content %}

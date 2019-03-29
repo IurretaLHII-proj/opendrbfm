@@ -48,8 +48,17 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 				$forward = Comment\HintController::class;
 				break;
 
+			case $this->entity instanceof \MA\Entity\Comment\HintReason:
+				$forward = Comment\HintReasonController::class;
+				break;
+
+			case $this->entity instanceof \MA\Entity\Comment\HintInfluence:
+				$forward = Comment\HintInfluenceController::class;
+				break;
+
 			case $this->entity instanceof \MA\Entity\Comment\HintContext:
 				$forward = Comment\HintContextController::class;
+				break;
 
 			case $this->entity instanceof \MA\Entity\Comment\HintRelation:
 				$forward = Comment\HintRelationController::class;

@@ -17,12 +17,12 @@ class HintRelationFieldset extends Fieldset implements
     public function init()
     {
         $this->add([
-             'type' => \MA\Form\HintContextFieldset::class,
+             'type' => \MA\Form\HintReasonRelFieldset::class,
              'name' => 'source',
         ]);
 
         $this->add([
-             'type' => \MA\Form\HintContextFieldset::class,
+             'type' => \MA\Form\HintInfluenceRelFieldset::class,
              'name' => 'relation',
         ]);
 
@@ -64,6 +64,7 @@ class HintRelationFieldset extends Fieldset implements
 			],
 		];
 	}
+
     /**
 	 *
      * @var ServiceLocatorInterface

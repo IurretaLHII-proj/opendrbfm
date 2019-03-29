@@ -24,6 +24,12 @@ return [
 	Controller\Js\Comment\HintController::class => [
 		'repository' => Entity\Comment\Hint::class,
 	],
+	Controller\Js\Comment\HintReasonController::class => [
+		'repository' => Entity\Comment\HintReason::class,
+	],
+	Controller\Js\Comment\HintInfluenceController::class => [
+		'repository' => Entity\Comment\HintInfluence::class,
+	],
 	Controller\Js\Comment\HintContextController::class => [
 		'repository' => Entity\Comment\HintContext::class,
 	],
@@ -44,7 +50,7 @@ return [
 	],
 	Controller\ProcessController::class => [
 		'repository' => Entity\Process::class,
-		'parent' => [
+		/*'parent' => [
 			'route' => 'home',
 		],
 		'page' => [
@@ -60,7 +66,7 @@ return [
 					'action' => 'actions',
 				],
 			]
-		],
+		],*/
 	],
 	Controller\Js\ProcessController::class => [
 		'repository' => Entity\Process::class,
@@ -97,7 +103,7 @@ return [
 	],
 	Controller\HintController::class => [
 		'repository' => Entity\Hint::class,
-		'parent' => [
+		/*'parent' => [
 			'controller' => Controller\ProcessController::class,
 			'route' => 'process/detail',
 			'action' => 'detail',
@@ -116,10 +122,16 @@ return [
 					'action' => 'actions',
 				],
 			]
-		],
+		],*/
 	],
 	Controller\Js\HintController::class => [
 		'repository' => Entity\Hint::class,
+	],
+	Controller\Js\HintReasonController::class => [
+		'repository' => Entity\HintReason::class,
+	],
+	Controller\Js\HintInfluenceController::class => [
+		'repository' => Entity\HintInfluence::class,
 	],
 	Controller\Js\HintContextController::class => [
 		'repository' => Entity\HintContext::class,

@@ -143,8 +143,8 @@ interface IMAHintRelation {
 	_links: IMALinks, 
 	_embedded: {
 		owner: IMAUser,
-		source: IMAHintContextRel,
-		relation: IMAHintContextRel,
+		source: IMAHintReasonRel,
+		relation: IMAHintInfluenceRel,
 	},
 }
 
@@ -154,6 +154,23 @@ interface IMAHintContextRel {
 	_embedded: {
 		stage: IMAStage,
 		hint:  IMAHint,
+	},
+}
+
+interface IMAHintReasonRel {
+	id: number,
+	_links: IMALinks, 
+	_embedded: {
+		stage: IMAStage,
+		hint:  IMAHint,
+	},
+}
+
+interface IMAHintInfluenceRel {
+	id: number,
+	_links: IMALinks, 
+	_embedded: {
+		reason: IMAHintReasonRel,
 	},
 }
 
@@ -173,6 +190,32 @@ interface IMAHintContext {
 	},
 }
 
+interface IMAHintReason {
+	id: number,
+	commentCount: number, 
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+		notes: IMANote[],
+		relations: IMAHintRelation[],
+		influences: IMAHintInfluence[],
+	},
+}
+
+interface IMAHintInfluence {
+	id: number,
+	commentCount: number, 
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+		notes: IMANote[],
+		relations: IMAHintRelation[],
+		simulations: IMASimulation[],
+	},
+}
+
 interface IMAHint {
 	id: number,
 	name: string,
@@ -188,6 +231,7 @@ interface IMAHint {
 		operation: IMAOperation,
 		owner: IMAUser,
 		contexts: IMAHintContext[],
+		reasons: IMAHintReason[],
 	},
 }
 

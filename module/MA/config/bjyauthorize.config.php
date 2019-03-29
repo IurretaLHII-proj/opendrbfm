@@ -34,6 +34,8 @@ return [
 			Entity\Hint::class,
 			Entity\HintType::class,
 			Entity\HintContext::class,
+			Entity\HintReason::class,
+			Entity\HintInfluence::class,
 			Entity\HintRelation::class,
 			Entity\AbstractNote::class,
 			Entity\Note\HintReason::class,
@@ -61,6 +63,7 @@ return [
 				//],
 				[
 					[Entity\User::ROLE_USER],
+					//[],
 					[],
 					[],
 				],

@@ -162,7 +162,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|version|actions',
+						'action' => 'detail|edit|delete|version|actions',
 					]
 				],
 				'may_terminate' => true,
@@ -506,7 +506,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|context|comments|comment|actions',
+								'action' => 'detail|edit|delete|context|reason|comments|comment|actions',
 							]
 						],
 						'may_terminate' => true,
@@ -553,6 +553,82 @@ return [
 											'route' => '/json',
 											'defaults' => [
 												'controller' => Controller\Js\HintTypeController::class,
+											],
+										],
+									]
+								],
+							],
+						],
+					],
+					'reason' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/reason',
+							'defaults' => [
+								'controller' => Controller\HintReasonController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail|edit|delete|note|relation|influence|comments|comment',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\HintReasonController::class,
+											],
+										],
+									]
+								],
+							],
+						],
+					],
+					'influence' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/influence',
+							'defaults' => [
+								'controller' => Controller\HintInfluenceController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail|edit|delete|note|relation|simulation|comments|comment',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\HintInfluenceController::class,
 											],
 										],
 									]

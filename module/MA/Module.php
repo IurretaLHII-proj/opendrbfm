@@ -11,6 +11,14 @@ class Module
 	 */
     public function onBootstrap(MvcEvent $e)
     {
+        $sm        = $e->getApplication()->getServiceManager();
+        $ev        = $e->getApplication()->getEventManager();
+
+		$hEvs = [\Zend\Mvc\MvcEvent::EVENT_DISPATCH_ERROR, \Zend\Mvc\MvcEvent::EVENT_RENDER_ERROR]; 
+
+    	//handle the dispatch error (exception) 
+    	//handle the view render error (exception) 
+    	//$ev->attach($hEvs, function($ev) { die($ev->getParam('exception')); });
     }
 
 	/**

@@ -1,0 +1,64 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ relation.influence.name ]} <small class="text-secondary" ng-if="relation.id">| edit influence</small><small class="text-secondary" ng-if="!relation.id">| new influence</small></h3>
+</div>
+<div class="modal-body">
+
+<div class="form-row my-2">
+	<div class="form-group col-4">
+		<select class="form-control"
+			ng-model="values.source.stage"
+			ng-options="item.id as item.name for item in [dflt].concat(nextStages)"
+			ng-init="loadNextHints(values)"
+			ng-change="loadNextHints(values)"
+			>
+		</select>
+	</div>
+	<div class="form-group col-8">
+		<div class="input-group">
+			<div class="input-group-prepend">
+				<span class="input-group-text border-right-0">
+					<i class="fa fa-circle-o-notch" ng-class="{'fa-spin': nextsLoading[i]}"></i>
+				</span>
+	    	</div>
+			<select class="form-control"
+				ng-disabled="!values.source.stage"
+				ng-class="{'is-invalid': errors.relations[i].source.hint}"
+				ng-model="values.source.hint"
+				ng-options="item.id as item.name for item in values.nexts"
+				>
+			</select>
+			<div class="input-group-append">
+				<span class="input-group-button">
+					<a href="" class="btn" ng-click="values.relations.splice(i, 1);">
+						<span class="fa fa-close"></span>
+					</a>
+				</span>
+	    	</div>
+			<div ng-if="errors.relations[i].source.hint"
+				ng-repeat="(key, text) in errors.relations[i].source.hint"
+				class="invalid-feedback">{[key]}. {[text]}</div>
+			</div>
+	</div>
+	<div class="form-group col-12">
+		<text-angular 
+			ng-model="values.description"
+			ta-toolbar="[
+				['bold', 'italics', 'underline' ],
+		   		['ul', 'insertLink', 'html'],
+			]"
+			ta-text-editor-class="form-height form-control"
+			ng-class="{'is-invalid': errors.relations[i].description}"
+			placeholder="Description.."
+		>
+		</text-angular>
+		<div ng-if="errors.relations[i].description"
+			ng-repeat="(key, text) in errors.relations[i].description"
+			class="text-danger">{[key]}. {[text]}</div>
+	</div>
+</div>
+
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Save</a>
+</div>

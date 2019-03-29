@@ -27,6 +27,8 @@ abstract class AbstractNote implements
 	JsonSerializable, 
 	ResourceInterface,
 	\User\Entity\UserAwareInterface,
+   	\Base\Hal\LinkProvider,
+	CommentProviderInterface,
 	NoteInterface
 {
 	/**

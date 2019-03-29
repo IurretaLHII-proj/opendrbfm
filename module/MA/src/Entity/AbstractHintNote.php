@@ -9,9 +9,7 @@ use DateTime;
 /**
  * @ORM\Entity()
  */
-abstract class AbstractHintNote extends AbstractNote implements
-	CommentProviderInterface,
-   	\Base\Hal\LinkProvider
+abstract class AbstractHintNote extends AbstractNote
 {
 	/**
 	 * @var SimulationInterface

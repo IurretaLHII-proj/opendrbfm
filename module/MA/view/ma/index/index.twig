@@ -42,6 +42,7 @@
 							<th>Owner</th>
 							<th>Created</th>
 							<th></th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -70,6 +71,13 @@
 								<div class="btn-group">
 									<a ng-href="{[ item._links.self.href ]}" class="btn btn-sm">
 										<i class="fa fa-eye"></i>
+									</a>
+								</div>
+							</td>
+							<td>
+								<div class="btn-group">
+									<a ng-href="{[ item._links.delete.href ]}" class="btn btn-sm disabled">
+										<i class="fa fa-trash"></i>
 									</a>
 								</div>
 							</td>
