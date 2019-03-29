@@ -9,7 +9,6 @@ use JsonSerializable;
 use DateTime;
 
 use User\Entity\UserAwareInterface;
-use User\Entity\UserInterface;
 use Base\Hal\LinkProvider;
 
 /**
@@ -22,6 +21,8 @@ use Base\Hal\LinkProvider;
  * 	"stage"     	= "MA\Entity\Comment\Stage",
  * 	"hint"     		= "MA\Entity\Comment\Hint",
  * 	"context"     	= "MA\Entity\Comment\HintContext",
+ * 	"reason"     	= "MA\Entity\Comment\HintReason",
+ * 	"influence"     = "MA\Entity\Comment\HintInfluence",
  * 	"relation"     	= "MA\Entity\Comment\HintRelation",
  * 	"note"     		= "MA\Entity\Comment\Note",
  * 	"simulation"	= "MA\Entity\Comment\Simulation",
@@ -163,7 +164,7 @@ abstract class AbstractComment implements
      *
 	 * @inheritDoc
      */
-    public function setUser(UserInterface $user)
+    public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
         return $this;

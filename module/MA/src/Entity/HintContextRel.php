@@ -6,7 +6,8 @@ class HintContextRel implements \JsonSerializable
 {
     protected $context;
 
-	public function __construct(HintContext $context)
+	public function __construct($context)
+	//public function __construct(HintContext $context)
 	{
 		$this->context = $context;
 	}

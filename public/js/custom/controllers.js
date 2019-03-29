@@ -292,159 +292,56 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.addContext = function(hint) {
-		let context = new MAHintContext();
-		context.setHint(hint);
+	$scope.addHintReason = function(hint) {
+		let reason  = new MAHintReason();
+		//reason.addNote(new MANote());
+		reason.hint = hint;
 		var modal = $uibModal.open({
 			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-context-form.html',
-			controller: '_HintContextModalCtrl',	
-			scope: $scope,
+			templateUrl : '/js/custom/tpl/modal/hint-reason-form.html',
+			controller: '_HintReasonModalCtrl',	
 			size: 'lg',
-			resolve: {e : context}
+			scope: $scope,
+			resolve: {reason : reason}
 		});
 
 		modal.result.then(
 			function() {
-				hint.addContext(context);
+				hint.addReason(reason);
 				$scope.addSuccess("Saved succesfully");
 			},
-			function() {
-			}
+			function() {}
 		);
 	}
 
-	$scope.editContext = function(context) {
-		let h = context.hint;
+	$scope.addHintInfluence = function(reason) {
+		let influence    = new MAHintInfluence();
+		influence.addNote(new MANote());
+		influence.reason = reason;
 		var modal = $uibModal.open({
 			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-context-form.html',
-			controller: '_HintContextModalCtrl',	
-			scope: $scope,
+			templateUrl : '/js/custom/tpl/modal/hint-influence-form.html',
+			controller: '_HintInfluenceModalCtrl',	
 			size: 'lg',
-			resolve: {e : context}
+			scope: $scope,
+			resolve: {influence : influence}
 		});
 
 		modal.result.then(
 			function() {
-				context.hint = h; //FIXME
+				reason.addInfluence(influence);
 				$scope.addSuccess("Saved succesfully");
 			},
-			function() {
-			}
+			function() {}
 		);
+
 	}
 
-	$scope.deleteContext = function(c) {
-		var war = $scope._addWarning("Deleting...");
-		$resource(c.links.getHref('delete')).delete().$promise.then(
-			function (data) {
-        		c.hint.contexts.splice(c.hint.contexts.indexOf(c), 1);
-				$scope._closeWarning(war);
-				$scope.addSuccess("Succesfully deleted");
-			},
-			function (err) {
-				console.log(err);
-				$scope._closeWarning(war);
-				$scope.addError(err.data.title);
-			}	
-		);
-	}
-
-	$scope.addRelatedReason = function(ctx) {
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/g-hint-relation-form.html',
-			controller: '_GHintRelationModalCtrl',
-			scope: $scope,
-			size: 'lg',
-			resolve: {e : ctx, r: true}
-		});
-
-		modal.result.then(
-			function() {
-				ctx.addRelated(e);
-				$scope.addSuccess("Saved succesfully");
-			},
-			function() {
-			}
-		);
-	}
-
-	$scope.addRelated = function(ctx) {
-		let e      = new MAHintRelation(); 
-		let rel    = new MAHintContextRel();
-		e.relation = rel;
-		e.context  = ctx;
-		rel.setContext(ctx);
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-relation-form.html',
-			controller: '_HintRelationModalCtrl',
-			scope: $scope,
-			size: 'lg',
-			resolve: {e : e, r: true}
-		});
-
-		modal.result.then(
-			function() {
-				ctx.addRelated(e);
-				$scope.addSuccess("Saved succesfully");
-			},
-			function() {
-			}
-		);
-	}
-
-	$scope.addRelation = function(ctx) {
-		let e      = new MAHintRelation(); 
-		let rel    = new MAHintContextRel();
-		e.source   = rel;
-		e.context  = ctx;
-		rel.setContext(ctx);
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-relation-form.html',
-			controller: '_HintRelationModalCtrl',
-			scope: $scope,
-			size: 'lg',
-			resolve: {e : e, r: false}
-		});
-
-		modal.result.then(
-			function() {
-				ctx.addRelation(e);
-				$scope.addSuccess("Saved succesfully");
-			},
-			function() {
-			}
-		);
-	}
-
-	$scope.editRelation = function(rel, mode) {
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/hint-relation-form.html',
-			controller: '_HintRelationModalCtrl',
-			scope: $scope,
-			size: 'lg',
-			resolve: {e: rel, r: mode}
-		});
-
-		modal.result.then(
-			function() {
-				$scope.addSuccess("Saved succesfully");
-			},
-			function() {
-			}
-		);
-	}
-
-	$scope.deleteRelated = function(r) {
+	$scope.deleteHintReason = function(r) {
 		var war = $scope._addWarning("Deleting...");
 		$resource(r.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-        		r.context.relateds.splice(r.context.relateds.indexOf(r), 1);
+        		r.hint.reasons.splice(r.hint.reasons.indexOf(r), 1);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Succesfully deleted");
 			},
@@ -456,11 +353,111 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.deleteRelation = function(r) {
+	$scope.deleteHintInfluence = function(i) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(i.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		i.reason.influences.splice(i.reason.influences.indexOf(i), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+
+	$scope.addReasonRelation = function(reason) {
+		let r       = new MAHintRelation(); 
+		r.relation  = new MAHintInfluenceRel();
+		r.reason	= reason;
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-reason-rel-form.html',
+			controller: '_HintReasonRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {relation : r}
+		});
+
+		modal.result.then(
+			function() {
+				reason.addRelation(r);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.editReasonRelation = function(r) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-reason-rel-form.html',
+			controller: '_HintReasonRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {relation : r}
+		});
+
+		modal.result.then(
+			function() {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.editInfluenceRelation = function(r) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-influence-rel-form.html',
+			controller: '_HintInfluenceRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {relation : r}
+		});
+
+		modal.result.then(
+			function() {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.addInfluenceRelation = function(infl) {
+		let r       = new MAHintRelation(); 
+		r.source    = new MAHintReasonRel();
+		r.influence	= infl;
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/hint-influence-rel-form.html',
+			controller: '_HintInfluenceRelationModalCtrl',
+			scope: $scope,
+			size: 'lg',
+			resolve: {relation : r}
+		});
+
+		modal.result.then(
+			function() {
+				infl.addRelation(r);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function() {
+			}
+		);
+	}
+
+	$scope.deleteReasonRelation = function(r) {
 		var war = $scope._addWarning("Deleting...");
 		$resource(r.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-        		r.context.relations.splice(r.context.relations.indexOf(r), 1);
+        		r.reason.relations.splice(r.reason.relations.indexOf(r), 1);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Succesfully deleted");
 			},
@@ -472,9 +469,25 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	$scope.addSimulation = function(context) {
+	$scope.deleteInfluenceRelation = function(r) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(r.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		r.influence.relations.splice(r.influence.relations.indexOf(r), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+
+	$scope.addSimulation = function(influence) {
 		let simulation = new MASimulation();
-		simulation.setContext(context);
+		simulation.influence = influence;
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/render-form.html',
@@ -485,7 +498,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 		modal.result.then(
 			function() {
-				context.addSimulation(simulation);
+				influence.addSimulation(simulation);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {
@@ -515,7 +528,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		var war = $scope._addWarning("Deleting...");
 		$resource(s.links.getHref('delete')).delete().$promise.then(
 			function (data) {
-        		s.context.simulations.splice(s.context.simulations.indexOf(s), 1);
+        		s.influence.simulations.splice(s.influence.simulations.indexOf(s), 1);
 				$scope._closeWarning(war);
 				$scope.addSuccess("Succesfully deleted");
 			},
@@ -556,12 +569,12 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_NoteModalCtrl',	
 			size: 'lg',
 			scope: $scope,
-			resolve: {note : item, link: s.links.keys['reason']}
+			resolve: {note : item, link: s.links.keys['note']}
 		});
 
 		modal.result.then(
 			function(res) {
-				item.source.reasons.push(item);
+				item.source.addNote(item);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {}
@@ -577,12 +590,12 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_NoteModalCtrl',	
 			size: 'lg',
 			scope: $scope,
-			resolve: {note : item, link: s.links.keys['influence']}
+			resolve: {note : item, link: s.links.keys['note']}
 		});
 
 		modal.result.then(
 			function(res) {
-				item.source.influences.push(item);
+				item.source.addNote(item);
 				$scope.addSuccess("Saved succesfully");
 			},
 			function() {}
@@ -672,6 +685,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	}
 
 	$scope.deleteNote = function(item) {
+		console.log(item);
 		var war = $scope._addWarning("Deleting...");
 		$resource(item.links.getHref('delete')).delete().$promise.then(
 			function (data) {

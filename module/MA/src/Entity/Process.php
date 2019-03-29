@@ -136,7 +136,7 @@ class Process implements
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
-	protected $stages;
+	//protected $stages;
 
 	/**
 	 * @var int 
@@ -693,6 +693,15 @@ class Process implements
   	public function provideLinks()
   	{
 		$links = [
+			[
+				'rel'   	  => 'delete',
+				'privilege'   => 'delete',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/detail',
+				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
 			[
 				'rel'   	  => 'edit',
 				'privilege'   => 'edit',

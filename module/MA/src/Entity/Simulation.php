@@ -62,7 +62,7 @@ class Simulation implements
     /**
 	 * @var HintInterface
      * @ORM\ManyToOne(
-     *     targetEntity="MA\Entity\HintContext",
+     *     targetEntity="MA\Entity\HintInfluence",
      *     inversedBy="simulations"
      * )
      * @ORM\JoinColumn(
@@ -70,7 +70,7 @@ class Simulation implements
 	 *     referencedColumnName = "id"
      * )
      */
-    protected $context;
+    protected $influence;
 
 	/**
 	 * @var Note\HintSuggestion[]
@@ -316,28 +316,28 @@ class Simulation implements
      */
     public function getHint()
     {
-        return $this->getContext()->getHint();
+        return $this->getInfluence()->getHint();
     }
     
     /**
-     * Get context.
+     * Get influence.
      *
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
-    public function getContext()
+    public function getInfluence()
     {
-        return $this->context;
+        return $this->influence;
     }
     
     /**
-     * Set context.
+     * Set influence.
      *
-     * @param HintContextInterface context the value to set.
+     * @param HintInfluenceInterface influence the value to set.
      * @return SimulationInterface.
      */
-    public function setContext(HintContextInterface $context)
+    public function setInfluence(HintInfluenceInterface $influence)
     {
-        $this->context = $context;
+        $this->influence = $influence;
         return $this;
     }
 

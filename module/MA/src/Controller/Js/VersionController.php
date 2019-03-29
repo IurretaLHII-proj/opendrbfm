@@ -58,12 +58,26 @@ class VersionController extends \Base\Controller\Js\AbstractActionController
 			foreach ($stage->getImages() as $image) $s->addImage(clone $image);
 			foreach ($stage->getHints() as $hint) {
 				$h = clone $hint;
-				foreach ($hint->getSimulations() as $simulation) {
-					$sm = clone $simulation;
-					foreach ($simulation->getReasons() as $note) $sm->addReason(clone $note);
-					foreach ($simulation->getInfluences() as $note) $sm->addInfluence(clone $note);
-					foreach ($simulation->getSuggestions() as $note) $sm->addSuggestion(clone $note);
-					$h->addSimulation($sm);
+				foreach ($hint->getReasons() as $reason) {
+					$r = clone $reason;
+					foreach ($reason->getNotes() as $note) {
+						$r->addNote(clone $note);
+					}
+					foreach ($reason->getInfluences() as $infl) {
+						$i = clone $infl;
+						foreach ($infl->getNotes() as $note) {
+							$i->addNote(clone $note);
+						}
+						foreach ($infl->getSimulations() as $sim) {
+							$sm = clone $sim;
+							foreach ($sim->getSuggestions() as $note) $sm->addSuggestion(clone $note);
+							foreach ($sim->getEffects() as $note) 	$sm->addEffect(clone $note);
+							foreach ($sim->getPreventions() as $note) $sm->addPrevention(clone $note);
+							$i->addSimulation($sm);
+						}
+						$r->addInfluence($i);
+					}
+					$h->addReason($r);
 				}
 				$s->addHint($h);
 			}

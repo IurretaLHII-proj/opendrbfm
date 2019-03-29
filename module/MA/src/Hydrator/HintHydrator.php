@@ -27,11 +27,6 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 			'name' 	  	   => $object->getName(),
 			'description'  => $object->getDescription(),
 			'owner'   	   => $object->getUser(),
-			//'state' 	   => $object->getState(),
-			//'who' 	  	   => $object->getWho(),
-			//'when' 	  	   => null !== ($w = $object->getWhen()) ? $w->getTimestamp() : $w,
-			//'effect'	   => $object->getEffect(),
-			//'prevention'   => $object->getPrevention(),
 			'commentCount' => $object->getCommentCount(),
 			'created' 	   => $object->getCreated(),
 			'updated' 	   => $object->getUpdated(),
@@ -39,6 +34,7 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 			'stageOrder'   => $object->getStage()->getOrder(),
 			//'parents' 	   => new \ZF\Hal\Collection($object->getParents()),
 			'contexts'     => new \ZF\Hal\Collection($object->getContexts()),
+			'reasons'      => new \ZF\Hal\Collection($object->getReasons()),
 		];
     }
 }

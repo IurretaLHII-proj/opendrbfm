@@ -71,6 +71,18 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	}
 
 	/**
+	 * @return Response
+	 */
+    public function deleteAction()
+    {
+		//$this->triggerService($this->params()->fromRoute('action'), $this->entity);
+		$this->getEntityManager()->remove($this->entity);
+		$this->getEntityManager()->flush();
+
+		return $this->redirect()->toUrl($this->params()->fromQuery('redirect', '/'));
+	}
+
+	/**
 	 * @return ViewModel
 	 */
     public function actionsAction()
