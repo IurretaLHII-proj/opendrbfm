@@ -25,6 +25,7 @@
 				ng-class="{'is-invalid': errors.relations[i].source.hint}"
 				ng-model="values.source.hint"
 				ng-options="item.id as item.name for item in values.nexts"
+				ng-change="createNextHint(values)"
 				>
 			</select>
 			<div class="input-group-append">

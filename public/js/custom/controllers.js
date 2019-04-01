@@ -292,6 +292,114 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
+	/*** Common functions to relation dialogs ***/
+	var extended = {
+		loadNextHints: function(value) {
+			value.nexts = [{id:null, name:" --Select one-- "}, {id:-1, name:" --Create new-- "}];
+			if (value.source.stage) {
+				let next= this.nextStages.find(e => {return e.id == value.source.stage});
+				$resource(next.links.getHref('hints')).get().$promise.then(
+					function(data) {
+						angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
+							value.nexts.push(e);
+						});
+					},
+					function(err) {},
+				);
+			}
+		},
+		createNextHint: function(value) {
+			console.log(value);
+		 	if (value.source.hint < 0) {	
+				let hint = new MAHint();
+				hint.stage = this.nextStages.find(e => {return e.id == value.source.stage});
+				var modal = $uibModal.open({
+					animation: true,
+					templateUrl : '/js/custom/tpl/modal/hint-form.html',
+					controller: '_HintModalCtrl',	
+					scope: $scope,
+					size: 'lg',
+					resolve: {hint: hint, stage: hint.stage}
+				});
+
+				modal.result.then(
+					function(res) {
+						value.nexts.push(hint);
+						value.source.hint = hint.id;
+						$scope.addSuccess("Saved succesfully");
+					},
+					function(err) {}
+				);
+			}
+		},
+		loadPreviousHints: function(value) {
+			value.previouses = [{id:null, name:" --Select one-- "}, {id:-1, name:" --Create new-- "}];
+			if (value.relation.reason.stage) {
+				let prev = this.prevStages.find(e => {return e.id == value.relation.reason.stage});
+				$resource(prev.links.getHref('hints')).get().$promise.then(
+					function(data) {
+						angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
+							value.previouses.push(e);
+						});
+					},
+					function(err) {},
+				);
+			}
+		},
+		createPreviousHint: function(value) {
+		 	if (value.relation.reason.hint < 0) {	
+				let hint = new MAHint();
+				hint.stage = this.prevStages.find(e => {return e.id == value.relation.reason.stage});
+				var modal = $uibModal.open({
+					animation: true,
+					templateUrl : '/js/custom/tpl/modal/hint-form.html',
+					controller: '_HintModalCtrl',	
+					scope: $scope,
+					size: 'lg',
+					resolve: {hint: hint, stage: hint.stage}
+				});
+
+				modal.result.then(
+					function(res) {
+						value.previouses.push(hint);
+						value.relation.reason.hint = hint.id;
+						$scope.addSuccess("Saved succesfully");
+					},
+					function(err) {}
+				);
+			}
+		},
+		addReasonNote: function(values) { values.notes.push({}) },
+		addInfluenceNote: function(values) { values.notes.push({}) },
+		addInfluenceRel: function(values) {
+			values.relations.push({source: {stage:null, hint:null}, relation: {}})
+		},
+		addReasonRel: function(values) {
+			values.relations.push({relation: {reason:{stage:null, hint:null}}, source: {}})
+		},
+		addSimulation: function(values) { values.simulations.push({suggestions: []}) },
+		addSuggestion: function(values) { values.suggestions.push({}) },
+		addInfluence : function(values) { 
+			values.influences.push({notes:[], relations:[], simulations:[]});
+			this.errors.influences.push({});
+		},
+		rmInfluence: function(values) {
+			var index;
+			if (-1 !== (index = this.values.influences.indexOf(values))) {
+				this.values.influences.splice(index, 1);
+				this.errors.influences.splice(index, 1);
+			}
+		},
+		init: function(stage) {
+			this.prevStages = this.version.stages.filter(s => {return s.order < stage.order});
+			this.nextStages = this.version.stages.filter(s => {return s.order > stage.order});
+		},
+		cancel: function() {
+			this.modal.dismiss('cancel');	
+		},
+		prevStages: [],
+		nextStages: [],
+	};
 	$scope.addHintReason = function(hint) {
 		let reason  = new MAHintReason();
 		//reason.addNote(new MANote());
@@ -302,7 +410,10 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_HintReasonModalCtrl',	
 			size: 'lg',
 			scope: $scope,
-			resolve: {reason : reason}
+			resolve: {
+				reason: reason,
+				extended: extended,
+			}
 		});
 
 		modal.result.then(
@@ -316,7 +427,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 	$scope.addHintInfluence = function(reason) {
 		let influence    = new MAHintInfluence();
-		influence.addNote(new MANote());
+		//influence.addNote(new MANote());
 		influence.reason = reason;
 		var modal = $uibModal.open({
 			animation: true,
@@ -324,7 +435,10 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_HintInfluenceModalCtrl',	
 			size: 'lg',
 			scope: $scope,
-			resolve: {influence : influence}
+			resolve: {
+				influence : influence,
+				extended  : extended, 
+			}
 		});
 
 		modal.result.then(
@@ -379,7 +493,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_HintReasonRelationModalCtrl',
 			scope: $scope,
 			size: 'lg',
-			resolve: {relation : r}
+			resolve: {relation : r, extended: extended,}
 		});
 
 		modal.result.then(
@@ -399,7 +513,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_HintReasonRelationModalCtrl',
 			scope: $scope,
 			size: 'lg',
-			resolve: {relation : r}
+			resolve: {relation : r, extended: extended,}
 		});
 
 		modal.result.then(
@@ -418,7 +532,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_HintInfluenceRelationModalCtrl',
 			scope: $scope,
 			size: 'lg',
-			resolve: {relation : r}
+			resolve: {relation : r, extended: extended,}
 		});
 
 		modal.result.then(
@@ -440,7 +554,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			controller: '_HintInfluenceRelationModalCtrl',
 			scope: $scope,
 			size: 'lg',
-			resolve: {relation : r}
+			resolve: {relation : r, extended: extended,}
 		});
 
 		modal.result.then(

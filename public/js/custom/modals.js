@@ -46,7 +46,8 @@ App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resour
 	};
 });
 
-App.controller('_HintReasonRelationModalCtrl', function($scope, $uibModalInstance, $resource, relation) {
+App.controller('_HintReasonRelationModalCtrl', function($scope, $uibModalInstance, $resource, relation, extended) {
+	$scope.modal			 = $uibModalInstance;
 	$scope.relation 	  	 = relation;
 	$scope.values  	  		 = JSON.parse(JSON.stringify(relation));
 	console.log(relation, $scope.values);
@@ -55,24 +56,9 @@ App.controller('_HintReasonRelationModalCtrl', function($scope, $uibModalInstanc
 	let hint			     = relation.reason.hint;
 	let stage 		  	     = hint.stage;
 	$scope.dflt    	  	     = dflt;
-	$scope.prevStages 		 = $scope.version.stages.filter(s => {return s.order < stage.order});
 
-	$scope.loadPreviousHints = function(value) {
-		var previouses = [dflt];
-		if (value.relation.reason.stage) {
-			let prev = $scope.prevStages.find(e => {return e.id == value.relation.reason.stage});
-			$resource(prev.links.getHref('hints')).get().$promise.then(
-				function(data) {
-					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), (e,i) => {
-						previouses.push(e);
-					});
-				},
-				function(err) {},
-			);
-		}
-		value.previouses = previouses;
-	}
-
+	angular.extend($scope, extended);
+	$scope.init(stage);
 	$scope.save = function() {
 		console.log($scope.values);
 		var uri = relation.id ? 
@@ -89,13 +75,10 @@ App.controller('_HintReasonRelationModalCtrl', function($scope, $uibModalInstanc
 			}	
 		);
 	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 });
 
-App.controller('_HintInfluenceRelationModalCtrl', function($scope,$uibModalInstance,$resource,relation) {
+App.controller('_HintInfluenceRelationModalCtrl', function($scope, $uibModalInstance, $resource, relation, extended) {
+	$scope.modal			 = $uibModalInstance;
 	$scope.relation 	  	 = relation;
 	$scope.values  	  		 = JSON.parse(JSON.stringify(relation));
 	console.log(relation, $scope.values);
@@ -104,23 +87,9 @@ App.controller('_HintInfluenceRelationModalCtrl', function($scope,$uibModalInsta
 	let hint			     = relation.influence.reason.hint;
 	let stage 		  	     = hint.stage;
 	$scope.dflt    	  	     = dflt;
-	$scope.nextStages 		 = $scope.version.stages.filter(s => {return s.order > stage.order});
-	$scope.loadNextHints = function(value) {
-		var nexts = [dflt];
-		if (value.source.stage) {
-			let next= $scope.nextStages.find(e => {return e.id == value.source.stage});
-			$resource(next.links.getHref('hints')).get().$promise.then(
-				function(data) {
-					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
-						nexts.push(e);
-					});
-				},
-				function(err) {},
-			);
-		}
-		value.nexts = nexts;
-	}
 
+	angular.extend($scope, extended);
+	$scope.init(stage);
 	$scope.save = function() {
 		console.log(relation, $scope.values);
 		var uri = relation.id ? 
@@ -137,13 +106,10 @@ App.controller('_HintInfluenceRelationModalCtrl', function($scope,$uibModalInsta
 			}	
 		);
 	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 });
 
-App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $uibModal, $resource, reason) {
+App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $resource, reason, extended) {
+	$scope.modal			 = $uibModalInstance;
 	$scope.reason 	  		 = reason;
 	$scope.values  	  		 = JSON.parse(JSON.stringify(reason));
 	$scope.errors			 = {influences:[]};
@@ -152,110 +118,10 @@ App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $uibM
 	var crto       	  	     = {id:-1,   name:" --Create new-- "};
 	let hint			     = reason.hint;
 	let stage 		  	     = hint.stage;
+
+	angular.extend($scope, extended);
+	$scope.init(stage);
 	$scope.dflt    	  	     = dflt;
-	$scope.prevStages 		 = $scope.version.stages.filter(s => {return s.order < stage.order});
-	$scope.nextStages 	     = $scope.version.stages.filter(s => {return s.order > stage.order});
-
-	$scope.addInfluence = function(values) { 
-		values.influences.push({notes:[], relations:[], simulations:[]});
-		$scope.errors.influences.push({});
-	}
-	$scope.rmInfluence = function(values) {
-		var index;
-		if (-1 !== (index = $scope.values.influences.indexOf(values))) {
-			$scope.values.influences.splice(index, 1);
-			$scope.errors.influences.splice(index, 1);
-		}
-	}
-	$scope.addReasonNote    = function(values) { values.notes.push({}) }
-	$scope.addInfluenceNote = function(values) { values.notes.push({}) }
-	$scope.addInfluenceRel  = function(values) {
-		values.relations.push({source: {stage:null, hint:null}, relation: {}})
-	}
-	$scope.addReasonRel  = function(values) {
-		values.relations.push({relation: {reason:{stage:null, hint:null}}, source: {}})
-	}
-	$scope.addSimulation = function(values) { values.simulations.push({suggestions: []}) }
-	$scope.addSuggestion = function(values) { values.suggestions.push({}) }
-
-	$scope.loadPreviousHints = function(value) {
-		value.previouses = [dflt, crto];
-		if (value.relation.reason.stage) {
-			let prev = $scope.prevStages.find(e => {return e.id == value.relation.reason.stage});
-			$resource(prev.links.getHref('hints')).get().$promise.then(
-				function(data) {
-					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), (e,i) => {
-						value.previouses.push(e);
-					});
-				},
-				function(err) {},
-			);
-		}
-	}
-
-	$scope.loadNextHints = function(value) {
-		value.nexts = [dflt, crto];
-		if (value.source.stage) {
-			let next= $scope.nextStages.find(e => {return e.id == value.source.stage});
-			$resource(next.links.getHref('hints')).get().$promise.then(
-				function(data) {
-					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
-						value.nexts.push(e);
-					});
-				},
-				function(err) {},
-			);
-		}
-	}
-
-	$scope.createPreviousHint = function(value) {
-	 	if (value.relation.reason.hint < 0) {	
-			let hint = new MAHint();
-			hint.stage = $scope.prevStages.find(e => {return e.id == value.relation.reason.stage});
-			var modal = $uibModal.open({
-				animation: true,
-				templateUrl : '/js/custom/tpl/modal/hint-form.html',
-				controller: '_HintModalCtrl',	
-				scope: $scope,
-				size: 'lg',
-				resolve: {hint: hint, stage: hint.stage}
-			});
-
-			modal.result.then(
-				function(res) {
-					value.previouses.push(hint);
-					value.relation.reason.hint = hint.id;
-					$scope.addSuccess("Saved succesfully");
-				},
-				function(err) {}
-			);
-		}
-	}
-
-	$scope.createNextHint = function(value) {
-	 	if (value.source.hint < 0) {	
-			let hint = new MAHint();
-			hint.stage = $scope.nextStages.find(e => {return e.id == value.source.stage});
-			var modal = $uibModal.open({
-				animation: true,
-				templateUrl : '/js/custom/tpl/modal/hint-form.html',
-				controller: '_HintModalCtrl',	
-				scope: $scope,
-				size: 'lg',
-				resolve: {hint: hint, stage: hint.stage}
-			});
-
-			modal.result.then(
-				function(res) {
-					value.nexts.push(hint);
-					value.source.hint = hint.id;
-					$scope.addSuccess("Saved succesfully");
-				},
-				function(err) {}
-			);
-		}
-	}
-
 	$scope.save = function() {
 		var uri = reason.id ? reason.links.getHref('edit') : reason.hint.links.getHref('reason');
 		return $resource(uri).save($scope.values).$promise.then(
@@ -276,50 +142,26 @@ App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $uibM
 		);
 	};
 
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 	console.log(reason, $scope.values);
 });
 
-App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $resource, influence) {
+App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $resource, influence, extended) {
+	$scope.modal			 = $uibModalInstance;
 	$scope.influence  	     = influence;
 	$scope.values  	  	     = JSON.parse(JSON.stringify(influence));
 	$scope.errors		     = {};
 	var dflt       	  	     = {id:null, name:" --Select one-- "};
 	let hint			     = influence.reason.hint;
 	let stage 		  	     = hint.stage;
+	var crto       	  	     = {id:-1,   name:" --Create new-- "};
 	$scope.dflt    	  	     = dflt;
-	$scope.nexts 		     = [];
-	$scope.nextsLoading      = [];
-	$scope.nextStages 	     = $scope.version.stages.filter(s => {return s.order > stage.order});
-	$scope.addSimulation 	 = function(values) { values.simulations.push({suggestions: [{}]}) }
-	$scope.addSuggestion 	 = function(values) { values.suggestions.push({}) }
-	$scope.addInfluenceNote  = function(value) { 
-		value.notes.push({});
-	}
-	$scope.addInfluenceRel   = function(value) {
-		value.relations.push({source: {stage:null, hint:null}, relation: {}});
-	}
-	$scope.loadNextHints = function(value) {
-		var nexts = [dflt];
-		if (value.source.stage) {
-			let next= $scope.nextStages.find(e => {return e.id == value.source.stage});
-			$resource(next.links.getHref('hints')).get().$promise.then(
-				function(data) {
-					angular.forEach(data._embedded.items.map(e => {return MAHint.fromJSON(e)}), e => {
-						nexts.push(e);
-					});
-				},
-				function(err) {},
-			);
-		}
-		value.nexts = nexts;
-	}
 
+	angular.extend($scope, extended);
+	$scope.init(stage);
 	$scope.save = function() {
 		console.log($scope.values);
-		var uri = influence.id ? influence.links.getHref('edit') : influence.reason.links.getHref('influence');
+		var uri = influence.id ? 
+			influence.links.getHref('edit') : influence.reason.links.getHref('influence');
 		return $resource(uri).save({influence:$scope.values}).$promise.then(
 			function(data) { 
 				influence.load(data);
@@ -333,9 +175,6 @@ App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $r
 		);
 	};
 
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 	console.log(influence, $scope.values);
 });
 
