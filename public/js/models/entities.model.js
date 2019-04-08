@@ -33,9 +33,15 @@ var MALinks = /** @class */ (function () {
     }
     MALinks.prototype.getHref = function (name) {
         if (name === void 0) { name = 'self'; }
-        if (this.keys[name]) {
+        if (this.has(name)) {
             return this.keys[name].href;
         }
+    };
+    MALinks.prototype.allowed = function (name) {
+        if (this.has(name)) {
+            return this.keys[name].allowed;
+        }
+        return false;
     };
     MALinks.prototype.has = function (name) {
         return typeof this.keys[name] !== "undefined";
@@ -365,7 +371,7 @@ var MAOperationType = /** @class */ (function () {
     };
     MAOperationType.prototype.removeOperation = function (obj) {
         obj.type = null;
-        this.operations.splice(this.operations.indexOf(obj, 1));
+        this.operations.splice(this.operations.indexOf(obj), 1);
     };
     return MAOperationType;
 }());

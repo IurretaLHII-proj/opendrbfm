@@ -101,6 +101,17 @@ class Hint implements
 	protected $reasons;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\Hint",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var CommentInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Hint",
@@ -138,6 +149,7 @@ class Hint implements
 		$this->updated   = new DateTime;
 		$this->reasons   = new ArrayCollection;
 		$this->comments  = new ArrayCollection;
+		$this->actions   = new ArrayCollection;
 	}
     
     /**
@@ -310,6 +322,28 @@ class Hint implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return HintReasonInterface.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

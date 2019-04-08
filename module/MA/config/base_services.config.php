@@ -11,6 +11,7 @@ return [
 					//Service\ActionService::class, 
 					Service\Action\OperationService::class, 
 					Service\Action\ProcessService::class, 
+					Service\Action\VersionService::class, 
 					Service\Action\StageService::class, 
 					Service\Action\HintService::class, 
 					Service\Action\HintReasonService::class, 
@@ -225,6 +226,20 @@ return [
 			[
 				'services' => [
 					Service\ProcessService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\VersionService::class => [
+		'entities'  => [
+			Entity\Action\Version::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\VersionService::class, 
 				],
 				'events'   => ['*'], 
 				'callback' => 'createAction',

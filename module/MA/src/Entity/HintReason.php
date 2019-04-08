@@ -105,6 +105,17 @@ class HintReason implements
 	protected $commentCount = 0;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\HintReason",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
@@ -127,6 +138,7 @@ class HintReason implements
 		$this->relations   = new ArrayCollection;
 		$this->comments    = new ArrayCollection;
 		$this->influences  = new ArrayCollection;
+		$this->actions     = new ArrayCollection;
 	}
     
     /**
@@ -431,6 +443,28 @@ class HintReason implements
 			$this->removeNote($note);
 		}
 
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return HintReasonInterface.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

@@ -78,6 +78,17 @@ class HintInfluence implements
 	protected $notes;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\HintInfluence",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var CommentInterface[]
 	 *	targetEntity = "MA\Entity\Comment\HintInfluence",
 	 *	mappedBy	 = "source",
@@ -127,6 +138,7 @@ class HintInfluence implements
 		$this->notes	   = new ArrayCollection;
 		$this->relations   = new ArrayCollection;
 		$this->simulations = new ArrayCollection;
+		$this->actions     = new ArrayCollection;
 	}
     
     /**
@@ -440,6 +452,28 @@ class HintInfluence implements
 			$this->removeSimulation($simulation);
 		}
 
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return HintInfluenceInterface.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

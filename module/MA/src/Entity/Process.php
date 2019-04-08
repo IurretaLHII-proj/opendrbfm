@@ -128,15 +128,15 @@ class Process implements
 	protected $versions;
 
 	/**
-	 * @var StageInterface[]
+	 * @var ActionInterface[]
 	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Stage",
-	 *	mappedBy	 = "process",
+	 *	targetEntity = "MA\Entity\Action\Process",
+	 *	mappedBy	 = "source",
 	 *	cascade = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
-	//protected $stages;
+	protected $actions;
 
 	/**
 	 * @var int 
@@ -159,6 +159,7 @@ class Process implements
 		$this->updated  = new DateTime;
 		$this->versions = new ArrayCollection;
 		$this->stages   = new ArrayCollection;
+		$this->actions  = new ArrayCollection;
 	}
     
     /**
@@ -456,36 +457,27 @@ class Process implements
         return $this;
     }
 
-    ///**
-    // * Get stages.
-    // *
-    // * @return StageInterface[]
-    // */
-	//public function getVersions()
-	//{
-	//	$levels = new ArrayCollection;
-
-	//	foreach ($this->getStages() as $stage) {
-	//		if (!$stage->hasParent()) $levels->add($stage);
-	//	}
-
-	//	return $levels;
-	//}
-
-	///**
-	// * @param StageInterface $stage
-	// * @return int|false
-	// */
-	//public function getVersion(StageInterface $stage)
-	//{
-	//	foreach ($this->getVersions() as $index => $version) {
-	//		if ($version === $stage || $version->hasChild($stage, true)) {
-	//			return $index + 1;
-	//		}
-	//	}
-
-	//	return false;
-	//}
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return Process.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
+        return $this;
+    }
 
     /**
      * Get versions.

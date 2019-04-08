@@ -525,7 +525,7 @@ class Operation implements
 			],
 			[
 				'rel'   	  => 'delete',
-				'privilege'   => 'delete',
+				'privilege'   => $this->getParents()->count() ? false : 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/operation/detail/json',

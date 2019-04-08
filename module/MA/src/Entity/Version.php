@@ -106,6 +106,17 @@ class Version implements
 	protected $stages;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\Version",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var CommentInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Version",
@@ -143,6 +154,7 @@ class Version implements
 		$this->updated  = new DateTime;
 		$this->stages   = new ArrayCollection;
 		$this->comments = new ArrayCollection;
+		$this->actions  = new ArrayCollection;
 	}
     
     /**
@@ -352,6 +364,28 @@ class Version implements
 			$this->removeStage($stage);
 		}
 
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return Version.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

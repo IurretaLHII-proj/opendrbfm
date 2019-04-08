@@ -43,9 +43,16 @@ class MALinks {
 	}
 
 	getHref(name:string='self'):string {
-		if (this.keys[name]) {
+		if (this.has(name)) {
 			return this.keys[name].href;
 		}
+	}
+
+	allowed(name:string):boolean {
+		if (this.has(name)) {
+			return this.keys[name].allowed;
+		}
+		return false;
 	}
 
 	has(name:string):boolean {
@@ -466,7 +473,7 @@ class MAOperationType {
 
 	removeOperation(obj: MAOperation) {
 		obj.type = null;
-		this.operations.splice(this.operations.indexOf(obj, 1));
+		this.operations.splice(this.operations.indexOf(obj), 1);
 	}
 
 	id: number;
