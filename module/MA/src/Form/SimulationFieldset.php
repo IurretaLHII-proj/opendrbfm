@@ -31,16 +31,42 @@ class SimulationFieldset extends Fieldset implements
 		$this->add([
                 'type' => 'Collection',
                 'name' => 'suggestions',
-                'attributes' => [ 
-                    'class' => 'suggestions'
-				],
 				'options' => [
-					'label' => 'Suggestions',
 					'count' => 0,
 					'allow_add' => true,
 					'target_element' => [
 						'type' => \MA\Form\NoteFieldset::class,
 						'object' => \MA\Entity\Note\HintSuggestion::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'effects',
+				'options' => [
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintEffect::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
+                'name' => 'preventions',
+				'options' => [
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \MA\Form\NoteFieldset::class,
+						'object' => \MA\Entity\Note\HintPrevention::class,
 					],
 				],
             ],

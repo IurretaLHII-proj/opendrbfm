@@ -150,6 +150,7 @@ var MAProcess = /** @class */ (function () {
 var MAVersion = /** @class */ (function () {
     function MAVersion() {
         this.commentCount = 0;
+        this.state = MAVersion.IN_PROGRESS;
         this.stagesLoaded = false;
         this.stages = [];
         this.comments = new MACollection();
@@ -163,6 +164,7 @@ var MAVersion = /** @class */ (function () {
     MAVersion.prototype.load = function (obj) {
         this.id = obj.id;
         this.name = obj.name;
+        this.state = obj.state;
         this.description = obj.description;
         this.commentCount = obj.commentCount;
         this.created = new Date(obj.created.date);
@@ -178,6 +180,7 @@ var MAVersion = /** @class */ (function () {
         return {
             id: this.id,
             name: this.name,
+            state: this.state,
             description: this.description,
             material: this.material ? this.material.id : null,
             stages: stages,
@@ -218,6 +221,9 @@ var MAVersion = /** @class */ (function () {
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
+    MAVersion.IN_PROGRESS = 0;
+    MAVersion.APROVED = 1;
+    MAVersion.CANCELLED = -1;
     return MAVersion;
 }());
 var MAStage = /** @class */ (function () {
@@ -561,158 +567,6 @@ var MAHintInfluenceRel = /** @class */ (function () {
     };
     return MAHintInfluenceRel;
 }());
-var MAHintContextRel = /** @class */ (function () {
-    function MAHintContextRel() {
-    }
-    MAHintContextRel.fromJSON = function (obj) {
-        var e = new MAHintContextRel();
-        e.load(obj);
-        return e;
-    };
-    MAHintContextRel.prototype.setContext = function (obj) {
-        this.id = obj.id;
-        this.hint = obj.hint;
-        this.stage = obj.hint.stage;
-    };
-    MAHintContextRel.prototype.load = function (obj) {
-        if (obj.id) {
-            this.id = obj.id;
-            this.stage = MAStage.fromJSON(obj._embedded.stage);
-            this.hint = MAHint.fromJSON(obj._embedded.hint);
-        }
-        this.links = new MALinks(obj._links);
-    };
-    MAHintContextRel.prototype.toJSON = function () {
-        return {
-            id: this.id,
-            hint: this.hint ? this.hint.id : null,
-            stage: this.stage ? this.stage.id : null,
-        };
-    };
-    return MAHintContextRel;
-}());
-var MAHintContext = /** @class */ (function () {
-    function MAHintContext() {
-        this.commentCount = 0;
-        this.reasons = [];
-        this.influences = [];
-        this.simulations = [];
-        this.relations = [];
-        this.relateds = [];
-        this.comments = new MACollection();
-    }
-    MAHintContext.fromJSON = function (obj) {
-        var e = new MAHintContext();
-        e.load(obj);
-        return e;
-    };
-    MAHintContext.prototype.load = function (obj) {
-        if (obj.id) {
-            this.id = obj.id;
-            this.created = new Date(obj.created.date);
-            this.hint = MAHint.fromJSON(obj._embedded.hint);
-            this.user = new MAUser(obj._embedded.owner);
-            this.commentCount = obj.commentCount;
-            this.links = new MALinks(obj._links);
-            this.reasons = [];
-            this.influences = [];
-            this.simulations = [];
-            this.relations = [];
-            this.relateds = [];
-            for (var i = 0; i < obj._embedded.simulations.length; i++) {
-                this.addSimulation(MASimulation.fromJSON(obj._embedded.simulations[i]));
-            }
-            for (var i = 0; i < obj._embedded.reasons.length; i++) {
-                this.addReason(MANote.fromJSON(obj._embedded.reasons[i]));
-            }
-            for (var i = 0; i < obj._embedded.influences.length; i++) {
-                this.addInfluence(MANote.fromJSON(obj._embedded.influences[i]));
-            }
-            for (var i = 0; i < obj._embedded.relations.length; i++) {
-                if (obj._embedded.relations[i].id) {
-                    this.addRelation(MAHintRelation.fromJSON(obj._embedded.relations[i]));
-                }
-            }
-            for (var i = 0; i < obj._embedded.relateds.length; i++) {
-                if (obj._embedded.relateds[i].id) {
-                    this.addRelated(MAHintRelation.fromJSON(obj._embedded.relateds[i]));
-                }
-            }
-        }
-        this.links = new MALinks(obj._links);
-    };
-    Object.defineProperty(MAHintContext.prototype, "name", {
-        get: function () {
-            return this.hint.name;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    MAHintContext.prototype.setHint = function (obj) {
-        this.hint = obj;
-    };
-    MAHintContext.prototype.addSimulation = function (obj) {
-        obj.setContext(this);
-        this.simulations.push(obj);
-    };
-    MAHintContext.prototype.addRelation = function (obj) {
-        obj.context = this;
-        this.relations.push(obj);
-    };
-    MAHintContext.prototype.addRelated = function (obj) {
-        obj.context = this;
-        this.relateds.push(obj);
-    };
-    MAHintContext.prototype.addReason = function (obj) {
-        obj.setSource(this);
-        this.reasons.push(obj);
-    };
-    MAHintContext.prototype.addInfluence = function (obj) {
-        obj.setSource(this);
-        this.influences.push(obj);
-    };
-    MAHintContext.prototype.removeNote = function (obj) {
-        var index;
-        if ((index = this.reasons.indexOf(obj)) >= 0) {
-            var res = this.reasons.splice(index, 1);
-        }
-        else if ((index = this.influences.indexOf(obj)) >= 0) {
-            var res = this.influences.splice(index, 1);
-        }
-        console.log(index, this, res);
-    };
-    MAHintContext.prototype.getComments = function () {
-        return this.comments.items;
-    };
-    MAHintContext.prototype.addComment = function (obj) {
-        this.commentCount++;
-        this.comments.items.unshift(obj);
-    };
-    MAHintContext.prototype.toJSON = function () {
-        var simulations = [];
-        var relations = [];
-        var relateds = [];
-        for (var i = 0; i < this.relations.length; i++) {
-            relations.push(this.relations[i].toJSON());
-        }
-        for (var i = 0; i < this.relateds.length; i++) {
-            relateds.push(this.relateds[i].toJSON());
-        }
-        for (var i = 0; i < this.simulations.length; i++) {
-            simulations.push(this.simulations[i].toJSON());
-        }
-        return {
-            id: this.id,
-            hint: this.hint ? this.hint.id : null,
-            reasons: this.reasons,
-            influences: this.influences,
-            relations: relations,
-            relateds: relateds,
-            simulations: simulations,
-        };
-    };
-    return MAHintContext;
-}());
 var MAHintReason = /** @class */ (function () {
     function MAHintReason() {
         this.commentCount = 0;
@@ -892,7 +746,6 @@ var MAHint = /** @class */ (function () {
         this.priority = 0;
         this.comments = new MACollection();
         this.reasons = [];
-        this.contexts = [];
         this.created = new Date;
     }
     MAHint.fromJSON = function (obj) {
@@ -913,10 +766,6 @@ var MAHint = /** @class */ (function () {
             this.commentCount = obj.commentCount;
             this.stageOrder = obj.stageOrder;
             this.created = new Date(obj.created.date);
-            this.contexts = [];
-            for (var i = 0; i < obj._embedded.contexts.length; i++) {
-                this.addContext(MAHintContext.fromJSON(obj._embedded.contexts[i]));
-            }
             for (var i = 0; i < obj._embedded.reasons.length; i++) {
                 this.addReason(MAHintReason.fromJSON(obj._embedded.reasons[i]));
             }
@@ -926,10 +775,6 @@ var MAHint = /** @class */ (function () {
     MAHint.prototype.addReason = function (obj) {
         obj.hint = this;
         this.reasons.push(obj);
-    };
-    MAHint.prototype.addContext = function (obj) {
-        obj.hint = this;
-        this.contexts.push(obj);
     };
     MAHint.prototype.getComments = function () {
         return this.comments.items;
@@ -969,7 +814,7 @@ var MAHint = /** @class */ (function () {
 }());
 var MASimulation = /** @class */ (function () {
     function MASimulation() {
-        this.state = MASimulation.NOT_PROCESSED;
+        this.state = MASimulation.NOT_NECESSARY;
         this.effects = [];
         this.suggestions = [];
         this.preventions = [];
@@ -985,8 +830,6 @@ var MASimulation = /** @class */ (function () {
         if (obj.id) {
             this.id = obj.id;
             this.state = obj.state;
-            this.prevention = obj.prevention;
-            this.effect = obj.effect;
             this.commentCount = obj.commentCount;
             this.when = obj.when ? new Date(obj.when.date) : null;
             this.who = obj.who;
@@ -1013,8 +856,6 @@ var MASimulation = /** @class */ (function () {
             state: this.state,
             who: this.who,
             when: this.when ? this.when.toString() : null,
-            prevention: this.prevention,
-            effect: this.effect,
             effects: this.effects,
             preventions: this.preventions,
             suggestions: this.suggestions,
@@ -1027,9 +868,6 @@ var MASimulation = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    MASimulation.prototype.setContext = function (obj) {
-        this.context = obj;
-    };
     MASimulation.prototype.addEffect = function (obj) {
         obj.setSource(this);
         this.effects.push(obj);

@@ -107,9 +107,9 @@ class Simulation implements
 
 	/**
 	 * @var int
-	 * @ORM\Column(type="integer", options={"default":0})
+	 * @ORM\Column(type="integer", options={"default":-1})
 	 */
-	protected $state = self::STATE_CREATED;
+	protected $state = self::STATE_NOT_NECESSARY;
 
 	/**
 	 * @var string 

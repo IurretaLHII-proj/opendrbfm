@@ -48,6 +48,16 @@ abstract class AbstractHintNote extends AbstractNote
     }
 
 	/**
+	 * @inheritDoc
+	 */
+	public function getProcess()
+	{
+		if ($this->getSimulation() !== null) {
+			return $this->getSimulation()->getProcess();
+		}
+	}
+
+	/**
   	 * @inheritDoc
   	 */
   	public function provideLinks()

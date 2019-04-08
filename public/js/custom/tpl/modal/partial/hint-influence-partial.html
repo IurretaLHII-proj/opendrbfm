@@ -1,4 +1,4 @@
-<div class="form-group mb-1">
+<div class="form-group" ng-if="values.notes.length">
 	<!--<h6>Notes</h6>-->
 	<div class="form-row" ng-repeat="(i, note) in values.notes">
 		<div class="form-group col-11">
@@ -28,7 +28,7 @@
 	</div>
 </div>
 
-<div class="form-group mb-1">
+<div class="form-group" ng-if="values.relations.length">
 	<!--<h6>Relations</h6>-->
 	<div class="form-row" ng-repeat="(i, value) in values.relations">
 		<div class="form-group col-4">
@@ -86,48 +86,110 @@
 	</div>
 </div>
 
-<div ng-if="values.simulations.length" class="form-group mb-1 border p-2">
-	<!--<h6>Simulations</h6>-->
-	<div class="form-group" ng-repeat="(i, simulation) in values.simulations" style="position: relative">
-		<a href="" class="btn" ng-click="values.simulations.splice(i, 1);" style="
-			position: absolute;
-			top: 0;
-			right: 0;
-		">
-			<span class="fa fa-close"></span>
+<!--<h6>Simulations</h6>-->
+<div ng-if="values.simulations.length" 
+	ng-repeat="(i, simulation) in values.simulations" 
+	class="form-group border p-2"
+	style="position:relative;"
+>
+	<a href="" class="btn btn-outline-primary" ng-click="values.simulations.splice(i, 1);" style="
+		position: absolute;
+		top: 0;
+		right: 0;
+	">
+		<span class="fa fa-close"></span>
+	</a>
+	<div class="btn-group">
+		<a href="" class="btn btn-primary disabled">Simulation</a>
+		<a href="" class="btn btn-outline-primary" 
+			ng-click="addSuggestion(simulation)">
+			<span class="fa fa-plus"></span> Suggestion
 		</a>
-		<div class="btn-group">
-			<a href="" class="btn btn-primary disabled">Simulation</a>
-			<a href="" class="btn btn-outline-primary" 
-				ng-click="addSuggestion(simulation)">
-				<span class="fa fa-plus"></span> Suggestion
+		<a href="" class="btn btn-outline-primary" 
+			ng-click="addEffect(simulation)">
+			<span class="fa fa-plus"></span> Effect
+		</a>
+		<a href="" class="btn btn-outline-primary" 
+			ng-click="addPrevention(simulation)">
+			<span class="fa fa-plus"></span> Prevention
+		</a>
+	</div>
+	<div class="form-row" ng-repeat="(j, suggestion) in simulation.suggestions">
+		<div class="form-group col-11">
+			<div class="input-group">
+				<text-angular 
+					ng-model="suggestion.text"
+					ta-toolbar="[
+						['bold', 'italics', 'underline' ],
+				   		['ul', 'insertLink', 'html'],
+					]"
+					ta-text-editor-class="form-height form-control"
+					ng-class="{'is-invalid': errors.simulations[i].suggestions[j].text}"
+					placeholder="Describe suggestion.."
+					class="small-area"
+				>
+				</text-angular>
+				<div ng-if="errors.simulations[i].suggestions[j].text"
+					ng-repeat="(key, text) in errors.simulations[i].suggestions[j].text"
+					class="small text-danger">{[key]}. {[text]}</div>
+			</div>
+		</div>
+		<div class="form-group col-1 m-auto">
+			<a href="" class="btn pull-right" ng-click="simulation.suggestions.splice(j, 1);">
+				<span class="fa fa-close"></span>
 			</a>
 		</div>
-		<div class="form-row my-2" ng-repeat="(j, suggestion) in simulation.suggestions">
-			<div class="form-group col-11">
-				<div class="input-group">
-					<text-angular 
-						ng-model="suggestion.text"
-						ta-toolbar="[
-							['bold', 'italics', 'underline' ],
-					   		['ul', 'insertLink', 'html'],
-						]"
-						ta-text-editor-class="form-height form-control"
-						ng-class="{'is-invalid': errors.simulations[i].suggestions[j].text}"
-						placeholder="Describe suggestion.."
-						class="small-area"
-					>
-					</text-angular>
-					<div ng-if="errors.simulations[i].suggestions[j].text"
-						ng-repeat="(key, text) in errors.simulations[i].suggestions[j].text"
-						class="small text-danger">{[key]}. {[text]}</div>
-				</div>
+	</div>
+	<div class="form-row" ng-repeat="(j, effect) in simulation.effects">
+		<div class="form-group col-11">
+			<div class="input-group">
+				<text-angular 
+					ng-model="effect.text"
+					ta-toolbar="[
+						['bold', 'italics', 'underline' ],
+				   		['ul', 'insertLink', 'html'],
+					]"
+					ta-text-editor-class="form-height form-control"
+					ng-class="{'is-invalid': errors.simulations[i].effects[j].text}"
+					placeholder="Describe effect.."
+					class="small-area"
+				>
+				</text-angular>
+				<div ng-if="errors.simulations[i].effects[j].text"
+					ng-repeat="(key, text) in errors.simulations[i].effects[j].text"
+					class="small text-danger">{[key]}. {[text]}</div>
 			</div>
-			<div class="form-group col-1 m-auto">
-				<a href="" class="btn pull-right" ng-click="simulation.suggestions.splice(j, 1);">
-					<span class="fa fa-close"></span>
-				</a>
+		</div>
+		<div class="form-group col-1 m-auto">
+			<a href="" class="btn pull-right" ng-click="simulation.effects.splice(j, 1);">
+				<span class="fa fa-close"></span>
+			</a>
+		</div>
+	</div>
+	<div class="form-row" ng-repeat="(j, prevention) in simulation.preventions">
+		<div class="form-group col-11">
+			<div class="input-group">
+				<text-angular 
+					ng-model="prevention.text"
+					ta-toolbar="[
+						['bold', 'italics', 'underline' ],
+				   		['ul', 'insertLink', 'html'],
+					]"
+					ta-text-editor-class="form-height form-control"
+					ng-class="{'is-invalid': errors.simulations[i].preventions[j].text}"
+					placeholder="Describe prevention.."
+					class="small-area"
+				>
+				</text-angular>
+				<div ng-if="errors.simulations[i].preventions[j].text"
+					ng-repeat="(key, text) in errors.simulations[i].preventions[j].text"
+					class="small text-danger">{[key]}. {[text]}</div>
 			</div>
+		</div>
+		<div class="form-group col-1 m-auto">
+			<a href="" class="btn pull-right" ng-click="simulation.preventions.splice(j, 1);">
+				<span class="fa fa-close"></span>
+			</a>
 		</div>
 	</div>
 </div>

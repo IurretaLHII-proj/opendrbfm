@@ -8,8 +8,15 @@ return [
 		'listeners' => [
 			[
 				'services' => [
-					Service\ActionService::class, 
-					Service\ActionProcessService::class, 
+					//Service\ActionService::class, 
+					Service\Action\OperationService::class, 
+					Service\Action\ProcessService::class, 
+					Service\Action\StageService::class, 
+					Service\Action\HintService::class, 
+					Service\Action\HintReasonService::class, 
+					Service\Action\HintInfluenceService::class, 
+					Service\Action\SimulationService::class, 
+					Service\Action\NoteService::class, 
 					Service\CommentService::class, 
 					Service\NoteService::class, 
 					Service\CustomerService::class, 
@@ -150,8 +157,6 @@ return [
 	],
 	Service\NoteService::class => [
 		'entities'  => [
-			Entity\Note\ContextReason::class, 
-			Entity\Note\ContextInfluence::class, 
 			Entity\Note\HintSuggestion::class, 
 			Entity\Note\HintEffect::class, 
 			Entity\Note\HintPrevention::class, 
@@ -183,7 +188,7 @@ return [
 			],
 		]
 	],
-	Service\ActionService::class => [
+	/*Service\ActionService::class => [
 		'entities'  => [
 			Entity\Action\Operation::class, 
 		],
@@ -197,22 +202,117 @@ return [
 			]
 		],
 	],
-	Service\ActionProcessService::class => [
-		//'entities'  => [
-		//	Entity\Action\Process::class, 
-		//	Entity\Action\Stage::class, 
-		//	Entity\Action\Hint::class, 
-		//],
-		//'listeners' => [
-		//	[
-		//		'services' => [
-		//			Service\ProcessService::class, 
-		//			Service\StageService::class, 
-		//			Service\HintService::class
-		//		],
-		//		'events'   => ['*'], 
-		//		'callback' => 'createAction',
-		//	]
-		//],
+	Service\Action\OperationService::class => [
+		'entities'  => [
+			Entity\Action\Operation::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\OperationService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	 */
+	Service\Action\ProcessService::class => [
+		'entities'  => [
+			Entity\Action\Process::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\ProcessService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\StageService::class => [
+		'entities'  => [
+			Entity\Action\Stage::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\StageService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\HintService::class => [
+		'entities'  => [
+			Entity\Action\Hint::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\HintService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\HintReasonService::class => [
+		'entities'  => [
+			Entity\Action\HintReason::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\HintReasonService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\HintInfluenceService::class => [
+		'entities'  => [
+			Entity\Action\HintInfluence::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\HintInfluenceService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\SimulationService::class => [
+		'entities'  => [
+			Entity\Action\Simulation::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\SimulationService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\NoteService::class => [
+		'entities'  => [
+			Entity\Action\Note::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\NoteService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
 	],
 ];

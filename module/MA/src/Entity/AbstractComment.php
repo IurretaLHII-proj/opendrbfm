@@ -20,7 +20,6 @@ use Base\Hal\LinkProvider;
  * 	"version"     	= "MA\Entity\Comment\Version",
  * 	"stage"     	= "MA\Entity\Comment\Stage",
  * 	"hint"     		= "MA\Entity\Comment\Hint",
- * 	"context"     	= "MA\Entity\Comment\HintContext",
  * 	"reason"     	= "MA\Entity\Comment\HintReason",
  * 	"influence"     = "MA\Entity\Comment\HintInfluence",
  * 	"relation"     	= "MA\Entity\Comment\HintRelation",

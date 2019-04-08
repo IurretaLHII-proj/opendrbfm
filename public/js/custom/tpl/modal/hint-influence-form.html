@@ -3,23 +3,25 @@
 </div>
 <div class="modal-body">
 
-	<div class="btn-group">
-		<a href="" class="btn btn-primary disabled">Influence</a>
-		<a href="" class="btn btn-outline-primary" 
-			ng-class="{disabled:!nextStages.length}" 
-			ng-click="addInfluenceRel(values)">
-			<span class="fa fa-plus"></span> Next error 
-		</a>
-		<a href="" class="btn btn-outline-primary" 
-			ng-click="addInfluenceNote(values)">
-			<span class="fa fa-plus"></span> Note
-		</a>
-	</div>
-	<div class="btn-group">
-		<a href="" class="btn btn-outline-primary"
-		   	ng-click="addSimulation(values)">
-			<span class="fa fa-plus"></span> Simulation
-		</a>
+	<div class="form-group">
+		<div class="btn-group">
+			<a href="" class="btn btn-primary disabled">Influence</a>
+			<a href="" class="btn btn-outline-primary" 
+				ng-class="{disabled:!nextStages.length}" 
+				ng-click="addInfluenceRel(values)">
+				<span class="fa fa-plus"></span> Next error 
+			</a>
+			<a href="" class="btn btn-outline-primary" 
+				ng-click="addInfluenceNote(values)">
+				<span class="fa fa-plus"></span> Note
+			</a>
+		</div>
+		<div class="btn-group">
+			<a href="" class="btn btn-outline-primary"
+			   	ng-click="addSimulation(values)">
+				<span class="fa fa-plus"></span> Simulation
+			</a>
+		</div>
 	</div>
 	<ng-include src="'/js/custom/tpl/modal/partial/hint-influence-partial.html'" />
 

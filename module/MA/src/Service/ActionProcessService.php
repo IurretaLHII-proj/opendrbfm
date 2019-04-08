@@ -1,11 +1,11 @@
 <?php
 
-namespace MA\Service;
+namespace MA\Service\Action;
 
 use Zend\EventManager\EventInterface;
-use Base\Service\AbstractService;
+use MA\Service\AbstractActionService;
 
-class ActionProcessService extends ActionService
+class ProcessService extends AbstractActionService
 {
 	/**
 	 * @param EventInterface $e
