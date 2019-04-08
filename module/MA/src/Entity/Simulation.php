@@ -136,6 +136,17 @@ class Simulation implements
 	protected $prevention;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\Simulation",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var CommentInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Simulation",
@@ -175,6 +186,7 @@ class Simulation implements
 		$this->effects     = new ArrayCollection;
 		$this->suggestions = new ArrayCollection;
 		$this->preventions = new ArrayCollection;
+		$this->actions     = new ArrayCollection;
 	}
     
     /**
@@ -369,6 +381,28 @@ class Simulation implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return SimulationInterface.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

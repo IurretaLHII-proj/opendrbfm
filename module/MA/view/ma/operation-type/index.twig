@@ -124,10 +124,12 @@
 									<i class="fa fa-eye"></i>
 								</a>
 								<a href="" ng-click="editOperation(op)" 
+									ng-class="{disabled: !op.links.allowed('edit')}"
 									class="btn btn-sm btn-outline-primary"
 								><i class="fa fa-pencil"></i></a>
 								<a href=""
 									class="btn btn-sm btn-outline-primary"
+									ng-class="{disabled: !op.links.allowed('delete')}"
 									ng-confirm-click
 									confirmed-click="deleteOperation(op)"
 								><i class="fa fa-trash"></i></a>

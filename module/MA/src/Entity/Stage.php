@@ -107,6 +107,17 @@ class Stage implements
 	protected $images;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\Stage",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var CommentInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Stage",
@@ -152,6 +163,7 @@ class Stage implements
 		$this->operations = new ArrayCollection;
 		$this->images     = new ArrayCollection;
 		$this->hints	  = new ArrayCollection;
+		$this->actions    = new ArrayCollection;
 	}
     
     /**
@@ -531,6 +543,28 @@ class Stage implements
     public function setOrder($order)
     {
         $this->order = (int) $order;
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return Stage.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

@@ -57,6 +57,17 @@ abstract class AbstractNote implements
 	protected $text;
 
 	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\Note",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
+	/**
 	 * @var CommentInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Comment\Note",
@@ -85,6 +96,7 @@ abstract class AbstractNote implements
 	public function __construct()
 	{
 		$this->comments = new ArrayCollection;
+		$this->actions  = new ArrayCollection;
 		$this->created  = new DateTime;
 	}
 
@@ -139,6 +151,28 @@ abstract class AbstractNote implements
     public function setText($text)
     {
         $this->text = (string) $text;
+        return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return HintReasonInterface.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
         return $this;
     }
     

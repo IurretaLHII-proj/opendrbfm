@@ -13,6 +13,7 @@ use DateTime;
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
  * 	"process" 	= "MA\Entity\Action\Process",
+ * 	"version"  	= "MA\Entity\Action\Version",
  * 	"stage"   	= "MA\Entity\Action\Stage",
  * 	"hint"    	= "MA\Entity\Action\Hint",
  * 	"reason"    = "MA\Entity\Action\HintReason",

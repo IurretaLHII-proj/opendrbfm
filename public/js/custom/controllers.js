@@ -832,6 +832,22 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
 		});
 	};
 
+	$scope.deleteGroup = function(group) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(group.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		$scope.collection.splice($scope.collection.indexOf(group), 1);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
+
 	$scope.editGroup = function(group) {
 		var modal = $uibModal.open({
 			animation: true,

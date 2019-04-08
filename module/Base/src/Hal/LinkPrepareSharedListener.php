@@ -67,11 +67,16 @@ class LinkPrepareSharedListener implements SharedListenerAggregateInterface
 		if ($source instanceof LinkProvider) {
       		foreach ($source->provideLinks() as $options) {
 
-				$allowed = true;
-
         		if (isset($options['privilege'])) {
-					$allowed = $this->authService->isAllowed($source, $options['privilege']);
+					if (is_bool($options['privilege'])) {
+						$allowed = $options['privilege'];
+					}
+					else {
+						$allowed = $this->authService->isAllowed($source, $options['privilege']);
+					}
         		}
+				else
+					$allowed = true;
 
 				$links->add(Link::factory(array_merge($options, ['props' => ['allowed' => $allowed]])));
       		}
