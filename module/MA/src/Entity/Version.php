@@ -21,6 +21,10 @@ class Version implements
 	//\Base\Hal\LinkPrepareAware,
 	VersionInterface 
 {
+	const STATE_IN_PROGRESS   = 0;
+	const STATE_APROVED  	  = 1;
+	const STATE_CANCELED  	  = -1;
+
 	/**
 	 * @var int 
 	 * @ORM\Id
@@ -44,6 +48,12 @@ class Version implements
      * )
      */
     protected $description;
+
+	/**
+	 * @var int
+	 * @ORM\Column(type="integer", options={"default":-0})
+	 */
+	protected $state = self::STATE_IN_PROGRESS;
 
 	/**
 	 * @var User
@@ -215,12 +225,34 @@ class Version implements
      * Set process.
      *
      * @param ProcessInterface process the value to set.
-     * @return Stage.
+     * @return Version.
      */
     public function setProcess(ProcessInterface $process)
     {
         $this->process = $process;
         return $this;
+    }
+    
+    /**
+     * Set state.
+     *
+     * @param int state the value to set.
+     * @return Version.
+     */
+    public function setState($state)
+    {
+        $this->state = (int) $state;
+        return $this;
+    }
+    
+    /**
+     * Get state.
+     *
+     * @return int.
+     */
+    public function getState()
+    {
+        return $this->state;
     }
     
     /**
@@ -481,11 +513,12 @@ class Version implements
 	public function __clone()
 	{
 		$this->id 	    	= null;
-		$this->commentCount = 0;
+		$this->state		= self::STATE_IN_PROGRESS;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
 		$this->stages       = new ArrayCollection;
 		$this->comments     = new ArrayCollection;
+		$this->commentCount = 0;
 	}
 
 	/**
@@ -497,6 +530,7 @@ class Version implements
 			'id' 		   => $this->getId(),
 			'name' 		   => $this->getName(),
 			'owner'		   => $this->getUser(),
+			'state'		   => $this->getState(),
 			'material'     => $this->getMaterial(),
 			'description'  => $this->getDescription(),
 			'commentCount' => $this->getCommentCount(),

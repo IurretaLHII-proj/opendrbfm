@@ -4,6 +4,7 @@ namespace MA\Form;
 
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
+use MA\Entity\Version;
 
 class VersionForm extends Form implements InputFilterProviderInterface
 {
@@ -29,6 +30,20 @@ class VersionForm extends Form implements InputFilterProviderInterface
              'attributes' => [ 
                  'class' => 'form-control',
 				 'rows' => 4,
+             ],
+        ], ['priority' => -9]);
+
+        $this->add([
+             'type' => 'Select',
+             'name' => 'state',
+             'required' => true,
+             'options' => [
+                 'label' => 'State',
+				 'value_options' => [
+				 	Version::STATE_IN_PROGRESS 	=> Version::STATE_IN_PROGRESS,
+				 	Version::STATE_APROVED 		=> Version::STATE_APROVED,
+				 	Version::STATE_CANCELED 	=> Version::STATE_CANCELED,
+				 ],
              ],
         ], ['priority' => -9]);
 

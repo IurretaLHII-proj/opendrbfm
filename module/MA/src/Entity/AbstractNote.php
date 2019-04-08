@@ -19,8 +19,6 @@ use DateTime;
  * 	"hint-suggestion" 	= "MA\Entity\Note\HintSuggestion",
  * 	"hint-effect" 		= "MA\Entity\Note\HintEffect",
  * 	"hint-prevention" 	= "MA\Entity\Note\HintPrevention",
- * 	"context-reason"    = "MA\Entity\Note\ContextReason",
- * 	"context-influence" = "MA\Entity\Note\ContextInfluence",
  * })
  */
 abstract class AbstractNote implements 
@@ -266,4 +264,9 @@ abstract class AbstractNote implements
 		];
 	
 	}
+
+	/**
+	 * @return ProcessInterface
+	 */
+	abstract public function getProcess();
 }

@@ -157,11 +157,79 @@
 .hint-table th {
 	padding: 0.25em 0.75em;
 }
+.hint-table tr {
+}
 .hint-table td {
-	position: relative;
+	vertical-align: middle;
+}
+.hint-table td.plus {
+}
+.hint-table td.info {
+}
+.hint-table tr.hint {
+}
+.hint-table tr.hint td {
+	background: #FFF;
+	border-color: #EEE;
+}
+.hint-table tr.hint.even td {
+}
+.hint-table tr.hint.odd td {
+}
+.hint-table tr.hint td.plus {
+	background: #F8F8F8;
+	border-color: #E8E8E8;
+}
+.hint-table tr.hint td.info {
+	border-color: #E8E8E8;
+}
+.hint-table tr.reason {
+}
+.hint-table tr.reason td {
+	background: #F8F8F8;
+}
+.hint-table tr.reason.even td {
+}
+.hint-table tr.reason.odd td {
+}
+.hint-table tr.reason td.plus {
+	background: #F5F5F5;
+	border-color: #E5E5E5;
+}
+.hint-table tr.reason td.info {
+	border-color: #E5E5E5;
+}
+.hint-table tr.influence {
+}
+.hint-table tr.influence td {
+	background: #F5F5F5;
+}
+.hint-table tr.influence.even td {
+}
+.hint-table tr.influence.odd td {
+}
+.hint-table tr.influence td.plus {
+	background: #F0F0F0;
+	border-color: #E0E0E0;
+}
+.hint-table tr.influence td.info {
+	border-color: #E0E0E0;
+}
+.hint-table tr.simulation {
+}
+.hint-table tr.simulation td {
+	background: #F0F0F0;
+}
+.hint-table tr.simulation.even td {
+}
+.hint-table tr.simulation.odd td {
+}
+.hint-table tr.simulation td.info {
+	border-color: #E0E0E0;
 }
 .hint-table td ul li{
-	position: relative;
+	background: white;
+	padding: .4em;
 }
 .hint-table .comment-btn {
 	position: absolute;

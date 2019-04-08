@@ -96,7 +96,7 @@ class Hint implements
 	 *	mappedBy	 = "hint",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
+	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
 	protected $reasons;
 
@@ -118,17 +118,6 @@ class Hint implements
 	protected $commentCount = 0;
 
 	/**
-	 * @var HintContextInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\HintContext",
-	 *	mappedBy	 = "hint",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $contexts;
-
-	/**
 	 * @var DateTime
 	 * @ORM\Column(type="datetime")
 	 */
@@ -147,7 +136,6 @@ class Hint implements
 	{
 		$this->created   = new DateTime;
 		$this->updated   = new DateTime;
-		$this->contexts  = new ArrayCollection;
 		$this->reasons   = new ArrayCollection;
 		$this->comments  = new ArrayCollection;
 	}
@@ -493,28 +481,6 @@ class Hint implements
         $this->reasons = $reasons;
         return $this;
     }
-    
-    /**
-     * Get contexts.
-     *
-     * @return Context[].
-     */
-    public function getContexts()
-    {
-        return $this->contexts;
-    }
-    
-    /**
-     * Set contexts.
-     *
-     * @param Context[] contexts the value to set.
-     * @return Hint.
-     */
-    public function setContexts($contexts)
-    {
-        $this->contexts = $contexts;
-        return $this;
-    }
 
     /**
      * Get created.
@@ -643,15 +609,6 @@ class Hint implements
   	public function provideLinks()
   	{
 		return [
-			[
-				'rel'   	  => 'context',
-				'privilege'   => 'context',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'context', 'id' => $this->getId()],
-				],
-			],
 			[
 				'rel'   	  => 'reason',
 				'privilege'   => 'reason',

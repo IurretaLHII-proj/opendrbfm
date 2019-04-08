@@ -31,9 +31,6 @@ class HintHydrator extends \Zend\Hydrator\ClassMethods
 			'created' 	   => $object->getCreated(),
 			'updated' 	   => $object->getUpdated(),
 			'operation'    => $object->getOperation(),
-			'stageOrder'   => $object->getStage()->getOrder(),
-			//'parents' 	   => new \ZF\Hal\Collection($object->getParents()),
-			'contexts'     => new \ZF\Hal\Collection($object->getContexts()),
 			'reasons'      => new \ZF\Hal\Collection($object->getReasons()),
 		];
     }

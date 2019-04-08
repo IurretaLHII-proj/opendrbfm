@@ -52,7 +52,7 @@ class HintRelation implements
 	protected $user;
 
     /**
-	 * @var HintContextInterface
+	 * @var HintReasonInterface
      * @ORM\ManyToOne(
      *     targetEntity = "MA\Entity\HintReason",
      *     inversedBy   = "relations",
@@ -66,14 +66,14 @@ class HintRelation implements
     protected $source;
 
     /**
-	 * @var HintContextInterface
+	 * @var HintInfluenceInterface
      * @ORM\ManyToOne(
      *     targetEntity = "MA\Entity\HintInfluence",
 	 *     inversedBy   = "relations",
 	 *	   cascade 	 = {"persist"}
      * )
      * @ORM\JoinColumn(
-     *     name = "ctx_id",
+     *     name = "rel_id",
 	 *     referencedColumnName = "id"
      * )
      */
@@ -143,7 +143,7 @@ class HintRelation implements
     /**
      * Get source.
      *
-     * @return HintContextInterface.
+     * @return HintReasonInterface.
      */
     public function getSource()
     {
@@ -153,7 +153,7 @@ class HintRelation implements
     /**
      * Set source.
      *
-     * @param HintContextInterface source the value to set.
+     * @param HintReasonInterface source the value to set.
      * @return Hint.
      */
     public function setSource(HintReasonInterface $source)
@@ -165,7 +165,7 @@ class HintRelation implements
     /**
      * Get relation.
      *
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function getRelation()
     {
@@ -175,7 +175,7 @@ class HintRelation implements
     /**
      * Set relation.
      *
-     * @param HintContextInterface relation the value to set.
+     * @param HintInfluenceInterface relation the value to set.
      * @return Hint.
      */
     public function setRelation(HintInfluenceInterface $relation)

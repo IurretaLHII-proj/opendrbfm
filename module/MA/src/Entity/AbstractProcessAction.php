@@ -12,9 +12,13 @@ use DateTime;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- * 	"process" = "MA\Entity\Action\Process",
- * 	"stage"   = "MA\Entity\Action\Stage",
- * 	"hint"    = "MA\Entity\Action\Hint"
+ * 	"process" 	= "MA\Entity\Action\Process",
+ * 	"stage"   	= "MA\Entity\Action\Stage",
+ * 	"hint"    	= "MA\Entity\Action\Hint",
+ * 	"reason"    = "MA\Entity\Action\HintReason",
+ * 	"influence" = "MA\Entity\Action\HintInfluence",
+ * 	"simulation"= "MA\Entity\Action\Simulation",
+ * 	"note"		= "MA\Entity\Action\Note",
  * })
  */
 abstract class AbstractProcessAction extends AbstractAction

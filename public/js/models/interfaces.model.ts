@@ -63,6 +63,7 @@ interface IMAVersion {
 	id: number,
 	name: string,
 	description: string,
+	state: number,
 	commentCount: number,
 	created: IMADate,
 	_links: IMALinks, 
@@ -148,15 +149,6 @@ interface IMAHintRelation {
 	},
 }
 
-interface IMAHintContextRel {
-	id: number,
-	_links: IMALinks, 
-	_embedded: {
-		stage: IMAStage,
-		hint:  IMAHint,
-	},
-}
-
 interface IMAHintReasonRel {
 	id: number,
 	_links: IMALinks, 
@@ -171,22 +163,6 @@ interface IMAHintInfluenceRel {
 	_links: IMALinks, 
 	_embedded: {
 		reason: IMAHintReasonRel,
-	},
-}
-
-interface IMAHintContext {
-	id: number,
-	commentCount: number, 
-	created: IMADate,
-	_links: IMALinks, 
-	_embedded: {
-		owner: IMAUser,
-		hint: IMAHint,
-		influences: IMANote[],
-		reasons: IMANote[],
-		simulations: IMASimulation[],
-		relations: IMAHintRelation[],
-		relateds: IMAHintRelation[],
 	},
 }
 
@@ -230,7 +206,6 @@ interface IMAHint {
 		type: IMAHintType,
 		operation: IMAOperation,
 		owner: IMAUser,
-		contexts: IMAHintContext[],
 		reasons: IMAHintReason[],
 	},
 }

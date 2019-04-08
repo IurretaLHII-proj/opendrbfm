@@ -97,7 +97,7 @@ class HintRelationController extends \Base\Controller\Js\AbstractActionControlle
 				$em->persist($e);
 				$em->flush();
 				$payload = [
-					'payload' => $this->prepareHalEntity($e, "process/comment/detail/json")
+					'payload' => $this->prepareHalEntity($e, "process/hint/relation/detail/json"),
 				];
 			}
 			else {
@@ -123,7 +123,7 @@ class HintRelationController extends \Base\Controller\Js\AbstractActionControlle
 				['created' => 'DESC']
 			));
 
-		$payload = $this->prepareHalCollection($paginator, 'process/hint/context/detail/json');
+		$payload = $this->prepareHalCollection($paginator, 'process/comment/detail/json');
 
 		return new HalJsonModel([
 			'payload' => $payload,

@@ -314,10 +314,16 @@ App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resourc
 });
 
 App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resource, version) {
-	$scope.version  = version;
-	$scope.values   = JSON.parse(JSON.stringify(version));
-	$scope.errors   = {};
-	$scope.init 	= function() {
+	$scope.stateOptions = [
+		{id:MAVersion.IN_PROGRESS, 	name: "IN PROGRESS"},
+		{id:MAVersion.APROVED,  	name: "APROVED"},
+		{id:MAVersion.CANCELLED, 	name: "CANCELLED"},
+	];
+	$scope.version  	= version;
+	$scope.values   	= JSON.parse(JSON.stringify(version));
+	$scope.values.state	= $scope.values.state.toString();
+	$scope.errors   	= {};
+	$scope.init 		= function() {
 		$scope.materials = [{id:null, name:" --Select Material-- "}];
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
@@ -327,9 +333,9 @@ App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resourc
 			}, 
 			function(err){}
 		);
-		console.log(version,$scope.values);
+		console.log(version, $scope.values);
 	}
-	$scope.save   = function() {
+	$scope.save = function() {
 		var uri = version.id ? version.links.getHref('edit') : version.process.links.getHref('version');
 		console.log(version, $scope.values, uri);
 		var war = $scope._addWarning("Saving...");

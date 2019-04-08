@@ -16,6 +16,21 @@
 			class="invalid-feedback">{[key]}. {[text]}</div>
 	</div>
 	<div class="form-group">
+		<!--<label for="inputName">Status</label>-->
+		<select class="form-control" 
+			class="form-control" 
+			ng-model="values.state"
+	  		ng-class="{'is-invalid': errors.state}"
+		>
+			<option ng-repeat="option in stateOptions" 
+				ng-selected="option.id == values.state" 
+				value="{[option.id]}">{[ option.name ]}</option>
+		</select>
+		<div ng-if="errors.state"
+			ng-repeat="(key, text) in errors.state"
+			class="invalid-feedback">{[key]}. {[text]}</div>
+	</div>
+	<div class="form-group">
 	<!--<label for="inputParents">Material</label>-->
 		<select class="form-control"
 			ng-class="{'is-invalid': errors.material}"
@@ -37,7 +52,7 @@
 			]"
 			ta-text-editor-class="form-height form-control"
 			ng-class="{'is-invalid': errors.description}"
-			placeholder="Description"
+			placeholder="Version description..."
 			class=""
 		>
 		</text-angular>

@@ -46,7 +46,6 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
              'required' => true,
              'attributes' => [ 
                  'class' => 'form-control',
-				 'rows' => 4,
              ],
              'options' => [
                  'label' => 'State',
@@ -139,24 +138,6 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
 					],
 				],
 			],
-			//'when' => [
-			//	'required' => false,
-			//	'validators' => [
-			//		[
-			//			'name' => \Zend\Validator\Callback::class,
-			//		    'options' => [
-			//				'callback' => function($value, $context = []) {
-			//					switch ($context['state']) {
-			//						case \MA\Entity\Hint::STATE_NOT_NECESSARY:
-			//							return true;	
-			//						default:
-			//							return false;
-			//					}
-			//				},
-			//			],	
-			//		],
-			//	],
-			//],
 			'when' => [
 				'required' => true,
 				'validators' => [

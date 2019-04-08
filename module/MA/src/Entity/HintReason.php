@@ -61,7 +61,7 @@ class HintReason implements
 	 *	mappedBy	 = "reason",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
+	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
 	protected $influences;
 
@@ -165,13 +165,21 @@ class HintReason implements
      * Set hint.
      *
      * @param HintInterface hint the value to set.
-     * @return HintContext.
+     * @return HintReason.
      */
     public function setHint(HintInterface $hint)
     {
         $this->hint = $hint;
         return $this;
     }
+
+	/**
+	 * @return ProcessInterface
+	 */
+	public function getProcess()
+	{
+		return $this->getHint()->getProcess();
+	}
     
     /**
      * Get user.
@@ -208,7 +216,7 @@ class HintReason implements
      * Set relations.
      *
      * @param HintRelation[] relations the value to set.
-     * @return HintContext.
+     * @return HintReason.
      */
     public function setRelations($relations)
     {
@@ -342,7 +350,7 @@ class HintReason implements
      * @param HintInfluenceInterface influence the value to set.
      * @return HintReasonInterface.
      */
-    public function removeInfluence(HintContextInterface $influence)
+    public function removeInfluence(HintInfluenceInterface $influence)
     {
 		$this->getInfluences()->removeElement($influence);
         return $this;

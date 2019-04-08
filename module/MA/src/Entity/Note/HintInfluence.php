@@ -45,6 +45,16 @@ class HintInfluence extends \MA\Entity\AbstractNote
     }
 
 	/**
+	 * @inheritDoc
+	 */
+	public function getProcess()
+	{
+		if ($this->getInfluence() !== null) {
+			return $this->getInfluence()->getProcess();
+		}
+	}
+
+	/**
   	 * @inheritDoc
   	 */
   	public function provideLinks()

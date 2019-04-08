@@ -1,7 +1,7 @@
 {% extends 'layout/layout.twig' %}
 
 {% block body %}
-	<div class="col-md-2 d-none d-md-block sidebar sidebar-fixed" style="">
+	<div class="col-md-1 d-none d-md-block sidebar sidebar-fixed" style="">
 		{% block sidebar %}
 		<div class="sidebar-sticky">
 			{{ navigation('navigation').menu()
@@ -14,7 +14,7 @@
 		{% endblock sidebar %}
 	</div>
 
-	<div class="col-md-10 ml-sm-auto px-0 col-sm-12" style="">
+	<div class="col-md-11 ml-sm-auto px-0 col-sm-12" style="">
 		{#<div class="breadcrumb">
 			{{ navigation('navigation').breadcrumbs().setSeparator(" / ").setRenderInvisible(true) | raw }}
 		</div>#}

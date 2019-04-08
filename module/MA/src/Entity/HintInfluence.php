@@ -179,6 +179,14 @@ class HintInfluence implements
 	{
 		return $this->getReason()->getHint();
 	}
+
+	/**
+	 * @return ProcessInterface
+	 */
+	public function getProcess()
+	{
+		return $this->getReason()->getProcess();
+	}
     
     /**
      * Get user.
@@ -215,7 +223,7 @@ class HintInfluence implements
      * Set relations.
      *
      * @param HintRelation[] relations the value to set.
-     * @return HintContext.
+     * @return HintInfluence.
      */
     public function setRelations($relations)
     {
@@ -227,7 +235,7 @@ class HintInfluence implements
      * Add relation.
      *
      * @param HintRelationInterface relation the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function addRelation(HintRelationInterface $relation)
     {
@@ -240,7 +248,7 @@ class HintInfluence implements
      * Add relations.
      *
      * @param HintRelationInterface[] relations the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function addRelations($relations)
     {
@@ -255,7 +263,7 @@ class HintInfluence implements
      * Add relation.
      *
      * @param HintRelationInterface relation the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function removeRelation(HintRelationInterface $relation)
     {
@@ -267,7 +275,7 @@ class HintInfluence implements
      * Add relations.
      *
      * @param HintRelationInterface[] relations the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function removeRelations($relations)
     {
@@ -292,7 +300,7 @@ class HintInfluence implements
      * Set notes.
      *
      * @param Note\HintInfluence[] notes the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function setNotes($notes)
     {
@@ -304,7 +312,7 @@ class HintInfluence implements
      * Add note.
      *
      * @param Note\HintInfluence note the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function addNote(Note\HintInfluence $note)
     {
@@ -318,7 +326,7 @@ class HintInfluence implements
      * Add notes.
      *
      * @param Note\HintInfluence[] notes the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function addNotes($notes)
     {
@@ -333,7 +341,7 @@ class HintInfluence implements
      * Add note.
      *
      * @param Note\HintInfluence note the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function removeNote(Note\HintInfluence $note)
     {
@@ -346,7 +354,7 @@ class HintInfluence implements
      * Add notes.
      *
      * @param Note\HintInfluence[] notes the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function removeNotes($notes)
     {
@@ -371,7 +379,7 @@ class HintInfluence implements
      * Set simulations.
      *
      * @param Simulation[] simulations the value to set.
-     * @return HintContext.
+     * @return HintInfluence.
      */
     public function setSimulations($simulations)
     {
@@ -383,7 +391,7 @@ class HintInfluence implements
      * Add simulations.
      *
      * @param SimulationInterface simulation the value to set.
-     * @return HintContext.
+     * @return HintInfluence.
      */
     public function addSimulation(SimulationInterface $simulation)
     {
@@ -396,7 +404,7 @@ class HintInfluence implements
      * Add simulations.
      *
      * @param SimulationInterface simulation the value to set.
-     * @return HintContext.
+     * @return HintInfluence.
      */
     public function removeSimulation(SimulationInterface $simulation)
     {
@@ -409,7 +417,7 @@ class HintInfluence implements
      * Add simulations.
      *
      * @param SimulationInterface[] simulations the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function addSimulations($simulations)
     {
@@ -424,7 +432,7 @@ class HintInfluence implements
      * Add simulations.
      *
      * @param SimulationInterface[] simulations the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function removeSimulations($simulations)
     {
@@ -438,7 +446,7 @@ class HintInfluence implements
     /**
      * Get comments.
      *
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function getComments()
     {
@@ -449,7 +457,7 @@ class HintInfluence implements
      * Set comments.
      *
      * @param CommentInterface[] comments the value to set.
-     * @return HintContextInterface.
+     * @return HintInfluenceInterface.
      */
     public function setComments($comments)
     {

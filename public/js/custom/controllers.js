@@ -12,6 +12,7 @@ var _stateOptions = [
 	];
 
 App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
+	$scope.locked  = true;
 	$scope.version = null;
 	$scope.current = null;
 	$scope.setVersion = function(version) {
@@ -377,19 +378,25 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		addReasonRel: function(values) {
 			values.relations.push({relation: {reason:{stage:null, hint:null}}, source: {}})
 		},
-		addSimulation: function(values) { values.simulations.push({suggestions: []}) },
+		addSimulation: function(values) { values.simulations.push({
+			suggestions: [],
+			effects: [],
+			preventions: [],
+		}) },
 		addSuggestion: function(values) { values.suggestions.push({}) },
+		addEffect: 	   function(values) { values.effects.push({}) },
+		addPrevention: function(values) { values.preventions.push({}) },
 		addInfluence : function(values) { 
 			values.influences.push({notes:[], relations:[], simulations:[]});
 			this.errors.influences.push({});
 		},
-		rmInfluence: function(values) {
+		/*rmInfluence: function(values) {
 			var index;
-			if (-1 !== (index = this.values.influences.indexOf(values))) {
-				this.values.influences.splice(index, 1);
+			if (-1 !== (index = values.influences.indexOf(values))) {
+				.values.influences.splice(index, 1);
 				this.errors.influences.splice(index, 1);
 			}
-		},
+		},*/
 		init: function(stage) {
 			this.prevStages = this.version.stages.filter(s => {return s.order < stage.order});
 			this.nextStages = this.version.stages.filter(s => {return s.order > stage.order});
