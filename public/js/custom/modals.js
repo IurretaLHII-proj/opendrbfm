@@ -274,6 +274,7 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 });
 
 App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resource, process) {
+	$scope.process = process;
 	$scope.errors  = {};
 	$scope.values  = JSON.parse(JSON.stringify(process));
 	$scope.complexityOptions = [

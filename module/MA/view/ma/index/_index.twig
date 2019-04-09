@@ -3,7 +3,7 @@
 {% block content %}
 
 		<div class="col-md-12" 
-			ng-controller="_CollectionCtrl"
+			ng-controller="CollectionCtrl"
 			ng-init="init({{ json(hal().renderCollection(collection)) | escape }})"
 		>
 
@@ -41,19 +41,20 @@
 							<th>Description</th>
 							<th>Owner</th>
 							<th>Created</th>
-							<th>Actions</th>
+							<th></th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="item in collection.items">
-							<td><a ng-if="item.links.has('image')" href="{[ item.links.getHref()  ]}"><img class="img-responsive img-thumbnail" ng-src="{[ item.links.getHref('image') ]}"/></td></a>
+						<tr ng-repeat="item in collection._embedded.items">
+							<td><a ng-if="item._links.image" href="{[ item._links.self.href  ]}"><img class="img-responsive img-thumbnail" ng-src="{[ item._links.image.href ]}"/></td></a>
 							<td>{[ item.title ]}</td>
 							<td>{[ item.number ]}</td>
 							<td>{[ item.machine ]}</td>
 							<td>{[ item.line ]}</td>
 							<td>{[ item.code ]}</td>
 							<td>{[ item.complexity ]}</td>
-							<td>{[ item.customer.name ]}</td>
+							<td>{[ item._embedded.customer.name ]}</td>
 							<!--<td>{[ item._embedded.customer.code ]}</td>
 							<td>{[ item._embedded.customer.contact ]}</td>
 							<td>{[ item._embedded.customer.phone ]}</td>
@@ -61,20 +62,21 @@
 							<td>{[ item.plant ]}</td>
 							<td>{[ item.pieceNumber ]}</td>
 							<td>{[ item.pieceName ]}</td>
-							<td ng-bind-html="item.body"></td>
+							<td>{[ item.description ]}</td>
 							<td>
-								<a href="{[ item.user.links.getHref() ]}">{[ item.user.name ]}</a>
+								<a href="{[ item._embedded.owner._links.self.href ]}">{[ item._embedded.owner.name ]}</a>
 							</td>
-							<td>{[ item.created | date:"dd MMM yyyy HH:mm" ]}</td>
+							<td>{[ item.created.date*1000 | date:"dd MMM yyyy HH:mm" ]}</td>
 							<td>
-								<div class="btn-group btn-group-sm">
-									<a ng-href="{[ item.links.getHref() ]}" class="btn btn-outline-primary">
+								<div class="btn-group">
+									<a ng-href="{[ item._links.self.href ]}" class="btn btn-sm">
 										<i class="fa fa-eye"></i>
 									</a>
-									<a href="" ng-click="editProcess(item)" class="btn btn-outline-primary">
-										<i class="fa fa-pencil"></i>
-									</a>
-									<a ng-href="{[ item.links.getHref('delete') ]}" class="btn btn-outline-primary" ng-confirm-click>
+								</div>
+							</td>
+							<td>
+								<div class="btn-group">
+									<a ng-href="{[ item._links.delete.href ]}" class="btn btn-sm disabled">
 										<i class="fa fa-trash"></i>
 									</a>
 								</div>

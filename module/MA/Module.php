@@ -58,6 +58,17 @@ class Module
 		return [
 			'invokables' => [
 			],
+			'factories' => [
+				/*Form\SimulationFieldset::class => function($sm) {
+					$filter = $sm->getServiceLocator()
+						->get('InputFilterManager')
+						->get(InputFilter\SimulationInputFilter::class);
+
+					$form = new Form\SimulationFieldset;
+					$form->setInputFilter($filter);
+					return $form;	
+				}*/
+			],
 		];
     }
 
@@ -66,6 +77,13 @@ class Module
 	 */
     public function getInputFilterConfig()
     {
+		return [
+			'invokables' => [
+				InputFilter\SimunaltionInputFilter::class => InputFilter\SimulationInputFilter::class,
+			],
+			'factories' => [
+			],
+		];
     }
 
 	/**
