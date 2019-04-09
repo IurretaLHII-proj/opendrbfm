@@ -42,7 +42,8 @@ class HintReasonController extends \Base\Controller\Js\AbstractActionController
 		$form->bind($e);
 
 		if ($this->getRequest()->isPost()) {
-			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+			$form->setData($data);
 			if ($form->isValid()) {
 
 				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);

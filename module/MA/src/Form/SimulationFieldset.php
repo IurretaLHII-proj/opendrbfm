@@ -8,6 +8,8 @@ use Zend\ServiceManager\ServiceLocatorInterface,
 use Zend\InputFilter\InputFilterProviderInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
+use MA\Entity\Simulation;
+
 class SimulationFieldset extends Fieldset implements 
 	ServiceLocatorAwareInterface, InputFilterProviderInterface
 {
@@ -27,6 +29,51 @@ class SimulationFieldset extends Fieldset implements
                  'label' => 'Id',
              ],
         ], ['priority' => -1]);
+
+        $this->add([
+             'type' => 'Text',
+             'name' => 'who',
+             'required' => true,
+             'attributes' => [ 
+                 'class' => 'form-control',
+				 'rows' => 4,
+             ],
+             'options' => [
+                 'label' => 'Who',
+             ],
+        ], ['priority' => -9]);
+
+        $this->add([
+             'type' => 'Text',
+             'name' => 'when',
+             'required' => true,
+             'attributes' => [ 
+                 'class' => 'form-control',
+				 'rows' => 4,
+             ],
+             'options' => [
+                 'label' => 'When',
+             ],
+        ], ['priority' => -9]);
+
+        $this->add([
+             'type' => 'Select',
+             'name' => 'state',
+             'required' => true,
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'State',
+				 'value_options' => [
+				 	Simulation::STATE_CREATED		=> Simulation::STATE_CREATED,
+				 	Simulation::STATE_NOT_NECESSARY => Simulation::STATE_NOT_NECESSARY,
+				 	Simulation::STATE_IN_PROGRESS 	=> Simulation::STATE_IN_PROGRESS,
+				 	Simulation::STATE_FINISHED 		=> Simulation::STATE_FINISHED,
+				 	Simulation::STATE_CANCELED 		=> Simulation::STATE_CANCELED,
+				 ],
+             ],
+        ], ['priority' => -9]);
 
 		$this->add([
                 'type' => 'Collection',
@@ -87,6 +134,7 @@ class SimulationFieldset extends Fieldset implements
 	public function getInputFilterSpecification()
 	{
 		return [
+			'type' => \MA\InputFilter\SimulationInputFilter::class,
 			'id' => [
 				'required' => false,
 			],

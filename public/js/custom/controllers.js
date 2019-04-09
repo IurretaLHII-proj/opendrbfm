@@ -295,6 +295,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 	/*** Common functions to relation dialogs ***/
 	var extended = {
+		stateOptions: _stateOptions,
 		loadNextHints: function(value) {
 			value.nexts = [{id:null, name:" --Select one-- "}, {id:-1, name:" --Create new-- "}];
 			if (value.source.stage) {
@@ -379,6 +380,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			values.relations.push({relation: {reason:{stage:null, hint:null}}, source: {}})
 		},
 		addSimulation: function(values) { values.simulations.push({
+			state: MASimulation.NOT_NECESSARY.toString(),
 			suggestions: [],
 			effects: [],
 			preventions: [],
@@ -961,6 +963,47 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
 			controller: '_HintTypeModalCtrl',	
 			size: 'lg',
 			resolve: {type: hint} 
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+});
+
+App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
+	$scope.collection = new MACollection();
+
+	$scope.init = function(collection) {
+		collection._embedded.items = collection._embedded.items.map(e => {return MAProcess.fromJSON(e)});
+		$scope.collection.load(collection);
+		console.log(collection, $scope.collection);
+	};
+
+	$scope.more = function() {
+		$resource($scope.collection.links.getHref('next')).get().$promise.then(
+			function(data) {
+				data._embedded.items = data._embedded.items.map(e => {return MAProcess.fromJSON(e)});
+				$scope.collection.load(data);
+			},		
+			function(err) {
+				$scope.errors = err;
+			}
+		);	
+	}
+
+	//FIXME: duplicated
+	$scope.editProcess = function(process) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/process-form.html',
+			controller: '_ProcessModalCtrl',	
+			scope: $scope,
+			size: 'lg',
+			resolve: {process: process,}
 		});
 
 		modal.result.then(
