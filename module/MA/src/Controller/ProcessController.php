@@ -4,6 +4,7 @@ namespace MA\Controller;
 
 use Zend\View\Model\ViewModel,
 	Zend\View\Model\ModelInterface;
+use DOMPDFModule\View\Model\PdfModel;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use BjyAuthorize\Exception\UnAuthorizedException;
 use Doctrine\ORM\Mapping as ORM,
@@ -99,6 +100,22 @@ class ProcessController extends \Base\Controller\AbstractActionController
 		return new ViewModel([
 			'actionsHal' => $this->prepareHalCollection($paginator, 'process/detail/json', ['action' => 'actions']),
 		]);
+	}
+
+	/**
+	 * @return PdfModel
+	 */
+	public function pdfAction()
+	{
+		$e = $this->getEntity();
+
+		$pdf = new PdfModel([
+			'entity' => $e,
+		]);
+        //$pdf->setOption('filename', $e . '-report');		// "pdf" extension is automatically appended
+        $pdf->setOption('paperSize', 'a4');               	// Defaults to "8x11"
+        //$pdf->setOption('paperOrientation', 'landscape'); 	// Defaults to "portrait"
+    	return $pdf;
 	}
 
 	/**

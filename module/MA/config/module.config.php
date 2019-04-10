@@ -43,4 +43,11 @@ return [
 	'translator' => [
 		'locale' => 'es_ES',
 	],
+	'service_manager' => [
+		'factories' => [
+			//Override DOMPDFModule bug 
+			//https://github.com/raykolbe/DOMPDFModule/pull/36/commits/21fd356c8d79c111116555fba0ef94bd24594d95#diff-c1c8ed7a4ddcb50eea2143d9f3f5bc02
+           	'ViewPdfRenderer' => Factory\DOMPDF\ViewPdfRendererFactory::class,
+		],
+	],
 ];

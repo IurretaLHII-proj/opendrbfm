@@ -162,7 +162,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|delete|version|actions',
+						'action' => 'detail|edit|delete|pdf|version|actions',
 					]
 				],
 				'may_terminate' => true,
