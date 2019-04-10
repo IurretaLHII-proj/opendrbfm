@@ -232,6 +232,7 @@ interface IMASimulation {
 	created: IMADate,
 	_embedded: {
 		owner: IMAUser,
+		images: IMAImage[],
 		effects: IMANote[],
 		preventions: IMANote[],
 		suggestions: IMANote[],

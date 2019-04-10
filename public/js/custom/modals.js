@@ -250,6 +250,45 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	$scope.errors  		= {};
 	console.log(simulation, $scope.values);
 
+    var imagePreview = function(img, index) {
+        $scope.values.images[index] = JSON.parse(JSON.stringify(img));
+    }
+
+    $scope.uploadFile = function(ev, entity, index) {
+        var data = new FormData;
+        var file = ev.target.files[0];
+        //var resource = $resource(entity.links.getHref('image'), {}, {
+        var resource = $resource('/process/hint/simulation/image/json', {}, {
+            upload: {
+                method: 'POST',
+                transformRequest: function(data) {
+                    if (data === undefined)
+                      return data;
+                    var fd = new FormData();
+                    angular.forEach(data, function(value, key) {
+                      if (value instanceof FileList) {
+                        if (value.length == 1) fd.append(key, value[0]);
+                        else {
+                          angular.forEach(value, function(file, index) {
+                            fd.append(key + '_' + index, file);
+                          });
+                        }
+                      } else fd.append(key, value);
+                    });
+                    return fd;
+                },
+                headers: {'Content-Type' : undefined}
+            }});
+        resource.upload({'file': file}).$promise.then(
+             function(data) {
+			    imagePreview(new MAImage(data), index);
+             },
+             function(err) {
+				//entity.errors = err.data.errors;
+       		 }
+        );
+    }
+
 	$scope.save = function() {
 		var raw = angular.copy($scope.values);
 		var uri = simulation.id ? 
@@ -454,7 +493,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
         $scope.values.images[index] = JSON.parse(JSON.stringify(img));
     }
 
-    $scope.uploadFile = function(ev, stage, index) {
+    $scope.uploadFile = function(ev, entity, index) {
         var data = new FormData;
         var file = ev.target.files[0];
         var resource = $resource('/process/stage/image/json', {}, {
@@ -483,7 +522,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 			    imagePreview(new MAImage(data), index);
              },
              function(err) {
-				stage.errors = err.data.errors;
+				//entity.errors = err.data.errors;
        		 }
         );
     }

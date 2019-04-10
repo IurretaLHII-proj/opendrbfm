@@ -246,3 +246,9 @@
 .desc p {
 	margin-bottom: 0;
 }
+.stage-img {
+	max-height: 300px;
+}
+.simulation-img {
+	max-width: 100px;
+}

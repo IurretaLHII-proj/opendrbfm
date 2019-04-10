@@ -2,6 +2,23 @@
 	<h3 class="modal-title">{[ simulation.name ]} <small class="text-secondary" ng-if="simulation.id">| edit simulation</small><small class="text-secondary" ng-if="!simulation.id">| new simulation</small></h3>
 </div>
 <div class="modal-body">
+	<div class="form-group">
+		<div class="btn-group">
+			<a href="" class="btn btn-primary disabled">Simulation</a>
+			<a href="" class="btn btn-outline-primary" 
+				ng-click="values.suggestions.push({})">
+				<span class="fa fa-plus"></span> Suggestion
+			</a>
+			<a href="" class="btn btn-outline-primary" 
+				ng-click="values.effects.push({})">
+				<span class="fa fa-plus"></span> Effect
+			</a>
+			<a href="" class="btn btn-outline-primary" 
+				ng-click="values.preventions.push({})">
+				<span class="fa fa-plus"></span> Prevention
+			</a>
+		</div>
+	</div>
 	<div class="form-row">
 		<div class="form-group col-md-4">
 			<!--<label for="inputName">Status</label>-->
@@ -57,20 +74,6 @@
 					class="invalid-feedback">{[key]}. {[text]}</div>
 			</div>
 		</div>
-	</div>
-	<div class="btn-group">
-		<a href="" class="btn btn-outline-primary" 
-			ng-click="values.suggestions.push({})">
-			<span class="fa fa-plus"></span> Suggestion
-		</a>
-		<a href="" class="btn btn-outline-primary" 
-			ng-click="values.effects.push({})">
-			<span class="fa fa-plus"></span> Effect
-		</a>
-		<a href="" class="btn btn-outline-primary" 
-			ng-click="values.preventions.push({})">
-			<span class="fa fa-plus"></span> Prevention
-		</a>
 	</div>
 	<div class="form-group">
 		<div class="form-row" ng-repeat="(i, note) in values.suggestions">
@@ -151,6 +154,60 @@
 					<span class="fa fa-close"></span>
 				</a>
 			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<!--<label for="inputParents">Images</label>-->
+		<div class="d-flex flex-column">
+			<div ng-repeat="(index, image) in values.images" 
+				class="mt-1 mb-1 d-flex flex-fill" 
+				style="
+			">
+				<div style="
+					min-width: 120px;
+					background: lightgray;	
+				">
+					<img ng-if="image.links" ng-src="{[ image.links.getHref() ]}" width=120 height=120 />
+					<img ng-if="!image.links" ng-src="/image/{[image.id]}" width=120 height=120 />
+				</div>
+				<div class="align-self-stretch flex-fill mx-4">
+					<textarea 
+						class="form-control" 
+						style="height:100%;"
+						ng-model="image.description"
+						placeholder="Image description..."
+					></textarea>
+				</div>
+				<div class="align-self-center" style="">
+					<a href="" class="btn btn-default" ng-click="values.images.splice(index, 1)"><span class="fa fa-remove"></span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label 
+			class=""
+			style="
+				padding: .5rem 1rem;
+			    font-size: 1.25rem;
+			    line-height: 1.5;
+			    border-radius: .3rem;
+			    cursor: pointer;
+				color: #fff;
+			    background-color: #007bff;
+			    border-color: #007bff;
+			">
+			<i class="fa fa-file-image-o"></i>
+			<input type="file"
+				file-change="uploadFile"
+				file-entity="simulation"
+				file-index="{[ values.images.length ]}"
+				style="display:none;"
+				/>
+		</label>
+		<div ng-if="errors.file"
+			ng-repeat="(key, text) in errors.file"
+			class="invalid-feedback" style="display:block;">{[key]}. {[text]}
 		</div>
 	</div>
 </div>

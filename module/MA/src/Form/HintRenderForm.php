@@ -61,6 +61,21 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
 
 		$this->add([
                 'type' => 'Collection',
+                'name' => 'images',
+				'options' => [
+					'count' => 0,
+					'allow_add' => true,
+					'target_element' => [
+						'type' => \Image\Form\ImageFieldset::class,
+						'object' => \MA\Entity\Image\ISimulation::class,
+					],
+				],
+            ],
+            ['priority' => -10]
+		);
+
+		$this->add([
+                'type' => 'Collection',
                 'name' => 'suggestions',
 				'options' => [
 					'count' => 0,

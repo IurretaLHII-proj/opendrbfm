@@ -154,7 +154,10 @@ return [
 		],
 	],
 	Service\ImageService::class => [
-		'entities' => [Entity\Image\IStage::class],
+		'entities' => [
+			Entity\Image\IStage::class,
+			Entity\Image\ISimulation::class,
+		],
 	],
 	Service\NoteService::class => [
 		'entities'  => [

@@ -83,7 +83,7 @@ class MAImage {
 	}
 
 	id: number;
-	stage: MAStage;
+	source: any;
 	name:string;
 	type:string;
 	size:string;
@@ -397,7 +397,7 @@ class MAStage {
 	}
 
 	addImage(obj:MAImage) {
-		obj.stage = this;
+		obj.source = this;
 		this.images.push(obj);
 	}
 
@@ -1050,6 +1050,7 @@ class MASimulation {
 		this.effects = [];
 		this.suggestions = [];
 		this.preventions = [];
+		this.images	= [];
 		this.comments = new MACollection();
 		this.created = new Date;
 	}
@@ -1066,6 +1067,10 @@ class MASimulation {
 			this.effects = [];
 			this.suggestions = [];
 			this.preventions = [];
+			this.images = [];
+			for (var i=0; i < obj._embedded.images.length; i++) {
+				this.addImage(new MAImage(obj._embedded.images[i]));
+			}
 			for (var i=0; i < obj._embedded.effects.length; i++) {
 				this.addEffect(MANote.fromJSON(obj._embedded.effects[i]));	
 			}
@@ -1085,6 +1090,7 @@ class MASimulation {
 			state: this.state,
 			who: this.who,
 			when: this.when ? this.when.toString() : null,
+			images: this.images,
 			effects: this.effects,
 			preventions: this.preventions,
 			suggestions: this.suggestions,
@@ -1095,6 +1101,10 @@ class MASimulation {
 		return this.influence.name;
 	}
 
+	addImage(obj:MAImage) {
+		obj.source = this;
+		this.images.push(obj);
+	}
 	addEffect(obj:MANote) {
 		obj.setSource(this);
 		this.effects.push(obj);
@@ -1135,6 +1145,7 @@ class MASimulation {
 	user: MAUser;
 	who: string;
 	when: Date; 
+	images: MAImage[];
 	effect: string;
 	prevention: string;
 	effects: MANote[];

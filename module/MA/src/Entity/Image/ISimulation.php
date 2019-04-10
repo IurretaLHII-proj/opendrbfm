@@ -8,11 +8,11 @@ use Doctrine\ORM\Mapping as ORM,
 /**
  * @ORM\Entity()
  */
-class IStage extends \MA\Entity\AbstractImage
+class ISimulation extends \MA\Entity\AbstractImage
 {
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="MA\Entity\Stage",
+     *     targetEntity="MA\Entity\Simulation",
      *     inversedBy="images"
      * )
      * @ORM\JoinColumn(
@@ -26,7 +26,7 @@ class IStage extends \MA\Entity\AbstractImage
     /**
      * Get source.
      *
-     * @return Stage.
+     * @return Simulation.
      */
     public function getSource()
     {
@@ -36,10 +36,10 @@ class IStage extends \MA\Entity\AbstractImage
     /**
      * Set source.
      *
-     * @param Stage|null source the value to set.
+     * @param Simulation|null source the value to set.
      * @return vartype.
      */
-    public function setSource(\MA\Entity\Stage $source = null)
+    public function setSource(\MA\Entity\Simulation $source = null)
     {
         $this->source = $source;
         return $this;
