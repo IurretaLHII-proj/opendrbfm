@@ -661,7 +661,7 @@ class Process implements
 	 */
 	public function __toString()
 	{
-		return substr($this->getTitle(), 0, 15) . "...";
+		return $this->getTitle();
 	}
 
 	/**
@@ -692,6 +692,15 @@ class Process implements
 				'route' => [
 				    'name'    => 'process/detail',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'pdf',
+				'privilege'   => 'pdf',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/detail',
+				    'params'  => ['action' => 'pdf', 'id' => $this->getId()],
 				],
 			],
 			[
