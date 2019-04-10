@@ -717,12 +717,22 @@ return [
 						'options' => [
 							'route' => '/simulation',
 							'defaults' => [
-								'controller' => Controller\SimulationController::class,
+								'controller' => Controller\Js\SimulationController::class,
 								'action' => 'index' 
 							],
 						],
 						'may_terminate' => true,
 						'child_routes' => [
+							'image' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/image/json',
+									'defaults' => [
+										'action' => 'image',
+										'controller' => Controller\Js\SimulationController::class,
+									],
+								],
+							],
 							'detail' => [
 								'type' => 'Segment',
 								'options' => [

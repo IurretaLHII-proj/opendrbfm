@@ -189,6 +189,13 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 0,
 		],
+		'MA\Entity\Image\ISimulation' => [
+			'route_name' => 'image/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 0,
+		],
 		'MA\Entity\Action\Process' => [
 			'route_name' => 'process/detail', //FIXME
 			'route_identifier_name' => 'id',

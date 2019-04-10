@@ -8,7 +8,14 @@ use Doctrine\ORM\Mapping as ORM,
 use DateTime;
 
 /**
- * @ORM\MappedSuperclass()
+ * @ORM\Entity()
+ * @ORM\Table(name="image")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({
+ * 	"stage" 	 = "MA\Entity\Image\IStage",
+ * 	"simulation" = "MA\Entity\Image\ISimulation",
+ * })
  */
 abstract class AbstractImage extends \Image\Entity\Image
 {

@@ -58,6 +58,19 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		console.log($scope.process);
 	}
 
+	$scope.isClosed = function(item) {
+		if (item instanceof MAHintReason) {
+			return item.closed;
+		}
+		else if (item instanceof MAHintInfluence) {
+			return item.closed || $scope.isClosed(item.reason);
+		}	
+		else if (item instanceof MASimulation) {
+			return item.closed || $scope.isClosed(item.influence);
+		}	
+		return false;
+	}
+
 	$scope.cloneVersion = function(version) {
 		var war = $scope._addWarning("Cloning version..");
 		$resource(version.links.getHref('clone')).get().$promise.then(

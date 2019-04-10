@@ -70,6 +70,7 @@ class VersionController extends \Base\Controller\Js\AbstractActionController
 						}
 						foreach ($infl->getSimulations() as $sim) {
 							$sm = clone $sim;
+							foreach ($sim->getImages() as $img) $sm->addImage(clone $img);
 							foreach ($sim->getSuggestions() as $note) $sm->addSuggestion(clone $note);
 							foreach ($sim->getEffects() as $note) 	$sm->addEffect(clone $note);
 							foreach ($sim->getPreventions() as $note) $sm->addPrevention(clone $note);

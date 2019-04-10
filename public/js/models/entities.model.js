@@ -319,7 +319,7 @@ var MAStage = /** @class */ (function () {
         this.hints.push(obj);
     };
     MAStage.prototype.addImage = function (obj) {
-        obj.stage = this;
+        obj.source = this;
         this.images.push(obj);
     };
     MAStage.prototype.isHintsLoaded = function () {
@@ -824,6 +824,7 @@ var MASimulation = /** @class */ (function () {
         this.effects = [];
         this.suggestions = [];
         this.preventions = [];
+        this.images = [];
         this.comments = new MACollection();
         this.created = new Date;
     }
@@ -844,6 +845,10 @@ var MASimulation = /** @class */ (function () {
             this.effects = [];
             this.suggestions = [];
             this.preventions = [];
+            this.images = [];
+            for (var i = 0; i < obj._embedded.images.length; i++) {
+                this.addImage(new MAImage(obj._embedded.images[i]));
+            }
             for (var i = 0; i < obj._embedded.effects.length; i++) {
                 this.addEffect(MANote.fromJSON(obj._embedded.effects[i]));
             }
@@ -862,6 +867,7 @@ var MASimulation = /** @class */ (function () {
             state: this.state,
             who: this.who,
             when: this.when ? this.when.toString() : null,
+            images: this.images,
             effects: this.effects,
             preventions: this.preventions,
             suggestions: this.suggestions,
@@ -874,6 +880,10 @@ var MASimulation = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    MASimulation.prototype.addImage = function (obj) {
+        obj.source = this;
+        this.images.push(obj);
+    };
     MASimulation.prototype.addEffect = function (obj) {
         obj.setSource(this);
         this.effects.push(obj);

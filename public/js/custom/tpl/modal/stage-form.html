@@ -68,8 +68,8 @@
 					min-width: 120px;
 					background: lightgray;	
 				">
-					<img ng-if="image._links" ng-src="{[ image._links.self.href ]}" width=120 height=120 />
-					<img ng-if="!image._links" ng-src="/image/{[image.id]}" width=120 height=120 />
+					<img ng-if="image.links" ng-src="{[ image.links.getHref() ]}" width=120 height=120 />
+					<img ng-if="!image.links" ng-src="/image/{[image.id]}" width=120 height=120 />
 				</div>
 				<div class="align-self-stretch flex-fill mx-4">
 					<textarea 

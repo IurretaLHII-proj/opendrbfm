@@ -50,9 +50,9 @@
 					<a href=""
 					   class="btn btn-sm disabled" 
 					   ng-class="{
-					   	'btn-outline-success':v.state > 0,
-					   	'btn-outline-dark':   v.state == 0,
-					   	'btn-outline-danger': v.state < 0
+					   	'btn-success':v.state > 0,
+					   	'btn-dark':   v.state == 0,
+					   	'btn-danger': v.state < 0
 					   }"
 					   ng-switch="v.state">
 						<span ng-switch-when="1">Aproved</span>
@@ -178,10 +178,14 @@
 							</a>
 						</td>
 					</tr>
+
 					<tr ng-repeat-start="reason in hint.reasons"
 						ng-class-odd="'odd'" ng-class-even="'even'"
 						class="reason">
-						<td rowspan="{[reason.getSimulations().length*2 + reason.influences.length*2 + 1]}" colspan="2" ng-class="{'ng-hide':reason.closed}">
+						<td rowspan="{[reason.getSimulations().length*2+reason.influences.length*2+1]}"
+							colspan="2" 
+							ng-class="{'ng-hide':isClosed(reason)}"
+						>
 							<ul class="m-0">
 								<li ng-repeat="r in reason.relations" class="my-1">
 									<div class="small text-muted"><a href="" ng-click="setCurrent(r.relation.stage)">{[ r.relation.stage.name ]}</a>. {[ r.relation.hint.operation.longName ]}</div>
@@ -211,36 +215,19 @@
 								</li>
 							</ul>
 						</td>
-						<!--
-						<td class="bg-white text-center py-0 plus">
-							<a href="" ng-class="{disabled:version.isFirst(ctx.hint.stage)}" ng-click="addRelated(ctx)" class="btn btn-sm">
-								<span class="fa fa-caret-left"></span>
-							</a>
-						</td>
-						<td class="bg-white text-center py-0 plus">
-							<a href="" ng-click="addReason(reason)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
-						</td>
-						<td colspan="6" class="text-center py-0 plus">
-						</td>
-						<td class="bg-white text-center py-0 plus">
-							<a href="" ng-click="addInfluence(ctx)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
-						</td>
-						<td class="bg-white text-center py-0 plus">
-							<a href="" ng-class="{disabled:version.isLast(ctx.hint.stage)}" ng-click="addRelation(ctx)" class="btn btn-sm">
-								<span class="fa fa-caret-right"></span>
-							</a>
-						</td>
-						-->
 						<td colspan="6" class="text-center p-0 plus" ng-class="{'ng-hide':reason.closed}">
 							<a href="" ng-click="addHintInfluence(reason)" class="btn btn-sm">
 								<i class="fa fa-plus"></i>
 							</a>
 						</td>
 					</tr>
+
 					<tr ng-repeat-start="infl in reason.influences"
 						ng-class-odd="'odd'" ng-class-even="'even'"
 					   	class="influence">
-						<td rowspan="{[infl.simulations.length*2 + 1]}" colspan="2" ng-class="{'ng-hide':infl.closed || reason.closed}">
+						<td rowspan="{[infl.simulations.length*2 + 1]}" 
+							colspan="2" 
+							ng-class="{'ng-hide':isClosed(infl)}">
 							<ul class="m-0">
 								<li ng-repeat="r in infl.relations" class="my-1">
 									<div class="small text-muted"><a href="" ng-click="setCurrent(r.source.stage)">{[ r.source.stage.name ]}</a>. {[ r.source.hint.operation.longName ]}</div>
@@ -270,28 +257,18 @@
 								</li>
 							</ul>
 						</td>
-						<td colspan="4" class="text-center p-0 plus" ng-class="{'ng-hide':infl.closed || reason.closed}">
+						<td colspan="4" class="text-center p-0 plus" 
+							ng-class="{'ng-hide':isClosed(infl)}">
 							<a href="" ng-click="addSimulation(infl)" class="btn btn-sm">
 								<i class="fa fa-plus"></i>
 							</a>
 						</td>
 					</tr>
 
-					<!--<tr ng-repeat-start="s in infl.simulations">
-						<td class="bg-white text-center p-0 plus">
-							<a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
-						</td>
-						<td class="bg-white p-0 text-center plus">
-							<a href="" ng-click="addEffect(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
-						</td>
-						<td class="bg-white p-0 text-center plus">
-							<a href="" ng-click="addPrevention(s)" class="btn btn-sm"><span class="fa fa-plus"></span></a>
-						</td>
-					</tr>-->
 					<tr ng-repeat-start="s in infl.simulations"
 						ng-class-odd="'odd'" ng-class-even="'even'"
 					   	class="simulation">
-						<td ng-class="{'ng-hide':infl.closed || reason.closed || s.closed}">
+						<td ng-class="{'ng-hide':isClosed(s)}">
 							<ul class="m-0">
 								<li ng-repeat="note in s.suggestions" class="my-1">
 									<div class="desc" ng-bind-html="note.text"></div>
@@ -306,7 +283,7 @@
 								</li>
 							</ul>
 						</td>
-						<td class="text-center" ng-switch="s.state" ng-class="{'ng-hide':infl.closed || reason.closed || s.closed}">
+						<td class="text-center" ng-switch="s.state" ng-class="{'ng-hide':isClosed(s)}">
 							<div class="bg-light p-2 rounded" ng-switch-when="-1">Not necessary</div>
 							<div class="bg-danger text-light p-2 rounded" ng-switch-when="-2">Canceled</div>
 							<div class="bg-dark text-light p-2 rounded" ng-switch-when="1">In progress</div>
@@ -316,8 +293,21 @@
 								<p class="my-1 text-center">{[ s.who ]}</p>
 								<span ng-if="s.when"class="small text-muted text-center">{[ s.when | date:"dd MMMyy"]}</span>
 							</div>
+							<div ng-if="s.images.length" 
+								 class="text-center"
+							>
+							<a ng-href="{[ img.links.getHref() ]}" 
+								ng-repeat="img in s.images" 
+								target="_blank"
+								class="">
+									<img ng-src="{[ img.links.getHref() ]}" 
+									alt="{[ img.description ]}" 
+									title="{[ img.description ]}" 
+									class="img-thumbnail my-1 border img-responsive simulation-img"/>
+								</a>
+							</div>
 						</td>
-						<td class="" ng-class="{'ng-hide':infl.closed || reason.closed || s.closed}">
+						<td class="" ng-class="{'ng-hide':isClosed(s)}">
 							<ul class="m-0">
 								<li ng-repeat="note in s.effects" class="my-1">
 									<div class="desc" ng-bind-html="note.text"></div>
@@ -332,7 +322,7 @@
 								</li>
 							</ul>
 						</td>
-						<td class="" ng-class="{'ng-hide':infl.closed || reason.closed || s.closed}">
+						<td class="" ng-class="{'ng-hide':isClosed(s)}">
 							<ul class="m-0">
 								<li ng-repeat="note in s.preventions" class="my-1">
 									<div class="desc" ng-bind-html="note.text"></div>
@@ -348,58 +338,126 @@
 							</ul>
 						</td>
 					</tr>
+
 					<tr ng-repeat-end
 						ng-class-odd="'odd'" ng-class-even="'even'"
 					   	class="simulation">
-						<td colspan="4" class="p-0 info" ng-class="{'ng-hide':infl.closed || reason.closed}">
+						<td colspan="4" class="p-0 info" ng-class="{'ng-hide':isClosed(s.influence)}">
 							<div class="d-flex">
 								<div class="btn-group btn-group-sm">
-									<a href="" ng-click="addSuggestion(s)" class="btn btn-sm"><span class="fa fa-plus"></span> sugg</a>
-									<a href="" ng-click="addEffect(s)" class="btn btn-sm"><span class="fa fa-plus"> eff</span></a>
-									<a href="" ng-click="addPrevention(s)" class="btn btn-sm"><span class="fa fa-plus"> prev</span></a>
-									<a href="" ng-click="addComment(s)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ s.commentCount ]}</a>
-									<a href="" ng-click="editSimulation(s)" class="btn btn-sm"><i class="fa fa-pencil"></i></a>
-									<a href="" ng-confirm-click confirmed-click="deleteSimulation(s)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
+									<a href="" ng-click="addSuggestion(s)" 
+										ng-class="{disabled:s.closed}"
+										class="btn btn-sm">
+										<span class="fa fa-plus"></span> sugg
+									</a>
+									<a href="" ng-click="addEffect(s)" 
+										ng-class="{disabled:s.closed}"
+										class="btn btn-sm">
+										<span class="fa fa-plus"> eff</span>
+									</a>
+									<a href="" ng-click="addPrevention(s)" 
+										ng-class="{disabled:s.closed}"
+										class="btn btn-sm">
+										<span class="fa fa-plus"> prev</span>
+									</a>
+									<a href="" ng-click="addComment(s)" 
+										ng-class="{disabled:s.closed}"
+										class="btn btn-sm">
+										<i class="fa fa-comment"></i> {[ s.commentCount ]}
+									</a>
+									<a href="" ng-click="editSimulation(s)" 
+										ng-class="{disabled:s.closed}"
+										class="btn btn-sm">
+										<i class="fa fa-pencil"></i>
+									</a>
+									<a href="" ng-confirm-click confirmed-click="deleteSimulation(s)" 
+										ng-class="{disabled:s.closed}"
+										class="btn btn-sm">
+											<i class="fa fa-trash"></i>
+									</a>
 								</div>
 								<div class="small ml-auto text-muted align-self-center">
 									<a href="{[ s.user.links.getHref() ]}" class="">{[ s.user.name ]}</a>. {[ s.created | date:"dd MMMyy HH:mm" ]}
-									<a href="" ng-click="s.closed = !s.closed" class="px-1"><i class="fa" ng-class="{true:'fa-chevron-up', false:'fa-chevron-down'}[s.closed == true]"></i></a>
+									<a href="" ng-click="s.closed = !s.closed" class="px-1">
+										<i class="text-info fa" ng-class="{true:'fa-plus', false:'fa-minus'}[s.closed == true]"></i>
+									</a>
 								</div>
 							</div>
 						</td>
 					</tr>
+
 					<tr ng-repeat-end
 						ng-class-odd="'odd'" ng-class-even="'even'"
 					   	class="influence">
-						<td colspan="6" class="p-0 info" ng-class="{'ng-hide':reason.closed}">
+						<td colspan="6" class="p-0 info" ng-class="{'ng-hide':isClosed(infl.reason)}">
 							<div class="d-flex">
 								<div class="btn-group btn-group-sm">
-									<a href="" ng-click="addInfluence(infl)" class="btn btn-sm"><i class="fa fa-plus"></i> note</a>
-									<a href="" ng-click="addInfluenceRelation(infl)" class="btn btn-sm" ng-class="{disabled:version.isLast(infl.hint.stage)}"><i class="fa fa-chevron-right"></i> next</a>
-									<a href="" ng-click="addComment(infl)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ infl.commentCount ]}</a>
-									<a href="" ng-confirm-click confirmed-click="deleteHintInfluence(infl)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
+									<a href="" ng-click="addInfluence(infl)" 
+										ng-class="{disabled:infl.closed}"
+										class="btn btn-sm">
+										<i class="fa fa-plus"></i> note
+									</a>
+									<a href="" ng-click="addInfluenceRelation(infl)"
+								   		class="btn btn-sm" 
+										ng-class="{disabled:version.isLast(infl.hint.stage)||infl.closed}"
+										>
+										<i class="fa fa-chevron-right"></i> next
+									</a>
+									<a href="" ng-click="addComment(infl)"
+										ng-class="{disabled:infl.closed}"
+								   		class="btn btn-sm">
+										<i class="fa fa-comment"></i> {[ infl.commentCount ]}
+									</a>
+									<a href="" ng-confirm-click 
+										confirmed-click="deleteHintInfluence(infl)" 
+										ng-class="{disabled:infl.closed}"
+										class="btn btn-sm">
+										<i class="fa fa-trash"></i>
+									</a>
 								</div>
 								<div class="small ml-auto text-muted align-self-center">
 									<a href="{[ infl.user.links.getHref() ]}" class="">{[ infl.user.name ]}</a>. {[ infl.created | date:"dd MMMyy HH:mm" ]}
-									<a href="" ng-click="infl.closed = !infl.closed" class="px-1"><i class="fa" ng-class="{true:'fa-chevron-up', false:'fa-chevron-down'}[infl.closed == true]"></i></a>
+									<a href="" ng-click="infl.closed = !infl.closed" class="px-1">
+										<i class=" text-info fa" ng-class="{true:'fa-plus', false:'fa-minus'}[infl.closed == true]"></i>
+									</a>
 								</div>
 							</div>
 						</td>
 					</tr>
+
 					<tr ng-repeat-end 
 						ng-class-odd="'odd'" ng-class-even="'even'"
 						class="reason">
 						<td colspan="8" class="p-0 info">
 							<div class="d-flex">
 								<div class="btn-group btn-group-sm">
-									<a href="" ng-click="addReason(reason)" class="btn btn-sm"><i class="fa fa-plus"></i> note</a>
-									<a href="" ng-click="addReasonRelation(reason)" class="btn btn-sm" ng-class="{disabled:version.isFirst(reason.hint.stage)}"><i class="fa fa-chevron-left"></i> prev</a>
-									<a href="" ng-click="addComment(reason)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ reason.commentCount ]}</a>
-									<a href="" ng-confirm-click confirmed-click="deleteHintReason(reason)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
+									<a href="" ng-click="addReason(reason)"
+										ng-class="{disabled:reason.closed}"
+								   		class="btn btn-sm">
+										<i class="fa fa-plus"></i> note
+									</a>
+									<a href="" ng-click="addReasonRelation(reason)" 
+										class="btn btn-sm" 
+										ng-class="{disabled:version.isFirst(reason.hint.stage)||reason.closed}">
+										<i class="fa fa-chevron-left"></i> prev
+									</a>
+									<a href="" ng-click="addComment(reason)"
+										ng-class="{disabled:reason.closed}"
+										class="btn btn-sm">
+										<i class="fa fa-comment"></i> {[ reason.commentCount ]}
+									</a>
+									<a href="" ng-confirm-click 
+										confirmed-click="deleteHintReason(reason)" 
+										ng-class="{disabled:reason.closed}"
+										class="btn btn-sm">
+										<i class="fa fa-trash"></i>
+									</a>
 								</div>
 								<div class="small ml-auto text-muted align-self-center">
 									<a href="{[ reason.user.links.getHref() ]}" class="">{[ reason.user.name ]}</a>. {[ reason.created | date:"dd MMMyy HH:mm" ]}
-									<a href="" ng-click="reason.closed = !reason.closed" class="px-1"><i class="fa" ng-class="{true:'fa-chevron-up', false:'fa-chevron-down'}[reason.closed == true]"></i></a>
+									<a href="" ng-click="reason.closed = !reason.closed" class="px-1">
+										<i class="text-info fa" ng-class="{true:'fa-plus', false:'fa-minus'}[reason.closed == true]"></i>
+									</a>
 								</div>
 							</div>
 						</td>
@@ -415,7 +473,7 @@
 									<a href="" ng-click="editHint(hint)" class="btn btn-sm"><i class="fa fa-pencil"></i></a>
 									<a href="" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
 								</div>
-								<div class="small ml-auto text-muted align-self-center">
+								<div class="small ml-auto text-muted align-self-center pr-1">
 									<a href="{[ hint.user.links.getHref() ]}" class="">{[ hint.user.name ]}</a>. {[ hint.created | date:"dd MMMyy HH:mm" ]}
 								</div>
 							</div>
@@ -437,9 +495,6 @@
 	li.nav-link.active {
 		margin-bottom: -1px;
 		border-bottom: 1px solid white;
-	}
-	.stage-img {
-		max-height:300px;
 	}
 	table {
 	}

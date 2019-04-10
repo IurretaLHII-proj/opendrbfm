@@ -146,6 +146,6 @@ return [
 		'repository' => Entity\Simulation::class,
 	],
 	Controller\ImageController::class => [
-		'repository' => Entity\Image\IStage::class,
+		'repository' => Entity\AbstractImage::class,
 	],
 ];

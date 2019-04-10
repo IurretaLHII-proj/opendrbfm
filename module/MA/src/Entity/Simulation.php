@@ -136,6 +136,17 @@ class Simulation implements
 	protected $prevention;
 
 	/**
+	 * @var Image\ISimulation[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Image\ISimulation",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"persist", "remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $images;
+
+	/**
 	 * @var ActionInterface[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Simulation",
@@ -186,6 +197,7 @@ class Simulation implements
 		$this->effects     = new ArrayCollection;
 		$this->suggestions = new ArrayCollection;
 		$this->preventions = new ArrayCollection;
+		$this->images      = new ArrayCollection;
 		$this->actions     = new ArrayCollection;
 	}
     
@@ -350,6 +362,84 @@ class Simulation implements
     public function setInfluence(HintInfluenceInterface $influence)
     {
         $this->influence = $influence;
+        return $this;
+    }
+    
+    /**
+     * Get images.
+     *
+     * @return Image\ImageInterface[].
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+    
+    /**
+     * Add image.
+     *
+     * @param Image\ISimulation image the value to set.
+     * @return Simulation.
+     */
+    public function addImage(Image\ISimulation $image)
+    {
+		$image->setSource($this);
+		$this->getImages()->add($image);
+        return $this;
+    }
+    
+    /**
+     * Add images.
+     *
+     * @param Image\ISimulation[] images the value to set.
+     * @return Simulation.
+     */
+    public function addImages($images)
+    {
+		foreach ($images as $image) {
+			$this->addImage($image);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Add image.
+     *
+     * @param Image\ISimulation image the value to set.
+     * @return Simulation.
+     */
+    public function removeImage(Image\ISimulation $image)
+    {
+		$image->setSource();
+		$this->getImages()->removeElement($image);
+        return $this;
+    }
+    
+    /**
+     * Add images.
+     *
+     * @param Image\ISimulation[] images the value to set.
+     * @return Simulation.
+     */
+    public function removeImages($images)
+    {
+		foreach ($images as $image) {
+			$this->removeImage($image);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Set images.
+     *
+     * @param Image\ImageInterface[] images the value to set.
+     * @return SimulationInterface.
+     */
+    public function setImages($images)
+    {
+        $this->images = $images;
         return $this;
     }
 
@@ -797,6 +887,7 @@ class Simulation implements
 			'effect'	   => $this->getEffect(),
 			'prevention'   => $this->getPrevention(),
 			'commentCount' => $this->getCommentCount(),
+			'images'  	   => new \ZF\Hal\Collection($this->getImages()),
 			'effects' 	   => new \ZF\Hal\Collection($this->getEffects()),
 			'suggestions'  => new \ZF\Hal\Collection($this->getSuggestions()),
 			'preventions'  => new \ZF\Hal\Collection($this->getPreventions()),
@@ -811,6 +902,7 @@ class Simulation implements
 		$this->id 		    = null;
 		$this->commentCount = 0;
 		$this->comments     = new ArrayCollection;
+		$this->images       = new ArrayCollection;
 		$this->effects      = new ArrayCollection;
 		$this->suggestions  = new ArrayCollection;
 		$this->preventions  = new ArrayCollection;
@@ -856,6 +948,15 @@ class Simulation implements
 				'route' => [
 				    'name'    => 'process/hint/simulation/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'image',
+				'privilege'   => 'image',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/simulation/image',
+				    'params'  => ['action' => 'image'],
 				],
 			],
 			[
