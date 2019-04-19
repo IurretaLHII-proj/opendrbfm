@@ -196,7 +196,21 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 0,
 		],
+		'MA\Entity\Action\Note' => [
+			'route_name' => 'process/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
 		'MA\Entity\Action\Process' => [
+			'route_name' => 'process/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Action\Version' => [
 			'route_name' => 'process/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
@@ -211,6 +225,27 @@ return [
 			'max_depth' => 1,
 		],
 		'MA\Entity\Action\Hint' => [
+			'route_name' => 'process/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Action\HintReason' => [
+			'route_name' => 'process/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Action\HintInfluence' => [
+			'route_name' => 'process/detail', //FIXME
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
+		'MA\Entity\Action\Simulation' => [
 			'route_name' => 'process/detail', //FIXME
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',

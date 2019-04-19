@@ -26,12 +26,12 @@ class StageService extends AbstractActionService
 	{
 		foreach ($source->getImages()->getInsertDiff() as $image) {
 			if (!isset($diff['insert'])) $diff['insert'] = [];
-			$diff['insert'][] = $image->jsonSerialize();
+			$diff['insert'][] = $this->relationChangeDesc($image);
 		}
 
 		foreach ($source->getImages()->getDeleteDiff() as $image) {
 			if (!isset($diff['delete'])) $diff['delete'] = [];
-			$diff['delete'][] = $image->jsonSerialize();
+			$diff['delete'][] = $this->relationChangeDesc($image);
 		}
 
 		if (isset($diff)) {
@@ -41,18 +41,19 @@ class StageService extends AbstractActionService
 
 		foreach ($source->getOperations()->getInsertDiff() as $operation) {
 			if (!isset($diff['insert'])) $diff['insert'] = [];
-			$diff['insert'][] = $operation->jsonSerialize();
+			$diff['insert'][] = $this->relationChangeDesc($operation);
 		}
 
 		foreach ($source->getOperations()->getDeleteDiff() as $operation) {
 			if (!isset($diff['delete'])) $diff['delete'] = [];
-			$diff['delete'][] = $operation->jsonSerialize();
+			$diff['delete'][] = $this->relationChangeDesc($operation);
 		}
 
 		if (isset($diff)) {
 			$changeSet['operations'] = $diff;
 			unset($diff);
 		}
+
 		return $changeSet;
 	/*
 		elseif ($source instanceof \MA\Entity\HintInterface) {

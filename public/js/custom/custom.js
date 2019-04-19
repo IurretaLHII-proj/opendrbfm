@@ -133,6 +133,15 @@ App.controller('MainCtrl', function($scope, $timeout) {
 		errors: [],
 		warnings: [],
 	};
+
+	$scope.isNote = function(item) { return item instanceof MANote; }
+	$scope.isProcess = function(item) { return item instanceof MAProcess; }
+	$scope.isVersion = function(item) { return item instanceof MAVersion; }
+	$scope.isStage = function(item) { return item instanceof MAStage; }
+	$scope.isHint = function(item) { return item instanceof MAHint; }
+	$scope.isHintReason = function(item) { return item instanceof MAHintReason; }
+	$scope.isHintInfluence = function(item) { return item instanceof MAHintInfluence; }
+	$scope.isSimulation = function(item) { return item instanceof MASimulation; }
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {

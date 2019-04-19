@@ -292,6 +292,7 @@ abstract class AbstractNote implements
 		return [
 			'id'		   => $this->getId(),
 			'owner'	   	   => $this->getUser(),
+			'class'		   => static::class,
 			'text'		   => $this->getText(),
 			'commentCount' => $this->getCommentCount(),
 			'created'	   => $this->getCreated(),

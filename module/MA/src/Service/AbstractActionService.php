@@ -79,6 +79,43 @@ abstract class AbstractActionService extends AbstractService
 	}
 
 	/**
+	 * @var \ZF\Hal\Plugin\Hal
+	 */
+	protected $hal;
+
+	public function getHal()
+	{
+		if ($this->hal === null) {
+			$this->hal = $this->getServiceLocator()->get('ViewHelperManager')->get('hal');
+		}
+
+		return $this->hal;
+	}
+
+	/**
+	 * @param mixed $source
+	 * @return array
+	 */
+	protected function relationChangeDesc($source) 
+	{
+		$hal = $this->getHal();	
+		$map = $hal->getMetadataMap();
+
+		if (!$map->has($source)) {
+			throw new \InvalidArgumentException(sprintf("%s entity not defined in hal metedataMap",
+				get_class($source)));
+		}
+
+		$links = $hal->fromResource($hal->createEntityFromMetadata($source, $map->get($source)));
+
+		return [
+			'id'   => $source->getId(),
+			'name' => (string) $source,
+			'href' => $links['self']['href'],
+		];
+	}
+
+	/**
 	 * @param mixed $source
 	 * @param array $changeSet
 	 * @return array

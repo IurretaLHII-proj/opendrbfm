@@ -90,7 +90,7 @@ class UserController extends \Base\Controller\AbstractActionController
 				['created' => 'DESC']
 			);
 
-		$paginator = $this->getPaginator($collection);
+		$paginator = $this->getPaginator($collection, 20);
 		return new ViewModel([
 			'actionsHal' => $this->prepareHalCollection($paginator, 'user/detail/json', ['action' => 'actions']),
 		]);

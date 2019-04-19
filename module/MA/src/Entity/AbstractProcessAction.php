@@ -58,4 +58,14 @@ abstract class AbstractProcessAction extends AbstractAction
     {
         return $this->process;
     }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function jsonSerialize()
+	{
+		$json = parent::jsonSerialize();
+		$json['process'] = $this->getProcess();
+		return $json;
+	}
 }

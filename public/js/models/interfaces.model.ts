@@ -23,7 +23,22 @@ interface IMAImage {
 	type:string;
 	size:string;
 	description:string;
+	created: IMADate;
 	_links: IMALinks, 
+}
+
+interface IMAAction {
+	id:number,
+	name:string;
+	class:string;
+	content:{};
+	created: IMADate;
+	_links: IMALinks; 
+	_embedded: {
+		process: IMAProcess,
+		owner: IMAUser,
+		source:any;
+	},
 }
 
 interface IMAUser {
@@ -90,6 +105,7 @@ interface IMAStage {
 interface IMANote {
 	id:number,
 	text: string,
+	class:string;
 	commentCount: number, 
 	created: IMADate,
 	_links: IMALinks, 
