@@ -100,6 +100,14 @@ abstract class AbstractImage extends \Image\Entity\Image
 	}
 
 	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->getName();
+	}
+
+	/**
 	 * @return mixed
 	 */
 	abstract public function getSource();

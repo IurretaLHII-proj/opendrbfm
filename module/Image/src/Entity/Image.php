@@ -195,7 +195,7 @@ abstract class Image implements
             'type'    	  => $this->getType(),
             'size'    	  => $this->getSize(),
             'description' => $this->getDescription(),
-            'created'     => $this->getCreated()->getTimestamp(),
+            'created'     => $this->getCreated(),
         );
     }
 }

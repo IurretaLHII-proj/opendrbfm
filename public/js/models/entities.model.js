@@ -50,11 +50,14 @@ var MALinks = /** @class */ (function () {
 }());
 var MAImage = /** @class */ (function () {
     function MAImage(obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.type = obj.type;
-        this.size = obj.size;
-        this.description = obj.description;
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.type = obj.type;
+            this.size = obj.size;
+            this.description = obj.description;
+            this.created = new Date(obj.created.date);
+        }
         this.links = new MALinks(obj._links);
     }
     MAImage.prototype.toJSON = function () {
@@ -63,10 +66,50 @@ var MAImage = /** @class */ (function () {
             name: this.name,
             type: this.type,
             size: this.size,
-            description: this.description
+            description: this.description,
+            created: this.created,
         };
     };
     return MAImage;
+}());
+var MAAction = /** @class */ (function () {
+    function MAAction(obj) {
+        this.id = obj.id;
+        this.name = obj.name;
+        this.class = obj.class;
+        this.content = obj.content;
+        this.user = new MAUser(obj._embedded.owner);
+        this.process = MAProcess.fromJSON(obj._embedded.process);
+        this.created = new Date(obj.created.date);
+        this.links = new MALinks(obj._links);
+        switch (this.class) {
+            case "MA\\Entity\\Action\\Note":
+                this.source = MANote.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\Process":
+                this.source = MAProcess.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\Version":
+                this.source = MAVersion.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\Stage":
+                this.source = MAStage.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\Hint":
+                this.source = MAHint.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\HintReason":
+                this.source = MAHintReason.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\HintInfluence":
+                this.source = MAHintInfluence.fromJSON(obj._embedded.source);
+                break;
+            case "MA\\Entity\\Action\\Simulation":
+                this.source = MASimulation.fromJSON(obj._embedded.source);
+                break;
+        }
+    }
+    return MAAction;
 }());
 var MAUser = /** @class */ (function () {
     function MAUser(obj) {
@@ -95,25 +138,27 @@ var MAProcess = /** @class */ (function () {
         return e;
     };
     MAProcess.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.title = obj.title;
-        this.body = obj.body;
-        this.number = obj.number;
-        this.code = obj.code;
-        this.line = obj.line;
-        this.machine = obj.machine;
-        this.plant = obj.plant;
-        this.complexity = obj.complexity;
-        this.pieceNumber = obj.pieceNumber;
-        this.pieceName = obj.pieceName;
-        this.user = new MAUser(obj._embedded.owner);
-        this.customer = new MAUser(obj._embedded.customer);
-        this.created = new Date(obj.created.date);
-        this.links = new MALinks(obj._links);
-        this.versions = [];
-        for (var i = 0; i < obj._embedded.versions.length; i++) {
-            this.addVersion(MAVersion.fromJSON(obj._embedded.versions[i]));
+        if (obj.id) {
+            this.id = obj.id;
+            this.title = obj.title;
+            this.body = obj.body;
+            this.number = obj.number;
+            this.code = obj.code;
+            this.line = obj.line;
+            this.machine = obj.machine;
+            this.plant = obj.plant;
+            this.complexity = obj.complexity;
+            this.pieceNumber = obj.pieceNumber;
+            this.pieceName = obj.pieceName;
+            this.user = new MAUser(obj._embedded.owner);
+            this.customer = new MAUser(obj._embedded.customer);
+            this.created = new Date(obj.created.date);
+            this.versions = [];
+            for (var i = 0; i < obj._embedded.versions.length; i++) {
+                this.addVersion(MAVersion.fromJSON(obj._embedded.versions[i]));
+            }
         }
+        this.links = new MALinks(obj._links);
     };
     MAProcess.prototype.toJSON = function () {
         return {
@@ -168,15 +213,17 @@ var MAVersion = /** @class */ (function () {
         return e;
     };
     MAVersion.prototype.load = function (obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.state = obj.state;
-        this.description = obj.description;
-        this.commentCount = obj.commentCount;
-        this.created = new Date(obj.created.date);
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.state = obj.state;
+            this.description = obj.description;
+            this.commentCount = obj.commentCount;
+            this.created = new Date(obj.created.date);
+            this.material = new MAMaterial(obj._embedded.material);
+            this.user = new MAUser(obj._embedded.owner);
+        }
         this.links = new MALinks(obj._links);
-        this.material = new MAMaterial(obj._embedded.material);
-        this.user = new MAUser(obj._embedded.owner);
     };
     MAVersion.prototype.toJSON = function () {
         var stages = [];
@@ -938,6 +985,7 @@ var MANote = /** @class */ (function () {
         if (obj.id) {
             this.id = obj.id;
             this.text = obj.text;
+            this.class = obj.class;
             this.commentCount = obj.commentCount;
             this.user = new MAUser(obj._embedded.owner);
             this.created = new Date(obj.created.date);

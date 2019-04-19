@@ -191,7 +191,7 @@ class Operation implements
      */
     public function getLongName()
     {
-        return sprintf("%s . %s", (string) $this->getType(), $this->getName());
+        return sprintf("%s. %s", (string) $this->getType(), $this->getName());
     }
     
     /**

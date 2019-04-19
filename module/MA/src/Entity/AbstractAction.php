@@ -183,9 +183,8 @@ abstract class AbstractAction implements
 			'name'		=> $this->getName(),
 			'source'	=> $this->getSource(),
 			'content'	=> $this->getContent(),
-			'created'	=> $this->getCreated()->getTimestamp(),
+			'created'	=> $this->getCreated(),
 		];
-	
 	}
 
 	/**
