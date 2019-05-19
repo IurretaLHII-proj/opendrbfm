@@ -31,7 +31,7 @@
 					<tbody>
 						{% for user in collection %}
 							<tr>
-								<td>{{ user }}</td>
+								<td><a href="{{ url('user/detail', {'id': user.id}) }}">{{ user }}</a></td>
 								<td>{{ user.email }}</td>
 								<td>{{ user.roles | join }}</td>
 								<td>{{ user.created | date('d/m/Y') }}</td>
