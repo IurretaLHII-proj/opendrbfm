@@ -37,7 +37,7 @@ var MALinks = /** @class */ (function () {
             return this.keys[name].href;
         }
     };
-    MALinks.prototype.allowed = function (name) {
+    MALinks.prototype.isAllowed = function (name) {
         if (this.has(name)) {
             return this.keys[name].allowed;
         }

@@ -48,7 +48,7 @@ class MALinks {
 		}
 	}
 
-	allowed(name:string):boolean {
+	isAllowed(name:string):boolean {
 		if (this.has(name)) {
 			return this.keys[name].allowed;
 		}
@@ -162,11 +162,13 @@ class MAUser {
 	constructor(obj: IMAUser) {
 		this.id	   = obj.id;
 		this.name  = obj.name;
+		this.roles = obj.roles;
 		this.links = new MALinks(obj._links);
 	}
 
 	id: number;
 	name:string;
+	roles:string[];
 	links: MALinks;
 }
 

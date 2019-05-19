@@ -44,6 +44,7 @@ interface IMAAction {
 interface IMAUser {
 	id:number,
 	name: string,
+	roles: string[],
 	_links: IMALinks, 
 }
 

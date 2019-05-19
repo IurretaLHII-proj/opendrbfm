@@ -25,6 +25,7 @@
 							<th>Name</th>
 							<th>Email</th>
 							<th>Created</th>
+							<th>Roles</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -32,6 +33,7 @@
 							<tr>
 								<td>{{ user }}</td>
 								<td>{{ user.email }}</td>
+								<td>{{ user.roles | join }}</td>
 								<td>{{ user.created | date('d/m/Y') }}</td>
 							</tr>
 						{% endfor %}
