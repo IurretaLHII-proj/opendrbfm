@@ -8,7 +8,7 @@
 	<div class="col-md-12" 
 		ng-cloak
 		ng-controller="_CollectionCtrl"
-		ng-init="init({{ json(hal().renderCollection(actionsHal)) | escape }})"
+		ng-init="init({{ json(hal().renderCollection(actionsHal)) | escape }}, 'MAAction')"
 	>
 
 		<h4>Actividad</h4>

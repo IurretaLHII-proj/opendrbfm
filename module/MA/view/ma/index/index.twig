@@ -4,7 +4,7 @@
 
 		<div class="col-md-12" 
 			ng-controller="_CollectionCtrl"
-			ng-init="init({{ json(hal().renderCollection(collection)) | escape }})"
+			ng-init="init({{ json(hal().renderCollection(collection)) | escape }}, 'MAProcess')"
 		>
 
 			<div class="btn-group mt-2" role="group">

@@ -97,41 +97,54 @@ class MAImage {
 }
 
 class MAAction {
-	constructor(obj: IMAAction) {
-		this.id	     = obj.id;
-		this.name    = obj.name;
-		this.class   = obj.class;
-		this.content = obj.content;
-		this.user 	 = new MAUser(obj._embedded.owner);
-		this.process = MAProcess.fromJSON(obj._embedded.process);
-		this.created = new Date(obj.created.date);
-		this.links   = new MALinks(obj._links);
-		switch (this.class) {
-			case "MA\\Entity\\Action\\Note":
-				this.source = MANote.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\Process":
-				this.source = MAProcess.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\Version":
-				this.source = MAVersion.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\Stage":
-				this.source = MAStage.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\Hint":
-				this.source = MAHint.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\HintReason":
-				this.source = MAHintReason.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\HintInfluence":
-				this.source = MAHintInfluence.fromJSON(obj._embedded.source);
-				break;	
-			case "MA\\Entity\\Action\\Simulation":
-				this.source = MASimulation.fromJSON(obj._embedded.source);
-				break;	
+
+	static fromJSON(obj: IMAAction): MAAction{
+		let e = new MAAction();
+		e.load(obj);
+		return e;
+	}
+
+	load(obj: IMAAction) {
+		if (obj.id) {
+			this.id	     = obj.id;
+			this.name    = obj.name;
+			this.class   = obj.class;
+			this.content = obj.content;
+			this.user 	 = new MAUser(obj._embedded.owner);
+			this.process = MAProcess.fromJSON(obj._embedded.process);
+			this.created = new Date(obj.created.date);
+			this.links   = new MALinks(obj._links);
+			switch (this.class) {
+				case "MA\\Entity\\Action\\Note":
+					this.source = MANote.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\Process":
+					this.source = MAProcess.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\Version":
+					this.source = MAVersion.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\Stage":
+					this.source = MAStage.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\Hint":
+					this.source = MAHint.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\HintReason":
+					this.source = MAHintReason.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\HintInfluence":
+					this.source = MAHintInfluence.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Action\\Simulation":
+					this.source = MASimulation.fromJSON(obj._embedded.source);
+					break;	
+			}
 		}
+	}
+
+	constructor() {
+		this.created = new Date;
 	}
 
 	id: number;
