@@ -156,6 +156,7 @@ class User extends BaseUser implements
 			'id' 	=> $this->getId(),
 			'email' => $this->getEmail(),
 			'name'  => $this->getName(),
+			'roles' => $this->getRoles(),
 		];
 	}
 }
