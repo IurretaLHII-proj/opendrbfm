@@ -3,6 +3,9 @@
 {% block content %}
 	<div class="col-md-12">
 		<h2>{{ entity.name }}</h2>
+		<a href="{{ url('zfcuser/changepassword') }}">Chang password</a>
+		<a href="{{ url('zfcuser/changeemail') }}">Chang email</a>
+		<a href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">edit</a>
 	</div>
 
 	<div class="col-md-12" 

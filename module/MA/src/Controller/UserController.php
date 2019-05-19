@@ -80,6 +80,42 @@ class UserController extends \Base\Controller\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
+    public function editAction()
+    {
+		$e    = $this->getEntity();
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\UserForm::class);
+
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData($this->getRequest()->getPost());
+			if ($form->isValid()) {
+
+				//$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
+
+				$this->getEntityManager()->flush();
+
+				$r = $this->params()->fromQuery('redirect', $this->url()->fromRoute('user/detail', [
+					'id' => $e->getId(),
+				]));
+
+				return $this->redirect()->toUrl($r);
+			}
+
+		}
+		return new ViewModel([
+			'form' => $form,
+		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
     public function detailAction()
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');

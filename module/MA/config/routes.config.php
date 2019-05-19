@@ -48,7 +48,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|actions',
+						'action' => 'detail|edit|actions',
 					]
 				],
 				'may_terminate' => true,
