@@ -994,13 +994,11 @@ App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
 		"MAAction" : MAAction,
 	}
 
-	var classNm;
 	$scope.collection = new MACollection();
 
 	$scope.init = function(collection, classNm) {
-		this.classNm = classNm;
-		collection._embedded.items = collection._embedded.items.map(e => {return classes[this.classNm].fromJSON(e)});
-		//collection._embedded.items = collection._embedded.items.map(e => {return new MAAction(e)});
+		$scope.classNm = classNm;
+		collection._embedded.items = collection._embedded.items.map(e => {return classes[$scope.classNm].fromJSON(e)});
 		$scope.collection.load(collection);
 		console.log(collection, $scope.collection);
 	};
@@ -1008,8 +1006,7 @@ App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
 	$scope.more = function() {
 		$resource($scope.collection.links.getHref('next')).get().$promise.then(
 			function(data) {
-				data._embedded.items = data._embedded.items.map(e => {return classes[this.classNm].fromJSON(e)});
-				//data._embedded.items = data._embedded.items.map(e => {return new MAAction(e)});
+				data._embedded.items = data._embedded.items.map(e => {return classes[$scope.classNm].fromJSON(e)});
 				$scope.collection.load(data);
 			},		
 			function(err) {

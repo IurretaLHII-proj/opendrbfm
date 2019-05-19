@@ -71,10 +71,10 @@
 									<a ng-href="{[ item.links.getHref() ]}" class="btn btn-outline-primary">
 										<i class="fa fa-eye"></i>
 									</a>
-									<a href="" ng-click="editProcess(item)" class="btn btn-outline-primary">
+									<a ng-if="item.links.isAllowed('edit')" href="" ng-click="editProcess(item)" class="btn btn-outline-primary">
 										<i class="fa fa-pencil"></i>
 									</a>
-									<a ng-href="{[ item.links.getHref('delete') ]}" class="btn btn-outline-primary" ng-confirm-click>
+									<a ng-if="item.links.isAllowed('delete')" ng-href="{[ item.links.getHref('delete') ]}" class="btn btn-outline-primary" ng-confirm-click>
 										<i class="fa fa-trash"></i>
 									</a>
 								</div>

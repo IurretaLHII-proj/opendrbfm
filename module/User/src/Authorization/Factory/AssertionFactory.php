@@ -42,7 +42,7 @@ class AssertionFactory implements AbstractFactoryInterface
 
 		$assertion = new $className($this->getIdentity($sm));
 
-		return $assertion instanceof \User\Authorization\Assertion\AssertionInterface;
+		return $assertion instanceof \User\Authorization\Assertion\AbstractAssertion;
 	}
 
 	/**
