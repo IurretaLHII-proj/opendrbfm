@@ -15,7 +15,7 @@
 		<div class="d-flex flex-column">
 			<div class="d-flex">
 				<h2 class="mr-auto">{[ values._embedded.title ]}</h2>
-				<a href="" ng-click="editProcess(process)" class="btn"><i class="fa fa-pencil"></i></a>
+				<a href="" ng-if="process.links.isAllowed('edit')" ng-click="editProcess(process)" class="btn"><i class="fa fa-pencil"></i></a>
 			</div>
 			<div class="d-flex" ng-include="'/js/custom/tpl/process-content.html'"></div>
 		</div>
@@ -112,13 +112,13 @@
 				<a href="" ng-click="locked = !locked" class="btn pull-right">
 					<i class="fa" ng-class="{true:'fa-unlock', false:'fa-lock'}[locked == true]"></i>
 				</a>
-				<a href="" ng-confirm-click confirmed-click="deleteStage(current)" class="btn pull-right">
+				<a href="" ng-if="current.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteStage(current)" class="btn pull-right">
 					<i class="fa fa-trash"></i>
 				</a>
-				<a href="" ng-click="editStage(current)" class="btn pull-right">
+				<a href="" ng-if="current.links.isAllowed('edit')" ng-click="editStage(current)" class="btn pull-right">
 					<i class="fa fa-pencil"></i>
 				</a>
-				<a href="" class="btn pull-right" ng-click="addComment(current)">
+				<a href="" ng-if="current.links.isAllowed('comment')" class="btn pull-right" ng-click="addComment(current)">
 				   <i class="fa fa-comment"> {[ current.commentCount ]}</i>
 		  		</a>
 			</div>
@@ -211,8 +211,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(r)"><span class="fa fa-comment"></span> {[ r.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editReasonRelation(r)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteReasonRelation(r)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('edit')" ng-click="editReasonRelation(r)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteReasonRelation(r)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 								<li ng-repeat="note in reason.notes" class="my-1">
@@ -222,8 +222,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 							</ul>
@@ -253,8 +253,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(r)"><span class="fa fa-comment"></span> {[ r.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editInfluenceRelation(r)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteInfluenceRelation(r)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('edit')" ng-click="editInfluenceRelation(r)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteInfluenceRelation(r)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 								<li ng-repeat="note in infl.notes" class="my-1">
@@ -264,8 +264,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 							</ul>
@@ -290,8 +290,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 							</ul>
@@ -329,8 +329,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 							</ul>
@@ -344,8 +344,8 @@
 									</div>
 									<div class="btn-group btn-group-sm">
 										<a href="" class="btn btn-sm" ng-click="addComment(note)"><span class="fa fa-comment"></span> {[ note.commentCount ]}</a>
-										<a href="" class="btn btn-sm" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-										<a href="" class="btn btn-sm" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
+										<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
 									</div>
 								</li>
 							</ul>
@@ -378,12 +378,17 @@
 										class="btn btn-sm">
 										<i class="fa fa-comment"></i> {[ s.commentCount ]}
 									</a>
-									<a href="" ng-click="editSimulation(s)" 
+									<a href="" 
+										ng-if="s.links.isAllowed('edit')"
+										ng-click="editSimulation(s)" 
 										ng-class="{disabled:s.closed}"
 										class="btn btn-sm">
 										<i class="fa fa-pencil"></i>
 									</a>
-									<a href="" ng-confirm-click confirmed-click="deleteSimulation(s)" 
+									<a href="" 
+										ng-confirm-click 
+										confirmed-click="deleteSimulation(s)" 
+										ng-if="s.links.isAllowed('delete')"
 										ng-class="{disabled:s.closed}"
 										class="btn btn-sm">
 											<i class="fa fa-trash"></i>
@@ -421,7 +426,9 @@
 								   		class="btn btn-sm">
 										<i class="fa fa-comment"></i> {[ infl.commentCount ]}
 									</a>
-									<a href="" ng-confirm-click 
+									<a href="" 
+										ng-if="infl.links.isAllowed('delete')"
+										ng-confirm-click 
 										confirmed-click="deleteHintInfluence(infl)" 
 										ng-class="{disabled:infl.closed}"
 										class="btn btn-sm">
@@ -459,7 +466,9 @@
 										class="btn btn-sm">
 										<i class="fa fa-comment"></i> {[ reason.commentCount ]}
 									</a>
-									<a href="" ng-confirm-click 
+									<a href="" 
+										ng-if="reason.links.isAllowed('delete')"
+										ng-confirm-click 
 										confirmed-click="deleteHintReason(reason)" 
 										ng-class="{disabled:reason.closed}"
 										class="btn btn-sm">
@@ -483,8 +492,8 @@
 							<div class="d-flex">
 								<div class="btn-group btn-group-sm">
 									<a href="" ng-click="addComment(hint)" class="btn btn-sm"><i class="fa fa-comment"></i> {[ hint.commentCount ]}</a>
-									<a href="" ng-click="editHint(hint)" class="btn btn-sm"><i class="fa fa-pencil"></i></a>
-									<a href="" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
+									<a href="" ng-if="hint.links.isAllowed('edit')" ng-click="editHint(hint)" class="btn btn-sm"><i class="fa fa-pencil"></i></a>
+									<a href="" ng-if="hint.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteHint(hint)" class="btn btn-sm"><i class="fa fa-trash"></i></a>
 								</div>
 								<div class="small ml-auto text-muted align-self-center pr-1">
 									<a href="{[ hint.user.links.getHref() ]}" class="">{[ hint.user.name ]}</a>. {[ hint.created | date:"dd MMMyy HH:mm" ]}
