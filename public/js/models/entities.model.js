@@ -73,42 +73,52 @@ var MAImage = /** @class */ (function () {
     return MAImage;
 }());
 var MAAction = /** @class */ (function () {
-    function MAAction(obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.class = obj.class;
-        this.content = obj.content;
-        this.user = new MAUser(obj._embedded.owner);
-        this.process = MAProcess.fromJSON(obj._embedded.process);
-        this.created = new Date(obj.created.date);
-        this.links = new MALinks(obj._links);
-        switch (this.class) {
-            case "MA\\Entity\\Action\\Note":
-                this.source = MANote.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\Process":
-                this.source = MAProcess.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\Version":
-                this.source = MAVersion.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\Stage":
-                this.source = MAStage.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\Hint":
-                this.source = MAHint.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\HintReason":
-                this.source = MAHintReason.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\HintInfluence":
-                this.source = MAHintInfluence.fromJSON(obj._embedded.source);
-                break;
-            case "MA\\Entity\\Action\\Simulation":
-                this.source = MASimulation.fromJSON(obj._embedded.source);
-                break;
-        }
+    function MAAction() {
+        this.created = new Date;
     }
+    MAAction.fromJSON = function (obj) {
+        var e = new MAAction();
+        e.load(obj);
+        return e;
+    };
+    MAAction.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.class = obj.class;
+            this.content = obj.content;
+            this.user = new MAUser(obj._embedded.owner);
+            this.process = MAProcess.fromJSON(obj._embedded.process);
+            this.created = new Date(obj.created.date);
+            this.links = new MALinks(obj._links);
+            switch (this.class) {
+                case "MA\\Entity\\Action\\Note":
+                    this.source = MANote.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\Process":
+                    this.source = MAProcess.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\Version":
+                    this.source = MAVersion.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\Stage":
+                    this.source = MAStage.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\Hint":
+                    this.source = MAHint.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\HintReason":
+                    this.source = MAHintReason.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\HintInfluence":
+                    this.source = MAHintInfluence.fromJSON(obj._embedded.source);
+                    break;
+                case "MA\\Entity\\Action\\Simulation":
+                    this.source = MASimulation.fromJSON(obj._embedded.source);
+                    break;
+            }
+        }
+    };
     return MAAction;
 }());
 var MAUser = /** @class */ (function () {
