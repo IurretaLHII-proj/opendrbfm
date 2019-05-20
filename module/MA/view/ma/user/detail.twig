@@ -1,11 +1,11 @@
 {% extends 'layout/base-layout.twig' %}
 
 {% block content %}
-	<div class="col-md-12">
+	<div class="col-md-12 py-2">
 		<h2>{{ entity.name }}</h2>
-		<a href="{{ url('zfcuser/changepassword') }}">Chang password</a>
-		<a href="{{ url('zfcuser/changeemail') }}">Chang email</a>
-		<a href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">edit</a>
+		<a class="btn btn-secondary" href="{{ url('zfcuser/changepassword') }}">Change password</a>
+		<a class="btn btn-secondary" href="{{ url('zfcuser/changeemail') }}">Change email</a>
+		<a class="btn btn-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>
 	</div>
 
 	<div class="col-md-12" 
