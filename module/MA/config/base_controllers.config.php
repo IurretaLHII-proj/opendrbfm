@@ -71,6 +71,12 @@ return [
 	Controller\Js\ProcessController::class => [
 		'repository' => Entity\Process::class,
 	],
+	Controller\VersionTypeController::class => [
+		'repository' => Entity\VersionType::class,
+	],
+	Controller\Js\VersionTypeController::class => [
+		'repository' => Entity\VersionType::class,
+	],
 	Controller\Js\VersionController::class => [
 		'repository' => Entity\Version::class,
 	],

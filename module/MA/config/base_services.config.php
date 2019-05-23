@@ -24,6 +24,7 @@ return [
 					Service\MaterialService::class, 
 					Service\ProcessService::class, 
 					Service\VersionService::class, 
+					Service\VersionTypeService::class, 
 					Service\StageService::class, 
 					Service\HintTypeService::class, 
 					Service\HintReasonService::class, 
@@ -53,6 +54,9 @@ return [
 	],
 	Service\ProcessService::class => [
 		'entities' => [Entity\Process::class],
+	],
+	Service\VersionTypeService::class => [
+		'entities'  => [Entity\VersionType::class],
 	],
 	Service\VersionService::class => [
 		'entities' => [Entity\Version::class],

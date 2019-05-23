@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body" ng-init="init()">
 	<div class="form-group">
-		<!--<label for="inputText">Name</label>-->
+		<label for="inputText">Name</label>
 		<input type="text"
 			class="form-control" 
 			placeholder="Name"
@@ -16,7 +16,31 @@
 			class="invalid-feedback">{[key]}. {[text]}</div>
 	</div>
 	<div class="form-group">
-		<!--<label for="inputName">Status</label>-->
+		<label for="inputParents">Previous</label>
+		<select class="form-control"
+			ng-class="{'is-invalid': errors.parent}"
+			ng-model="values.parent"
+			ng-options="item.id as item.name for item in parents"
+			>
+		</select>
+		<div ng-if="errors.parent"
+			ng-repeat="(key, text) in errors.parent"
+			class="invalid-feedback">{[key]}. {[text]}</div>
+	</div>
+	<div class="form-group">
+		<label for="inputParents">Type</label>
+		<select class="form-control"
+			ng-class="{'is-invalid': errors.type}"
+			ng-model="values.type"
+			ng-options="item.id as item.name for item in types"
+			>
+		</select>
+		<div ng-if="errors.type"
+			ng-repeat="(key, text) in errors.type"
+			class="invalid-feedback">{[key]}. {[text]}</div>
+	</div>
+	<div class="form-group">
+		<label for="inputName">Status</label>
 		<select class="form-control" 
 			class="form-control" 
 			ng-model="values.state"
@@ -31,7 +55,7 @@
 			class="invalid-feedback">{[key]}. {[text]}</div>
 	</div>
 	<div class="form-group">
-	<!--<label for="inputParents">Material</label>-->
+		<label for="inputParents">Material</label>
 		<select class="form-control"
 			ng-class="{'is-invalid': errors.material}"
 			ng-model="values.material"

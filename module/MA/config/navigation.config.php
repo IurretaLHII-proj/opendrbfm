@@ -50,6 +50,22 @@ return [
 					//	],
 					//],
 				],
+				[
+					'label' => 'Version types',
+					'route' => 'process/version/type',
+					'class' => 'nav-link',
+					'resource'	=> Entity\VersionType::class,
+					'privilege' => 'index',
+					'pages' => [
+						[
+							'label' => 'Add version type',
+							'route' => 'process/version/type/add',
+							'class' => 'nav-link d-none',
+							'resource'	=> Entity\VersionType::class,
+							'privilege' => 'add',
+						],
+					],
+				],
 			],
 		],
 		[

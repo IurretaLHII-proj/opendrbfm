@@ -69,6 +69,44 @@ class Version implements
 	protected $process;
 
 	/**
+	 * @var Version 
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\Version",
+	 *	inversedBy	 = "children",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "prt_id",
+	 *	referencedColumnName = "id",
+	 *	nullable = true
+	 * )
+	 */
+	protected $parent;
+
+	/**
+	 * @var Version[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Version",
+	 *	mappedBy	 = "parent",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $children;
+
+	/**
+	 * @var VersionType 
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\VersionType",
+	 *	inversedBy	 = "versions",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "type_id",
+	 *	referencedColumnName = "id"
+	 * )
+	 */
+	protected $type;
+
+	/**
 	 * @var Material 
 	 * @ORM\ManyToOne(
 	 *	targetEntity = "MA\Entity\Material",
@@ -155,6 +193,7 @@ class Version implements
 		$this->stages   = new ArrayCollection;
 		$this->comments = new ArrayCollection;
 		$this->actions  = new ArrayCollection;
+		$this->children = new ArrayCollection;
 	}
     
     /**
@@ -202,6 +241,28 @@ class Version implements
     }
     
     /**
+     * Get type.
+     *
+     * @return VersionTypeInterface.
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    /**
+     * Set type.
+     *
+     * @param VersionTypeInterface type the value to set.
+     * @return Version.
+     */
+    public function setType(VersionTypeInterface $type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+    
+    /**
      * Get material.
      *
      * @return MaterialInterface.
@@ -220,6 +281,48 @@ class Version implements
     public function setMaterial(MaterialInterface $material)
     {
         $this->material = $material;
+        return $this;
+    }
+    
+    /**
+     * @return Version|null.
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+    
+    /**
+     * Set parent.
+     *
+     * @param Version parent the value to set.
+     * @return Version.
+     */
+    public function setParent(Version $parent = null)
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+    
+    /**
+     * Get children.
+     *
+     * @return Version[].
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+    
+    /**
+     * Set children.
+     *
+     * @param Version[] children the value to set.
+     * @return Version.
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
         return $this;
     }
     
@@ -547,6 +650,7 @@ class Version implements
 	public function __clone()
 	{
 		$this->id 	    	= null;
+		$this->parent		= null;
 		$this->state		= self::STATE_IN_PROGRESS;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
@@ -564,6 +668,8 @@ class Version implements
 			'id' 		   => $this->getId(),
 			'name' 		   => $this->getName(),
 			'owner'		   => $this->getUser(),
+			'parent'	   => $this->getParent(),
+			'type'		   => $this->getType(),
 			'state'		   => $this->getState(),
 			'material'     => $this->getMaterial(),
 			'description'  => $this->getDescription(),
@@ -591,7 +697,7 @@ class Version implements
 			],
 			[
 				'rel'   	  => 'delete',
-				'privilege'   => 'delete',
+				'privilege'   => $this->getChildren()->count() ? false : 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/version/detail/json',

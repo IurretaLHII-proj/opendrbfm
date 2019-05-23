@@ -124,6 +124,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 
 		modal.result.then(
 			function(res) {
+				version.process.reloadVersions();
 				$scope.addSuccess("Saved succesfully");
 			},
 			function(err) {}
@@ -135,6 +136,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		$resource(version.links.getHref('delete')).delete().$promise.then(
 				function(data) {
 					$scope.process.removeVersion(version);
+					$scope.process.reloadVersions();
 					if ($scope.process.hasVersions()) {
 						$scope.setVersion($scope.process.getActive());
 					}

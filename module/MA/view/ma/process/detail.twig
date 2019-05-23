@@ -21,7 +21,15 @@
 		</div>
 		<!-- END OF PROCESS DETAIL -->
 
+		<div class="row mb-1">
+			<div ng-repeat="(i,v) in process.parentVersions()" class="col col-md-auto py-2">
+				<ng-include src="'/js/custom/tpl/process-versions-header.html'" ng-init="v=v;"/>
+			</div>
+		</div>
+
+
 		<!-- VERSION LIST -->
+		<!--
 		<ul class="list-inline my-2">
 			<li ng-repeat="(i,v) in process.versions" class="list-inline-item">
 				<div class="btn-group btn-group-justified">
@@ -29,31 +37,31 @@
 					   class="btn btn-sm btn-outline-primary" 
 					   ng-class="{active: v == version}"
 					   ng-click="setVersion(v)"
-					>{[ v.name ]} | {[ v.material.name ]}</a>
+					   >{[ v.name ]} | {[v.type.name]} | {[ v.material.name ]}</a>
 					<a href=""
 					   class="btn btn-sm btn-outline-primary"
-					   ng-if="v.links.isAllowed('comment')"
+					   ng-if="v == version && v.links.isAllowed('comment')"
 					   ng-click="addComment(v)"
 					   ><i class="fa fa-comment"> {[ v.commentCount ]}</i></a>
 					<a href=""
 					   class="btn btn-sm btn-outline-primary"
-					   ng-if="v.links.isAllowed('edit')"
+					   ng-if="v == version && v.links.isAllowed('edit')"
 					   ng-click="editVersion(v)"
 					   ><i class="fa fa-pencil"></i></a>
 					<a href=""
 					   class="btn btn-sm btn-outline-primary"
-					   ng-if="v.links.isAllowed('delete')"
+					   ng-if="v == version && v.links.isAllowed('delete')"
 					   ng-confirm-click
 					   confirmed-click="deleteVersion(v)"
 					   ><i class="fa fa-trash"></i></a>
 				   <a href="{[ process.links.getHref('pdf') ]}"
-					   ng-if="process.links.isAllowed('pdf')"
+					   ng-if="v == version && process.links.isAllowed('pdf')"
 					   class="btn btn-sm btn-outline-primary" 
 					   target="_blank"
 					   ><i class="fa fa-file"></i></a>
 					<a href=""
 					   class="btn btn-sm btn-outline-primary" 
-					   ng-if="v.links.isAllowed('clone')"
+					   ng-if="v == version && v.links.isAllowed('clone')"
 					   ng-click="cloneVersion(v)"
 					>clone</a>
 					<a href=""
@@ -73,13 +81,14 @@
 			<li class="list-inline-item">
 				<a href="" 
 					ng-click="addVersion()" 
-					ng-if="process.links.isAllowed('clone')"
+					ng-if="process.links.isAllowed('version')"
 					class="btn btn-sm btn-outline-primary"
 				>
 					<i class="fa fa-plus"></i>
 				</a>
 			</li>
 		</ul>
+		-->
 		<!-- END OF VERSION LIST -->
 
 		<!-- VERSION STAGE TABS -->

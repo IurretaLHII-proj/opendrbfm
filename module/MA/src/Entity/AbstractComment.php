@@ -178,8 +178,6 @@ abstract class AbstractComment implements
 	}
     
     /**
-     * @return AbstractComment|null.
-     *
      * @return AbstractPostComment.
      */
     public function getParent()

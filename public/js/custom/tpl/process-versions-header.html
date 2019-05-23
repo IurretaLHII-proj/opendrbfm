@@ -1,0 +1,48 @@
+<div class="btn-group btn-group-justified">
+	<a href=""
+	   class="btn btn-sm btn-outline-primary" 
+	   ng-class="{active: v == version}"
+	   ng-click="setVersion(v)"
+	   >{[ v.name ]} | {[v.type.name]} | {[ v.material.name ]}</a>
+	<a href=""
+	   class="btn btn-sm btn-outline-primary"
+	   ng-if="v == version && v.links.isAllowed('comment')"
+	   ng-click="addComment(v)"
+	   ><i class="fa fa-comment"> {[ v.commentCount ]}</i></a>
+	<a href=""
+	   class="btn btn-sm btn-outline-primary"
+	   ng-if="v == version && v.links.isAllowed('edit')"
+	   ng-click="editVersion(v)"
+	   ><i class="fa fa-pencil"></i></a>
+	<a href=""
+	   class="btn btn-sm btn-outline-primary"
+	   ng-if="v == version && v.links.isAllowed('delete')"
+	   ng-confirm-click
+	   confirmed-click="deleteVersion(v)"
+	   ><i class="fa fa-trash"></i></a>
+   <a href="{[ process.links.getHref('pdf') ]}"
+	   ng-if="v == version && process.links.isAllowed('pdf')"
+	   class="btn btn-sm btn-outline-primary" 
+	   target="_blank"
+	   ><i class="fa fa-file"></i></a>
+	<a href=""
+	   class="btn btn-sm btn-outline-primary" 
+	   ng-if="v == version && v.links.isAllowed('clone')"
+	   ng-click="cloneVersion(v)"
+	>clone</a>
+	<a href=""
+	   class="btn btn-sm disabled" 
+	   ng-class="{
+	   	'btn-success':v.state > 0,
+	   	'btn-dark':   v.state == 0,
+	   	'btn-danger': v.state < 0
+	   }"
+	   ng-switch="v.state">
+		<span ng-switch-when="1">Aproved</span>
+		<span ng-switch-when="-1">Canceled</span>
+		<span ng-switch-when="0">In progress</span>
+	</a>
+</div>
+<ul ng-repeat="_v in v.children" class="m-0 py-1 border-left" style="list-style:none;">
+	<li ng-include="'/js/custom/tpl/process-versions-header.html'" ng-init="v=_v;" class=""/></li>
+</ul>
