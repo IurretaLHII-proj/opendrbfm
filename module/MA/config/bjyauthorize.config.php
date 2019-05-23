@@ -27,6 +27,7 @@ return [
 			Entity\Customer::class,
 			Entity\Process::class,
 			Entity\Version::class,
+			Entity\VersionType::class,
 			Entity\Stage::class,
 			Entity\Material::class,
 			Entity\Operation::class,

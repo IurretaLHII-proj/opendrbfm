@@ -125,9 +125,19 @@ var MAUser = /** @class */ (function () {
     function MAUser(obj) {
         this.id = obj.id;
         this.name = obj.name;
+        this.roles = obj.roles;
         this.links = new MALinks(obj._links);
     }
     return MAUser;
+}());
+var MAVersionType = /** @class */ (function () {
+    function MAVersionType(obj) {
+        this.id = obj.id;
+        this.name = obj.name;
+        this.description = obj.description;
+        this.links = new MALinks(obj._links);
+    }
+    return MAVersionType;
 }());
 var MAMaterial = /** @class */ (function () {
     function MAMaterial(obj) {
@@ -167,8 +177,18 @@ var MAProcess = /** @class */ (function () {
             for (var i = 0; i < obj._embedded.versions.length; i++) {
                 this.addVersion(MAVersion.fromJSON(obj._embedded.versions[i]));
             }
+            this.reloadVersions();
         }
         this.links = new MALinks(obj._links);
+    };
+    MAProcess.prototype.reloadVersions = function () {
+        var _this = this;
+        this.versions.forEach(function (version) { return version.children = []; });
+        this.versions.forEach(function (version) {
+            if (!version.isParent()) {
+                _this.versions.find(function (e) { return e.id == version.parent.id; }).addChild(version);
+            }
+        });
     };
     MAProcess.prototype.toJSON = function () {
         return {
@@ -203,6 +223,9 @@ var MAProcess = /** @class */ (function () {
     MAProcess.prototype.getActive = function () {
         return this.versions[this.versions.length - 1];
     };
+    MAProcess.prototype.parentVersions = function () {
+        return this.versions.filter(function (version) { return version.isParent(); });
+    };
     MAProcess.COMPLEXITY_LOW = "AA";
     MAProcess.COMPLEXITY_MEDIUM = "BB";
     MAProcess.COMPLEXITY_HIGH = "A";
@@ -214,6 +237,7 @@ var MAVersion = /** @class */ (function () {
         this.state = MAVersion.IN_PROGRESS;
         this.stagesLoaded = false;
         this.stages = [];
+        this.children = [];
         this.comments = new MACollection();
         this.created = new Date;
     }
@@ -223,6 +247,7 @@ var MAVersion = /** @class */ (function () {
         return e;
     };
     MAVersion.prototype.load = function (obj) {
+        console.log(obj);
         if (obj.id) {
             this.id = obj.id;
             this.name = obj.name;
@@ -231,7 +256,9 @@ var MAVersion = /** @class */ (function () {
             this.commentCount = obj.commentCount;
             this.created = new Date(obj.created.date);
             this.material = new MAMaterial(obj._embedded.material);
+            this.type = new MAVersionType(obj._embedded.type);
             this.user = new MAUser(obj._embedded.owner);
+            this.parent = obj._embedded.parent ? MAVersion.fromJSON(obj._embedded.parent) : null;
         }
         this.links = new MALinks(obj._links);
     };
@@ -246,6 +273,8 @@ var MAVersion = /** @class */ (function () {
             state: this.state,
             description: this.description,
             material: this.material ? this.material.id : null,
+            type: this.type ? this.type.id : null,
+            parent: this.parent ? this.parent.id : null,
             stages: stages,
         };
     };
@@ -254,6 +283,10 @@ var MAVersion = /** @class */ (function () {
     };
     MAVersion.prototype.isStagesLoaded = function () {
         return this.stagesLoaded;
+    };
+    MAVersion.prototype.addChild = function (version) {
+        version.parent = this;
+        this.children.push(version);
     };
     MAVersion.prototype.addStage = function (obj) {
         obj.version = this;
@@ -264,6 +297,9 @@ var MAVersion = /** @class */ (function () {
         if (-1 !== (i = this.stages.indexOf(obj))) {
             this.stages.splice(i, 1);
         }
+    };
+    MAVersion.prototype.isParent = function () {
+        return this.parent == null;
     };
     MAVersion.prototype.hasStages = function () {
         return this.stages.length > 0;

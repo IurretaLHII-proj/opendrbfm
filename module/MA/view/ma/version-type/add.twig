@@ -1,0 +1,10 @@
+{% extends 'layout/base-layout.twig' %}
+
+{% block content %}
+	<div class="col-md-22">
+		<h2>{{ translate("New version type") }}</h2>
+
+		{# partial('partial/form/material', {'form': form, 'redirect': redirect}) #}
+		{{ form(form) }}
+	</div>
+{% endblock content %}

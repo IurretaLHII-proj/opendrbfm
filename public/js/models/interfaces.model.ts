@@ -54,6 +54,13 @@ interface IMAMaterial {
 	_links: IMALinks, 
 }
 
+interface IMAVersionType {
+	id:number,
+	name: string,
+	description:string;
+	_links: IMALinks, 
+}
+
 interface IMAProcess {
 	id: number,
 	title: string,
@@ -84,6 +91,8 @@ interface IMAVersion {
 	created: IMADate,
 	_links: IMALinks, 
 	_embedded: {
+		parent: IMAVersion,
+		type: IMAVersionType,
 		material: IMAMaterial,
 		owner: IMAUser,
 	},

@@ -40,6 +40,13 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 2,
 		],
+		'MA\Entity\VersionType' => [
+			'route_name' => 'process/version/type/detail/json',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 2,
+		],
 		'MA\Entity\Stage' => [
 			'route_name' => 'process/stage/detail',
 			'route_identifier_name' => 'id',

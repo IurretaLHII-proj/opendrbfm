@@ -172,6 +172,20 @@ class MAUser {
 	links: MALinks;
 }
 
+class MAVersionType {
+	constructor(obj: IMAVersionType) {
+		this.id	   		  = obj.id;
+		this.name  		  = obj.name;
+		this.description  = obj.description;
+		this.links 		  = new MALinks(obj._links);
+	}
+
+	id: number;
+	name:string;
+	description:string;
+	links: MALinks;
+}
+
 class MAMaterial {
 	constructor(obj: IMAMaterial) {
 		this.id	   = obj.id;
@@ -220,9 +234,19 @@ class MAProcess {
 			this.versions = [];
 			for (var i=0; i < obj._embedded.versions.length; i++) {
 				this.addVersion(MAVersion.fromJSON(obj._embedded.versions[i]));	
-				}
+			}
+			this.reloadVersions();
 		}
 		this.links = new MALinks(obj._links);
+	}
+
+	reloadVersions() {
+		this.versions.forEach(version => version.children = []); 
+		this.versions.forEach(version => {
+			if (!version.isParent()) {
+				this.versions.find(e => {return e.id == version.parent.id}).addChild(version);
+			}
+		});
 	}
 
 	toJSON(): {}{
@@ -263,6 +287,10 @@ class MAProcess {
 		return this.versions[this.versions.length-1];
 	}
 
+	parentVersions():MAVersion[] {
+		return this.versions.filter(version => version.isParent());
+	}
+
 	id: number;
 	title: string;
 	body: string;
@@ -294,11 +322,13 @@ class MAVersion {
 
 	constructor() {
 		this.stages   = [];
+		this.children = [];
 		this.comments = new MACollection();
 		this.created  = new Date;
 	}
 
 	load(obj: IMAVersion) {
+		console.log(obj);
 		if (obj.id) {
 			this.id = obj.id;
 			this.name = obj.name;
@@ -307,7 +337,9 @@ class MAVersion {
 			this.commentCount = obj.commentCount;
 			this.created = new Date(obj.created.date);
 			this.material = new MAMaterial(obj._embedded.material);
+			this.type = new MAVersionType(obj._embedded.type);
 			this.user = new MAUser(obj._embedded.owner);
+			this.parent = obj._embedded.parent ? MAVersion.fromJSON(obj._embedded.parent) : null;
 		}
 		this.links = new MALinks(obj._links);
 	}
@@ -323,6 +355,8 @@ class MAVersion {
 			state: this.state,
 			description: this.description,
 			material: this.material ? this.material.id : null,
+			type: this.type ? this.type.id : null,
+			parent: this.parent ? this.parent.id : null,
 			stages: stages,
 		};
 	}
@@ -335,6 +369,11 @@ class MAVersion {
 		return this.stagesLoaded;
 	}
 
+	addChild(version:MAVersion) {
+		version.parent = this;
+		this.children.push(version);
+	}
+
 	addStage(obj:MAStage) {
 		obj.version = this;
 		this.stages.push(obj);
@@ -345,6 +384,10 @@ class MAVersion {
 		if (-1 !== (i = this.stages.indexOf(obj))) {
 			this.stages.splice(i, 1);
 		}
+	}
+
+	isParent():boolean {
+		return this.parent == null;
 	}
 
 	hasStages():boolean {
@@ -377,7 +420,10 @@ class MAVersion {
 	description: string;
 	process: MAProcess;
 	user: MAUser;
+	parent: MAVersion;
+	children: MAVersion[];
 	material: MAMaterial;
+	type: MAVersionType;
 	stages: MAStage[];
 	comments: MACollection;
 	commentCount: number=0;

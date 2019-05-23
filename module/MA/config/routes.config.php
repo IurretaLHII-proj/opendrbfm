@@ -290,6 +290,62 @@ return [
 							]
 						],
 					],
+					'type' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/type',
+							'defaults' => [
+								'controller' => Controller\VersionTypeController::class,
+								'action' => 'index' 
+							],
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'add' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/add',
+									'defaults' => [
+										'action' => 'add' 
+									]
+								],
+							],
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\VersionTypeController::class,
+									],
+								],
+							],
+							'detail' => [
+								'type' => 'Segment',
+								'options' => [
+									'route' => '/:id[/:action]',
+									'defaults' => [
+										'action' => 'detail',
+									],
+									'constraints' => [
+										'id' => '\d+',
+										'action' => 'detail|edit|delete',
+									]
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'json' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/json',
+											'defaults' => [
+												'controller' => Controller\Js\VersionTypeController::class,
+											],
+										],
+									]
+								],
+							],
+						],
+					],
 				],
 			],
 			'stage' => [

@@ -365,10 +365,21 @@ App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resourc
 	$scope.errors   	= {};
 	$scope.init 		= function() {
 		$scope.materials = [{id:null, name:" --Select Material-- "}];
+		$scope.types 	 = [{id:null, name:" --Select Version type-- "}];
+		$scope.parents	 = [{id:null, name:" --None-- "}].concat(version.process.versions);
+		$scope.parents.splice($scope.parents.indexOf(version), 1);
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
 					$scope.materials.push(new MAMaterial(item));
+				});
+			}, 
+			function(err){}
+		);
+		$resource('/process/version/type/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, item => {
+					$scope.types.push(new MAVersionType(item));
 				});
 			}, 
 			function(err){}

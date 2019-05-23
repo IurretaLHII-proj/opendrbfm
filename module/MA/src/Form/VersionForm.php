@@ -49,6 +49,32 @@ class VersionForm extends Form implements InputFilterProviderInterface
 
         $this->add([
              'type' => 'ObjectSelect',
+             'name' => 'parent',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Type',
+				 'empty_option' => 'Choose parent',
+				 'target_class' => 'MA\Entity\Version',
+             ],
+        ]);
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'type',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+                 'label' => 'Type',
+				 'empty_option' => 'Choose type',
+				 'target_class' => 'MA\Entity\VersionType',
+             ],
+        ]);
+
+        $this->add([
+             'type' => 'ObjectSelect',
              'name' => 'material',
              'attributes' => [ 
                  'class' => 'form-control',
@@ -124,6 +150,9 @@ class VersionForm extends Form implements InputFilterProviderInterface
 						'options' => ['min' => 3, 'max' => 800],
 					],
 				],
+			],
+			'parent' => [
+				'required' => false,
 			],
 		];
 	}
