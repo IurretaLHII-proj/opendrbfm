@@ -25,6 +25,15 @@
 			<div ng-repeat="(i,v) in process.parentVersions()" class="col col-md-auto py-2">
 				<ng-include src="'/js/custom/tpl/process-versions-header.html'" ng-init="v=v;"/>
 			</div>
+			<div class="col col-md-auto py-2">
+				<a href="" 
+					ng-click="addVersion()" 
+					ng-if="process.links.isAllowed('version')"
+					class="btn btn-sm btn-outline-primary"
+				>
+					<i class="fa fa-plus"></i>
+				</a>
+			</div>
 		</div>
 
 

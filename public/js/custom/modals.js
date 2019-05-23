@@ -367,7 +367,10 @@ App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resourc
 		$scope.materials = [{id:null, name:" --Select Material-- "}];
 		$scope.types 	 = [{id:null, name:" --Select Version type-- "}];
 		$scope.parents	 = [{id:null, name:" --None-- "}].concat(version.process.versions);
-		$scope.parents.splice($scope.parents.indexOf(version), 1);
+		console.log($scope.parents, version);
+		if ($scope.parents.indexOf(version) != -1) {
+			$scope.parents.splice($scope.parents.indexOf(version), 1);
+		}
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
