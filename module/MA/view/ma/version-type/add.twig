@@ -3,8 +3,6 @@
 {% block content %}
 	<div class="col-md-22">
 		<h2>{{ translate("New version type") }}</h2>
-
-		{# partial('partial/form/material', {'form': form, 'redirect': redirect}) #}
-		{{ form(form) }}
+		{{ partial('partial/form/version-type', {'form': form, 'redirect': redirect}) }}
 	</div>
 {% endblock content %}

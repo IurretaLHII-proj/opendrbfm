@@ -18,9 +18,38 @@
 
 			<h2>{{ translate("Materials") }}</h2>
 
-			{% for material in collection %}
-				<div>{{ material }}</div>
-			{% endfor %}
+			<table class="table table-striped table-bordered">
+				<thead>
+					<tr>
+						<th>Criticality</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>User</th>
+						<th>Created</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for material in collection %}
+					<tr>
+						<td>{{ material.priority }}</td>
+						<td>{{ material.name }}</td>
+						<td>{{ material.description | raw }}</td>
+						<td>
+							<a href="{{ url('user/detail', {id: material.user.id}) }}">{{ material.user }}</a>
+						</td>
+						<td>{{ material.created | date('d/m/Y h:i') }}</td>
+						<td>
+							<div class="btn-group">
+								<a href="{{ url('process/material/detail', {id: material.id}) }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i></a>
+								<a href="{{ url('process/material/detail', {id: material.id, 'action': 'edit'}, {'query': {'redirect': url(null, {}, {}, true)}}) }}" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>
+								<a href="{{ url('process/material/detail', {id: material.id, 'action': 'delete'}) }}" class="btn btn-outline-primary disabled"><i class="fa fa-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
 		</div>
 	</div>
 {% endblock content %}

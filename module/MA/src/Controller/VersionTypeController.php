@@ -71,9 +71,52 @@ class VersionTypeController extends \Base\Controller\AbstractActionController
 		}
 
 		return new ViewModel([
-			'form' 	   => $form,
-			'redirect' => $r,
+			'title'		=> 'New version type',
+			'form' 	   	=> $form,
+			'redirect'	=> $r,
 		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function editAction()
+    {
+		$e    = $this->getEntity();
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\VersionTypeForm::class);
+
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		$form->bind($e);
+
+		$r = $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect'));
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData($this->getRequest()->getPost());
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
+
+				$this->getEntityManager()->flush();
+
+				return $this->redirect()->toUrl($r ? $r : 
+					$this->url()->fromRoute('process/version/type/detail', [
+						'id' => $e->getId(),
+					]));
+			}
+
+		}
+
+		$model = new ViewModel([
+			'title'		=> sprintf("Edit %s", $e),
+			'form' 	   	=> $form,
+			'redirect'	=> $r,
+		]);
+		$model->setTemplate('ma/version-type/add');
+		return $model;
 	}
 
 	/**

@@ -150,6 +150,14 @@ class Material implements
     }
     
     /**
+     * @return string.
+     */
+    public function getName()
+    {
+        return $this->getText();
+    }
+    
+    /**
      * Set text.
      *
      * @param string text the value to set.
