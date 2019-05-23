@@ -71,6 +71,7 @@ class MaterialController extends \Base\Controller\AbstractActionController
 		}
 
 		return new ViewModel([
+			'title'	   => 'New material',
 			'form' 	   => $form,
 			'redirect' => $r,
 		]);
@@ -79,10 +80,50 @@ class MaterialController extends \Base\Controller\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
+    public function editAction()
+    {
+		$e    = $this->getEntity();
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\MaterialForm::class);
+
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		$form->bind($e);
+
+		$r = $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect'));
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData($this->getRequest()->getPost());
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_UPDATE, $e);
+
+				$this->getEntityManager()->flush();
+
+				return $this->redirect()->toUrl($r ? $r : 
+					$this->url()->fromRoute('process/material/detail', [
+						'id' => $e->getId(),
+					]));
+			}
+		}
+
+		$model = new ViewModel([
+			'title'	   => sprintf("Edit %s", $e),
+			'form' 	   => $form,
+			'redirect' => $r,
+		]);
+		$model->setTemplate('ma/material/add');
+		return $model;
+	}
+
+	/**
+	 * @return ViewModel
+	 */
     public function detailAction()
     {
-		return new ViewModel([
-		]);
+		return new ViewModel;
 	}
 
 	/**

@@ -1,0 +1,43 @@
+{% do form.prepare() %}
+
+<div class="col">
+	{{ form().openTag(form) | raw }}	
+	<div
+		class="form-group {% if formElementErrors(form.get('name')) %}error{% endif %}">
+		<label class="control-label">{{ form.get('name').label }}</label>
+	    <div class="controls">
+			{{ formElement (form.get('name')) | raw }}
+			{% if formElementErrors(form.get('name')) %}
+				<span class="help-inline">{{ formElementErrors(form.get('name')) | raw}}</span>
+			{% endif %}
+	    </div>
+	</div>
+	
+	<div
+		class="form-group {% if formElementErrors(form.get('description')) %}error{% endif %}">
+		<label class="control-label">{{ form.get('description').label }}</label>
+	    <div class="controls">
+	
+			<text-angular 
+				name="description"
+				ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+				ta-text-editor-class="form-height form-control"
+				placeholder="Description"
+				>
+				{{ form.get('description').value | raw}}
+			</text-angular>
+			
+			<!--{{ formElement (form.get('description')) | raw }}-->
+			{% if formElementErrors(form.get('description')) %}
+				<span class="help-inline">{{ formElementErrors(form.get('description')) | raw }}</span>
+			{% endif %}
+	    </div>
+	</div>
+	<div class="form-group">
+		{{ formElement (form.get('submit')) }}
+	</div>
+	{% if redirect %}
+    	<input type="hidden" name="redirect" value="{{ redirect }}">
+	{% endif %}
+	{{ form().closeTag(form)  | raw }}	
+</div>

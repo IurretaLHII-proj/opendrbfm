@@ -425,6 +425,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
+								'action' => 'detail|edit|delete',
 							]
 						],
 					],
