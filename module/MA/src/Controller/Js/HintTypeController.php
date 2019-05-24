@@ -53,11 +53,9 @@ class HintTypeController extends \Base\Controller\Js\AbstractActionController
     {
 		$e  = $this->getEntity();
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$collection = $em->getRepository("MA\Entity\Hint")
-			->findBy(
-				['type' => $this->entity],
-				['priority' => 'DESC']
-			);
+		$r  = $em->getRepository("MA\Entity\Hint");
+
+		$collection = $r->findByType($this->entity);
 
 		$paginator = $this->getPaginator($collection);
 

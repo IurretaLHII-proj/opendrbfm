@@ -1038,3 +1038,65 @@ App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
 		);
 	}
 });
+
+App.controller('_HintTypeCtrl', function($scope, $uibModal, $resource) {
+
+	$scope.collection 	= new MACollection();
+	$scope.materials 	= [{id:null, name:"--- ANY ---"}];
+	$scope.types 		= [{id:null, name:"--- ANY ---"}];
+	$scope.states		= [
+		{id:null, 					name: "--- ANY ---"},
+		{id:MAVersion.IN_PROGRESS, 	name: "IN PROGRESS"},
+		{id:MAVersion.APROVED,  	name: "APROVED"},
+		{id:MAVersion.CANCELLED, 	name: "CANCELLED"},
+	];
+	$scope.state  	 = $scope.states[0];
+	$scope.material  = $scope.materials[0];
+	$scope.type 	 = $scope.types[0];
+	$scope.selType 		= function(value) { $scope.type		= value; }
+	$scope.selMaterial	= function(value) { $scope.material = value; }
+	$scope.selState		= function(value) { $scope.state 	= value; }
+
+	$scope.init = function(item, values) {
+		$scope.entity = MAHintType.fromJSON(item);
+		$resource('/process/material/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, item => {
+					$scope.materials.push(new MAMaterial(item));
+				});
+			}, 
+			function(err){}
+		);
+		$resource('/process/version/type/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, item => {
+					$scope.types.push(new MAVersionType(item));
+				});
+			}, 
+			function(err){}
+		);
+		$resource($scope.entity.links.getHref('hints')).get().$promise.then(
+			function(data) {
+				data._embedded.items = data._embedded.items.map(e => {return EMAHint.fromJSON(e)});
+				$scope.collection.load(data);
+				console.log($scope.collection);
+			},		
+			function(err) {
+				$scope.errors = err;
+			}
+		);	
+	}
+
+	$scope.more = function() {
+		$resource($scope.collection.links.getHref('next')).get().$promise.then(
+			function(data) {
+				data._embedded.items = data._embedded.items.map(e => {return EMAHint.fromJSON(e)});
+				$scope.collection.load(data);
+				console.log($scope.collection);
+			},		
+			function(err) {
+				$scope.errors = err;
+			}
+		);	
+	}
+});

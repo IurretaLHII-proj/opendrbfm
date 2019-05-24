@@ -202,7 +202,7 @@ var MAProcess = /** @class */ (function () {
             plant: this.plant,
             complexity: this.complexity,
             pieceNumber: this.pieceNumber,
-            pieceName: this.pieceNumber,
+            pieceName: this.pieceName,
             user: this.user.id,
             customer: this.customer.id,
         };
