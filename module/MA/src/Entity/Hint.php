@@ -9,7 +9,7 @@ use JsonSerializable;
 use DateTime;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\HintRepository")
  * @ORM\Table(name="process_hint")
  */
 class Hint implements 

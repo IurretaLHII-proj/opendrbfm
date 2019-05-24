@@ -420,6 +420,15 @@ class HintType implements
 				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
 				],
 			],
+			[
+				'rel'   	  => 'hints',
+				'privilege'   => 'hints',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/type/detail/json',
+				    'params'  => ['action' => 'hints', 'id' => $this->getId()],
+				],
+			],
 		];
 	}
 }

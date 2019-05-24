@@ -44,6 +44,7 @@ class HintTypeController extends \Base\Controller\AbstractActionController
 		if (null !== ($entity = $this->getEntity())) {
 			$model->setVariables([
 				'entity' => $entity,
+				'hal'    => $this->prepareHalEntity($entity, "process/hint/type/detail/json")
 			]);
 		}
 	}

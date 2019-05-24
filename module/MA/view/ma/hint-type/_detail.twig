@@ -8,27 +8,27 @@
 	</div>
 
 	<div class="col-md-12" 
-		ng-controller="_HintTypeCtrl"
-		ng-init="init({{ json(hal().renderEntity(hal)) | escape }})"
+		ng-controller="_CollectionCtrl"
+		ng-init="init({{ json(hal().renderCollection(collection)) | escape }}, 'EMAHint')"
 	>
-	<!--
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
-				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Type ({[type.name]})</button>
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State (Any)</button>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
+					<a class="dropdown-item" href="#">Any</a>
+					<div role="separator" class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">In progress</a>
+					<a class="dropdown-item" href="#">Canceled</a>
+					<a class="dropdown-item" href="#">Aproved</a>
 				</div>
 			</div>
 			<div class="input-group-prepend">
-				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material ({[material.name]})</button>
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Type (Any)</button>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
-				</div>
-			</div>
-			<div class="input-group-prepend">
-				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State ({[state.name]})</button>
-				<div class="dropdown-menu">
-					<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
+					<a class="dropdown-item" href="#">Any</a>
+					<div role="separator" class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Diseño</a>
+					<a class="dropdown-item" href="#">Puesta a punto</a>
 				</div>
 			</div>
 			<input type="text" class="form-control" placeholder="Search process" aria-label="Text input with dropdown button">
@@ -38,10 +38,13 @@
 	  	</div>
 
 		<div ng-repeat="item in collection.items" 
-			class="d-flex flex-column p-2"
+			class="d-flex flex-column p-2 issue-item"
 			ng-class="{first: $first, last: $last}"
+			ng-mouseover="item.hover = true;"
+			ng-mouseleave="item.hover = false;"
+			style="border-bottom: 1px solid #eee"
 		>
-		<p><span>{[item.priority]}</span>{[ item.name ]}</p>
+		<p><span class="badge badge-{[ badgeClass(item.priority) ]}">{[item.priority]}</span>{[ item.name ]}</p>
 			<pre>USER:{[ item.user ]}</pre>
 			<pre>PROCESS:{[ item.process ]}</pre>
 			<pre>VERSION:{[ item.version ]}</pre>
@@ -52,7 +55,7 @@
 		<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
 		<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 		<p><a ng-if="collection.has('next')" ng-click="more()" href="">.view previouses.</a></p>
-	-->
+
 	</div>
 
 {% endblock content %}
