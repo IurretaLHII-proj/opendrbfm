@@ -271,6 +271,16 @@ class Hint implements
     }
 
 	/**
+     * Get version.
+     *
+	 * @return VersionInterface
+	 */
+	public function getVersion()
+	{
+		return $this->getStage()->getVersion();
+	}
+
+	/**
      * Get process.
      *
 	 * @return ProcessInterface
