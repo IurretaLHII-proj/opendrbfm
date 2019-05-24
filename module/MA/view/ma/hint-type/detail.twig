@@ -8,28 +8,57 @@
 	</div>
 
 	<div class="col-md-12" 
-		ng-cloak
-		ng-controller="CollectionCtrl"
-		ng-init="init({{ json(hal().renderCollection(collection)) | escape }})"
+		ng-controller="_CollectionCtrl"
+		ng-init="init({{ json(hal().renderCollection(collection)) | escape }}, 'EMAHint')"
 	>
 
-		<!--<h1>{{ translate("Home") }}</h1>-->
-		<div ng-repeat="item in collection._embedded.items" 
+	<!--
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State (Any)</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="#">Any</a>
+					<div role="separator" class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">In progress</a>
+					<a class="dropdown-item" href="#">Canceled</a>
+					<a class="dropdown-item" href="#">Aproved</a>
+				</div>
+			</div>
+			<div class="input-group-prepend">
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Type (Any)</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="#">Any</a>
+					<div role="separator" class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Diseño</a>
+					<a class="dropdown-item" href="#">Puesta a punto</a>
+				</div>
+			</div>
+			<input type="text" class="form-control" placeholder="Search process" aria-label="Text input with dropdown button">
+			<div class="input-group-append">
+				<button class="btn btn-outline-primary" type="button"><i class="fa fa-search"></i></button>
+			</div>
+	  	</div>
+
+		<div ng-repeat="item in collection.items" 
 			class="d-flex flex-column p-2 issue-item"
 			ng-class="{first: $first, last: $last}"
 			ng-mouseover="item.hover = true;"
 			ng-mouseleave="item.hover = false;"
 			style="border-bottom: 1px solid #eee"
 		>
-		<span class="badge badge-{[ badgeClass(item.priority) ]}">{[item.priority]}</span>
-		<pre>{[ item ]}</pre>
-		<a ng-href="{[ item._links.self.href ]}" class="btn"><i class="fa fa-eye"></i></a>
+		<p><span class="badge badge-{[ badgeClass(item.priority) ]}">{[item.priority]}</span>{[ item.name ]}</p>
+			<pre>USER:{[ item.user ]}</pre>
+			<pre>PROCESS:{[ item.process ]}</pre>
+			<pre>VERSION:{[ item.version ]}</pre>
+			<pre>STAGE:{[ item.stage ]}</pre>
+			<a ng-href="{[ item.links.getHref() ]}" class="btn"><i class="fa fa-eye"></i></a>
 		</div>
-		<div style="text-align: center; margin-top: 1rem;">
-			<p><a href="" ng-if="collection._links.next" ng-click="more()">.view previouses.</a></p>
-			<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
-			<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
-		</div>
+
+		<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+		<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+		<p><a ng-if="collection.has('next')" ng-click="more()" href="">.view previouses.</a></p>
+
+	-->
 	</div>
 
 {% endblock content %}

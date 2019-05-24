@@ -599,7 +599,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail|edit',
+										'action' => 'detail|edit|hints',
 									]
 								],
 								'may_terminate' => true,

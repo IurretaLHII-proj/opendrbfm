@@ -105,6 +105,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		modal.result.then(
 			function(res) {
 				$scope.process.addVersion(version);
+				$scope.process.reloadVersions();
 				$scope.setVersion(version);
 				$scope.addSuccess("Saved succesfully");
 			},
@@ -992,8 +993,9 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
 App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
 
 	const classes = {
-		"MAProcess": MAProcess,
-		"MAAction" : MAAction,
+		"EMAHint"	: EMAHint,
+		"MAProcess"	: MAProcess,
+		"MAAction" 	: MAAction,
 	}
 
 	$scope.collection = new MACollection();

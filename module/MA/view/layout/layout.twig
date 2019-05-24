@@ -12,7 +12,7 @@
         <!-- Le styles -->
         <link href="{{ basePath() }}/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
 		<!--<link href="{{ basePath() }}/css/modal.css" media="screen" rel="stylesheet" type="text/css">-->
-        <link href="{{ basePath() }}/css/v4.1/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="{{ basePath() }}/js/node_modules/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
 		<link rel='stylesheet' href='/js/node_modules/textangular/dist/textAngular.css'>
 		<link rel='stylesheet' href='/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css'>
         <link href="{{ basePath() }}/css/style.css" media="screen" rel="stylesheet" type="text/css">
@@ -22,12 +22,11 @@
         {% block style %}{% endblock style %}
     
         <!-- Scripts -->
-        <script type="text/javascript" src="{{ basePath() }}/js/jquery.min.js"></script>
-		<script type="text/javascript" src="{{ basePath() }}/js/jquery-ui-1.12.1/jquery-ui.min.js"></script> <!-- required for border css animations -->
-        <!--[if lt IE 9]><script type="text/javascript" src="{{ basePath() }}/js/respond.min.js"></script><![endif]-->
-        <!--[if lt IE 9]><script type="text/javascript" src="{{ basePath() }}/js/html5shiv.js"></script><![endif]-->
-		<script type="text/javascript" src="{{ basePath() }}/js/v4.1/bootstrap.min.js"></script>
-
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/jquery/dist/jquery.min.js"></script>
+		<!--<script type="text/javascript" src="{{ basePath() }}/js/node_modules/jquery/dist/jquery.slim.min.js"></script>-->
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/popper.js/dist/umd/popper.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular/angular.min.js"></script>
         <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-resource/angular-resource.min.js"></script>
         <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-sanitize/angular-sanitize.min.js"></script>
@@ -42,8 +41,10 @@
 		<script src='/js/node_modules/textangular/dist/textAngular-sanitize.min.js'></script>
 		<script src='/js/node_modules/textangular/dist/textAngular.min.js'></script>
 
-		<script type="text/javascript" src="{{ basePath() }}/js/models/interfaces.model.js"></script>
-		<script type="text/javascript" src="{{ basePath() }}/js/models/entities.model.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/minified/interfaces.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/minified/entities.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/expanded/interfaces.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/expanded/entities.js"></script>
 
 		<script type="text/javascript" src="{{ basePath() }}/js/custom/custom.js"></script>
 		<script type="text/javascript" src="{{ basePath() }}/js/custom/comments.js"></script>
