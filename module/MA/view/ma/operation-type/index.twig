@@ -162,10 +162,13 @@
 												ng-click="editHint(hint)"
 												class="btn btn-sm btn-outline-primary"
 											><i class="fa fa-pencil"></i></a>
-											<a ng-href="{[ hint.links.getHref() ]}" 
+											<a ng-href="/process/hint?op={[op.id]}&hint={[hint.id]}" 
 												class="btn btn-sm btn-outline-primary"
 											><i class="fa fa-eye"></i></a>
-											<!--<a href=""  class="btn btn-sm btn-primary"
+											<!--<a ng-href="{[ hint.links.getHref() ]}" 
+												class="btn btn-sm btn-outline-primary"
+											><i class="fa fa-eye"></i></a>
+											<a href=""  class="btn btn-sm btn-primary"
 												ng-confirm-click
 												confirmed-click="alert('todo!')">
 												<i class="fa fa-trash"></i></a>-->

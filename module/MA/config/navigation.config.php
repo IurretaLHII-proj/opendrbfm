@@ -69,6 +69,13 @@ return [
 			],
 		],
 		[
+			'label' => 'Error',
+			'route' => 'process/hint',
+			'class' => 'nav-link',
+			'resource'	=> Entity\Hint::class,
+			'privilege' => 'index',
+		],
+		[
 			'label' => 'Customer',
 			'route' => 'customer',
 			'class' => 'nav-link',

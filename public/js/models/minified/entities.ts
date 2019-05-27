@@ -578,17 +578,19 @@ class MAOperationType {
 	}
 
 	load(obj: IMAOperationType) {
-		this.id = obj.id;
-		this.text = obj.text;
-		this.name = obj.text;
-		this.description = obj.description;
-		this.user = new MAUser(obj._embedded.owner);
-		this.created = new Date(obj.created.date);
-		this.links = new MALinks(obj._links);
-		this.operations = [];
-		for (var i=0; i < obj._embedded.operations.length; i++) {
-			this.addOperation(MAOperation.fromJSON(obj._embedded.operations[i]));	
+		if (obj.id) {
+			this.id = obj.id;
+			this.text = obj.text;
+			this.name = obj.text;
+			this.description = obj.description;
+			this.user = new MAUser(obj._embedded.owner);
+			this.created = new Date(obj.created.date);
+			this.operations = [];
+			for (var i=0; i < obj._embedded.operations.length; i++) {
+				this.addOperation(MAOperation.fromJSON(obj._embedded.operations[i]));	
+			}
 		}
+		this.links = new MALinks(obj._links);
 	}
 
 	toJSON(): {}{

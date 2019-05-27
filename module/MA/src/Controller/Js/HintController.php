@@ -159,4 +159,43 @@ class HintController extends \Base\Controller\Js\AbstractActionController
 
 		return new HalJsonModel($payload);
 	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function indexAction()
+    {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+		$r  = $em->getRepository("MA\Entity\Hint");
+
+		$p = $this->params()->fromQuery('process');
+		$m = $this->params()->fromQuery('material');
+		$t = $this->params()->fromQuery('type');
+		$o = $this->params()->fromQuery('op');
+		$h = $this->params()->fromQuery('hint');
+
+		$collection = $r->findByType(
+			$p ? $em->getRepository("MA\Entity\Process")->find($p) : $p,
+			$o ? $em->getRepository("MA\Entity\Operation")->find($o) : $o,
+			$h ? $em->getRepository("MA\Entity\HintType")->find($h) : $h,
+			$t ? $em->getRepository("MA\Entity\VersionType")->find($t) : $t,
+			$m ? $em->getRepository("MA\Entity\Material")->find($m) : $m,
+			$this->params()->fromQuery('state'),
+			$this->params()->fromQuery('prior', 0),
+			$this->params()->fromQuery('order', 'priority'),
+			$this->params()->fromQuery('criteria', 'DESC')
+		);
+
+		$paginator = $this->getPaginator($collection);
+
+		$metadata = $this->hal()->getMetadataMap()->get("MA\Entity\Hint");
+		$metadata->setHydrator(new \MA\Hydrator\Expanded\HintHydrator());
+		$metadata->setMaxDepth(4);
+
+		$payload = $this->prepareHalCollection($paginator, 'process/hint/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
 }

@@ -1,0 +1,102 @@
+{{ docType() }}
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% block title %}{{ translate('OpenDRBFM') }}{% endblock title %}
+        </title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block meta %}{% endblock meta %}
+
+        <!-- Le styles -->
+        <link href="{{ basePath() }}/img/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
+		<!--<link href="{{ basePath() }}/css/modal.css" media="screen" rel="stylesheet" type="text/css">-->
+        <link href="{{ basePath() }}/js/node_modules/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+		<link rel='stylesheet' href='/js/node_modules/textangular/dist/textAngular.css'>
+		<link rel='stylesheet' href='/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css'>
+		<link rel='stylesheet' href='/js/node_modules/angular-auto-complete/angular-auto-complete.css'>
+        <link href="{{ basePath() }}/css/style.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="{{ basePath() }}/css/custom/custom.css" media="screen" rel="stylesheet" type="text/css">
+        <link href="{{ basePath() }}/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">
+        
+        {% block style %}{% endblock style %}
+    
+        <!-- Scripts -->
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/lodash/lodash.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/jquery/dist/jquery.min.js"></script>
+		<!--<script type="text/javascript" src="{{ basePath() }}/js/node_modules/jquery/dist/jquery.slim.min.js"></script>-->
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/popper.js/dist/umd/popper.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular/angular.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-route/angular-route.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-resource/angular-resource.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-animate/angular-animate.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-ui-sortable/dist/sortable.min.js"></script>
+        <script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-auto-complete/angular-auto-complete.js"></script>
+		<!--
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+		-->
+		<script type="text/javascript" src="{{ basePath() }}/js/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+
+		<script src='/js/node_modules/textangular/dist/textAngular-rangy.min.js'></script>
+		<script src='/js/node_modules/textangular/dist/textAngular-sanitize.min.js'></script>
+		<script src='/js/node_modules/textangular/dist/textAngular.min.js'></script>
+
+		<script type="text/javascript" src="{{ basePath() }}/js/models/minified/interfaces.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/minified/entities.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/expanded/interfaces.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/models/expanded/entities.js"></script>
+
+		<script type="text/javascript" src="{{ basePath() }}/js/custom/custom.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/custom/comments.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/custom/controllers.js"></script>
+		<script type="text/javascript" src="{{ basePath() }}/js/custom/modals.js"></script>
+
+        {% block script %}{% endblock script %}
+    </head>
+
+    <body ng-app="myApp" ng-controller="MainCtrl" ng-cloak>
+
+		<div class="collapse navbar-collapse d-md-none" id="navbarSupportedContent" style="background: #eee; border-bottom: 1px solid #ccc; padding: 12px;">
+			{# setAddClassToListItem(true) //Passes li class to a tag #}
+			{{ navigation('navigation').menu().setUlClass('navbar-nav mr-auto').setMinDepth(0).setMaxDepth(null).setRenderInvisible(false) | raw }}
+		</div>
+
+		<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-1 d-none d-md-block sidebar sidebar-fixed" style="">
+				<a class="navbar-brand col-md-1 mr-0 text-muted text-center" href="/">
+					<img src="/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="OpenDRBFM"><!--OpenDrbfm-->
+				</a>
+				{% block sidebar %}
+				<div class="sidebar">
+					{{ navigation('navigation').menu()
+						.setUlClass('nav flex-column')
+						.setMinDepth(0).setMaxDepth(2)
+						.setOnlyActiveBranch(false)
+						.setAddClassToListItem(true)
+						.setRenderInvisible(true) | raw }}
+				</div>
+				{% endblock sidebar %}
+			</div>
+
+			<div class="col-md-11 ml-sm-auto px-0 col-sm-12" style="">
+
+				<div ng-if="messages.warnings.length || messages.success.length || messages.errors.length" class="messages">
+					<div class="container">
+						<div ng-repeat="message in messages.warnings track by $index" class="alert alert-warning" role="alert">{[ message ]}<a href="" ng-click="closeWarning(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+						<div ng-repeat="message in messages.errors track by $index" class="alert alert-danger" role="alert">{[ message ]}<a href="" ng-click="closeError(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+						<div ng-repeat="message in messages.success track by $index" class="alert alert-success" role="alert">{[ message ]}<a href="" ng-click="closeSuccess(message)" class="pull-right"><span class="fa fa-close"></span></a></div>
+					</div>
+				</div>
+
+				{% block body %}{{ content|raw }}{% endblock body %}
+			</div>
+        </div> <!-- /row -->
+        </div> <!-- /container -->
+	</body>
+</html>
+

@@ -1,5 +1,35 @@
 {% extends 'layout/base-layout.twig' %}
 
+{# block search %}
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<button class="btn btn-outline-light text-muted btn-sm rounded-0 disabled" type="button">Error type ( {[entity.name]} )</button>
+		</div>
+		<div class="input-group-prepend">
+			<button class="btn btn-outline-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version type ( {[type.name]} )</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+		<div class="input-group-prepend">
+			<button class="btn btn-outline-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material ( {[material.name]} )</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+		<div class="input-group-prepend">
+			<button class="btn btn-outline-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State ( {[state.name]} )</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+		<input type="text" class="form-control sticky-search" placeholder="Search process" aria-label="Text input with dropdown button">
+		<div class="input-group-append">
+			<button class="btn btn-sm btn-secondary" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+		</div>
+	</div>
+{% endblock search #}
+
 {% block content %}
 	<div class="row">
 		<div class="col-md-12">
@@ -11,48 +41,74 @@
 		ng-controller="_HintTypeCtrl"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }})"
 	>
-	<!--
 		<div class="input-group mb-3">
 			<div class="input-group-prepend">
-				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Type ({[type.name]})</button>
+				<button class="btn disabled" type="button">Error type ( {[entity.name]} )</button>
+			</div>
+			<div class="input-group-prepend">
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version type ( {[type.name]} )</button>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
 				</div>
 			</div>
 			<div class="input-group-prepend">
-				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material ({[material.name]})</button>
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material ( {[material.name]} )</button>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
 				</div>
 			</div>
 			<div class="input-group-prepend">
-				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State ({[state.name]})</button>
+				<button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State ( {[state.name]} )</button>
 				<div class="dropdown-menu">
 					<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
 				</div>
 			</div>
 			<input type="text" class="form-control" placeholder="Search process" aria-label="Text input with dropdown button">
 			<div class="input-group-append">
-				<button class="btn btn-outline-primary" type="button"><i class="fa fa-search"></i></button>
+				<button class="btn btn-outline-primary" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
 			</div>
 	  	</div>
 
 		<div ng-repeat="item in collection.items" 
-			class="d-flex flex-column p-2"
+			class="d-flex py-1"
 			ng-class="{first: $first, last: $last}"
 		>
-		<p><span>{[item.priority]}</span>{[ item.name ]}</p>
+			<!--<p><span>{[item.priority]}</span>{[ item.name ]}</p>
 			<pre>USER:{[ item.user ]}</pre>
 			<pre>PROCESS:{[ item.process ]}</pre>
 			<pre>VERSION:{[ item.version ]}</pre>
-			<pre>STAGE:{[ item.stage ]}</pre>
+			<pre>STAGE:{[ item.stage ]}</pre>-->
+			
+			<div class="">
+				<p class="text-center">Stage {[ item.stage.order ]}</p>
+				<div ng-if="item.stage.images.length" 
+					 ng-repeat="img in item.stage.images" 
+				>
+					<a href="{[ item.process.links.getHref() ]}">
+						<img ng-src="{[ img.links.getHref() ]}" alt="{[ img.description ]}" title="{[ img.description ]}" class="img-thumbnail p-0 border-0 img-responsive stage-img" width="100" height="100"/>
+					</a>
+				</div>
+				<div class="d-flex flex-column">
+					<div ng-repeat="(i, op) in item.stage.operations" class="text-center">
+						<span class="small">{[op.longname]}</span>
+					</div>
+				</div>
+			</div>
+			<div class="mx-4">
+				<p>Error:  <a href="{[ item.links.getHref() ]}">{[ item.name ]}</a></p>
+				<p>Process: <a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a></p>
+				<p>Version: {[ item.version.name]}</p>
+				<p>Type: {[ item.version.type.name]}</p>
+				<p>Material: {[ item.version.material.name]}</p>
+			</div>
 			<a ng-href="{[ item.links.getHref() ]}" class="btn"><i class="fa fa-eye"></i></a>
 		</div>
 
+		<hr>
+		
 		<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
 		<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 		<p><a ng-if="collection.has('next')" ng-click="more()" href="">.view previouses.</a></p>
-	-->
 	</div>
 
 {% endblock content %}

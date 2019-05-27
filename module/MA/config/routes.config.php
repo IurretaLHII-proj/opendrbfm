@@ -554,6 +554,15 @@ return [
 				],
 				'may_terminate' => true,
 				'child_routes' => [
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\HintController::class,
+							],
+						],
+					],
 					'detail' => [
 						'type' => 'Segment',
 						'options' => [

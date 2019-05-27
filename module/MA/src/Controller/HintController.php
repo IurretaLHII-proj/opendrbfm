@@ -21,6 +21,15 @@ class HintController extends \Base\Controller\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
+    public function indexAction()
+    {
+		return new ViewModel([
+		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
     public function actionsAction()
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
