@@ -5,6 +5,7 @@ var App = angular.module('myApp', [
 		'textAngular',
 		'ui.sortable',
 		'ui.bootstrap',
+		'autoCompleteModule'
 		]);
 
 App.config(function($rootScopeProvider) {

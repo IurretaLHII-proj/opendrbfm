@@ -26,7 +26,10 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$collection = $em->getRepository("MA\Entity\Process")->findBy([],['created' => 'DESC']);
+		$title = $this->params()->fromQuery('name');
+		$order = $this->params()->fromRoute('order', 'created');
+
+		$collection = $em->getRepository("MA\Entity\Process")->getBy($title, $order, $order === 'created' ? 'DESC' : 'ASC');
 
 		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'process/json');
 

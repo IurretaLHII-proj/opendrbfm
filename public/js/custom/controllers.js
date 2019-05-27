@@ -1041,7 +1041,6 @@ App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
 
 App.controller('_HintTypeCtrl', function($scope, $uibModal, $resource) {
 
-	$scope.collection 	= new MACollection();
 	$scope.materials 	= [{id:null, name:"--- ANY ---"}];
 	$scope.types 		= [{id:null, name:"--- ANY ---"}];
 	$scope.states		= [
@@ -1056,9 +1055,16 @@ App.controller('_HintTypeCtrl', function($scope, $uibModal, $resource) {
 	$scope.selType 		= function(value) { $scope.type		= value; }
 	$scope.selMaterial	= function(value) { $scope.material = value; }
 	$scope.selState		= function(value) { $scope.state 	= value; }
-
+	$scope.getQuery		= function() {
+		let query = {};
+		if ($scope.material.id) query.material = $scope.material.id;
+		if ($scope.type.id) 	query.type 	   = $scope.type.id;
+		if ($scope.state.id) 	query.state    = $scope.state.id;
+		return query;
+	}
 	$scope.init = function(item, values) {
-		$scope.entity = MAHintType.fromJSON(item);
+		$scope.entity 	  = MAHintType.fromJSON(item);
+		$scope.collection = new MACollection();
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
@@ -1089,6 +1095,20 @@ App.controller('_HintTypeCtrl', function($scope, $uibModal, $resource) {
 
 	$scope.more = function() {
 		$resource($scope.collection.links.getHref('next')).get().$promise.then(
+			function(data) {
+				data._embedded.items = data._embedded.items.map(e => {return EMAHint.fromJSON(e)});
+				$scope.collection.load(data);
+				console.log($scope.collection);
+			},		
+			function(err) {
+				$scope.errors = err;
+			}
+		);	
+	}
+
+	$scope.search = function() {
+		$scope.collection = new MACollection();
+		$resource($scope.entity.links.getHref('hints')).get($scope.getQuery()).$promise.then(
 			function(data) {
 				data._embedded.items = data._embedded.items.map(e => {return EMAHint.fromJSON(e)});
 				$scope.collection.load(data);

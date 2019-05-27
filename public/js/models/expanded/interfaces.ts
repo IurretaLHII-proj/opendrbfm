@@ -1,6 +1,7 @@
 interface IEMAHint {
 	id: number,
 	name: string,
+	color: string,
 	priority: number,
 	description: string,
 	created: IMADate,
@@ -10,5 +11,7 @@ interface IEMAHint {
 		process: IMAProcess,
 		version: IMAVersion,
 		stage: IMAStage,
+		operation: IMAOperation,
+		reasons: IMAHintReason[],
 	},
 }

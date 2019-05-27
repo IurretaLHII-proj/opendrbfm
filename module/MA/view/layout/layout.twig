@@ -56,24 +56,21 @@
 
     <body ng-app="myApp" ng-controller="MainCtrl" ng-cloak>
 		<!-- Just an image -->
-		<nav class="navbar flex-sm-nowrap navbar-light bg-light sticky-top p-0">
-			<a class="navbar-brand col-md-1 mr-0 text-muted" href="/" style="background:#EEE;">
-				<img src="/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="OpenDRBFM">OpenDrbfm
+		<nav class="navbar flex-sm-nowrap navbar-light sticky-top p-0">
+			<a class="navbar-brand col-md-1 mr-0 text-muted text-center" href="/">
+				<img src="/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="OpenDRBFM"><!--OpenDrbfm-->
 			</a>
+			{% block search %}
 			<input 
 				type="search" 
-				class="form-control w-100" 
+				class="form-control w-100 sticky-search" 
 				aria-label="Search" 
 				placeholder="Search" 
-				style="
-				padding: .75rem 1rem;
-				border-width: 0;
-				border-radius: 0;
-				border-bottom: 1px solid #EEE;
-			">
+			>
 			<button class="btn btn-default my-0 rounded-0" type="submit">
 				<span class="fa fa-search"></span>
 			</button>
+			{% endblock search %}
 		
 			<button class="navbar-toggler d-md-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
