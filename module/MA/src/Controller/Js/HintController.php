@@ -192,7 +192,9 @@ class HintController extends \Base\Controller\Js\AbstractActionController
 		$metadata->setHydrator(new \MA\Hydrator\Expanded\HintHydrator());
 		$metadata->setMaxDepth(4);
 
-		$payload = $this->prepareHalCollection($paginator, 'process/hint/json');
+		$payload = $this->prepareHalCollection($paginator, 'process/hint/json', [], [
+			//'query' => $this->params()->fromQuery(), 
+		]);
 
 		return new HalJsonModel([
 			'payload' => $payload,

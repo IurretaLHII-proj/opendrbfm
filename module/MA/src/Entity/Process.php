@@ -31,14 +31,14 @@ class Process implements
 	protected $id;
 
 	/**
-	 * @var int 
-	 * @ORM\Column(type="integer")
+	 * @var string 
+	 * @ORM\Column(type="string")
 	 */
 	protected $number;
 
 	/**
-	 * @var int 
-	 * @ORM\Column(type="integer")
+	 * @var string
+	 * @ORM\Column(type="string")
 	 */
 	protected $code;
 
@@ -187,7 +187,7 @@ class Process implements
     /**
      * Get number.
      *
-     * @return int.
+     * @return string.
      */
     public function getNumber()
     {
@@ -197,19 +197,19 @@ class Process implements
     /**
      * Set number.
      *
-     * @param int number the value to set.
+     * @param string number the value to set.
      * @return Process.
      */
     public function setNumber($number)
     {
-        $this->number = (int) $number;
+        $this->number = (string) $number;
         return $this;
     }
 
     /**
      * Get code.
      *
-     * @return int.
+     * @return string.
      */
     public function getCode()
     {
@@ -219,12 +219,12 @@ class Process implements
     /**
      * Set code.
      *
-     * @param int code the value to set.
+     * @param string code the value to set.
      * @return Process.
      */
     public function setCode($code)
     {
-        $this->code = (int) $code;
+        $this->code = (string) $code;
         return $this;
     }
 

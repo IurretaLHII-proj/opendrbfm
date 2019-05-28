@@ -29,8 +29,8 @@ class Customer implements
 	protected $id;
 
 	/**
-	 * @var int 
-	 * @ORM\Column(type="integer")
+	 * @var string 
+	 * @ORM\Column(type="string")
 	 */
 	protected $code;
 
@@ -127,7 +127,7 @@ class Customer implements
     /**
      * Get code.
      *
-     * @return int.
+     * @return string.
      */
     public function getCode()
     {
@@ -137,12 +137,12 @@ class Customer implements
     /**
      * Set code.
      *
-     * @param int code the value to set.
+     * @param string code the value to set.
      * @return Operation.
      */
     public function setCode($code)
     {
-        $this->code = (int) $code;
+        $this->code = (string) $code;
         return $this;
     }
     

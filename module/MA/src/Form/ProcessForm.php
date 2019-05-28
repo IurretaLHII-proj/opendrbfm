@@ -13,7 +13,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
     public function init()
     {
         $this->add([
-             'type' => 'Number',
+             'type' => 'Text',
              'name' => 'number',
              'attributes' => [ 
                  'class' => 'form-control',
@@ -21,19 +21,15 @@ class ProcessForm extends Form implements InputFilterProviderInterface
              ],
              'options' => [
                  'label' => 'Project Nº',
-				 'min' => 1,
-				 'max' => 9999,
              ],
         ], ['priority' => -1]);
 
         $this->add([
-             'type' => 'Number',
+             'type' => 'Text',
              'name' => 'code',
              'attributes' => [ 
                  'class' => 'form-control',
 				 'placeholder' => 'Article code',
-				 'min' => 1,
-				 'max' => 99999999999,
              ],
              'options' => [
                  'label' => 'Article code',
@@ -181,6 +177,42 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return [
+			'number' => [
+				'required' => true,
+				'filters' => [
+					[
+						'name' => \Zend\Filter\StringTrim::class,
+					],
+				],
+				'validators' => [
+					[
+						'name' => \Zend\Validator\Regex::class,
+						'options' => ['pattern' => '(^-?\d*(\.\d+)?$)']
+					],
+					[
+						'name' => \Zend\Validator\StringLength::class,
+						'options' => ['min' => 1, 'max' => 11],
+					],
+				],
+			],
+			'code' => [
+				'required' => true,
+				'filters' => [
+					[
+						'name' => \Zend\Filter\StringTrim::class,
+					],
+				],
+				'validators' => [
+					[
+						'name' => \Zend\Validator\Regex::class,
+						'options' => ['pattern' => '(^-?\d*(\.\d+)?$)']
+					],
+					[
+						'name' => \Zend\Validator\StringLength::class,
+						'options' => ['min' => 1, 'max' => 11],
+					],
+				],
+			],
 			'title' => [
 				'required' => true,
 				'filters' => [

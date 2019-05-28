@@ -185,6 +185,9 @@ abstract class AbstractActionController extends BaseAbstractActionController
 		$resource->setPageSize($pag->getItemCountPerPage());
 
 		$options = \Zend\Stdlib\ArrayUtils::merge(
+			$options, ['query' => $this->params()->fromQuery()]
+		);
+		$options = \Zend\Stdlib\ArrayUtils::merge(
 			$options, ['query' => ['limit' => $pag->getItemCountPerPage()]]
 		);
 
@@ -203,7 +206,6 @@ abstract class AbstractActionController extends BaseAbstractActionController
 		if (!$collection->getLinks()->has('self')) {
 			$hal->injectSelfLink($collection, $route);
 		}
-
 
 		return $collection;
 	}
@@ -298,7 +300,7 @@ abstract class AbstractActionController extends BaseAbstractActionController
 	 * @param int $pn page query name of Paginator
 	 * @return Paginator
 	 */
-	public function getPaginator(array $collection, $l = 5, $p = 1, $ln = 'limit', $pn = 'page')
+	public function getPaginator(array $collection, $l = 20, $p = 1, $ln = 'limit', $pn = 'page')
 	{
 		$paginator = new Paginator(new ArrayAdapter($collection));
 		$paginator->setItemCountPerPage((int) $this->params()->fromQuery($ln, $l));

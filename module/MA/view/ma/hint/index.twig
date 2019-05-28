@@ -42,7 +42,7 @@
 		</div>
 		<input type="number" class="form-control sticky-search" ng-model="priority">
 		<input type="text" class="form-control sticky-search" placeholder="Search process" auto-complete="autoCompleteOptions" ng-model="process.title">
-		<a ng-if="process.id" ng-click="rmProcess()" href="" style="position:absolute; right:35px; top:25%;">
+		<a ng-if="process.id" ng-click="rmProcess()" href="" style="position:absolute; right:40px; top:25%;">
 			<i class="fa fa-close"></i>
 		</a>
 		<div class="input-group-append">
@@ -53,10 +53,10 @@
 	<div class="col-md-12">
 		<h2>Errors</h2>
 
-		<table class="table table-bordered m-0">
+		<table class="table m-0">
 			<thead class="text-center">
 				<tr>
-					<th rowspan="2" colspan=2">
+					<th colspan=2" class="p-0 border-top-0">
 						<a href="" ng-click="selOrder('process');selCriteria('DESC');search();">
 							<i class="fa fa-caret-down" 
 							   ng-class="{'text-dark': order=='process'&&criteria=='DESC'}">
@@ -69,11 +69,8 @@
 						</a>
 						<div>Process</div>
 					</th>
-					<th rowspan="2" colspan=2">Stage</th>
-					<th colspan="4">Error</th>
-				</tr>
-				<tr>
-					<th>
+					<th colspan=2" class="p-0 border-top-0" style="vertical-align:middle;">Stage</th>
+					<th class="p-0 border-top-0">
 						<a href="" ng-click="selOrder('priority');selCriteria('DESC');search();">
 							<i class="fa fa-caret-down" 
 							   ng-class="{'text-dark': order=='priority'&&criteria=='DESC'}">
@@ -86,7 +83,7 @@
 						</a>
 						<div>Priority</div>
 					</th>
-					<th>
+					<th class="p-0 border-top-0">
 						<a href="" ng-click="selOrder('name');selCriteria('DESC');search();">
 							<i class="fa fa-caret-down" 
 							   ng-class="{'text-dark': order=='name'&&criteria=='DESC'}">
@@ -99,7 +96,7 @@
 						</a>
 						<div>Name</div>
 					</th>
-					<th>
+					<th class="p-0 border-top-0">
 						<a href="" ng-click="selOrder('created');selCriteria('DESC');search();">
 							<i class="fa fa-caret-down" 
 							   ng-class="{'text-dark': order=='created'&&criteria=='DESC'}">
@@ -112,7 +109,7 @@
 						</a>
 						<div>Created</div>
 					</th>
-					<th>Reasons</th>
+					<th class="p-0 border-top-0" style="vertical-align:middle;">Reasons</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -126,9 +123,12 @@
 						</a>
 					</td>
 					<td>
-						<div><a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a></div>
-						<div>{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>
-						<div><a href="{[ item.process.customer.links.getHref() ]}">{[ item.process.customer.name ]}</a></div>
+						<a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a>
+						<div class="">
+							<a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
+						</div>
+						<div class="">(nº {[ item.process.number ]})</div>
+						<div class="small text-muted">{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>
 						<div ng-bind-html="item.version.description"></div>
 					</td>
 					<td class="text-center">
@@ -143,24 +143,26 @@
 						</a>
 					</td>
 					<td>
-						<div>Stage: {[ item.stage.order ]}</div>
-						<ul class="p-0" style="list-style:none;">
+						<div>Stage {[ item.stage.order ]}</div>
+						<ul class="text-muted" style="">
 							<li ng-repeat="(i, op) in item.stage.operations">{[op.longName]}</li>
 						</ul>
 						<div ng-bind-html="item.stage.description"></div>
 					</td>
 					<td colspan="2">
-						<div class="small text-muted">{[ item.operation.longName ]}</div>
-						<a href="{[ item.links.getHref() ]}" class="btn btn-sm btn-{[item.color]}" style="white-space:normal">
-							<span class="badge badge-light mr-2">{[ item.priority ]}</span>{[ item.name ]} 
-						</a>
+						<div class="text-muted">{[ item.operation.longName ]}</div>
+						<div class="text-center mb-2">
+							<a href="{[ item.links.getHref() ]}" class="btn btn-sm btn-{[item.color]}" style="white-space:normal">
+								<span class="badge badge-light mr-2">{[ item.priority ]}</span>{[ item.name ]} 
+							</a>
+						</div>
 						<div ng-bind-html="item.description"></div>
 					</td>
-					<td>
+					<td class="text-center">
 						<div>
 							<a href="{[ item.user.links.getHref() ]}" class="">{[ item.user.name ]}</a>
 						</div>
-						<div class="text-center small">{[ item.created | date:"dd MMMyy HH:mm" ]}</div>
+						<div class="small">{[ item.created | date:"dd MMMyy HH:mm" ]}</div>
 					</td>
 					<td>
 						<div ng-repeat="reason in item.reasons">
@@ -196,7 +198,7 @@
         <table class='auto-complete'>
             <tbody>
                 <tr>
-                    <td>{[entry.item.title]}</td>
+					<td>{[entry.item.title]} <span class="small">(nª{[entry.item.number]})</span></td>
                 </tr>
             </tbody>
         </table>

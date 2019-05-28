@@ -45,36 +45,4 @@ class HintTypeController extends \Base\Controller\Js\AbstractActionController
 
 		return new HalJsonModel($payload);
 	}
-
-	/**
-	 * @return ViewModel
-	 */
-    public function hintsAction()
-    {
-		$e  = $this->getEntity();
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-		$r  = $em->getRepository("MA\Entity\Hint");
-
-		$m = $this->params()->fromQuery('material');
-		$t = $this->params()->fromQuery('type');
-
-		$collection = $r->findByType(
-			$this->entity,
-			$t ? $em->getRepository("MA\Entity\VersionType")->find($t) : $t,
-			$m ? $em->getRepository("MA\Entity\Material")->find($m) : $m,
-			$this->params()->fromQuery('state')
-		);
-
-		$paginator = $this->getPaginator($collection);
-
-		$metadata = $this->hal()->getMetadataMap()->get("MA\Entity\Hint");
-		$metadata->setHydrator(new \MA\Hydrator\Expanded\HintHydrator());
-		$metadata->setMaxDepth(4);
-
-		$payload = $this->prepareHalCollection($paginator, 'process/hint/type/detail/json');
-
-		return new HalJsonModel([
-			'payload' => $payload,
-		]);
-	}
 }

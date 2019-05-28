@@ -13,13 +13,11 @@ class CustomerForm extends Form implements InputFilterProviderInterface
     public function init()
     {
         $this->add([
-             'type' => 'Number',
+             'type' => 'Text',
              'name' => 'code',
              'attributes' => [ 
                  'class' => 'form-control',
 				 'placeholder' => 'Code',
-				 'min' => 1,
-				 'max' => 99999999999,
              ],
              'options' => [
                  'label' => 'Code',
@@ -107,6 +105,24 @@ class CustomerForm extends Form implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return [
+			'code' => [
+				'required' => true,
+				'filters' => [
+					[
+						'name' => \Zend\Filter\StringTrim::class,
+					],
+				],
+				'validators' => [
+					[
+						'name' => \Zend\Validator\Regex::class,
+						'options' => ['pattern' => '(^-?\d*(\.\d+)?$)']
+					],
+					[
+						'name' => \Zend\Validator\StringLength::class,
+						'options' => ['min' => 1, 'max' => 11],
+					],
+				],
+			],
 			'name' => [
 				'required' => true,
 				'filters' => [

@@ -14,25 +14,7 @@ class HintTypeController extends \Base\Controller\AbstractActionController
 	 */
     public function detailAction()
     {
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-
-		$collection = $em->getRepository("MA\Entity\Hint")
-			->findBy(
-				['type' => $this->entity],
-				['priority' => 'DESC']
-			);
-
-		$paginator = $this->getPaginator($collection);
-
-		$metadata = $this->hal()->getMetadataMap()->get("MA\Entity\Hint");
-		$metadata->setHydrator(new \MA\Hydrator\Expanded\HintHydrator());
-		$metadata->setMaxDepth(4);
-
 		return new ViewModel([
-			'collection' => $this->prepareHalCollection(
-				$paginator, 
-				'process/hint/type/detail/json', 
-				['action' => 'hints']),
 		]);
 	}
 
