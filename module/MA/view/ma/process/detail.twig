@@ -164,7 +164,8 @@
 		
 			<!-- HINTS TABLE -->
 			<!--<div ng-if="current && !current.isHintsLoaded()" class="text-center my-2"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></div>-->
-			<div ng-if="current" class="p-2"><table ng-if="current" class="hint-table table table-bordered m-0">
+			<div ng-if="current" class="p-2">
+			<table ng-if="current" class="hint-table table table-bordered m-0">
 					<td>
 						<a href="{[ item.process.links.getHref() ]}" 
 							ng-repeat="img in item.stage.images"

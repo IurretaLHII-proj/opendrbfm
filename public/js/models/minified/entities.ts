@@ -301,8 +301,8 @@ class MAProcess {
 	id: number;
 	title: string;
 	body: string;
-	number: number;
-	code: number;
+	number: string;
+	code: string;
 	line: number;
 	machine: string;
 	plant: string;

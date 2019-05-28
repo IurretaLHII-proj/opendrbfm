@@ -135,6 +135,19 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 		);	
 	}
 
+	$scope.more = function() {
+		$resource($scope.collection.links.getHref('next')).get().$promise.then(
+			function(data) {
+				data._embedded.items = data._embedded.items.map(e => {return EMAHint.fromJSON(e)});
+				$scope.collection.load(data);
+				console.log($scope.collection);
+			},		
+			function(err) {
+				$scope.errors = err;
+			}
+		);	
+	}
+
 	$scope.rmProcess = function() {$scope.process = null;}
 	$scope.process = null;
 	$scope.autoCompleteOptions = {
@@ -144,7 +157,7 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 		itemTemplateUrl: 'autocomplete-item.html',
 		noMatchTemplate: "<span>No results match</span>",
 		data: function(text) {
-			return $resource('/process/json').get({name: text}).$promise.then(
+			return $resource('/process/json').get({title: text, order:'title'}).$promise.then(
 				function(data) {
 					return data._embedded.items;
 				},
