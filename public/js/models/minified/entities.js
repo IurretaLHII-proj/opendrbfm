@@ -207,6 +207,17 @@ var MAProcess = /** @class */ (function () {
             customer: this.customer.id,
         };
     };
+    MAProcess.complexityLabel = function (value) {
+        switch (value) {
+            case MAProcess.COMPLEXITY_LOW: return "LOW";
+            case MAProcess.COMPLEXITY_MEDIUM: return "MEDIUM";
+            case MAProcess.COMPLEXITY_HIGH: return "HIGH";
+            default: return "-";
+        }
+    };
+    MAProcess.prototype.complexityLabel = function () {
+        return MAProcess.complexityLabel(this.complexity);
+    };
     MAProcess.prototype.hasVersions = function () {
         return this.versions.length > 0;
     };

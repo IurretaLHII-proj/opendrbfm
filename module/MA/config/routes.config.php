@@ -39,6 +39,15 @@ return [
 					]
 				],
 			],
+			'json' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/json',
+					'defaults' => [
+						'controller' => Controller\Js\UserController::class,
+					],
+				],
+			],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -120,6 +129,16 @@ return [
 						],
 					]
 				],
+			],
+		],
+	],
+	'home' => [
+		'type' => 'Literal',
+		'options' => [
+			'route' => '/',
+			'defaults' => [
+				'controller' => Controller\ProcessController::class,
+				'action' => 'index' 
 			],
 		],
 	],

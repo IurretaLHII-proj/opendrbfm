@@ -26,10 +26,23 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$title = $this->params()->fromQuery('title');
-		$order = $this->params()->fromRoute('order', 'created');
+		$owner 	  = $this->params()->fromQuery('user');
+		$customer = $this->params()->fromQuery('customer');
+		$order 	  = $this->params()->fromRoute('order', 'created');
+		$criteria = $this->params()->fromRoute('criteria', 'DESC');
 
-		$collection = $em->getRepository("MA\Entity\Process")->getBy($title, $order, $order === 'created' ? 'DESC' : 'ASC');
+		$collection = $em->getRepository("MA\Entity\Process")->getBy(
+			$this->params()->fromQuery('title'),
+			$this->params()->fromQuery('article'),
+			$this->params()->fromQuery('machine'),
+			$this->params()->fromQuery('line'),
+			$this->params()->fromQuery('piece'),
+			$this->params()->fromQuery('complexity'),
+			$customer ? $em->getRepository("MA\Entity\Customer")->find($customer) : $customer,
+			$owner ? $em->getRepository("MA\Entity\User")->find($owner) : $owner,
+			$this->params()->fromQuery('order'),
+			$this->params()->fromQuery('criteria')
+		);
 
 		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'process/json');
 

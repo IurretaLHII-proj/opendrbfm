@@ -267,6 +267,19 @@ class MAProcess {
 		};
 	}
 
+	static complexityLabel(value:string):string {
+		switch (value) {
+			case MAProcess.COMPLEXITY_LOW: 	  return "LOW";
+			case MAProcess.COMPLEXITY_MEDIUM: return "MEDIUM";
+			case MAProcess.COMPLEXITY_HIGH:   return "HIGH";
+			default: return "-";
+		}
+	}
+
+	complexityLabel():string {
+		return MAProcess.complexityLabel(this.complexity);
+	}
+
 	hasVersions():boolean {
 		return this.versions.length > 0;
 	}

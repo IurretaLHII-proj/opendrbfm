@@ -2,9 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>
-            {% block title %}{{ translate('OpenDRBFM') }}{% endblock title %}
-        </title>
+        {% block title %}{{ headTitle().renderTitle() }}{% endblock title %}
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block meta %}{% endblock meta %}
@@ -67,12 +65,12 @@
 
 		<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-1 d-none d-md-block sidebar sidebar-fixed" style="">
-				<a class="navbar-brand col-md-1 mr-0 text-muted text-center" href="/">
+			<div class="col-md-1 d-none d-md-block bg-light sidebar sidebar-fixed" style="">
+				<a class="navbar-brand col-md-1 text-center" href="/">
 					<img src="/img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="OpenDRBFM"><!--OpenDrbfm-->
 				</a>
 				{% block sidebar %}
-				<div class="sidebar">
+				<div class="">
 					{{ navigation('navigation').menu()
 						.setUlClass('nav flex-column')
 						.setMinDepth(0).setMaxDepth(2)

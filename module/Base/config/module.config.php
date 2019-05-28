@@ -6,6 +6,7 @@ return [
 	'zfctwig' => [
         'helper_manager' => [ 
 			'invokables' => [
+            	"headTitle" 		=> \Zend\View\Helper\HeadTitle::class,
             	"headScript" 		=> \Zend\View\Helper\HeadScript::class,
             	"partial" 			=> \Zend\View\Helper\Partial::class,
 				'form'              => \Zend\Form\View\Helper\Form::class,
