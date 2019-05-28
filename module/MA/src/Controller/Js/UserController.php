@@ -28,4 +28,24 @@ class UserController extends \Base\Controller\Js\AbstractActionController
 			'payload' => $payload,
 		]);
 	}
+
+	/**
+	 * @return ViewModel
+	 */
+    public function indexAction()
+    {
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$collection = $em->getRepository("MA\Entity\User")
+			->findBy(
+				[],
+				['created' => 'DESC']
+			);
+
+		$payload = $this->prepareHalCollection($this->getPaginator($collection), 'user/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
 }

@@ -22,7 +22,26 @@ class Module
 		\Zend\View\Helper\Navigation\Menu::setDefaultRole($auth->getIdentity());
 
 		$ev->getSharedManager()->attachAggregate(new Hal\LinkPrepareSharedListener($auth));
+
+		$ev->attach('render', array($this, 'setLayoutTitle'));
     }
+
+	/**
+     * @param  \Zend\Mvc\MvcEvent $e The MvcEvent instance
+     * @return void
+     */
+    public function setLayoutTitle($e)
+    {
+		$viewHelperManager = $e->getApplication()->getServiceManager()->get('viewHelperManager');
+
+        // Getting the headTitle helper from the view helper manager
+        $headTitleHelper   = $viewHelperManager->get('headTitle');
+
+        // Setting a separator string for segments
+        $headTitleHelper->setSeparator(' - ');
+
+		$headTitleHelper->append('OpenDRBFM');
+	}	
 
 	/**
 	 * @return array

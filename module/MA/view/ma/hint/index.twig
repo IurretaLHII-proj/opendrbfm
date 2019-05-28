@@ -5,34 +5,36 @@
 {% endblock script %}
 
 {% block body %}
+	{{ headTitle('Errors') }}
 	<ng-controller ng-controller="_HintCollectionCtrl" ng-init="init()">
-	<div class="input-group mb-3">
+
+	<div class="input-group input-group-sm sticky-top">
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version <span ng-if="type.id" class="text-dark">( {[type.name]} )</span></button>
+			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version <span ng-if="type.id" class="text-dark">( {[type.name]} )</span></button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material <span ng-if="material.id" class="text-dark">( {[material.name]} )</span></button>
+			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material <span ng-if="material.id" class="text-dark">( {[material.name]} )</span></button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State <span ng-if="state.id != null" class="text-dark">( {[state.name]} )</span></button>
+			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State <span ng-if="state.id != null" class="text-dark">( {[state.name]} )</span></button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation <span ng-if="operation.id" class="text-dark">( {[operation.longName]} )</span></button>
+			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation <span ng-if="operation.id" class="text-dark">( {[operation.longName]} )</span></button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in operations" ng-click="selOp(option);">{[ option.longName ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted btn-sm dropdown-toggle rounded-0" ng-class="{disabled:operation.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error <span ng-if="error.id" class="text-dark">( {[error.name]} )</span></button>
+			<button class="btn btn-light text-muted dropdown-toggle rounded-0" ng-class="{disabled:operation.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error <span ng-if="error.id" class="text-dark">( {[error.name]} )</span></button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in operation.hints" ng-click="selError(option);">{[ option.name ]}</a>
 			</div>
@@ -40,159 +42,153 @@
 		<div class="input-group-prepend">
 			<span class="input-group-text text-muted border-0 bg-light">Priority ></span>
 		</div>
-		<input type="number" class="form-control sticky-search" ng-model="priority">
-		<input type="text" class="form-control sticky-search" placeholder="Search process" auto-complete="autoCompleteOptions" ng-model="process.title">
+		<input type="number" class="form-control filter-search" ng-model="priority">
+		<input type="text" class="form-control filter-search" placeholder="Process" auto-complete="autoCompleteOptions" ng-model="process.title">
 		<a ng-if="process.id" ng-click="rmProcess()" href="" style="position:absolute; right:40px; top:25%;">
 			<i class="fa fa-close"></i>
 		</a>
 		<div class="input-group-append">
-			<button class="btn btn-sm btn-secondary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+			<button class="btn btn-secondary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
 		</div>
 	</div>
 
-	<div class="col-md-12">
-		<h2>Errors</h2>
-
-		<table class="table m-0">
-			<thead class="text-center">
-				<tr>
-					<th colspan=2" class="p-0 border-top-0">
-						<a href="" ng-click="selOrder('process');selCriteria('DESC');search();">
-							<i class="fa fa-caret-down" 
-							   ng-class="{'text-dark': order=='process'&&criteria=='DESC'}">
-							</i>
+	<table class="table m-0">
+		<thead class="text-center">
+			<tr>
+				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('process');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='process'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('process');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='process'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Process</div>
+				</th>
+				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">Stage</th>
+				<th class="p-0 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('priority');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='priority'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('priority');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='priority'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Priority</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('name');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='name'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('name');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='name'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Error</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('created');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('created');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Created</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">Reasons</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-if="!collection.isLoaded()" class="text-center my-2">
+				<td colspan="9"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
+			</tr>
+			<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
+				<td class="text-center">
+					<a ng-if="item.process.links.has('image')" href="{[ item.process.links.getHref()  ]}">
+						<img class="img-responsive img-thumbnail stage-img" ng-src="{[ item.process.links.getHref('image') ]}"/>
+					</a>
+				</td>
+				<td>
+					<a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a>
+					<div class="">
+						<a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
+					</div>
+					<div class="">(nº {[ item.process.number ]})</div>
+					<div class="small text-muted">{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>
+					<div ng-bind-html="item.version.description"></div>
+				</td>
+				<td class="text-center">
+					<a href="{[ item.process.links.getHref() ]}" 
+						ng-repeat="img in item.stage.images"
+					>
+						<img ng-src="{[ img.links.getHref() ]}" 
+							alt="{[ img.description ]}" 
+							title="{[ img.description ]}" 
+							class="img-thumbnail p-0 border-0 img-responsive stage-img" 
+						/>
+					</a>
+				</td>
+				<td>
+					<div>Stage {[ item.stage.order ]}</div>
+					<ul class="text-muted" style="">
+						<li ng-repeat="(i, op) in item.stage.operations">{[op.longName]}</li>
+					</ul>
+					<div ng-bind-html="item.stage.description"></div>
+				</td>
+				<td colspan="2">
+					<div class="text-muted">{[ item.operation.longName ]}</div>
+					<div class="mb-2">
+						<a href="{[ item.links.getHref() ]}" class="btn btn-sm btn-{[item.color]}" style="white-space:normal">
+							<span class="badge badge-light mr-2">{[ item.priority ]}</span>{[ item.name ]} 
 						</a>
-						<a href="" ng-click="selOrder('process');selCriteria('ASC');search();">
-							<i class="fa fa-caret-up" 
-							   ng-class="{'text-dark': order=='process'&&criteria=='ASC'}">
-							</i>
-						</a>
-						<div>Process</div>
-					</th>
-					<th colspan=2" class="p-0 border-top-0" style="vertical-align:middle;">Stage</th>
-					<th class="p-0 border-top-0">
-						<a href="" ng-click="selOrder('priority');selCriteria('DESC');search();">
-							<i class="fa fa-caret-down" 
-							   ng-class="{'text-dark': order=='priority'&&criteria=='DESC'}">
-							</i>
-						</a>
-						<a href="" ng-click="selOrder('priority');selCriteria('ASC');search();">
-							<i class="fa fa-caret-up" 
-							   ng-class="{'text-dark': order=='priority'&&criteria=='ASC'}">
-							</i>
-						</a>
-						<div>Priority</div>
-					</th>
-					<th class="p-0 border-top-0">
-						<a href="" ng-click="selOrder('name');selCriteria('DESC');search();">
-							<i class="fa fa-caret-down" 
-							   ng-class="{'text-dark': order=='name'&&criteria=='DESC'}">
-							</i>
-						</a>
-						<a href="" ng-click="selOrder('name');selCriteria('ASC');search();">
-							<i class="fa fa-caret-up" 
-							   ng-class="{'text-dark': order=='name'&&criteria=='ASC'}">
-							</i>
-						</a>
-						<div>Name</div>
-					</th>
-					<th class="p-0 border-top-0">
-						<a href="" ng-click="selOrder('created');selCriteria('DESC');search();">
-							<i class="fa fa-caret-down" 
-							   ng-class="{'text-dark': order=='created'&&criteria=='DESC'}">
-							</i>
-						</a>
-						<a href="" ng-click="selOrder('created');selCriteria('ASC');search();">
-							<i class="fa fa-caret-up" 
-							   ng-class="{'text-dark': order=='created'&&criteria=='ASC'}">
-							</i>
-						</a>
-						<div>Created</div>
-					</th>
-					<th class="p-0 border-top-0" style="vertical-align:middle;">Reasons</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-if="!collection.isLoaded()" class="text-center my-2">
-					<td colspan="9"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
-				</tr>
-				<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
-					<td class="text-center">
-						<a ng-if="item.process.links.has('image')" href="{[ item.process.links.getHref()  ]}">
-							<img class="img-responsive img-thumbnail stage-img" ng-src="{[ item.process.links.getHref('image') ]}"/>
-						</a>
-					</td>
-					<td>
-						<a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a>
-						<div class="">
-							<a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
-						</div>
-						<div class="">(nº {[ item.process.number ]})</div>
-						<div class="small text-muted">{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>
-						<div ng-bind-html="item.version.description"></div>
-					</td>
-					<td class="text-center">
-						<a href="{[ item.process.links.getHref() ]}" 
-							ng-repeat="img in item.stage.images"
-						>
-							<img ng-src="{[ img.links.getHref() ]}" 
-								alt="{[ img.description ]}" 
-								title="{[ img.description ]}" 
-								class="img-thumbnail p-0 border-0 img-responsive stage-img" 
-							/>
-						</a>
-					</td>
-					<td>
-						<div>Stage {[ item.stage.order ]}</div>
-						<ul class="text-muted" style="">
-							<li ng-repeat="(i, op) in item.stage.operations">{[op.longName]}</li>
+					</div>
+					<div ng-bind-html="item.description"></div>
+				</td>
+				<td class="text-center">
+					<div>
+						<a href="{[ item.user.links.getHref() ]}" class="">{[ item.user.name ]}</a>
+					</div>
+					<div class="small">{[ item.created | date:"dd MMMyy HH:mm" ]}</div>
+				</td>
+				<td>
+					<div ng-repeat="reason in item.reasons">
+						<ul class="p-0" style="list-style:none;">
+							<li ng-repeat="r in reason.relations" class="my-1">
+								<div class="small text-muted"><a href="" ng-click="setCurrent(r.relation.stage)">{[ r.relation.stage.name ]}</a>. {[ r.relation.hint.operation.longName ]}</div>
+								<a href="{[ r.relation.hint.links.getHref() ]}" class="btn btn-sm btn-{[r.relation.hint.color]}" style="white-space:normal">
+									<span class="badge badge-light mr-2">{[ r.relation.hint.priority ]}</span>{[ r.relation.hint.name ]} 
+								</a>
+								<div class="desc" ng-if="r.description" ng-bind-html="r.description"></div>
+							</li>
+							<li ng-repeat="note in reason.notes" class="my-1">
+								<div class="desc" ng-bind-html="note.text"></div>
+							</li>
 						</ul>
-						<div ng-bind-html="item.stage.description"></div>
-					</td>
-					<td colspan="2">
-						<div class="text-muted">{[ item.operation.longName ]}</div>
-						<div class="text-center mb-2">
-							<a href="{[ item.links.getHref() ]}" class="btn btn-sm btn-{[item.color]}" style="white-space:normal">
-								<span class="badge badge-light mr-2">{[ item.priority ]}</span>{[ item.name ]} 
-							</a>
-						</div>
-						<div ng-bind-html="item.description"></div>
-					</td>
-					<td class="text-center">
-						<div>
-							<a href="{[ item.user.links.getHref() ]}" class="">{[ item.user.name ]}</a>
-						</div>
-						<div class="small">{[ item.created | date:"dd MMMyy HH:mm" ]}</div>
-					</td>
-					<td>
-						<div ng-repeat="reason in item.reasons">
-							<ul class="p-0" style="list-style:none;">
-								<li ng-repeat="r in reason.relations" class="my-1">
-									<div class="small text-muted"><a href="" ng-click="setCurrent(r.relation.stage)">{[ r.relation.stage.name ]}</a>. {[ r.relation.hint.operation.longName ]}</div>
-									<a href="{[ r.relation.hint.links.getHref() ]}" class="btn btn-sm btn-{[r.relation.hint.color]}" style="white-space:normal">
-										<span class="badge badge-light mr-2">{[ r.relation.hint.priority ]}</span>{[ r.relation.hint.name ]} 
-									</a>
-									<div class="desc" ng-if="r.description" ng-bind-html="r.description"></div>
-								</li>
-								<li ng-repeat="note in reason.notes" class="my-1">
-									<div class="desc" ng-bind-html="note.text"></div>
-								</li>
-							</ul>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 
+	<div class="col-md-12">
 		<hr>
-		
 		<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
 		<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 		<p><a ng-if="collection.has('next')" ng-click="more()" href="">.view previouses.</a></p>
 	</div>
-
-	</div>
-
 
 	<script type="text/ng-template" id="autocomplete-item.html">
         <table class='auto-complete'>

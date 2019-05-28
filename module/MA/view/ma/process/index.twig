@@ -1,0 +1,253 @@
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/index.js"></script>
+{% endblock script %}
+
+{% block body %}
+	{{ headTitle('Home') }}
+	<ng-controller ng-controller="_ProcessCollectionCtrl" ng-init="init()">
+
+	<div class="input-group input-group-sm sticky-top">
+
+		<!-- Complexity  -->
+		<div class="input-group-prepend">
+			<button class="btn btn-light text-muted dropdown-toggle rounded-0" type="button" 
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Complexity
+		   			<span ng-if="complexity.id" class="text-dark">( {[complexity.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in complexityOptions" ng-click="selComplexity(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+
+		<!-- Owner  -->
+		<div class="input-group-prepend">
+			<button class="btn btn-light text-muted dropdown-toggle" type="button"
+		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Owner
+	   				<span ng-if="owner.id" class="text-dark">( {[owner.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in users" ng-click="selOwner(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+
+		<!-- Customer -->
+		<div class="input-group-prepend">
+			<button class="btn btn-light text-muted dropdown-toggle" type="button"
+		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Customer
+	   				<span ng-if="customer.id" class="text-dark">( {[customer.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in customers" ng-click="selCustomer(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+
+		<!-- Process -->
+		<input type="text" class="form-control filter-search" placeholder="Process" ng-model="process">
+
+		<!-- Article -->
+		<input type="number" class="form-control filter-search" placeholder="Article" ng-model="article">
+
+		<!-- Machine -->
+		<input type="text" class="form-control filter-search" placeholder="Machine" ng-model="machine">
+
+		<!-- Line -->
+		<input type="number" class="form-control filter-search" placeholder="Line" ng-model="line">
+
+		<!-- Piece -->
+		<input type="text" class="form-control filter-search" placeholder="Piece" ng-model="piece">
+
+		<!-- Search -->
+		<div class="input-group-append">
+			<button class="btn btn-secondary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+		</div>
+	</div>
+
+
+	<table class="table m-0">
+		<thead class="text-center">
+			<tr>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top" colspan="2">
+					<a href="" ng-click="selOrder('title');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='title'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('title');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='title'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Process</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('code');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='code'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('code');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='code'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Article</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('complexity');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='complexity'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('complexity');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='complexity'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Complexity</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('machine');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='machine'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('machine');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='machine'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Machine</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('line');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='line'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('line');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='line'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Line</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<div>Plant</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('pieceName');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='pieceName'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('pieceName');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='pieceName'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Piece</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('customer');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='customer'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('customer');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='customer'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Customer</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('created');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('created');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Created</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<div>Description</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-if="!collection.isLoaded()" class="text-center my-2">
+				<td colspan="11"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
+			</tr>
+
+			<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
+				<td>
+					<a ng-if="item.links.has('image')" href="{[ item.links.getHref()  ]}"><img class="img-responsive img-thumbnail stage-img" ng-src="{[ item.links.getHref('image') ]}"/></a>
+				</td>
+				<td>
+					<div><a href="{[ item.links.getHref() ]}">{[ item.title ]}</a></div>
+				   	<span class="">(nº {[ item.number ]})</span>
+				</td>
+				<td>
+					{[ item.code ]}
+				</td>
+				<td>
+					{[ item.complexityLabel() ]}
+				</td>
+				<td colspan="2" class="text-center">
+					<div>{[ item.machine ]} ({[ item.line ]})</div>
+				</td>
+				<td>
+					<div>{[ item.plant ]}</div>
+				</td>
+				<td>
+					<div>{[ item.pieceName ]}</div>
+				   	<span class="">(nº {[ item.pieceNumber]})</span>
+				</td>
+				<td>
+					<a href="{[ item.customer.links.getHref() ]}" class="">{[ item.customer.name ]}</a>
+				</td>
+				<td class="text-center">
+					<div>
+						<a href="{[ item.user.links.getHref() ]}" class="">{[ item.user.name ]}</a>
+					</div>
+					<div class="small">{[ item.created | date:"dd MMMyy HH:mm" ]}</div>
+				</td>
+				<td ng-bind-html="item.body"></td>
+				<td>
+					<div class="btn-group btn-group-sm">
+						<a ng-href="{[ item.links.getHref() ]}" class="btn btn-outline-primary">
+							<i class="fa fa-eye"></i>
+						</a>
+						<a ng-if="item.links.isAllowed('edit')" href="" ng-click="editProcess(item)" class="btn btn-outline-primary">
+							<i class="fa fa-pencil"></i>
+						</a>
+						<a ng-if="item.links.isAllowed('delete')" 
+							class="btn btn-outline-primary" 
+							ng-confirm-click 
+							confirmed-click="alert('todo');">
+							<i class="fa fa-trash"></i>
+						</a>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="col-md-12">
+		<hr>
+		<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+		<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+		<p><a ng-if="collection.has('next')" ng-click="more()" href="">.view previouses.</a></p>
+	</div>
+
+	</ng-controller>
+
+{% endblock body %}
+
