@@ -957,7 +957,7 @@ var MASimulation = /** @class */ (function () {
             this.state = obj.state;
             this.commentCount = obj.commentCount;
             this.when = obj.when ? new Date(obj.when.date) : null;
-            this.who = obj.who;
+            this.who = obj._embedded.who ? new MAUser(obj._embedded.who) : null;
             this.user = new MAUser(obj._embedded.owner);
             this.created = new Date(obj.created.date);
             this.effects = [];
@@ -983,7 +983,7 @@ var MASimulation = /** @class */ (function () {
         return {
             id: this.id,
             state: this.state,
-            who: this.who,
+            who: this.who ? this.who.id : null,
             when: this.when ? this.when.toString() : null,
             images: this.images,
             effects: this.effects,
