@@ -252,12 +252,12 @@ interface IMASimulation {
 	state: number,
 	effect: string,
 	prevention: string,
-	who: string,
 	when: IMADate,
 	commentCount: number, 
 	created: IMADate,
 	_embedded: {
 		owner: IMAUser,
+		who: IMAUser,
 		images: IMAImage[],
 		effects: IMANote[],
 		preventions: IMANote[],

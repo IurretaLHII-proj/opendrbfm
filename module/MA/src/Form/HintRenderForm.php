@@ -14,7 +14,8 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
      */
     public function init()
     {
-        $this->add([
+		/*
+		 $this->add([
              'type' => 'Text',
              'name' => 'who',
              'required' => true,
@@ -26,6 +27,18 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
                  'label' => 'Who',
              ],
         ], ['priority' => -9]);
+		*/
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'who',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+				 'target_class' => 'MA\Entity\User',
+             ],
+        ]);
 
         $this->add([
              'type' => 'Text',
@@ -139,20 +152,20 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return [
-			'who' => [
-				'required' => true,
-				'filters' => [
-					[
-						'name' => \Zend\Filter\StringTrim::class,
-					],
-				],
-				'validators' => [
-					[
-						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 255],
-					],
-				],
-			],
+			//'who' => [
+			//	'required' => true,
+			//	'filters' => [
+			//		[
+			//			'name' => \Zend\Filter\StringTrim::class,
+			//		],
+			//	],
+			//	'validators' => [
+			//		[
+			//			'name' => \Zend\Validator\StringLength::class,
+			//			'options' => ['min' => 3, 'max' => 255],
+			//		],
+			//	],
+			//],
 			'when' => [
 				'required' => true,
 				'validators' => [

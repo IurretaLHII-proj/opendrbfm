@@ -112,8 +112,15 @@ class Simulation implements
 	protected $state = self::STATE_NOT_NECESSARY;
 
 	/**
-	 * @var string 
-	 * @ORM\Column(type="string", options={"nullable":true})
+	 * @var User
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\User",
+	 *	inversedBy	 = "simulations",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "who",
+	 *	referencedColumnName = "user_id"
+	 * )
 	 */
 	protected $who;
 
@@ -248,7 +255,7 @@ class Simulation implements
     /**
      * Get who.
      *
-     * @return string.
+     * @return UserInterface|null.
      */
     public function getWho()
     {
@@ -258,12 +265,12 @@ class Simulation implements
     /**
      * Set who.
      *
-     * @param string who the value to set.
+     * @param UserInterface|null who the value to set.
      * @return Simulation.
      */
-    public function setWho($who = null)
+    public function setWho(\MA\Entity\UserInterface $who = null)
     {
-        $this->who = $who != null ? (string) $who : $who;
+        $this->who = $who;
         return $this;
     }
     

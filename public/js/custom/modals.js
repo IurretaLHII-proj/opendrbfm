@@ -118,6 +118,16 @@ App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $reso
 	var crto       	  	     = {id:-1,   name:" --Create new-- "};
 	let hint			     = reason.hint;
 	let stage 		  	     = hint.stage;
+	$scope.users  			 = [{id:null, name:" --Who-- "}];
+
+	$resource('/user/json').get().$promise.then(
+		function(data){
+			angular.forEach(data._embedded.items, item => {
+				$scope.users.push(new MAUser(item));
+			});
+		}, 
+		function(err){}
+	);
 
 	angular.extend($scope, extended);
 	$scope.init(stage);
@@ -155,6 +165,16 @@ App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $r
 	let stage 		  	     = hint.stage;
 	var crto       	  	     = {id:-1,   name:" --Create new-- "};
 	$scope.dflt    	  	     = dflt;
+	$scope.users  			 = [{id:null, name:" --Who-- "}];
+
+	$resource('/user/json').get().$promise.then(
+		function(data){
+			angular.forEach(data._embedded.items, item => {
+				$scope.users.push(new MAUser(item));
+			});
+		}, 
+		function(err){}
+	);
 
 	angular.extend($scope, extended);
 	$scope.init(stage);
@@ -253,6 +273,19 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
     var imagePreview = function(img, index) {
         $scope.values.images[index] = JSON.parse(JSON.stringify(img));
     }
+
+	$scope.init	= function() {
+		$scope.users  = [{id:null, name:" --Who-- "}];
+		$resource('/user/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, item => {
+					$scope.users.push(new MAUser(item));
+				});
+			}, 
+			function(err){}
+		);
+	}
+
 
     $scope.uploadFile = function(ev, entity, index) {
         var data = new FormData;

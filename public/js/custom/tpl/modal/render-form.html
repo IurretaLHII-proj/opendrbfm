@@ -1,7 +1,7 @@
 <div class="modal-header">
 	<h3 class="modal-title">{[ simulation.name ]} <small class="text-secondary" ng-if="simulation.id">| edit simulation</small><small class="text-secondary" ng-if="!simulation.id">| new simulation</small></h3>
 </div>
-<div class="modal-body">
+<div class="modal-body" ng-init="init()">
 	<div class="form-group">
 		<div class="btn-group">
 			<a href="" class="btn btn-primary disabled">Simulation</a>
@@ -36,14 +36,14 @@
 				class="invalid-feedback">{[key]}. {[text]}</div>
 		</div>
 		<div class="form-group col-md-4">
-			<!--<label for="inputTitle">Who</label>-->
-		    <input type="text" 
-		  		id="inputEmploye"
-		   		class="form-control" 
-				placeholder="Who"
+			<!--<label for="inputWho">Who</label>-->
+			<select class="form-control"
 				ng-disabled="values.state <= 0"
-		  		ng-class="{'is-invalid': errors.who}"
-		  		ng-model="values.who"/>
+				ng-class="{'is-invalid': errors.who}"
+				ng-model="values.who"
+				ng-options="item.id as item.name for item in users"
+				>
+			</select>
 			<div ng-if="errors.who"
 				ng-repeat="(key, text) in errors.who"
 				class="invalid-feedback">{[key]}. {[text]}</div>

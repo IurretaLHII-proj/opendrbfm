@@ -30,6 +30,7 @@ class SimulationFieldset extends Fieldset implements
              ],
         ], ['priority' => -1]);
 
+		/*
         $this->add([
              'type' => 'Text',
              'name' => 'who',
@@ -41,7 +42,19 @@ class SimulationFieldset extends Fieldset implements
              'options' => [
                  'label' => 'Who',
              ],
-        ], ['priority' => -9]);
+		], ['priority' => -9]);
+		*/
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'who',
+             'attributes' => [ 
+                 'class' => 'form-control',
+             ],
+             'options' => [
+				 'target_class' => 'MA\Entity\User',
+             ],
+        ]);
 
         $this->add([
              'type' => 'Text',

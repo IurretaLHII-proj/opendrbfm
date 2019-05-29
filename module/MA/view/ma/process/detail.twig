@@ -333,7 +333,7 @@
 							<div class="bg-success text-light p-2 rounded" ng-switch-when="2">Finished</div>
 							<div class="bg-secondary text-light p-2 rounded" ng-switch-default>Not processed</div>
 							<div class="" ng-if="s.who">
-								<p class="my-1 text-center">{[ s.who ]}</p>
+								<p class="my-1 text-center"><a href="{[s.who.links.getHref()]}">{[ s.who.name ]}</a></p>
 								<span ng-if="s.when"class="small text-muted text-center">{[ s.when | date:"dd MMMyy"]}</span>
 							</div>
 							<div ng-if="s.images.length" 
