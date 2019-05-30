@@ -9,6 +9,8 @@ use DateTime;
 
 use MA\Entity\UserInterface;
 use MA\Entity\CustomerInterface;
+use MA\Entity\MaterialInterface;
+use MA\Entity\VersionTypeInterface;
 
 class ProcessRepository extends EntityRepository
 {
@@ -24,6 +26,9 @@ class ProcessRepository extends EntityRepository
 		$complexity = null, 
 		CustomerInterface $customer = null, 
 		UserInterface $owner = null, 
+		MaterialInterface $material = null,
+		VersionTypeInterface $type = null,
+		$state = null,
 		$oBy = "created", 
 		$oCriteria = "DESC"
 	) {
@@ -68,6 +73,23 @@ class ProcessRepository extends EntityRepository
 		if ($owner) {
 			$query->andWhere('process.user = :owner')
 				->setParameter('owner', $owner);
+		}
+
+		if (!($material === null && $type === null && $state === null)) {
+			$query->innerJoin('process.versions', 'version');
+
+			if ($material) {
+				$query->andWhere('version.material = :material')
+					->setParameter('material', $material);
+			}
+			if ($type) {
+				$query->andWhere('version.type = :type')
+					->setParameter('type', $type);
+			}
+			if ($state) {
+				$query->andWhere('version.state = :state')
+					->setParameter('state', $state);
+			}
 		}
 
     	return $query->getQuery()->getResult();

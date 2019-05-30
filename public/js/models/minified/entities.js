@@ -25,6 +25,11 @@ var MACollection = /** @class */ (function () {
     MACollection.prototype.isLoaded = function () {
         return this.loaded;
     };
+    MACollection.prototype.removeElement = function (el) {
+        if (this.items.splice(this.items.indexOf(el), 1)) {
+            this.total_items--;
+        }
+    };
     return MACollection;
 }());
 var MALinks = /** @class */ (function () {
@@ -252,13 +257,21 @@ var MAProcess = /** @class */ (function () {
 var MAVersion = /** @class */ (function () {
     function MAVersion() {
         this.commentCount = 0;
-        this.state = MAVersion.IN_PROGRESS;
+        this.state = MAVersion.STATE_IN_PROGRESS;
         this.stagesLoaded = false;
         this.stages = [];
         this.children = [];
         this.comments = new MACollection();
         this.created = new Date;
     }
+    MAVersion.stateLabel = function (value) {
+        switch (value) {
+            case MAVersion.STATE_IN_PROGRESS: return "In progress";
+            case MAVersion.STATE_APPROVED: return "Approved";
+            case MAVersion.STATE_CANCELLED: return "Cancelled";
+            default: return "-";
+        }
+    };
     MAVersion.fromJSON = function (obj) {
         var e = new MAVersion();
         e.load(obj);
@@ -294,6 +307,16 @@ var MAVersion = /** @class */ (function () {
             parent: this.parent ? this.parent.id : null,
             stages: stages,
         };
+    };
+    MAVersion.prototype.stateLabel = function () {
+        return MAVersion.stateLabel(this.state);
+    };
+    MAVersion.prototype.stateColor = function () {
+        switch (this.state) {
+            case MAVersion.STATE_APPROVED: return 'success';
+            case MAVersion.STATE_CANCELLED: return 'danger';
+            default: return 'dark';
+        }
     };
     MAVersion.prototype.setProcess = function (obj) {
         this.process = obj;
@@ -343,9 +366,9 @@ var MAVersion = /** @class */ (function () {
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
-    MAVersion.IN_PROGRESS = 0;
-    MAVersion.APROVED = 1;
-    MAVersion.CANCELLED = -1;
+    MAVersion.STATE_IN_PROGRESS = 0;
+    MAVersion.STATE_APPROVED = 1;
+    MAVersion.STATE_CANCELLED = -1;
     return MAVersion;
 }());
 var MAStage = /** @class */ (function () {
@@ -556,6 +579,7 @@ var MAHintType = /** @class */ (function () {
         if (obj._embedded) {
             this.id = obj.id;
             this.name = obj.name;
+            this.color = obj.color;
             this.priority = obj.priority;
             this.user = new MAUser(obj._embedded.owner);
             this.operation = MAOperation.fromJSON(obj._embedded.operation);
@@ -569,6 +593,7 @@ var MAHintType = /** @class */ (function () {
             id: this.id,
             priority: this.priority,
             name: this.name,
+            color: this.color,
             description: this.description,
         };
     };
@@ -938,7 +963,7 @@ var MAHint = /** @class */ (function () {
 }());
 var MASimulation = /** @class */ (function () {
     function MASimulation() {
-        this.state = MASimulation.NOT_NECESSARY;
+        this.state = MASimulation.STATE_NOT_NECESSARY;
         this.effects = [];
         this.suggestions = [];
         this.preventions = [];
@@ -950,6 +975,19 @@ var MASimulation = /** @class */ (function () {
         var s = new MASimulation();
         s.load(obj);
         return s;
+    };
+    MASimulation.stateLabel = function (value) {
+        switch (value) {
+            case MASimulation.STATE_NOT_NECESSARY: return "No necessary";
+            case MASimulation.STATE_NOT_PROCESSED: return "No processed";
+            case MASimulation.STATE_IN_PROGRESS: return "In progress";
+            case MASimulation.STATE_FINISHED: return "Finished";
+            case MASimulation.STATE_CANCELLED: return "Cancelled";
+            default: return "-";
+        }
+    };
+    MASimulation.prototype.stateLabel = function () {
+        return MASimulation.stateLabel(this.state);
     };
     MASimulation.prototype.load = function (obj) {
         if (obj.id) {
@@ -1033,11 +1071,11 @@ var MASimulation = /** @class */ (function () {
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
-    MASimulation.NOT_PROCESSED = 0;
-    MASimulation.IN_PROGRESS = 1;
-    MASimulation.FINISHED = 2;
-    MASimulation.NOT_NECESSARY = -1;
-    MASimulation.CANCELLED = -2;
+    MASimulation.STATE_NOT_PROCESSED = 0;
+    MASimulation.STATE_IN_PROGRESS = 1;
+    MASimulation.STATE_FINISHED = 2;
+    MASimulation.STATE_NOT_NECESSARY = -1;
+    MASimulation.STATE_CANCELLED = -2;
     return MASimulation;
 }());
 var MANote = /** @class */ (function () {

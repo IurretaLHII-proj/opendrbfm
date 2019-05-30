@@ -48,6 +48,16 @@ return [
 			//Override DOMPDFModule bug 
 			//https://github.com/raykolbe/DOMPDFModule/pull/36/commits/21fd356c8d79c111116555fba0ef94bd24594d95#diff-c1c8ed7a4ddcb50eea2143d9f3f5bc02
            	'ViewPdfRenderer' => Factory\DOMPDF\ViewPdfRendererFactory::class,
+			//'SessionConfig'  => Zend\Session\Service\SessionConfigFactory::class,
+			\Zend\Session\Config\ConfigInterface::class => \Zend\Session\Service\SessionConfigFactory::class,	
+			\Zend\Session\SessionInterface::class => \Zend\Session\Service\SessionManagerFactory::class,
 		],
 	],
+	'session_manager' => [
+		// SessionManager config: validators, etc
+	],
+	'session_config' => [
+		'cache_expire' => 86400,
+		'cookie_lifetime' => 86400,
+	],	
 ];

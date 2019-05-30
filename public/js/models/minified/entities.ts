@@ -28,6 +28,12 @@ class MACollection {
 		return this.loaded;
 	}
 
+	removeElement(el:any) {
+		if (this.items.splice(this.items.indexOf(el), 1)) {
+			this.total_items--;
+		}
+	}
+
 	items:any[];
 	links: MALinks;
 	page: number;
@@ -330,9 +336,18 @@ class MAProcess {
 }
 
 class MAVersion {
-	static readonly IN_PROGRESS = 0;
-	static readonly APROVED     = 1;
-	static readonly CANCELLED	= -1;
+	static readonly STATE_IN_PROGRESS = 0;
+	static readonly STATE_APPROVED    = 1;
+	static readonly STATE_CANCELLED	= -1;
+
+	static stateLabel(value:number):string {
+		switch (value) {
+			case MAVersion.STATE_IN_PROGRESS:  	return "In progress";
+			case MAVersion.STATE_APPROVED: 		return "Approved";
+			case MAVersion.STATE_CANCELLED:   	return "Cancelled";
+			default: return "-";
+		}
+	}
 
 	static fromJSON(obj: IMAVersion): MAVersion{
 		let e = new MAVersion();
@@ -378,6 +393,18 @@ class MAVersion {
 			parent: this.parent ? this.parent.id : null,
 			stages: stages,
 		};
+	}
+
+	stateLabel():string {
+		return MAVersion.stateLabel(this.state);
+	}
+
+	stateColor():string {
+		switch (this.state) {
+			case MAVersion.STATE_APPROVED: 	return 'success'; 
+			case MAVersion.STATE_CANCELLED:	return 'danger'; 
+			default: return 'dark';
+		}
 	}
 
 	setProcess(obj:MAProcess) {
@@ -456,7 +483,7 @@ class MAVersion {
 	commentCount: number=0;
 	created: Date;
 	links: MALinks;
-	state: number = MAVersion.IN_PROGRESS;
+	state: number = MAVersion.STATE_IN_PROGRESS;
 	stagesLoaded: boolean=false;
 }
 
@@ -715,6 +742,7 @@ class MAHintType {
 		if (obj._embedded) {
 			this.id = obj.id;
 			this.name = obj.name;
+			this.color = obj.color;
 			this.priority = obj.priority;
 			this.user = new MAUser(obj._embedded.owner);
 			this.operation = MAOperation.fromJSON(obj._embedded.operation);
@@ -729,12 +757,14 @@ class MAHintType {
 			id: this.id,
 			priority: this.priority,
 			name: this.name,
+			color: this.color,
 			description: this.description,
 		};
 	}
 
 	id: number;
 	name: string;
+	color: string;
 	priority: number=0;
 	description: string;
 	user: MAUser;
@@ -1182,16 +1212,31 @@ class MAHint {
 
 class MASimulation {
 
-	static readonly NOT_PROCESSED = 0;
-	static readonly IN_PROGRESS   = 1;
-	static readonly FINISHED      = 2;
-	static readonly NOT_NECESSARY = -1;
-	static readonly CANCELLED	  = -2;
+	static readonly STATE_NOT_PROCESSED = 0;
+	static readonly STATE_IN_PROGRESS   = 1;
+	static readonly STATE_FINISHED      = 2;
+	static readonly STATE_NOT_NECESSARY = -1;
+	static readonly STATE_CANCELLED	  = -2;
 
 	static fromJSON(obj: IMASimulation): MASimulation{
 		let s = new MASimulation();
 		s.load(obj);
 		return s;
+	}
+
+	static stateLabel(value:number):string {
+		switch (value) {
+			case MASimulation.STATE_NOT_NECESSARY:  	return "No necessary";
+			case MASimulation.STATE_NOT_PROCESSED:  	return "No processed";
+			case MASimulation.STATE_IN_PROGRESS:  		return "In progress";
+			case MASimulation.STATE_FINISHED:  			return "Finished";
+			case MASimulation.STATE_CANCELLED:  		return "Cancelled";
+			default: return "-";
+		}
+	}
+
+	stateLabel():string {
+	return MASimulation.stateLabel(this.state);
 	}
 
 	constructor() {
@@ -1302,7 +1347,7 @@ class MASimulation {
 	commentCount: number;
 	created: Date;
 	links: MALinks;
-	state: number = MASimulation.NOT_NECESSARY;
+	state: number = MASimulation.STATE_NOT_NECESSARY;
 }
 
 class MANote {

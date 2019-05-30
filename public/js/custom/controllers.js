@@ -4,12 +4,12 @@ var _noneOption    = {id:null, name:'--- None ---'};
 var _createOption  = {id:-1,   name:'--- Create new ---'};
 var _defaultOption = {id:null, name:'--- Select one ---'};
 var _stateOptions = [
-		{id:MASimulation.NOT_PROCESSED, name: "NOT PROCESSED"},
-		{id:MASimulation.IN_PROGRESS,  	name: "IN PROGRESS"},
-		{id:MASimulation.FINISHED,  	name: "FINISHED"},
-		{id:MASimulation.NOT_NECESSARY, name: "NOT NECESSARY"},
-		{id:MASimulation.CANCELLED, 	name: "CANCELLED"},
-	];
+{id:MASimulation.STATE_NOT_NECESSARY, name: MASimulation.stateLabel(MASimulation.STATE_NOT_NECESSARY)},
+{id:MASimulation.STATE_NOT_PROCESSED, name: MASimulation.stateLabel(MASimulation.STATE_NOT_PROCESSED)},
+{id:MASimulation.STATE_IN_PROGRESS, name: MASimulation.stateLabel(MASimulation.STATE_IN_PROGRESS)},
+{id:MASimulation.STATE_FINISHED, name: MASimulation.stateLabel(MASimulation.STATE_FINISHED)},
+{id:MASimulation.STATE_CANCELLED, name: MASimulation.stateLabel(MASimulation.STATE_CANCELLED)},
+];
 
 App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	$scope.locked  = true;
@@ -396,7 +396,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			values.relations.push({relation: {reason:{stage:null, hint:null}}, source: {}})
 		},
 		addSimulation: function(values) { values.simulations.push({
-			state: MASimulation.NOT_NECESSARY.toString(),
+			state: MASimulation.STATE_NOT_NECESSARY.toString(),
 			suggestions: [],
 			effects: [],
 			preventions: [],
@@ -1017,24 +1017,5 @@ App.controller('_CollectionCtrl', function($scope, $uibModal, $resource) {
 				$scope.errors = err;
 			}
 		);	
-	}
-
-	//FIXME: duplicated
-	$scope.editProcess = function(process) {
-		var modal = $uibModal.open({
-			animation: true,
-			templateUrl : '/js/custom/tpl/modal/process-form.html',
-			controller: '_ProcessModalCtrl',	
-			scope: $scope,
-			size: 'lg',
-			resolve: {process: process,}
-		});
-
-		modal.result.then(
-			function(res) {
-				$scope.addSuccess("Saved succesfully");
-			},
-			function(err) {}
-		);
 	}
 });

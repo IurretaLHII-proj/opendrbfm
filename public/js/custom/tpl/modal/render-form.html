@@ -38,7 +38,6 @@
 		<div class="form-group col-md-4">
 			<!--<label for="inputWho">Who</label>-->
 			<select class="form-control"
-				ng-disabled="values.state <= 0"
 				ng-class="{'is-invalid': errors.who}"
 				ng-model="values.who"
 				ng-options="item.id as item.name for item in users"
@@ -55,7 +54,6 @@
 					uib-datepicker-popup="dd/MM/yyyy" 
 					placeholder="When"
 					ng-model="values.when" 
-					ng-disabled="values.state <= 0"
 					is-open="popup.opened" 
 					datepicker-options="dateOptions" 
 					ng-required="true" 

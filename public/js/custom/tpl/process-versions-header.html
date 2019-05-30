@@ -30,18 +30,7 @@
 	   ng-if="v == version && v.links.isAllowed('clone')"
 	   ng-click="cloneVersion(v)"
 	>clone</a>
-	<a href=""
-	   class="btn btn-sm disabled" 
-	   ng-class="{
-	   	'btn-success':v.state > 0,
-	   	'btn-dark':   v.state == 0,
-	   	'btn-danger': v.state < 0
-	   }"
-	   ng-switch="v.state">
-		<span ng-switch-when="1">Aproved</span>
-		<span ng-switch-when="-1">Canceled</span>
-		<span ng-switch-when="0">In progress</span>
-	</a>
+	<a href="" class="btn btn-sm disabled btn-{[v.stateColor()]}">{[v.stateLabel()]}</a>
 </div>
 <ul ng-repeat="_v in v.children" class="m-0 py-1 border-left" style="list-style:none;">
 	<li ng-include="'/js/custom/tpl/process-versions-header.html'" ng-init="v=_v;" class=""/></li>

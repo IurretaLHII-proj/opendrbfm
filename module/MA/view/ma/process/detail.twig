@@ -327,11 +327,11 @@
 							</ul>
 						</td>
 						<td class="text-center" ng-switch="s.state" ng-class="{'ng-hide':isClosed(s)}">
-							<div class="bg-light p-2 rounded" ng-switch-when="-1">Not necessary</div>
-							<div class="bg-danger text-light p-2 rounded" ng-switch-when="-2">Canceled</div>
-							<div class="bg-dark text-light p-2 rounded" ng-switch-when="1">In progress</div>
-							<div class="bg-success text-light p-2 rounded" ng-switch-when="2">Finished</div>
-							<div class="bg-secondary text-light p-2 rounded" ng-switch-default>Not processed</div>
+							<div class="bg-light p-2 rounded" ng-switch-when="-1">{[ s.stateLabel() ]}</div>
+							<div class="bg-danger text-light p-2 rounded" ng-switch-when="-2">{[ s.stateLabel() ]}</div>
+							<div class="bg-dark text-light p-2 rounded" ng-switch-when="1">{[ s.stateLabel() ]}</div>
+							<div class="bg-success text-light p-2 rounded" ng-switch-when="2">{[ s.stateLabel() ]}</div>
+							<div class="bg-secondary text-light p-2 rounded" ng-switch-default>{[ s.stateLabel() ]}</div>
 							<div class="" ng-if="s.who">
 								<p class="my-1 text-center"><a href="{[s.who.links.getHref()]}">{[ s.who.name ]}</a></p>
 								<span ng-if="s.when"class="small text-muted text-center">{[ s.when | date:"dd MMMyy"]}</span>

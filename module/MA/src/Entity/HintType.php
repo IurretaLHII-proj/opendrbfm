@@ -89,7 +89,7 @@ class HintType implements
 	 *	mappedBy	 = "type",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
+	 * @ORM\OrderBy({"priority" = "DESC"})
 	 */
 	protected $hints;
 
@@ -373,6 +373,25 @@ class HintType implements
 		return $this->setUpdated(new DateTime);
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getColor()
+	{
+		switch (true) {
+			case $this->priority >= 6:
+				return 'danger';
+			case $this->priority >= 4:
+				return 'warning';
+			case $this->priority >= 2:
+				return 'success';
+			case $this->priority >= 0:
+				return 'secondary';
+			default:
+				return 'light';
+		}
+	}
+
     /**
      * @inheritDoc
      */
@@ -381,6 +400,7 @@ class HintType implements
         return array(
             'id'          => $this->getId(),
             'name'        => $this->getName(),
+			'color'		  => $this->getColor(),
             'priority' 	  => $this->getPriority(),
             'description' => $this->getDescription(),
 			'operation'	  => $this->getOperation(),

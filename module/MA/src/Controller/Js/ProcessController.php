@@ -30,6 +30,8 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 		$customer = $this->params()->fromQuery('customer');
 		$order 	  = $this->params()->fromRoute('order', 'created');
 		$criteria = $this->params()->fromRoute('criteria', 'DESC');
+		$material = $this->params()->fromQuery('material');
+		$type	  = $this->params()->fromQuery('type');
 
 		$collection = $em->getRepository("MA\Entity\Process")->getBy(
 			$this->params()->fromQuery('title'),
@@ -40,6 +42,9 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 			$this->params()->fromQuery('complexity'),
 			$customer ? $em->getRepository("MA\Entity\Customer")->find($customer) : $customer,
 			$owner ? $em->getRepository("MA\Entity\User")->find($owner) : $owner,
+			$material ? $em->getRepository("MA\Entity\Material")->find($material) : $material,
+			$type ? $em->getRepository("MA\Entity\VersionType")->find($type) : $type,
+			$this->params()->fromQuery('state'),
 			$this->params()->fromQuery('order'),
 			$this->params()->fromQuery('criteria')
 		);

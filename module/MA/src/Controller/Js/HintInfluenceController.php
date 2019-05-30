@@ -43,9 +43,9 @@ class HintInfluenceController extends \Base\Controller\Js\AbstractActionControll
 
 		if ($this->getRequest()->isPost()) {
 			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
-			$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Simulation::STATE_CREATED ? 
-				\Zend\Form\FormInterface::VALIDATE_ALL : ['images', 'state', 'suggestions', 'effects', 'preventions']; 
-			$form->setValidationGroup($validationGroup);
+			//$validationGroup = isset($data['state']) && $data['state'] > \MA\Entity\Simulation::STATE_CREATED ? 
+			//	\Zend\Form\FormInterface::VALIDATE_ALL : ['images', 'state', 'suggestions', 'effects', 'preventions']; 
+			//$form->setValidationGroup($validationGroup);
 			$form->setData($data);
 			if ($form->isValid()) {
 				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);

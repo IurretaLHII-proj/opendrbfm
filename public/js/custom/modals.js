@@ -388,9 +388,9 @@ App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resourc
 
 App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resource, version) {
 	$scope.stateOptions = [
-		{id:MAVersion.IN_PROGRESS, 	name: "IN PROGRESS"},
-		{id:MAVersion.APROVED,  	name: "APROVED"},
-		{id:MAVersion.CANCELLED, 	name: "CANCELLED"},
+		{id:MAVersion.STATE_IN_PROGRESS, 	name: MAVersion.stateLabel(MAVersion.STATE_IN_PROGRESS)},
+		{id:MAVersion.STATE_APPROVED,  		name: MAVersion.stateLabel(MAVersion.STATE_APPROVED)},
+		{id:MAVersion.STATE_CANCELLED, 		name: MAVersion.stateLabel(MAVersion.STATE_CANCELLED)},
 	];
 	$scope.version  	= version;
 	$scope.values   	= JSON.parse(JSON.stringify(version));

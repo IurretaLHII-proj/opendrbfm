@@ -5,13 +5,16 @@
 	<h2>{{ entity.name }} <small class="text-muted">| {{ entity.type.operation.longName }}</small></h2>
 	<div>{{ entity.type.description | raw }}</div>
 	<hr>
-	<div><a href="{{ url('process/detail', {id:entity.process.id}) }}">{{ entity.process.name }}</a></div>
 	<div>{{ entity.description | raw }}</div>
 	<hr>
 
 	<div class="btn-group">
-		<a href="" class="btn btn-sm btn-primary" ng-class="{active: !tab || tab == 'x'}" ng-click="tab = 'x'"><i class="fa fa-eye"></i> x</a>
-		<a href="" class="btn btn-sm btn-primary" ng-class="{active: tab == 'y'}" ng-click="tab = 'y'"><i class="fa fa-eye"></i> y</a>
+		<a href="" class="btn btn-sm btn-outline-primary" ng-class="{active: !tab || tab == 'x'}" ng-click="tab = 'x'"><i class="fa fa-eye"></i> x</a>
+		<a href="" class="btn btn-sm btn-outline-primary" ng-class="{active: tab == 'y'}" ng-click="tab = 'y'"><i class="fa fa-eye"></i> y</a>
+	</div>
+	<div class="btn-group">
+		<a href="{{ url('process/detail', {id:entity.process.id}) }}" class="btn btn-sm btn-outline-primary">{{ entity.process.name }} (<span class="font-weight-bold">nº{{ entity.process.number }}</span>)</a>
+		<a href="{{ url('process/hint', {}, {query: {op:entity.operation.id, hint:entity.type.id}}) }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-warning mr-1"></i>Similar errors</a>
 	</div>
 
 
@@ -91,7 +94,7 @@
 		{% endif %}
 	</div>
 
-	{% if entity.type.hints.count() > 1 %}
+	{# if entity.type.hints.count() > 1 }
 		<h4>Errores del mismo tipo</h4>
 		<ul>
 		{% for item in entity.type.hints %}
@@ -103,6 +106,6 @@
 	{% endif %}
 		{% endfor %}
 		</ul>
-	{% endif %}
+	{% endif #}
 
 {% endblock content %}
