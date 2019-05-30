@@ -596,10 +596,13 @@ class Process implements
 	 */
 	public function getImage()
 	{	
-		for ($i = $this->getVersions()->count()-1; $i >= 0; $i--) {
-			if (null !== ($image = $this->getVersions()->get($i)->getImage())) {
-				return $image;
+		$version = $this->getVersions()->filter(function($item) {return $item->isParent();})->last();
+
+		if ($version) {
+			while ($version->hasChildren()) {
+				$version = $version->getChildren()->last();
 			}
+			return $version->getImage();
 		}
 	}
     

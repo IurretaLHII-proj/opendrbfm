@@ -41,7 +41,7 @@ return [
 			'max_depth' => 2,
 		],
 		'MA\Entity\VersionType' => [
-			'route_name' => 'process/version/type/detail/json',
+			'route_name' => 'process/version/type/detail',
 			'route_identifier_name' => 'id',
 			'entity_identifier_name' => 'id',
 			'route_params' => ['action' => 'detail'],
