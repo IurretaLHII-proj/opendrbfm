@@ -123,7 +123,7 @@ class Operation implements
 	 *	mappedBy	 = "operation",
 	 *	cascade 	 = {"persist", "remove"}
 	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
+	 * @ORM\OrderBy({"priority" = "DESC"})
 	 */
 	protected $hints;
 

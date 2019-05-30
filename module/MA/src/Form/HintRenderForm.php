@@ -152,8 +152,8 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return [
-			//'who' => [
-			//	'required' => true,
+			'who' => [
+				'required' => $this->get('state')->getValue() > Simulation::STATE_CREATED,
 			//	'filters' => [
 			//		[
 			//			'name' => \Zend\Filter\StringTrim::class,
@@ -165,9 +165,9 @@ class HintRenderForm extends Form implements InputFilterProviderInterface
 			//			'options' => ['min' => 3, 'max' => 255],
 			//		],
 			//	],
-			//],
+			],
 			'when' => [
-				'required' => true,
+				'required' => $this->get('state')->getValue() > Simulation::STATE_CREATED,
 				'validators' => [
 					[
 						'name' => \Zend\Validator\Date::class,

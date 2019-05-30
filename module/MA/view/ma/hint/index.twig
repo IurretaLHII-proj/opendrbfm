@@ -34,9 +34,9 @@
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle rounded-0" ng-class="{disabled:operation.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error <span ng-if="error.id" class="text-dark">( {[error.name]} )</span></button>
+			<button class="btn btn-light text-muted dropdown-toggle rounded-0" ng-class="{disabled:operation.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error <span ng-if="error.id" class="text-dark"><span class="mr-2 badge badge-{[ error.color ]}">{[ error.priority ]}</span>( {[error.name]} )</span></button>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="#" ng-repeat="option in operation.hints" ng-click="selError(option);">{[ option.name ]}</a>
+				<a class="dropdown-item" href="#" ng-repeat="option in operation.hints" ng-click="selError(option);"><span class="mr-2 badge badge-{[ option.color ]}">{[ option.priority ]}</span>{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
@@ -44,7 +44,7 @@
 		</div>
 		<input type="number" class="form-control filter-search" ng-model="priority">
 		<input type="text" class="form-control filter-search" placeholder="Process" auto-complete="autoCompleteOptions" ng-model="process.title">
-		<a ng-if="process.id" ng-click="rmProcess()" href="" style="position:absolute; right:40px; top:25%;">
+		<a ng-if="process.id" ng-click="rmProcess()" href="" style="position:absolute; right:40px; top:15%;">
 			<i class="fa fa-close"></i>
 		</a>
 		<div class="input-group-append">
@@ -126,8 +126,14 @@
 					<div class="">
 						<a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
 					</div>
-					<div class="">(nº {[ item.process.number ]})</div>
+					<div class="text-muted">nº {[ item.process.number ]}</div>
 					<div class="small text-muted">{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>
+					<div class="btn-group btn-group-sm">
+						<a href="" class="py-0 btn btn-sm disabled btn-{[ item.version.stateColor() ]}" >{[ item.version.stateLabel() ]}</a>
+						<a href="" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.name ]}</a>
+						<a href="" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.material.name ]}</a>
+						<a href="" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.type.name ]}</a>
+					</div>
 					<div ng-bind-html="item.version.description"></div>
 				</td>
 				<td class="text-center">

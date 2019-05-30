@@ -1,5 +1,5 @@
 
-App.controller('_ProcessCollectionCtrl', function($scope, $resource, $location) {
+App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, $location) {
 
 	$scope.order		= 'created';
 	$scope.criteria		= 'DESC';
@@ -11,6 +11,17 @@ App.controller('_ProcessCollectionCtrl', function($scope, $resource, $location) 
 		{id:MAProcess.COMPLEXITY_MEDIUM, name: MAProcess.complexityLabel(MAProcess.COMPLEXITY_MEDIUM)},
 		{id:MAProcess.COMPLEXITY_HIGH,   name: MAProcess.complexityLabel(MAProcess.COMPLEXITY_HIGH)},
 	];
+	$scope.materials 	= [{id:null, name:"--- ANY ---"}];
+	$scope.types 		= [{id:null, name:"--- ANY ---"}];
+	$scope.states		= [
+		{id:null, 							name: "--- ANY ---"},
+		{id:MAVersion.STATE_IN_PROGRESS, 	name: MAVersion.stateLabel(MAVersion.STATE_IN_PROGRESS)},
+		{id:MAVersion.STATE_APPROVED,  		name: MAVersion.stateLabel(MAVersion.STATE_APPROVED)},
+		{id:MAVersion.STATE_CANCELLED, 		name: MAVersion.stateLabel(MAVersion.STATE_CANCELLED)},
+	];
+	$scope.state  	  = $scope.states[0];
+	$scope.material   = $scope.materials[0];
+	$scope.type 	  = $scope.types[0];
 	$scope.complexity = $scope.complexityOptions[0];
 	$scope.owner	  = $scope.users[0];
 	$scope.customer	  = $scope.customers[0];
@@ -24,8 +35,12 @@ App.controller('_ProcessCollectionCtrl', function($scope, $resource, $location) 
 		if ($scope.machine)	 		 query.machine 	   = $scope.machine;
 		if ($scope.line)	 		 query.line 	   = $scope.line;
 		if ($scope.piece)	 		 query.piece 	   = $scope.piece;
+		if ($scope.material.id)  	 query.material    = $scope.material.id;
+		if ($scope.type.id) 	 	 query.type 	   = $scope.type.id;
+		if ($scope.state.id) 	 	 query.state       = $scope.state.id;
 		query.order    = $scope.order;
 		query.criteria = $scope.criteria;
+		//query.limit	   = 5;
 		return query;
 	}
 
@@ -41,13 +56,29 @@ App.controller('_ProcessCollectionCtrl', function($scope, $resource, $location) 
 						angular.forEach(data._embedded.items, item => {
 							$scope.customers.push(new MAUser(item));
 						});
-						$scope.search();
-					}, 
-					function(err){}
+						$resource('/process/material/json').get().$promise.then(
+							function(data){
+								angular.forEach(data._embedded.items, item => {
+									$scope.materials.push(new MAMaterial(item));
+								});
+								$resource('/process/version/type/json').get().$promise.then(
+									function(data){
+										angular.forEach(data._embedded.items, item => {
+											$scope.types.push(new MAVersionType(item));
+										});
+										$scope.search();
+									}, 
+									function(err){}
+								);
+							}, 
+							function(err){}
+						);
+					},
+					function (err){}
 				);
-			}, 
-			function(err){}
-		);
+			},
+			function (err) {}
+		);	
 	}
 
 	$scope.selOrder		 = function(value) { $scope.order	   = value; }
@@ -55,6 +86,9 @@ App.controller('_ProcessCollectionCtrl', function($scope, $resource, $location) 
 	$scope.selComplexity = function(value) { $scope.complexity = value; }
 	$scope.selOwner 	 = function(value) { $scope.owner 	   = value; }
 	$scope.selCustomer 	 = function(value) { $scope.customer   = value; }
+	$scope.selType 		 = function(value) { $scope.type		= value; }
+	$scope.selMaterial	 = function(value) { $scope.material = value; }
+	$scope.selState		 = function(value) { $scope.state 	= value; }
 
 	$scope.search = function() {
 		$scope.collection = new MACollection();
@@ -81,25 +115,37 @@ App.controller('_ProcessCollectionCtrl', function($scope, $resource, $location) 
 		);	
 	}
 
-	/*$scope.rmProcess = function() {$scope.process = null;}
-	$scope.process = null;
-	$scope.autoCompleteOptions = {
-		minimumChars: 3,
-		maxItemsToRender: 20,
-		selectedTextAttr: 'title',
-		itemTemplateUrl: 'autocomplete-item.html',
-		noMatchTemplate: "<span>No results match</span>",
-		data: function(text) {
-			return $resource('/process/json').get({title: text, order:'title'}).$promise.then(
-				function(data) {
-					return data._embedded.items;
-				},
-				function(err) {
-				}
-			);
-		},
-		itemSelected: function (e) {
-        	$scope.process = e.item;
-        }
-	};*/
+	//FIXME: duplicated
+	$scope.editProcess = function(process) {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/process-form.html',
+			controller: '_ProcessModalCtrl',	
+			scope: $scope,
+			size: 'lg',
+			resolve: {process: process,}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+	$scope.deleteProcess = function(process) {
+		var war = $scope._addWarning("Deleting...");
+		$resource(process.links.getHref('delete')).delete().$promise.then(
+			function (data) {
+        		$scope.collection.removeElement(process);
+				$scope._closeWarning(war);
+				$scope.addSuccess("Succesfully deleted");
+			},
+			function (err) {
+				console.log(err);
+				$scope._closeWarning(war);
+				$scope.addError(err.data.title);
+			}	
+		);
+	}
 });

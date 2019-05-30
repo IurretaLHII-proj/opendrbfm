@@ -19,6 +19,10 @@ class Module
     	//handle the dispatch error (exception) 
     	//handle the view render error (exception) 
     	//$ev->attach($hEvs, function($ev) { die($ev->getParam('exception')); });
+
+
+		$session = $e->getApplication()->getServiceManager()->get(\Zend\Session\SessionInterface::class);
+		\Zend\Session\AbstractContainer::setDefaultManager($session);
     }
 
 	/**

@@ -107,7 +107,7 @@ var parseQueryString = function() {
 	return objURL;
 };
 
-App.controller('MainCtrl', function($scope, $timeout) {
+App.controller('MainCtrl', function($scope, $uibModal, $resource, $timeout) {
 
 	$scope.params 	  = parseQueryString();
 	$scope.closeError = function(err) {
@@ -157,6 +157,7 @@ App.controller('MainCtrl', function($scope, $timeout) {
 	$scope.isHintReason = function(item) { return item instanceof MAHintReason; }
 	$scope.isHintInfluence = function(item) { return item instanceof MAHintInfluence; }
 	$scope.isSimulation = function(item) { return item instanceof MASimulation; }
+
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {

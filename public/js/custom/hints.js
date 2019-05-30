@@ -22,9 +22,9 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 	$scope.types 		= [{id:null, name:"--- ANY ---"}];
 	$scope.states		= [
 		{id:null, 					name: "--- ANY ---"},
-		{id:MAVersion.IN_PROGRESS, 	name: "In progress"},
-		{id:MAVersion.APROVED,  	name: "Aproved"},
-		{id:MAVersion.CANCELLED, 	name: "Cancelled"},
+		{id:MAVersion.STATE_IN_PROGRESS, 	name: MAVersion.stateLabel(MAVersion.STATE_IN_PROGRESS)},
+		{id:MAVersion.STATE_APPROVED,  		name: MAVersion.stateLabel(MAVersion.STATE_APPROVED)},
+		{id:MAVersion.STATE_CANCELLED, 		name: MAVersion.stateLabel(MAVersion.STATE_CANCELLED)},
 	];
 	$scope.state  	 = $scope.states[0];
 	$scope.material  = $scope.materials[0];
@@ -108,7 +108,7 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 		$scope.operation= value; 
 		if (value.id) {
 			$scope.operation.hints = [];
-			$resource($scope.operation.links.getHref('hints')).get().$promise.then(
+			$resource($scope.operation.links.getHref('hints')).get({order:'priority', criteria:'desc'}).$promise.then(
 				function(data) {
 					angular.forEach(data._embedded.items, item => {
 						$scope.operation.addHint(MAHintType.fromJSON(item));

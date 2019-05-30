@@ -152,6 +152,7 @@ interface IMAOperation {
 interface IMAHintType {
 	id: number,
 	name: string,
+	color: string,
 	priority: number,
 	description: string,
 	created: IMADate,

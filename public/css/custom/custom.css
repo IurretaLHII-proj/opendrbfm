@@ -82,7 +82,7 @@
 /*************************************/
 th.sticky-top {
 	top: 30px;
-	z-index: 0;
+	z-index: 100;
 }
 
 .filter-search {
