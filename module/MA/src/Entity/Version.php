@@ -303,6 +303,14 @@ class Version implements
         $this->parent = $parent;
         return $this;
     }
+
+	/**
+	 * @return boolean
+	 */
+	public function isParent()
+	{
+		return $this->getParent() === null;
+	}
     
     /**
      * Get children.
@@ -325,6 +333,14 @@ class Version implements
         $this->children = $children;
         return $this;
     }
+
+	/**
+	 * @return boolean
+	 */
+	public function hasChildren()
+	{
+		return $this->getChildren()->count() > 0;
+	}
     
     /**
      * Get process.
@@ -750,6 +766,18 @@ class Version implements
 				],
 			],
 		];
+
+		if (null !== ($image = $this->getImage())) {
+			$links[] = [
+				'rel'   	  => 'image',
+				'privilege'   => 'image',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'image/detail',
+				    'params'  => ['action' => 'detail', 'id' => $image->getId()],
+				],
+			];
+		}
 
 		return $links;
 	}
