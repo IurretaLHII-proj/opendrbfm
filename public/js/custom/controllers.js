@@ -23,7 +23,17 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 				function(data) {
 					angular.forEach(data._embedded.items, e => {version.addStage(MAStage.fromJSON(e))});
 					version.stagesLoaded = true;
-					if (version.hasStages()) $scope.setCurrent(version.getActive());
+					if (version.hasStages()) {
+						let curr;
+						if ($scope.params.stage) {
+							curr = version.stages.find(e => {return e.id == $scope.params.stage}); 
+							if (curr == undefined) curr = version.getActive();
+						}
+						else {
+							curr = version.getActive(); 
+						}
+						$scope.setCurrent(curr);
+					}
 				},		
 				function(err) {
 					$scope.addError("Unable toobtain version stages");
@@ -52,10 +62,6 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		if ($scope.process.hasVersions()) {
 			if ($scope.params.version) {
 				$scope.setVersion($scope.process.versions.find(e => {return e.id == $scope.params.version}));
-				if ($scope.params.stage) {
-					//console.log($scope.params.stage,$scope.version.stages.find(e => {return e.id == $scope.params.stage})); 
-					//$scope.setCurrent($scope.version.stages.find(e => {return e.id == $scope.params.stage}));
-				}
 			}
 			else {
 				$scope.setVersion($scope.process.getActive());
