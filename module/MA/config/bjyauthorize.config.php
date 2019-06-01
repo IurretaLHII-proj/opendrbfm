@@ -28,6 +28,8 @@ return [
 			Entity\Process::class,
 			Entity\Version::class,
 			Entity\VersionType::class,
+			Entity\Machine::class,
+			Entity\ProductivePlant::class,
 			Entity\Stage::class,
 			Entity\Material::class,
 			Entity\Operation::class,

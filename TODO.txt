@@ -20,9 +20,3 @@ ImagePresets
 -	Materials
 -	Desviations
 -	Comments
-
-
-
-- process getActive()
-- Version Image()
-- selectStage()/selectVersion();

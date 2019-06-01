@@ -40,7 +40,7 @@
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<span class="input-group-text text-muted border-0 bg-light">Priority ></span>
+			<span class="input-group-text text-muted border-0 bg-light">Priority >=</span>
 		</div>
 		<input type="number" class="form-control filter-search" ng-model="priority">
 		<input type="text" class="form-control filter-search" placeholder="Process" auto-complete="autoCompleteOptions" ng-model="process.title">
@@ -48,11 +48,11 @@
 			<i class="fa fa-close"></i>
 		</a>
 		<div class="input-group-append">
-			<button class="btn btn-secondary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+			<button class="btn btn-primary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
 		</div>
 	</div>
 
-	<table class="table m-0">
+	<table class="table table-bordered m-0">
 		<thead class="text-center">
 			<tr>
 				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">
@@ -68,7 +68,19 @@
 					</a>
 					<div>Process</div>
 				</th>
-				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">Stage</th>
+				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('stage');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='stage'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('stage');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='stage'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Stage</div>
+				</th>
 				<th class="p-0 border-top-0 bg-light sticky-top">
 					<a href="" ng-click="selOrder('priority');selCriteria('DESC');search();">
 						<i class="fa fa-caret-down" 
@@ -126,11 +138,11 @@
 						<a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
 					</div>
 					<div class="text-muted">nº {[ item.process.number ]}</div>
-					<a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a>
+					<div><a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a></div>
 					<!--<div class="small text-muted">{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>-->
 					<div class="btn-group btn-group-sm">
 						<a href="" class="py-0 btn btn-sm disabled btn-{[ item.version.stateColor() ]}" >{[ item.version.stateLabel() ]}</a>
-						<a href="{[ item.process.links.getHref() ]} " class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.name ]}</a>
+						<a href="{[ item.process.links.getHref() ]}?version={[item.version.id]}" class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.name ]}</a>
 						<a href="{[ item.version.material.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.material.name ]}</a>
 						<a href="{[ item.version.type.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.type.name ]}</a>
 					</div>
@@ -148,8 +160,8 @@
 					</a>
 				</td>
 				<td>
-					<div>Stage {[ item.stage.order ]}</div>
-					<ul class="text-muted" style="">
+					<a href="{[ item.process.links.getHref() ]}?version={[item.version.id]}&stage={[item.stage.id]}" class="" >Stage {[ item.stage.order ]}</a>
+					<ul class="m-0 text-muted" style="">
 						<li ng-repeat="(i, op) in item.stage.operations">{[op.longName]}</li>
 					</ul>
 					<div ng-bind-html="item.stage.description"></div>

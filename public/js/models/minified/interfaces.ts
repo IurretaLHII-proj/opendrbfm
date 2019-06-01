@@ -50,8 +50,14 @@ interface IMAUser {
 
 interface IMAMaterial {
 	id:number,
+	priority: number,
 	name: string,
+	description: string,
+	created: IMADate,
 	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+	},
 }
 
 interface IMAVersionType {
@@ -61,6 +67,30 @@ interface IMAVersionType {
 	_links: IMALinks, 
 }
 
+interface IMAPlant {
+	id: number,
+	name: string,
+	description: string,
+	state: number,
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+	},
+}
+
+interface IMAMachine {
+	id: number,
+	name: string,
+	description: string,
+	state: number,
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+	},
+}
+
 interface IMAProcess {
 	id: number,
 	title: string,
@@ -68,14 +98,14 @@ interface IMAProcess {
 	number: string,
 	code: string,
 	line: number,
-	machine: string,
-	plant: string,
 	complexity: string,
 	pieceNumber: string,
 	pieceName: string,
 	created: IMADate,
 	_links: IMALinks, 
 	_embedded: {
+		plant: IMAPlant,
+		machine: IMAMachine,
 		customer: IMAUser,
 		owner: IMAUser,
 		versions: IMAVersion[],

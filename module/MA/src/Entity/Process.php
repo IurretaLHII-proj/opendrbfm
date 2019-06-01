@@ -55,14 +55,28 @@ class Process implements
 	protected $title;
 
 	/**
-	 * @var string 
-	 * @ORM\Column(type="string")
+	 * @var Machine
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\Machine",
+	 *	inversedBy	 = "processes",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "mch_id",
+	 *	referencedColumnName = "id"
+	 * )
 	 */
 	protected $machine;
 
 	/**
-	 * @var string 
-	 * @ORM\Column(type="string")
+	 * @var ProductivePlant
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\ProductivePlant",
+	 *	inversedBy	 = "processes",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "plt_id",
+	 *	referencedColumnName = "id"
+	 * )
 	 */
 	protected $plant;
 
@@ -285,7 +299,7 @@ class Process implements
     /**
      * Get machine.
      *
-     * @return string.
+     * @return Machine.
      */
     public function getMachine()
     {
@@ -295,19 +309,19 @@ class Process implements
     /**
      * Set machine.
      *
-     * @param string machine the value to set.
+     * @param Machine machine the value to set.
      * @return Process.
      */
-    public function setMachine($machine)
+    public function setMachine(Machine $machine)
     {
-        $this->machine = (string) $machine;
+        $this->machine = $machine;
         return $this;
     }
 
     /**
      * Get plant.
      *
-     * @return string.
+     * @return ProductivePlant.
      */
     public function getPlant()
     {
@@ -317,12 +331,12 @@ class Process implements
     /**
      * Set plant.
      *
-     * @param string plant the value to set.
+     * @param ProductivePlant plant the value to set.
      * @return Process.
      */
-    public function setPlant($plant)
+    public function setPlant(ProductivePlant $plant)
     {
-        $this->plant = (string) $plant;
+        $this->plant = $plant;
         return $this;
     }
 

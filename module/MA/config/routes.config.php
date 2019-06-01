@@ -162,16 +162,28 @@ return [
 						'controller' => Controller\Js\ProcessController::class,
 					],
 				],
-			],
-			'add' => [
-				'type' => 'Literal',
-				'options' => [
-					'route' => '/add',
-					'defaults' => [
-						'action' => 'add',
+				'may_terminate' => true,
+				'child_routes' => [
+					'add' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/add',
+							'defaults' => [
+								'action' => 'add',
+							],
+						],
 					],
 				],
 			],
+			//'add' => [
+			//	'type' => 'Literal',
+			//	'options' => [
+			//		'route' => '/add',
+			//		'defaults' => [
+			//			'action' => 'add',
+			//		],
+			//	],
+			//],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -415,26 +427,17 @@ return [
 					],
 				],
 			],
-			'material' => [
+			'plant' => [
 				'type' => 'Literal',
 				'options' => [
-					'route' => '/material',
+					'route' => '/plant',
 					'defaults' => [
-						'controller' => Controller\MaterialController::class,
+						'controller' => Controller\PlantController::class,
 						'action' => 'index' 
 					],
 				],
 				'may_terminate' => true,
 				'child_routes' => [
-					'add' => [
-						'type' => 'Literal',
-						'options' => [
-							'route' => '/add',
-							'defaults' => [
-								'action' => 'add' 
-							]
-						],
-					],
 					'detail' => [
 						'type' => 'Segment',
 						'options' => [
@@ -447,6 +450,145 @@ return [
 								'action' => 'detail|edit|delete',
 							]
 						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\PlantController::class,
+									]
+								],
+							]
+						],
+					],
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\PlantController::class,
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'add' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/add',
+									'defaults' => [
+										'action' => 'add' 
+									]
+								],
+							],
+						],
+					],
+				],
+			],
+			'machine' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/machine',
+					'defaults' => [
+						'controller' => Controller\MachineController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|edit|delete',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\MachineController::class,
+									]
+								],
+							]
+						],
+					],
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\MachineController::class,
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'add' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/add',
+									'defaults' => [
+										'action' => 'add' 
+									]
+								],
+							],
+						],
+					],
+				],
+			],
+			'material' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/material',
+					'defaults' => [
+						'controller' => Controller\MaterialController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					//'add' => [
+					//	'type' => 'Literal',
+					//	'options' => [
+					//		'route' => '/add',
+					//		'defaults' => [
+					//			'action' => 'add' 
+					//		]
+					//	],
+					//],
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|edit|delete',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\MaterialController::class,
+									]
+								],
+							],
+						],
 					],
 					'json' => [
 						'type' => 'Literal',
@@ -455,6 +597,18 @@ return [
 							'defaults' => [
 								'controller' => Controller\Js\MaterialController::class,
 							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'add' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/add',
+									'defaults' => [
+										'action' => 'add' 
+									]
+								],
+							],
 						],
 					],
 				],

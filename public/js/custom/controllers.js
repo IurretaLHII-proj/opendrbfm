@@ -50,7 +50,16 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 	$scope.init = function(item, values) {
 		$scope.process = MAProcess.fromJSON(item);
 		if ($scope.process.hasVersions()) {
-			$scope.setVersion($scope.process.getActive());
+			if ($scope.params.version) {
+				$scope.setVersion($scope.process.versions.find(e => {return e.id == $scope.params.version}));
+				if ($scope.params.stage) {
+					//console.log($scope.params.stage,$scope.version.stages.find(e => {return e.id == $scope.params.stage})); 
+					//$scope.setCurrent($scope.version.stages.find(e => {return e.id == $scope.params.stage}));
+				}
+			}
+			else {
+				$scope.setVersion($scope.process.getActive());
+			}
 		}
 		if (values) {
 		//	angular.merge($scope.values, values);

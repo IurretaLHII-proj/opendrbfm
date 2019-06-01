@@ -193,14 +193,124 @@ class MAVersionType {
 }
 
 class MAMaterial {
-	constructor(obj: IMAMaterial) {
-		this.id	   = obj.id;
-		this.name  = obj.name;
+
+	static fromJSON(obj: IMAMaterial): MAMaterial{
+		let e = new MAMaterial();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.created = new Date();
+	}
+
+	load(obj: IMAMaterial) {
+		if (obj.id) {
+			this.id	   = obj.id;
+			this.name  = obj.name;
+			this.priority  = obj.priority;
+			this.description  = obj.description;
+			this.user = new MAUser(obj._embedded.owner);
+			this.created = new Date(obj.created.date);
+		}
 		this.links = new MALinks(obj._links);
+	}
+
+	toJSON(): {}{
+		return {
+			id: this.id,
+			name: this.name,
+			priority: this.priority,
+			description: this.description,
+		};
+	}
+
+	id: number;
+	priority: number = 0;
+	name:string;
+	description:string;
+	user:MAUser;
+	created:Date;
+	links: MALinks;
+}
+
+class MAMachine {
+
+	static fromJSON(obj: IMAMachine): MAMachine{
+		let e = new MAMachine();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.created = new Date();
+	}
+
+	load(obj: IMAPlant) {
+		if (obj.id) {
+			this.id	   = obj.id;
+			this.name  = obj.name;
+			this.description  = obj.description;
+			this.user = new MAUser(obj._embedded.owner);
+			this.created = new Date(obj.created.date);
+		}
+		this.links = new MALinks(obj._links);
+	}
+
+	toJSON(): {}{
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			user: this.user ? this.user.id : null,
+		};
 	}
 
 	id: number;
 	name:string;
+	description:string;
+	user:MAUser;
+	created:Date;
+	links: MALinks;
+}
+
+class MAPlant {
+
+	static fromJSON(obj: IMAPlant): MAPlant{
+		let e = new MAPlant();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.created = new Date();
+	}
+
+	load(obj: IMAPlant) {
+		if (obj.id) {
+			this.id	   = obj.id;
+			this.name  = obj.name;
+			this.description  = obj.description;
+			this.user = new MAUser(obj._embedded.owner);
+			this.created = new Date(obj.created.date);
+		}
+		this.links = new MALinks(obj._links);
+	}
+
+	toJSON(): {}{
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			user: this.user ? this.user.id : null,
+		};
+	}
+
+	id: number;
+	name:string;
+	description:string;
+	user:MAUser;
+	created:Date;
 	links: MALinks;
 }
 
@@ -229,11 +339,11 @@ class MAProcess {
 			this.number= obj.number;
 			this.code= obj.code;
 			this.line= obj.line;
-			this.machine= obj.machine;
-			this.plant= obj.plant;
 			this.complexity= obj.complexity;
 			this.pieceNumber= obj.pieceNumber;
 			this.pieceName= obj.pieceName;
+			this.machine = MAMachine.fromJSON(obj._embedded.machine);
+			this.plant = MAPlant.fromJSON(obj._embedded.plant);
 			this.user = new MAUser(obj._embedded.owner);
 			this.customer = new MAUser(obj._embedded.customer);
 			this.created = new Date(obj.created.date);
@@ -263,13 +373,13 @@ class MAProcess {
 			number: this.number,
 			code: this.code,
 			line: this.line,
-			machine: this.machine,
-			plant: this.plant,
+			plant: this.plant ? this.plant.id : null,
+			machine: this.machine ? this.machine.id : null,
 			complexity: this.complexity,
 			pieceNumber: this.pieceNumber,
 			pieceName: this.pieceName,
-			user: this.user.id,
-			customer: this.customer.id,
+			user: this.user ? this.user.id : null,
+			customer: this.customer ? this.customer.id : null,
 		};
 	}
 
@@ -323,8 +433,8 @@ class MAProcess {
 	number: string;
 	code: string;
 	line: number;
-	machine: string;
-	plant: string;
+	plant: MAPlant;
+	machine: MAMachine;
 	complexity: string;
 	pieceNumber: string;
 	pieceName: string;
@@ -370,7 +480,7 @@ class MAVersion {
 			this.description = obj.description;
 			this.commentCount = obj.commentCount;
 			this.created = new Date(obj.created.date);
-			this.material = new MAMaterial(obj._embedded.material);
+			this.material = MAMaterial.fromJSON(obj._embedded.material);
 			this.type = new MAVersionType(obj._embedded.type);
 			this.user = new MAUser(obj._embedded.owner);
 			this.parent = obj._embedded.parent ? MAVersion.fromJSON(obj._embedded.parent) : null;

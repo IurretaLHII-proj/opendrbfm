@@ -10,14 +10,43 @@
 
 	<div class="input-group input-group-sm sticky-top">
 
+		<!-- Add  -->
+		<div class="input-group-prepend">
+			<button class="btn btn-primary rounded-0" type="button" ng-click="addProcess()"> 
+		   		<span class="fa fa-plus"></span>
+			</button>
+		</div>
+
 		<!-- Complexity  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle rounded-0" type="button" 
+			<button class="btn btn-light text-muted dropdown-toggle" type="button" 
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Complexity
 		   			<span ng-if="complexity.id" class="text-dark">( {[complexity.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in complexityOptions" ng-click="selComplexity(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+
+		<!-- Plant  -->
+		<div class="input-group-prepend">
+			<button class="btn btn-light text-muted dropdown-toggle rounded-0" type="button" 
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Plant
+		   			<span ng-if="plant.id" class="text-dark">( {[plant.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in plants" ng-click="selPlant(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+
+		<!-- Machine  -->
+		<div class="input-group-prepend">
+			<button class="btn btn-light text-muted dropdown-toggle rounded-0" type="button" 
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Machine
+		   			<span ng-if="machine.id" class="text-dark">( {[machine.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in machines" ng-click="selMachine(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 
@@ -82,9 +111,6 @@
 		<!-- Article -->
 		<input type="number" class="form-control filter-search" placeholder="Article" ng-model="article">
 
-		<!-- Machine -->
-		<input type="text" class="form-control filter-search" placeholder="Machine" ng-model="machine">
-
 		<!-- Line -->
 		<input type="number" class="form-control filter-search" placeholder="Line" ng-model="line">
 
@@ -93,12 +119,12 @@
 
 		<!-- Search -->
 		<div class="input-group-append">
-			<button class="btn btn-secondary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+			<button class="btn btn-primary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
 		</div>
 	</div>
 
 
-	<table class="table m-0">
+	<table class="table table-bordered m-0">
 		<thead class="text-center">
 			<tr>
 				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top" colspan="2">
@@ -141,6 +167,19 @@
 					<div>Complexity</div>
 				</th>
 				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('plant');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='plant'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('plant');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='plant'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Plant</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
 					<a href="" ng-click="selOrder('machine');selCriteria('DESC');search();">
 						<i class="fa fa-caret-down" 
 						   ng-class="{'text-dark': order=='machine'&&criteria=='DESC'}">
@@ -165,9 +204,6 @@
 						</i>
 					</a>
 					<div>Line</div>
-				</th>
-				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
-					<div>Plant</div>
 				</th>
 				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
 					<a href="" ng-click="selOrder('pieceName');selCriteria('DESC');search();">
@@ -225,30 +261,20 @@
 				</td>
 				<td>
 					<div><a href="{[ item.links.getHref() ]}">{[ item.title ]}</a></div>
-				   	<span class="text-muted">nº {[ item.number ]}</span>
+				   	<span class="text-muted">nº{[ item.number ]}</span>
 					<div ng-repeat="version in item.versions"><div class="btn-group btn-group-sm">
 						<a href="" class="py-0 btn btn-sm disabled btn-{[ version.stateColor() ]}" >{[ version.stateLabel() ]}</a>
-						<a href="" class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ version.name ]}</a>
-						<a href="" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ version.material.name ]}</a>
-						<a href="" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ version.type.name ]}</a>
+						<a href="{[ version.process.links.getHref() ]}?version={[version.id]}" class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ version.name ]}</a>
+						<a href="{[ version.material.links.getHref() ]}" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ version.material.name ]}</a>
+						<a href="{[ version.material.links.getHref() ]}" class="py-0 btn btn-sm btn-outline-primary ]}" >{[ version.type.name ]}</a>
 					</div></div>
 				</td>
-				<td>
-					{[ item.code ]}
-				</td>
-				<td>
-					{[ item.complexityLabel() ]}
-				</td>
-				<td colspan="2" class="text-center">
-					<div>{[ item.machine ]} ({[ item.line ]})</div>
-				</td>
-				<td>
-					<div>{[ item.plant ]}</div>
-				</td>
-				<td>
-					<div>{[ item.pieceName ]}</div>
-				   	<span class="">(nº {[ item.pieceNumber]})</span>
-				</td>
+				<td class="text-center">{[ item.code ]}</td>
+				<td class="text-center">{[ item.complexityLabel() ]}</td>
+				<td class="text-center"><a href="{[ item.plant.links.getHref() ]}">{[ item.plant.name ]}</a></td>
+				<td class="text-center"><a href="{[ item.machine.links.getHref() ]}">{[ item.machine.name ]}</a></td>
+				<td class="text-center">{[ item.line ]}</td>
+				<td class="text-center"><div>{[ item.pieceName ]}</div><span class="text-muted">nº{[ item.pieceNumber]}</span></td>
 				<td>
 					<a href="{[ item.customer.links.getHref() ]}" class="">{[ item.customer.name ]}</a>
 				</td>

@@ -1,24 +1,24 @@
 {% extends 'layout/_layout.twig' %}
 {% block script %}
 	{{ parent() }}
-	<script type="text/javascript" src="{{ basePath() }}/js/custom/materials.js"></script>
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/machines.js"></script>
 {% endblock script %}
 
 {% block body %}
-	{{ headTitle('Materials') }}
-	<ng-controller ng-controller="_MaterialCollectionCtrl" ng-init="init()">
+	{{ headTitle('Machines') }}
+	<ng-controller ng-controller="_MachineCollectionCtrl" ng-init="init()">
 
 	<div class="input-group input-group-sm sticky-top">
 
 		<!-- Add  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-primary rounded-0" type="button" ng-click="addMaterial()"> 
+			<button class="btn btn-primary rounded-0" type="button" ng-click="addMachine()"> 
 		   		<span class="fa fa-plus"></span>
 			</button>
 		</div>
 
 		<!-- Name -->
-		<input type="text" class="form-control filter-search" placeholder="Material name" ng-model="name">
+		<input type="text" class="form-control filter-search" placeholder="Machine name" ng-model="name">
 
 		<!-- Search -->
 		<div class="input-group-append">
@@ -33,27 +33,14 @@
 		<thead class="text-center">
 			<tr>
 				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
-					<a href="" ng-click="selOrder('priority');selCriteria('DESC');search();">
+					<a href="" ng-click="selOrder('name');selCriteria('DESC');search();">
 						<i class="fa fa-caret-down" 
-						   ng-class="{'text-dark': order=='priority'&&criteria=='DESC'}">
+						   ng-class="{'text-dark': order=='name'&&criteria=='DESC'}">
 						</i>
 					</a>
-					<a href="" ng-click="selOrder('priority');selCriteria('ASC');search();">
+					<a href="" ng-click="selOrder('name');selCriteria('ASC');search();">
 						<i class="fa fa-caret-up" 
-						   ng-class="{'text-dark': order=='priority'&&criteria=='ASC'}">
-						</i>
-					</a>
-					<div>Criticallity</div>
-				</th>
-				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
-					<a href="" ng-click="selOrder('text');selCriteria('DESC');search();">
-						<i class="fa fa-caret-down" 
-						   ng-class="{'text-dark': order=='text'&&criteria=='DESC'}">
-						</i>
-					</a>
-					<a href="" ng-click="selOrder('text');selCriteria('ASC');search();">
-						<i class="fa fa-caret-up" 
-						   ng-class="{'text-dark': order=='text'&&criteria=='ASC'}">
+						   ng-class="{'text-dark': order=='name'&&criteria=='ASC'}">
 						</i>
 					</a>
 					<div>Name</div>
@@ -80,7 +67,6 @@
 				<td colspan="3"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
 			</tr>
 			<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
-				<td class="text-center">{[ item.priority ]}</td>
 				<td class="text-center"><a href="{[ item.links.getHref() ]}">{[ item.name ]}</a></td>
 				<td ng-bind-html="item.description"></td>
 				<td class="text-center">
@@ -95,7 +81,7 @@
 							<i class="fa fa-eye"></i>
 						</a>
 						<a ng-if="item.links.isAllowed('edit')" href="" 
-						   ng-click="editMaterial(item)" class="btn btn-outline-primary"
+						   ng-click="editMachine(item)" class="btn btn-outline-primary"
 						>
 							<i class="fa fa-pencil"></i>
 						</a>
@@ -103,7 +89,7 @@
 						   class="btn btn-outline-primary" 
 						   ng-class="{disabled:!item.links.isAllowed('delete')}" 
 						   ng-confirm-click 
-						   confirmed-click="deleteMaterial(item);">
+						   confirmed-click="deleteMachine(item);">
 							<i class="fa fa-trash"></i>
 						</a>
 					</div>

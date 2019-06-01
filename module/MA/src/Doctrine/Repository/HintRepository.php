@@ -31,7 +31,7 @@ class HintRepository extends EntityRepository
 		$result = [];
 		$query = $this->createQueryBuilder('hint');
     	$query->select('hint')
-			->andWhere('hint.priority > :prior')->setParameter('prior', $prior)
+			->andWhere('hint.priority >= :prior')->setParameter('prior', $prior)
 			->innerJoin('hint.type', 'type')
 			->innerJoin('hint.stage', 'stage')
 			->innerJoin('stage.version', 'version')
@@ -39,8 +39,11 @@ class HintRepository extends EntityRepository
 			;
 
 		switch ($order) {
-			case "process":
-				$order = "process.title";
+			case "name":
+				$order = "type.{$order}";
+				break;
+			case "stage":
+				$order = "stage.order";
 				break;
 			case "name":
 				$order = "type.{$order}";

@@ -145,12 +145,93 @@ var MAVersionType = /** @class */ (function () {
     return MAVersionType;
 }());
 var MAMaterial = /** @class */ (function () {
-    function MAMaterial(obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.links = new MALinks(obj._links);
+    function MAMaterial() {
+        this.priority = 0;
+        this.created = new Date();
     }
+    MAMaterial.fromJSON = function (obj) {
+        var e = new MAMaterial();
+        e.load(obj);
+        return e;
+    };
+    MAMaterial.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.priority = obj.priority;
+            this.description = obj.description;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    MAMaterial.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            name: this.name,
+            priority: this.priority,
+            description: this.description,
+        };
+    };
     return MAMaterial;
+}());
+var MAMachine = /** @class */ (function () {
+    function MAMachine() {
+        this.created = new Date();
+    }
+    MAMachine.fromJSON = function (obj) {
+        var e = new MAMachine();
+        e.load(obj);
+        return e;
+    };
+    MAMachine.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.description = obj.description;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    MAMachine.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            user: this.user ? this.user.id : null,
+        };
+    };
+    return MAMachine;
+}());
+var MAPlant = /** @class */ (function () {
+    function MAPlant() {
+        this.created = new Date();
+    }
+    MAPlant.fromJSON = function (obj) {
+        var e = new MAPlant();
+        e.load(obj);
+        return e;
+    };
+    MAPlant.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.description = obj.description;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    MAPlant.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            user: this.user ? this.user.id : null,
+        };
+    };
+    return MAPlant;
 }());
 var MAProcess = /** @class */ (function () {
     function MAProcess() {
@@ -170,11 +251,11 @@ var MAProcess = /** @class */ (function () {
             this.number = obj.number;
             this.code = obj.code;
             this.line = obj.line;
-            this.machine = obj.machine;
-            this.plant = obj.plant;
             this.complexity = obj.complexity;
             this.pieceNumber = obj.pieceNumber;
             this.pieceName = obj.pieceName;
+            this.machine = MAMachine.fromJSON(obj._embedded.machine);
+            this.plant = MAPlant.fromJSON(obj._embedded.plant);
             this.user = new MAUser(obj._embedded.owner);
             this.customer = new MAUser(obj._embedded.customer);
             this.created = new Date(obj.created.date);
@@ -203,13 +284,13 @@ var MAProcess = /** @class */ (function () {
             number: this.number,
             code: this.code,
             line: this.line,
-            machine: this.machine,
-            plant: this.plant,
+            plant: this.plant ? this.plant.id : null,
+            machine: this.machine ? this.machine.id : null,
             complexity: this.complexity,
             pieceNumber: this.pieceNumber,
             pieceName: this.pieceName,
-            user: this.user.id,
-            customer: this.customer.id,
+            user: this.user ? this.user.id : null,
+            customer: this.customer ? this.customer.id : null,
         };
     };
     MAProcess.complexityLabel = function (value) {
@@ -285,7 +366,7 @@ var MAVersion = /** @class */ (function () {
             this.description = obj.description;
             this.commentCount = obj.commentCount;
             this.created = new Date(obj.created.date);
-            this.material = new MAMaterial(obj._embedded.material);
+            this.material = MAMaterial.fromJSON(obj._embedded.material);
             this.type = new MAVersionType(obj._embedded.type);
             this.user = new MAUser(obj._embedded.owner);
             this.parent = obj._embedded.parent ? MAVersion.fromJSON(obj._embedded.parent) : null;

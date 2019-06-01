@@ -32,16 +32,19 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 		$criteria = $this->params()->fromRoute('criteria', 'DESC');
 		$material = $this->params()->fromQuery('material');
 		$type	  = $this->params()->fromQuery('type');
+		$plant	  = $this->params()->fromQuery('plant');
+		$machine  = $this->params()->fromQuery('machine');
 
 		$collection = $em->getRepository("MA\Entity\Process")->getBy(
 			$this->params()->fromQuery('title'),
 			$this->params()->fromQuery('article'),
-			$this->params()->fromQuery('machine'),
 			$this->params()->fromQuery('line'),
 			$this->params()->fromQuery('piece'),
 			$this->params()->fromQuery('complexity'),
 			$customer ? $em->getRepository("MA\Entity\Customer")->find($customer) : $customer,
 			$owner ? $em->getRepository("MA\Entity\User")->find($owner) : $owner,
+			$plant ? $em->getRepository("MA\Entity\ProductivePlant")->find($plant) : $plant,
+			$machine ? $em->getRepository("MA\Entity\Machine")->find($machine) : $machine,
 			$material ? $em->getRepository("MA\Entity\Material")->find($material) : $material,
 			$type ? $em->getRepository("MA\Entity\VersionType")->find($type) : $type,
 			$this->params()->fromQuery('state'),
@@ -74,6 +77,42 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 		return new HalJsonModel([
 			'payload' => $payload,
 		]);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function addAction()
+	{
+		$e	  = new \MA\Entity\Process;
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\ProcessForm::class);
+
+		$form->setHydrator(new DoctrineHydrator($em));
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$em->persist($e);
+				$em->flush();
+
+				$payload = ['payload' => $this->prepareHalEntity($e, "process/detail/json")];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
 	}
 
 	/**

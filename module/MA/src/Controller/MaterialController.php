@@ -12,33 +12,6 @@ class MaterialController extends \Base\Controller\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
-    public function indexAction()
-    {
-		$em   = $this->getEntityManager();
-		$form = $this->getServiceLocator()
-			->get('FormElementManager')
-			->get(\MA\Form\MaterialForm::class);
-
-		$form->setAttribute('action', $this->url()->fromRoute('process/material/add', [], [
-				'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
-			], true));
-
-        $form->setHydrator(new DoctrineHydrator($em));
-
-		$collection = $em->getRepository(\MA\Entity\Material::class)
-			->findBy([],['created' => 'ASC']);
-
-		$paginator = $this->getPaginator($collection, 100);
-
-		return new ViewModel([
-			'collection' 	=> $paginator,
-			'form' 			=> $form,
-		]);
-    }
-
-	/**
-	 * @return ViewModel
-	 */
     public function addAction()
     {
 		$e    = new \MA\Entity\Material;

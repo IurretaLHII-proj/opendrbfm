@@ -62,7 +62,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
              ],
         ], ['priority' => 1]);
 
-        $this->add([
+        /*$this->add([
              'type' => 'Text',
              'name' => 'machine',
              'attributes' => [ 
@@ -85,7 +85,27 @@ class ProcessForm extends Form implements InputFilterProviderInterface
              'options' => [
                  'label' => 'Plant',
              ],
-        ], ['priority' => -8]);
+		 ], ['priority' => -8]);*/
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'machine',
+             'attributes' => [ 
+             ],
+             'options' => [
+				 'target_class' => 'MA\Entity\Machine',
+             ],
+        ]);
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'plant',
+             'attributes' => [ 
+             ],
+             'options' => [
+				 'target_class' => 'MA\Entity\ProductivePlant',
+             ],
+        ]);
 
         $this->add([
              'type' => 'Text',
@@ -185,10 +205,10 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 					],
 				],
 				'validators' => [
-					[
-						'name' => \Zend\Validator\Regex::class,
-						'options' => ['pattern' => '(^-?\d*(\.\d+)?$)']
-					],
+					//[
+					//	'name' => \Zend\Validator\Regex::class,
+					//	'options' => ['pattern' => '(^-?\d*(\.\d+)?$)']
+					//],
 					[
 						'name' => \Zend\Validator\StringLength::class,
 						'options' => ['min' => 1, 'max' => 11],
@@ -227,35 +247,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 					],
 				],
 			],
-			'plant' => [
-				'required' => true,
-				'filters' => [
-					[
-						'name' => \Zend\Filter\StringTrim::class,
-					],
-				],
-				'validators' => [
-					[
-						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 64],
-					],
-				],
-			],
-			'pieceNumber' => [
-				'required' => true,
-				'filters' => [
-					[
-						'name' => \Zend\Filter\StringTrim::class,
-					],
-				],
-				'validators' => [
-					[
-						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 64],
-					],
-				],
-			],
-			'pieceName' => [
+			/*'plant' => [
 				'required' => true,
 				'filters' => [
 					[
@@ -270,6 +262,38 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 				],
 			],
 			'machine' => [
+				'required' => true,
+				'filters' => [
+					[
+						'name' => \Zend\Filter\StringTrim::class,
+					],
+				],
+				'validators' => [
+					[
+						'name' => \Zend\Validator\StringLength::class,
+						'options' => ['min' => 3, 'max' => 64],
+					],
+				],
+			],*/
+			'pieceNumber' => [
+				'required' => true,
+				'filters' => [
+					[
+						'name' => \Zend\Filter\StringTrim::class,
+					],
+				],
+				'validators' => [
+					[
+						'name' => \Zend\Validator\Regex::class,
+						'options' => ['pattern' => '(^-?\d*(\.\d+)?$)']
+					],
+					[
+						'name' => \Zend\Validator\StringLength::class,
+						'options' => ['min' => 3, 'max' => 64],
+					],
+				],
+			],
+			'pieceName' => [
 				'required' => true,
 				'filters' => [
 					[

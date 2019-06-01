@@ -345,17 +345,90 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 	console.log($scope.values, simulation);
 });
 
-App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resource, process) {
+App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $uibModal, $resource, process) {
 	$scope.process = process;
 	$scope.errors  = {};
 	$scope.values  = JSON.parse(JSON.stringify(process));
 	$scope.complexityOptions = [
+		{id:null, 						 name:' --Select complexity-- '},
 		{id:MAProcess.COMPLEXITY_LOW,  	 name: "LOW"},
 		{id:MAProcess.COMPLEXITY_MEDIUM, name: "MEDIUM"},
 		{id:MAProcess.COMPLEXITY_HIGH,	 name: "HIGH"},
 	];
 
-	$scope.customers = [];
+	$scope.plants = [
+		{id:null, name:' --Select productive plant-- '},
+		{id:-1,   name:' --Create new-- '},
+	];
+	$scope.loadPlants = function() {
+		$resource('/process/plant/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, function(item) {
+					$scope.plants.push(MAPlant.fromJSON(item));
+				});
+			}, 
+			function(err){}
+		);
+	};
+	$scope.createPlant = function() {
+	 	if ($scope.values.plant < 0) {	
+			let plant = new MAPlant();
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/plant-form.html',
+				controller: '_PlantModalCtrl',	
+				scope: $scope,
+				size: 'lg',
+				resolve: {plant: plant},
+			});
+
+			modal.result.then(
+				function(res) {
+					$scope.plants.push(plant);
+					$scope.values.plant = plant.id;
+				},
+				function() {}
+			);
+		}
+	}
+
+	$scope.machines = [
+		{id:null, name:' --Select machine-- '},
+		{id:-1,   name:' --Create new-- '},
+	];
+	$scope.loadMachines = function() {
+		$resource('/process/machine/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, function(item) {
+					$scope.machines.push(MAMachine.fromJSON(item));
+				});
+			}, 
+			function(err){}
+		);
+	};
+	$scope.createMachine = function() {
+	 	if ($scope.values.machine < 0) {	
+			let machine = new MAMachine();
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/machine-form.html',
+				controller: '_MachineModalCtrl',	
+				scope: $scope,
+				size: 'lg',
+				resolve: {machine: machine},
+			});
+
+			modal.result.then(
+				function(res) {
+					$scope.machines.push(machine);
+					$scope.values.machine = machine.id;
+				},
+				function() {}
+			);
+		}
+	}
+
+	$scope.customers = [
+		{id:null, name:' --Select customer-- '},
+	];
 	$scope.loadCustomers = function() {
 		$resource('/customer/json').get().$promise.then(
 			function(data){
@@ -368,7 +441,9 @@ App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $resourc
 	};
 	$scope.save = function() {
 		var war = $scope._addWarning("Updating...");
-		$resource(process.links.getHref('edit')).save($scope.values).$promise.then(
+		var uri = process.id ? 
+			process.links.getHref('edit') : 'process/json/add';
+		$resource(uri).save($scope.values).$promise.then(
 			function(data){
 				$scope._closeWarning(war);
 				process.load(data);
@@ -687,6 +762,79 @@ App.controller('_SimulationModalCtrl', function($scope, $uibModalInstance, $reso
 		$resource(uri).save($scope.values).$promise.then(
 			function(data) {
 				simulation.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_PlantModalCtrl', function($scope, $uibModalInstance, $resource, plant)
+{
+	$scope.plant 	= plant;
+	$scope.values   = JSON.parse(JSON.stringify(plant));
+	$scope.errors   = {};
+
+	$scope.save = function() {
+		var uri  = plant.id ? plant.links.getHref('edit') : '/process/plant/json/add';
+		$resource(uri).save($scope.values).$promise.then(
+			function(data) {
+				plant.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_MachineModalCtrl', function($scope, $uibModalInstance, $resource, machine)
+{
+	$scope.machine 	= machine;
+	$scope.values   = JSON.parse(JSON.stringify(machine));
+	$scope.errors   = {};
+
+	$scope.save = function() {
+		var uri  = machine.id ? machine.links.getHref('edit') : '/process/machine/json/add';
+		$resource(uri).save($scope.values).$promise.then(
+			function(data) {
+				machine.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_MaterialModalCtrl', function($scope, $uibModalInstance, $resource, material)
+{
+	$scope.material	= material;
+	$scope.values   = JSON.parse(JSON.stringify(material));
+	$scope.errors   = {};
+
+	$scope.save = function() {
+		var uri  = material.id ? material.links.getHref('edit') : '/process/material/json/add';
+		$scope.values.text = $scope.values.name;
+		$resource(uri).save($scope.values).$promise.then(
+			function(data) {
+				material.load(data);
 				$uibModalInstance.close(data);	
 			},
 			function(err) {

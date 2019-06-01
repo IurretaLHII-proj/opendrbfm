@@ -83,6 +83,18 @@ return [
 	Controller\Js\StageController::class => [
 		'repository' => Entity\Stage::class,
 	],
+	Controller\PlantController::class => [
+		'repository' => Entity\ProductivePlant::class,
+	],
+	Controller\Js\PlantController::class => [
+		'repository' => Entity\ProductivePlant::class,
+	],
+	Controller\MachineController::class => [
+		'repository' => Entity\Machine::class,
+	],
+	Controller\Js\MachineController::class => [
+		'repository' => Entity\Machine::class,
+	],
 	Controller\MaterialController::class => [
 		'repository' => Entity\Material::class,
 	],

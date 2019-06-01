@@ -1,16 +1,3 @@
-var parseQueryString = function() {
-	var str = window.location.search;
-	var objURL = {};
-
-	str.replace(
-	    new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
-	    function( $0, $1, $2, $3 ){
-	        objURL[ $1 ] = $3;
-	    }
-	);
-	return objURL;
-};
-
 App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 
 	$scope.order		= 'priority';
@@ -46,7 +33,6 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 	}
 
 	$scope.init = function() {
-		$scope.params 	  = parseQueryString();
 		$scope.collection = new MACollection();
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
