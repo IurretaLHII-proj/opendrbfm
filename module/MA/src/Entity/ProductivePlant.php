@@ -5,20 +5,18 @@ namespace MA\Entity;
 use Doctrine\ORM\Mapping as ORM,
 	Doctrine\Common\Collections\ArrayCollection;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
-use JsonSerializable;
 use DateTime;
+use JsonSerializable;
 
 /**
- * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\MaterialRepository")
- * @ORM\Table(name="process_material")
+ * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\PlantRepository")
+ * @ORM\Table(name="process_plant")
  */
-class Material implements 
-	MaterialInterface,
+class ProductivePlant implements 
 	JsonSerializable,
 	ResourceInterface, 
 	\User\Entity\UserAwareInterface,
-	\Base\Hal\LinkProvider,
-	\Base\Hal\LinkPrepareAware
+	\Base\Hal\LinkProvider
 {
 	/**
 	 * @var int 
@@ -29,16 +27,10 @@ class Material implements
 	protected $id;
 
 	/**
-	 * @var int
-	 * @ORM\Column(type="integer", name="prior", options={"default":1})
-	 */
-	protected $priority = 1;
-
-	/**
 	 * @var string 
 	 * @ORM\Column(type="string")
 	 */
-	protected $text;
+	protected $name;
 
     /**
 	 * @var string 
@@ -54,7 +46,7 @@ class Material implements
 	 * @var User
 	 * @ORM\ManyToOne(
 	 *	targetEntity = "MA\Entity\User",
-	 *	inversedBy	 = "operations",
+	 *	inversedBy	 = "plants",
 	 * )
 	 * @ORM\JoinColumn(
 	 *	name= "uid",
@@ -64,13 +56,10 @@ class Material implements
 	protected $user;
 
 	/**
-	 * @var VersionInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Version",
-	 *	mappedBy	 = "material",
-	 * )
+	 * @var int
+	 * @ORM\Column(type="integer", options={"default":-0})
 	 */
-	protected $versions;
+	protected $state = 0;
 
 	/**
 	 * @var int 
@@ -85,13 +74,22 @@ class Material implements
 	protected $updated;
 
 	/**
+	 * @var ProcessInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Process",
+	 *	mappedBy	 = "plant",
+	 * )
+	 */
+	protected $processes;
+
+	/**
 	 * @return
 	 */
 	public function __construct()
 	{
-		$this->created  = new DateTime;
-		$this->updated  = new DateTime;
-		$this->versions   = new ArrayCollection;
+		$this->created   = new DateTime;
+		$this->updated   = new DateTime;
+		$this->processes = new ArrayCollection;
 	}
     
     /**
@@ -108,86 +106,56 @@ class Material implements
      * Set id.
      *
      * @param int id the value to set.
-     * @return Material.
+     * @return ProductivePlant.
      */
     public function setId($id)
     {
         $this->id = (int) $id;
         return $this;
     }
-    
+
     /**
-     * Get priority.
+     * Get name.
      *
-     * @return int.
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-    
-    /**
-     * Set priority.
-     *
-     * @param int priority the value to set.
-     * @return Material.
-     */
-    public function setPriority($priority)
-    {
-        $this->priority = (int) $priority;
-        return $this;
-    }
-    
-    /**
-     * Get text.
-     *
-     * @return string.
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-    
-    /**
      * @return string.
      */
     public function getName()
     {
-        return $this->getText();
+        return $this->name;
     }
     
     /**
-     * Set text.
+     * Set name.
      *
-     * @param string text the value to set.
-     * @return Material.
+     * @param string name the value to set.
+     * @return ProductivePlant.
      */
-    public function setText($text)
+    public function setName($name)
     {
-        $this->text = $text;
+        $this->name = (string) $name;
         return $this;
     }
     
     /**
-     * Get versions.
+     * Set state.
      *
-     * @return VersionInterface[].
+     * @param int state the value to set.
+     * @return ProductivePlant.
      */
-    public function getVersions()
+    public function setState($state)
     {
-        return $this->versions;
+        $this->state = (int) $state;
+        return $this;
     }
     
     /**
-     * Set versions.
+     * Get state.
      *
-     * @param VersionInterface[] versions the value to set.
-     * @return Material.
+     * @return int.
      */
-    public function setVersions($versions)
+    public function getState()
     {
-        $this->versions = $versions;
-        return $this;
+        return $this->state;
     }
     
     /**
@@ -225,14 +193,14 @@ class Material implements
      * Set description.
      *
      * @param string descr the value to set.
-     * @return Material.
+     * @return ProductivePlant.
      */
     public function setDescription($descr = null)
     {
         $this->description = $descr ? (string) $descr : $descr;
         return $this;
     }
-
+    
     /**
      * Get created.
      *
@@ -247,7 +215,7 @@ class Material implements
      * Set created.
      *
      * @param DateTime created the value to set.
-     * @return Material.
+     * @return ProductivePlant.
      */
     public function setCreated(DateTime $created)
     {
@@ -269,7 +237,7 @@ class Material implements
      * Set updated.
      *
      * @param DateTime updated the value to set.
-     * @return Material.
+     * @return ProductivePlant.
      */
     public function setUpdated(DateTime $updated)
     {
@@ -278,12 +246,28 @@ class Material implements
     }
 
 	/**
-	 * @ORM\PreUpdate
-	 * @return Material
+	 * @param ProcessInterface[] $items
+	 * @return ProductivePlant
 	 */
-	public function preUpdate()
+	public function setProcesses($items) {
+		$this->processes = $items;
+		return $this;
+	}
+
+	/**
+	 * @return ProcessInterface[]
+	 */
+	public function getProcesses()
 	{
-		return $this->setUpdated(new DateTime);
+		return $this->processes;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->getName();
 	}
 
 	/**
@@ -295,34 +279,19 @@ class Material implements
 	}
 
 	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return (string) $this->getText();
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	public function jsonSerialize()
 	{
 		return [
-			'id' 		  => $this->getId(),
-			'name' 		  => (string) $this,
-			'text' 		  => $this->getText(),
-			'owner'		  => $this->getUser(),
-			'priority'    => $this->getPriority(),
-			'description' => $this->getDescription(),
-			'created'	  => $this->getCreated(),
+			'id' 		   => $this->getId(),
+			'name' 		   => $this->getName(),
+			'owner'		   => $this->getUser(),
+			'state'		   => $this->getState(),
+			'description'  => $this->getDescription(),
+			'updated'	   => $this->getUpdated(),
+			'created'	   => $this->getCreated(),
 		];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
-	{
 	}
 
 	/**
@@ -336,16 +305,16 @@ class Material implements
 				'privilege'   => 'edit',
 				'resource'	  => $this,
 				'route' => [
-				    'name'    => 'process/material/detail/json',
+				    'name'    => 'process/plant/detail/json',
 				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
 				],
 			],
 			[
 				'rel'   	  => 'delete',
-				'privilege'   => $this->getVersions()->count() ? false : 'delete',
+				'privilege'   => $this->getProcesses()->count() ? false : 'delete',
 				'resource'	  => $this,
 				'route' => [
-				    'name'    => 'process/material/detail/json',
+				    'name'    => 'process/plant/detail/json',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
 				],
 			],

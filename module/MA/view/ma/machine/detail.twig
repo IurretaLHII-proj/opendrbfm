@@ -1,0 +1,14 @@
+{% extends 'layout/_layout.twig' %}
+
+{% block body %}
+	<div class="col-md-12">
+		<h1>{{ entity }}</h1>
+		{% if entity.description %}<p>{{ entity.description | raw }}</p>{% endif %}
+	</div>
+
+	<div class="col-md-12" 
+		ng-cloak
+	>
+
+	</div>
+{% endblock body %}

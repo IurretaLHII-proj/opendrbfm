@@ -7,7 +7,7 @@ use Zend\Json\Json;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use ZF\Hal\View\HalJsonModel;
 
-class MaterialController extends \Base\Controller\Js\AbstractActionController
+class MachineController extends \Base\Controller\Js\AbstractActionController
 {
 	/**
 	 * @return ViewModel
@@ -16,7 +16,7 @@ class MaterialController extends \Base\Controller\Js\AbstractActionController
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$collection = $em->getRepository("MA\Entity\Material")->findByName(
+		$collection = $em->getRepository("MA\Entity\Machine")->findByName(
 			$this->params()->fromQuery('name'),
 			$this->params()->fromQuery('order', 'created'),
 			$this->params()->fromQuery('criteria', 'desc')
@@ -24,7 +24,7 @@ class MaterialController extends \Base\Controller\Js\AbstractActionController
 
 		$paginator = $this->getPaginator($collection, count($collection));
 
-		$payload = $this->prepareHalCollection($paginator, 'process/material/json');
+		$payload = $this->prepareHalCollection($paginator, 'process/machine/json');
 
 		return new HalJsonModel([
 			'payload' => $payload,
@@ -36,11 +36,11 @@ class MaterialController extends \Base\Controller\Js\AbstractActionController
 	 */
     public function addAction()
     {
-		$e    = new \MA\Entity\Material;
+		$e    = new \MA\Entity\Machine;
 		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\MaterialForm::class);
+			->get(\MA\Form\MachineForm::class);
 
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
         $form->setHydrator(new DoctrineHydrator($em));
@@ -55,7 +55,7 @@ class MaterialController extends \Base\Controller\Js\AbstractActionController
 				$this->getEntityManager()->persist($e);
 				$this->getEntityManager()->flush();
 				$payload = [
-					'payload' => $this->prepareHalEntity($e, "process/material/detail/json")
+					'payload' => $this->prepareHalEntity($e, "process/machine/detail")
 				];
 			}
 			else {
@@ -76,7 +76,7 @@ class MaterialController extends \Base\Controller\Js\AbstractActionController
 		$e	  = $this->getEntity();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
-			->get(\MA\Form\MaterialForm::class);
+			->get(\MA\Form\MachineForm::class);
 
 		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
         $form->setHydrator(new DoctrineHydrator($em));
@@ -90,7 +90,7 @@ class MaterialController extends \Base\Controller\Js\AbstractActionController
 
 				$this->getEntityManager()->flush();
 				$payload = [
-					'payload' => $this->prepareHalEntity($e, "process/material/detail/json")
+					'payload' => $this->prepareHalEntity($e, "process/machine/detail/json")
 				];
 			}
 			else {

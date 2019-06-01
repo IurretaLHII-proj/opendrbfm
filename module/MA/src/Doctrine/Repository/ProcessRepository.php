@@ -11,6 +11,8 @@ use MA\Entity\UserInterface;
 use MA\Entity\CustomerInterface;
 use MA\Entity\MaterialInterface;
 use MA\Entity\VersionTypeInterface;
+use MA\Entity\ProductivePlant;
+use MA\Entity\Machine;
 
 class ProcessRepository extends EntityRepository
 {
@@ -20,12 +22,13 @@ class ProcessRepository extends EntityRepository
 	public function getBy(
 		$title = null, 
 		$article = null, 
-		$machine = null, 
 		$line = null, 
 		$piece = null, 
 		$complexity = null, 
 		CustomerInterface $customer = null, 
 		UserInterface $owner = null, 
+		ProductivePlant $plant = null,
+		Machine $machine = null,
 		MaterialInterface $material = null,
 		VersionTypeInterface $type = null,
 		$state = null,
@@ -50,11 +53,6 @@ class ProcessRepository extends EntityRepository
 				->setParameter('code', "%{$article}%");
 		}
 
-		if ($machine) {
-			$query->andWhere('process.machine LIKE :machine')
-				->setParameter('machine', "%{$machine}%");
-		}
-
 		if ($line) {
 			$query->andWhere('process.line LIKE :line')
 				->setParameter('line', "%{$line}%");
@@ -73,6 +71,16 @@ class ProcessRepository extends EntityRepository
 		if ($owner) {
 			$query->andWhere('process.user = :owner')
 				->setParameter('owner', $owner);
+		}
+
+		if ($plant) {
+			$query->andWhere('process.plant = :plant')
+				->setParameter('plant', $plant);
+		}
+
+		if ($machine) {
+			$query->andWhere('process.machine = :machine')
+				->setParameter('machine', $machine);
 		}
 
 		if (!($material === null && $type === null && $state === null)) {

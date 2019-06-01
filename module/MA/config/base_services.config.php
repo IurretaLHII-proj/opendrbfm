@@ -22,6 +22,8 @@ return [
 					Service\NoteService::class, 
 					Service\CustomerService::class, 
 					Service\MaterialService::class, 
+					Service\ProductivePlantService::class, 
+					Service\MachineService::class, 
 					Service\ProcessService::class, 
 					Service\VersionService::class, 
 					Service\VersionTypeService::class, 
@@ -51,6 +53,12 @@ return [
 	],
 	Service\MaterialService::class => [
 		'entities' => [Entity\Material::class],
+	],
+	Service\ProductivePlantService::class => [
+		'entities' => [Entity\ProductivePlant::class],
+	],
+	Service\MachineService::class => [
+		'entities' => [Entity\Machine::class],
 	],
 	Service\ProcessService::class => [
 		'entities' => [Entity\Process::class],
