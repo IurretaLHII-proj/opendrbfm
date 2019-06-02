@@ -64,7 +64,11 @@ interface IMAVersionType {
 	id:number,
 	name: string,
 	description:string;
+	created: IMADate,
 	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+	},
 }
 
 interface IMAPlant {

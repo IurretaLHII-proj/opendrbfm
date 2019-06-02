@@ -9,7 +9,7 @@ use JsonSerializable;
 use DateTime;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass = "MA\Doctrine\Repository\VersionTypeRepository")
  * @ORM\Table(name="process_version_type")
  */
 class VersionType implements 
@@ -57,6 +57,15 @@ class VersionType implements
 	protected $user;
 
 	/**
+	 * @var VersionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Version",
+	 *	mappedBy	 = "type",
+	 * )
+	 */
+	protected $versions;
+
+	/**
 	 * @var int 
 	 * @ORM\Column(type="datetime")
 	 */
@@ -75,6 +84,7 @@ class VersionType implements
 	{
 		$this->created    = new DateTime;
 		$this->updated    = new DateTime;
+		$this->versions   = new ArrayCollection;
 	}
     
     /**
@@ -139,6 +149,28 @@ class VersionType implements
     public function setUser(\User\Entity\UserInterface $user)
     {
         $this->user = $user;
+        return $this;
+    }
+    
+    /**
+     * Get versions.
+     *
+     * @return VersionInterface[].
+     */
+    public function getVersions()
+    {
+        return $this->versions;
+    }
+    
+    /**
+     * Set versions.
+     *
+     * @param VersionInterface[] versions the value to set.
+     * @return VersionType.
+     */
+    public function setVersions($versions)
+    {
+        $this->versions = $versions;
         return $this;
     }
     
@@ -265,7 +297,7 @@ class VersionType implements
 			],
 			[
 				'rel'   	  => 'delete',
-				'privilege'   => 'delete',
+				'privilege'   => $this->getVersions()->count() ? false : 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/version/type/detail/json',

@@ -136,12 +136,32 @@ var MAUser = /** @class */ (function () {
     return MAUser;
 }());
 var MAVersionType = /** @class */ (function () {
-    function MAVersionType(obj) {
-        this.id = obj.id;
-        this.name = obj.name;
-        this.description = obj.description;
-        this.links = new MALinks(obj._links);
+    function MAVersionType() {
+        this.created = new Date();
     }
+    MAVersionType.fromJSON = function (obj) {
+        var e = new MAVersionType();
+        e.load(obj);
+        return e;
+    };
+    MAVersionType.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.description = obj.description;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    MAVersionType.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            user: this.user ? this.user.id : null,
+        };
+    };
     return MAVersionType;
 }());
 var MAMaterial = /** @class */ (function () {
@@ -367,7 +387,7 @@ var MAVersion = /** @class */ (function () {
             this.commentCount = obj.commentCount;
             this.created = new Date(obj.created.date);
             this.material = MAMaterial.fromJSON(obj._embedded.material);
-            this.type = new MAVersionType(obj._embedded.type);
+            this.type = MAVersionType.fromJSON(obj._embedded.type);
             this.user = new MAUser(obj._embedded.owner);
             this.parent = obj._embedded.parent ? MAVersion.fromJSON(obj._embedded.parent) : null;
         }

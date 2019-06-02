@@ -179,16 +179,41 @@ class MAUser {
 }
 
 class MAVersionType {
-	constructor(obj: IMAVersionType) {
-		this.id	   		  = obj.id;
-		this.name  		  = obj.name;
-		this.description  = obj.description;
-		this.links 		  = new MALinks(obj._links);
+	static fromJSON(obj: IMAVersionType): MAVersionType{
+		let e = new MAVersionType();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.created = new Date();
+	}
+
+	load(obj: IMAVersionType) {
+		if (obj.id) {
+			this.id	   = obj.id;
+			this.name  = obj.name;
+			this.description  = obj.description;
+			this.user = new MAUser(obj._embedded.owner);
+			this.created = new Date(obj.created.date);
+		}
+		this.links = new MALinks(obj._links);
+	}
+
+	toJSON(): {}{
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			user: this.user ? this.user.id : null,
+		};
 	}
 
 	id: number;
 	name:string;
 	description:string;
+	user:MAUser;
+	created:Date;
 	links: MALinks;
 }
 
@@ -246,7 +271,7 @@ class MAMachine {
 		this.created = new Date();
 	}
 
-	load(obj: IMAPlant) {
+	load(obj: IMAMachine) {
 		if (obj.id) {
 			this.id	   = obj.id;
 			this.name  = obj.name;
@@ -481,7 +506,7 @@ class MAVersion {
 			this.commentCount = obj.commentCount;
 			this.created = new Date(obj.created.date);
 			this.material = MAMaterial.fromJSON(obj._embedded.material);
-			this.type = new MAVersionType(obj._embedded.type);
+			this.type = MAVersionType.fromJSON(obj._embedded.type);
 			this.user = new MAUser(obj._embedded.owner);
 			this.parent = obj._embedded.parent ? MAVersion.fromJSON(obj._embedded.parent) : null;
 		}

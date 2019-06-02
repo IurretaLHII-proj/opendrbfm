@@ -332,21 +332,24 @@ return [
 						],
 						'may_terminate' => true,
 						'child_routes' => [
-							'add' => [
-								'type' => 'Literal',
-								'options' => [
-									'route' => '/add',
-									'defaults' => [
-										'action' => 'add' 
-									]
-								],
-							],
 							'json' => [
 								'type' => 'Literal',
 								'options' => [
 									'route' => '/json',
 									'defaults' => [
 										'controller' => Controller\Js\VersionTypeController::class,
+									],
+								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'add' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/add',
+											'defaults' => [
+												'action' => 'add' 
+											]
+										],
 									],
 								],
 							],

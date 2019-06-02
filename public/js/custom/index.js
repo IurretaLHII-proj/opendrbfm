@@ -68,12 +68,12 @@ App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, 
 						$resource('/process/material/json').get().$promise.then(
 							function(data){
 								angular.forEach(data._embedded.items, item => {
-									$scope.materials.push(new MAMaterial(item));
+									$scope.materials.push(MAMaterial.fromJSON(item));
 								});
 								$resource('/process/version/type/json').get().$promise.then(
 									function(data){
 										angular.forEach(data._embedded.items, item => {
-											$scope.types.push(new MAVersionType(item));
+											$scope.types.push(MAVersionType.fromJSON(item));
 										});
 										$resource('/process/plant/json').get().$promise.then(
 											function(data){

@@ -1,54 +1,109 @@
-{% extends 'layout/base-layout.twig' %}
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/versionTypes.js"></script>
+{% endblock script %}
 
-{% block content %}
-	<div class="row">
+{% block body %}
+	{{ headTitle('VersionTypes') }}
+	<ng-controller ng-controller="_VersionTypeCollectionCtrl" ng-init="init()">
 
-		<!-- GROUP -->
-		<div class="col-md-12"
-		>
-			<div class="btn-group mt-2" role="group">
-				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse" data-target="#collapseForm" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-plus"></i> New</button>
-			</div>
-			<div class="collapse my-2" id="collapseForm">
-				<h2>{{ translate("New version type") }}</h2>
-				{{ partial('partial/form/version-type', {'form': form}) }}
-			</div>
+	<div class="input-group input-group-sm sticky-top">
 
-			<hr class="my-2">
-
-			<h2>{{ translate("Version types") }}</h2>
-
-			<table class="table table-striped table-bordered">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Description</th>
-						<th>User</th>
-						<th>Created</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for type in collection %}
-					<tr>
-						<td>{{ type.name }}</td>
-						<td>{{ type.description | raw }}</td>
-						<td>
-							<a href="{{ url('user/detail', {id: type.user.id}) }}">{{ type.user }}</a>
-						</td>
-						<td>{{ type.created | date('d/m/Y h:i') }}</td>
-						<td>
-							<div class="btn-group">
-								<a href="{{ url('process/version/type/detail', {id: type.id}) }}" class="btn btn-outline-primary"><i class="fa fa-eye"></i></a>
-								<a href="{{ url('process/version/type/detail', {id: type.id, 'action': 'edit'}, {'query': {'redirect': url(null, {}, {}, true)}}) }}" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>
-								<a href="{{ url('process/version/type/detail', {id: type.id, 'action': 'delete'}) }}" class="btn btn-outline-primary disabled"><i class="fa fa-trash"></i></a>
-							</div>
-						</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
+		<!-- Add  -->
+		<div class="input-group-prepend">
+			<button class="btn btn-primary rounded-0" type="button" ng-click="addVersionType()"> 
+		   		<span class="fa fa-plus"></span>
+			</button>
 		</div>
+
+		<!-- Name -->
+		<input type="text" class="form-control filter-search" placeholder="Version type name" ng-model="name">
+
+		<!-- Search -->
+		<div class="input-group-append">
+			<button class="btn btn-primary rounded-0" ng-click="search()">
+				<i class="fa fa-search"></i>
+			</button>
 		</div>
+
 	</div>
-{% endblock content %}
+
+	<table class="table table-bordered m-0">
+		<thead class="text-center">
+			<tr>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('name');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='name'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('name');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='name'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Name</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">Description</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('created');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('created');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Created</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-if="!collection.isLoaded()" class="text-center my-2">
+				<td colspan="3"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
+			</tr>
+			<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
+				<td class="text-center"><a href="{[ item.links.getHref() ]}">{[ item.name ]}</a></td>
+				<td ng-bind-html="item.description"></td>
+				<td class="text-center">
+					<div>
+						<a href="{[ item.user.links.getHref() ]}" class="">{[ item.user.name ]}</a>
+					</div>
+					<div class="small">{[ item.created | date:"dd MMMyy HH:mm" ]}</div>
+				</td>
+				<td class="text-center">
+					<div class="btn-group btn-group-sm">
+						<a ng-href="{[ item.links.getHref() ]}" class="btn btn-outline-primary">
+							<i class="fa fa-eye"></i>
+						</a>
+						<a ng-if="item.links.isAllowed('edit')" href="" 
+						   ng-click="editVersionType(item)" class="btn btn-outline-primary"
+						>
+							<i class="fa fa-pencil"></i>
+						</a>
+						<a href="" 
+						   class="btn btn-outline-primary" 
+						   ng-class="{disabled:!item.links.isAllowed('delete')}" 
+						   ng-confirm-click 
+						   confirmed-click="deleteVersionType(item);">
+							<i class="fa fa-trash"></i>
+						</a>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="col-md-12">
+		<hr>
+		<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+		<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+		<p><a ng-if="collection.has('next')" ng-click="more()" href="">.view previouses.</a></p>
+	</div>
+	</ng-controller>
+
+{% endblock body %}
