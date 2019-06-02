@@ -3,6 +3,7 @@
 namespace MA\Doctrine\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use MA\Entity\OperationType;
 use MA\Entity\OperationInterface;
 use MA\Entity\ProcessInterface;
 use MA\Entity\MaterialInterface;
@@ -19,6 +20,7 @@ class HintRepository extends EntityRepository
 	 */
 	public function findByType(
 		ProcessInterface $p = null, 
+		OperationType $ot = null, 
 		OperationInterface $o = null, 
 		HintTypeInterface $t = null, 
 		VersionTypeInterface $vt = null, 
@@ -33,6 +35,7 @@ class HintRepository extends EntityRepository
     	$query->select('hint')
 			->andWhere('hint.priority >= :prior')->setParameter('prior', $prior)
 			->innerJoin('hint.type', 'type')
+			->innerJoin('type.operation', 'operation')
 			->innerJoin('hint.stage', 'stage')
 			->innerJoin('stage.version', 'version')
 			->innerJoin('version.process', 'process')
@@ -60,7 +63,8 @@ class HintRepository extends EntityRepository
 		if ($vt) $query->andWhere('version.type = :vt')->setParameter('vt', $vt);
 		if ($m)  $query->andWhere('version.material = :m')->setParameter('m', $m);
 		if ($s)  $query->andWhere('version.state = :s')->setParameter('s', $s);
-		if ($o)  $query->andWhere('type.operation = :o')->setParameter('o', $o);
+		if ($o)  $query->andWhere('operation = :o')->setParameter('o', $o);
+		if ($ot) $query->andWhere('operation.type = :ot')->setParameter('ot', $ot);
 		//$q = $query->getQuery()->getSQL();
     	//$query->groupBy('q.number');
     	//$query->orderBy('q.number', 'ASC');

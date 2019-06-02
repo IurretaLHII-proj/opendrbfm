@@ -168,18 +168,20 @@ class HintController extends \Base\Controller\Js\AbstractActionController
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 		$r  = $em->getRepository("MA\Entity\Hint");
 
-		$p = $this->params()->fromQuery('process');
-		$m = $this->params()->fromQuery('material');
-		$t = $this->params()->fromQuery('type');
-		$o = $this->params()->fromQuery('op');
-		$h = $this->params()->fromQuery('hint');
+		$p  = $this->params()->fromQuery('process');
+		$m  = $this->params()->fromQuery('material');
+		$t  = $this->params()->fromQuery('type');
+		$ot = $this->params()->fromQuery('opType');
+		$o  = $this->params()->fromQuery('op');
+		$h  = $this->params()->fromQuery('hint');
 
 		$collection = $r->findByType(
-			$p ? $em->getRepository("MA\Entity\Process")->find($p) : $p,
-			$o ? $em->getRepository("MA\Entity\Operation")->find($o) : $o,
-			$h ? $em->getRepository("MA\Entity\HintType")->find($h) : $h,
-			$t ? $em->getRepository("MA\Entity\VersionType")->find($t) : $t,
-			$m ? $em->getRepository("MA\Entity\Material")->find($m) : $m,
+			$p  ? $em->getRepository("MA\Entity\Process")->find($p) : $p,
+			$ot ? $em->getRepository("MA\Entity\OperationType")->find($ot) : $ot,
+			$o  ? $em->getRepository("MA\Entity\Operation")->find($o) : $o,
+			$h  ? $em->getRepository("MA\Entity\HintType")->find($h) : $h,
+			$t  ? $em->getRepository("MA\Entity\VersionType")->find($t) : $t,
+			$m  ? $em->getRepository("MA\Entity\Material")->find($m) : $m,
 			$this->params()->fromQuery('state'),
 			$this->params()->fromQuery('prior', 0),
 			$this->params()->fromQuery('order', 'priority'),

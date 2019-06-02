@@ -41,13 +41,13 @@ return [
 					'resource'	=> Entity\VersionType::class,
 					'privilege' => 'index',
 					'pages' => [
-						[
-							'label' => 'Add version type',
-							'route' => 'process/version/type/add',
-							'class' => 'nav-link d-none',
-							'resource'	=> Entity\VersionType::class,
-							'privilege' => 'add',
-						],
+						//[
+						//	'label' => 'Add version type',
+						//	'route' => 'process/version/type/add',
+						//	'class' => 'nav-link d-none',
+						//	'resource'	=> Entity\VersionType::class,
+						//	'privilege' => 'add',
+						//],
 					],
 				],
 				[

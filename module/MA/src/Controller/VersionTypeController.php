@@ -14,25 +14,25 @@ class VersionTypeController extends \Base\Controller\AbstractActionController
 	 */
     public function indexAction()
     {
-		$em   = $this->getEntityManager();
-		$form = $this->getServiceLocator()
-			->get('FormElementManager')
-			->get(\MA\Form\VersionTypeForm::class);
+		//$em   = $this->getEntityManager();
+		//$form = $this->getServiceLocator()
+		//	->get('FormElementManager')
+		//	->get(\MA\Form\VersionTypeForm::class);
 
-		$form->setAttribute('action', $this->url()->fromRoute('process/version/type/add', [], [
-				'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
-			], true));
+		//$form->setAttribute('action', $this->url()->fromRoute('process/version/type/add', [], [
+		//		'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
+		//	], true));
 
-        $form->setHydrator(new DoctrineHydrator($em));
+        //$form->setHydrator(new DoctrineHydrator($em));
 
-		$collection = $em->getRepository(\MA\Entity\VersionType::class)
-			->findBy([],['created' => 'ASC']);
+		//$collection = $em->getRepository(\MA\Entity\VersionType::class)
+		//	->findBy([],['created' => 'ASC']);
 
-		$paginator = $this->getPaginator($collection, 100);
+		//$paginator = $this->getPaginator($collection, 100);
 
 		return new ViewModel([
-			'collection' 	=> $paginator,
-			'form' 			=> $form,
+			//'collection' 	=> $paginator,
+			//'form' 			=> $form,
 		]);
     }
 

@@ -461,7 +461,7 @@ App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $uibModa
 	};
 });
 
-App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resource, version) {
+App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $uibModal, $resource, version) {
 	$scope.stateOptions = [
 		{id:MAVersion.STATE_IN_PROGRESS, 	name: MAVersion.stateLabel(MAVersion.STATE_IN_PROGRESS)},
 		{id:MAVersion.STATE_APPROVED,  		name: MAVersion.stateLabel(MAVersion.STATE_APPROVED)},
@@ -472,8 +472,14 @@ App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resourc
 	$scope.values.state	= $scope.values.state.toString();
 	$scope.errors   	= {};
 	$scope.init 		= function() {
-		$scope.materials = [{id:null, name:" --Select Material-- "}];
-		$scope.types 	 = [{id:null, name:" --Select Version type-- "}];
+		$scope.materials = [
+			{id:null, name:" --Select Material-- "},
+			{id:-1,   name:" --Create New-- "},
+		];
+		$scope.types 	 = [
+			{id:null, name:" --Select Version type-- "},
+			{id:-1,   name:" --Create New-- "},
+		];
 		$scope.parents	 = [{id:null, name:" --None-- "}].concat(version.process.versions);
 		console.log($scope.parents, version);
 		if ($scope.parents.indexOf(version) != -1) {
@@ -482,7 +488,7 @@ App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resourc
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
-					$scope.materials.push(new MAMaterial(item));
+					$scope.materials.push(MAMaterial.fromJSON(item));
 				});
 			}, 
 			function(err){}
@@ -490,12 +496,52 @@ App.controller('_VersionModalCtrl', function($scope, $uibModalInstance, $resourc
 		$resource('/process/version/type/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
-					$scope.types.push(new MAVersionType(item));
+					$scope.types.push(MAVersionType.fromJSON(item));
 				});
 			}, 
 			function(err){}
 		);
 		console.log(version, $scope.values);
+	}
+	$scope.createMaterial = function() {
+	 	if ($scope.values.material < 0) {	
+			let material = new MAMaterial();
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/material-form.html',
+				controller: '_MaterialModalCtrl',	
+				scope: $scope,
+				size: 'lg',
+				resolve: {material: material},
+			});
+
+			modal.result.then(
+				function(res) {
+					$scope.materials.push(material);
+					$scope.values.material = material.id;
+				},
+				function() {}
+			);
+		}
+	}
+	$scope.createType = function() {
+	 	if ($scope.values.type < 0) {	
+			let type = new MAVersionType();
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/version-type-form.html',
+				controller: '_VersionTypeModalCtrl',	
+				scope: $scope,
+				size: 'lg',
+				resolve: {type: type},
+			});
+
+			modal.result.then(
+				function(res) {
+					$scope.types.push(type);
+					$scope.values.type = type.id;
+				},
+				function() {}
+			);
+		}
 	}
 	$scope.save = function() {
 		var uri = version.id ? version.links.getHref('edit') : version.process.links.getHref('version');
@@ -539,7 +585,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
-					$scope.materials.push(new MAMaterial(item));
+					$scope.materials.push(MAMaterial.fromJSON(item));
 				});
 			}, 
 			function(err){}
@@ -810,6 +856,30 @@ App.controller('_MachineModalCtrl', function($scope, $uibModalInstance, $resourc
 		$resource(uri).save($scope.values).$promise.then(
 			function(data) {
 				machine.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_VersionTypeModalCtrl', function($scope, $uibModalInstance, $resource, type)
+{
+	$scope.type 	= type;
+	$scope.values   = JSON.parse(JSON.stringify(type));
+	$scope.errors   = {};
+
+	$scope.save = function() {
+		var uri  = type.id ? type.links.getHref('edit') : '/process/version/type/json/add';
+		$resource(uri).save($scope.values).$promise.then(
+			function(data) {
+				type.load(data);
 				$uibModalInstance.close(data);	
 			},
 			function(err) {

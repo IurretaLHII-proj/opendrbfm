@@ -3,7 +3,8 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 	$scope.order		= 'priority';
 	$scope.criteria		= 'DESC';
 	$scope.priority		= 0;
-	$scope.operations 	= [{id:null, longName:"--- ANY ---"}];
+	$scope.opTypes	 	= [{id:null, name:"--- ANY ---"}];
+	$scope.operations 	= [{id:null, name:"--- ANY ---"}];
 	$scope.errors 		= [{id:null, name:"--- ANY ---"}];
 	$scope.materials 	= [{id:null, name:"--- ANY ---"}];
 	$scope.types 		= [{id:null, name:"--- ANY ---"}];
@@ -16,10 +17,12 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 	$scope.state  	 = $scope.states[0];
 	$scope.material  = $scope.materials[0];
 	$scope.type 	 = $scope.types[0];
+	$scope.opType	 = $scope.opTypes[0];
 	$scope.operation = $scope.operations[0];
 	$scope.error 	 = $scope.errors[0];
 	$scope.getQuery		= function() {
 		let query = {};
+		if ($scope.opType.id) 	 query.opType   = $scope.opType.id;
 		if ($scope.operation.id) query.op 	    = $scope.operation.id;
 		if ($scope.error.id) 	 query.hint 	= $scope.error.id;
 		if ($scope.material.id)  query.material = $scope.material.id;
@@ -37,39 +40,44 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 		$resource('/process/material/json').get().$promise.then(
 			function(data){
 				angular.forEach(data._embedded.items, item => {
-					$scope.materials.push(new MAMaterial(item));
+					$scope.materials.push(MAMaterial.fromJSON(item));
 				});
 				$resource('/process/version/type/json').get().$promise.then(
 					function(data){
 						angular.forEach(data._embedded.items, item => {
-							$scope.types.push(new MAVersionType(item));
+							$scope.types.push(MAVersionType.fromJSON(item));
 						});
 						$resource('/process/op/type/json').get().$promise.then(
 							function(data){
 								angular.forEach(data._embedded.items, item => {
 									let type = MAOperationType.fromJSON(item);
+									$scope.opTypes.push(type);
 									type.operations.forEach(e => {$scope.operations.push(e)});
 								});
 								if ($scope.params.op) {
 									let selected = $scope.operations.find(e => {
 										return e.id == $scope.params.op
 									});
-									selected.hints 	 = [];
-									$scope.operation = selected; 
-									$resource(selected.links.getHref('hints')).get().$promise.then(
-										function(data) {
-											angular.forEach(data._embedded.items, item => {
-												selected.addHint(MAHintType.fromJSON(item));
-											});
-											if ($scope.params.hint) {
-												let h = selected.hints.find(e=>{
-													return e.id == $scope.params.hint
+									if (selected != undefined) {
+										selected.hints 	 = [];
+										$scope.opType	 = selected.type; 
+										$scope.operation = selected; 
+										$resource(selected.links.getHref('hints')).get().$promise.then(
+											function(data) {
+												angular.forEach(data._embedded.items, item => {
+													selected.addHint(MAHintType.fromJSON(item));
 												});
-												if (h) $scope.error = h;
+												if ($scope.params.hint) {
+													let h = selected.hints.find(e=>{
+														return e.id == $scope.params.hint
+													});
+													if (h) $scope.error = h;
+												}
+												$scope.search();
 											}
-											$scope.search();
-										}
-									);
+										);
+									}
+									else $scope.search();
 								}
 								else $scope.search();
 							}, 
@@ -89,6 +97,10 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 	$scope.selMaterial	= function(value) { $scope.material = value; }
 	$scope.selState		= function(value) { $scope.state 	= value; }
 	$scope.selError		= function(value) { $scope.error 	= value; }
+	$scope.selOpType	= function(value) { 
+		$scope.opType	= value; 
+		$scope.selOp($scope.operations[0]);
+	}
 	$scope.selOp 		= function(value) { 
 		$scope.error	= $scope.errors[0];
 		$scope.operation= value; 
