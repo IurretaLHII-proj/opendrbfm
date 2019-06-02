@@ -36,13 +36,13 @@
 		<div class="input-group-prepend">
 			<button class="btn btn-light text-muted dropdown-toggle" ng-class="{disabled:opType.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation <span ng-if="operation.id" class="text-dark">( {[operation.name]} )</span></button>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="#" ng-repeat="option in [{id:null, name:' --ANY-- '}].concat(opType.operations)" ng-click="selOp(option);">{[ option.name ]}</a>
+				<a class="dropdown-item" href="#" ng-repeat="option in opType.operations" ng-click="selOp(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
 			<button class="btn btn-light text-muted dropdown-toggle rounded-0" ng-class="{disabled:operation.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error <span ng-if="error.id" class="text-dark"><span class="mr-2 badge badge-{[ error.color ]}">{[ error.priority ]}</span>( {[error.name]} )</span></button>
 			<div class="dropdown-menu">
-				<a class="dropdown-item" href="#" ng-repeat="option in [{id:null, name:' --ANY-- '}].concat(operation.hints)" ng-click="selError(option);"><span class="mr-2 badge badge-{[ option.color ]}">{[ option.priority ]}</span>{[ option.name ]}</a>
+				<a class="dropdown-item" href="#" ng-repeat="option in operation.hints" ng-click="selError(option);"><span class="mr-2 badge badge-{[ option.color ]}">{[ option.priority ]}</span>{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
