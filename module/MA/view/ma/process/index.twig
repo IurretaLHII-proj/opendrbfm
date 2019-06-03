@@ -260,11 +260,11 @@
 		</thead>
 		<tbody>
 			<tr ng-if="!collection.isLoaded()" class="text-center my-2">
-				<td colspan="11"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
+				<td colspan="12"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
 			</tr>
 
 			<tr ng-if="collection.isLoaded() && collection.isEmpty()" class="text-center my-2">
-				<td colspan="11">No result maching criteria</i></td>
+				<td colspan="12">No result maching criteria</i></td>
 			</tr>
 			<tr ng-if="collection.isLoaded() && !collection.isEmpty()" ng-repeat="item in collection.items">
 				<td class="text-center">
