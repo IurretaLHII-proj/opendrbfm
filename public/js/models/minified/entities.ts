@@ -399,7 +399,7 @@ class MAProcess {
 			number: this.number,
 			code: this.code,
 			line: this.line,
-			tpl: this.tpl,
+			tpl: this.tpl ? 1 : 0,
 			plant: this.plant ? this.plant.id : null,
 			machine: this.machine ? this.machine.id : null,
 			complexity: this.complexity,
