@@ -223,7 +223,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 					//],
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 1, 'max' => 11],
+						'options' => ['min' => 1, 'max' => 24],
 					],
 				],
 			],
@@ -241,7 +241,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 					],
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 1, 'max' => 11],
+						'options' => ['min' => 1, 'max' => 24],
 					],
 				],
 			],
@@ -301,7 +301,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 					],
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 11],
+						'options' => ['min' => 3, 'max' => 24],
 					],
 				],
 			],
@@ -315,7 +315,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 				'validators' => [
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 64],
+						'options' => ['min' => 3, 'max' => 24],
 					],
 				],
 			],
