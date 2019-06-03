@@ -20,6 +20,7 @@ class ProcessRepository extends EntityRepository
 	 * @return ProcessInterface[]
 	 */
 	public function getBy(
+		$tpl,
 		$title = null, 
 		$article = null, 
 		$line = null, 
@@ -36,7 +37,9 @@ class ProcessRepository extends EntityRepository
 		$oCriteria = "DESC"
 	) {
 		$query = $this->createQueryBuilder('process');
-    	$query->select('process')->orderBy("process.{$oBy}", $oCriteria);
+		$query->select('process')
+			->andWhere('process.tpl = :tpl')->setParameter('tpl', (bool) $tpl)
+			->orderBy("process.{$oBy}", $oCriteria);
 
 		if ($title) {
 			$query->andWhere('process.number LIKE :number OR process.title LIKE :number')

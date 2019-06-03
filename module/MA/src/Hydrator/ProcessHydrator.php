@@ -22,6 +22,7 @@ class ProcessHydrator extends \Zend\Hydrator\ClassMethods
 			'title'    		=> $object->getTitle(),
 			'number'    	=> $object->getNumber(),
 			'code'    	  	=> $object->getCode(),
+			'tpl'			=> $object->isTpl(),
 			'line'    	  	=> $object->getLine(),
 			'machine'     	=> $object->getMachine(),
 			'plant'    	  	=> $object->getPlant(),

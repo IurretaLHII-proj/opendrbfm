@@ -49,49 +49,14 @@ class VersionController extends \Base\Controller\Js\AbstractActionController
 	 */
     public function cloneAction()
     {
-		$e = $this->getEntity();
-		$c = clone $e;
-		$c->setName("Clone of " . $e->getName());
+		$e = clone $this->getEntity();
 
-		foreach ($e->getStages() as $stage) {
-			$s = clone $stage;
-			foreach ($stage->getImages() as $image) $s->addImage(clone $image);
-			foreach ($stage->getHints() as $hint) {
-				$h = clone $hint;
-				foreach ($hint->getReasons() as $reason) {
-					$r = clone $reason;
-					foreach ($reason->getNotes() as $note) {
-						$r->addNote(clone $note);
-					}
-					foreach ($reason->getInfluences() as $infl) {
-						$i = clone $infl;
-						foreach ($infl->getNotes() as $note) {
-							$i->addNote(clone $note);
-						}
-						foreach ($infl->getSimulations() as $sim) {
-							$sm = clone $sim;
-							foreach ($sim->getImages() as $img) $sm->addImage(clone $img);
-							foreach ($sim->getSuggestions() as $note) $sm->addSuggestion(clone $note);
-							foreach ($sim->getEffects() as $note) 	$sm->addEffect(clone $note);
-							foreach ($sim->getPreventions() as $note) $sm->addPrevention(clone $note);
-							$i->addSimulation($sm);
-						}
-						$r->addInfluence($i);
-					}
-					$h->addReason($r);
-				}
-				$s->addHint($h);
-			}
-			$c->addStage($s);
-		}
-
-		$this->triggerService(\MA\Service\VersionService::EVENT_CLONE, $c);
-
-		$this->getEntityManager()->persist($c);
+		$this->triggerService($this->params()->fromRoute('action'), $this->entity);
+		$this->getEntityManager()->persist($e);
 		$this->getEntityManager()->flush();
 
 		return new HalJsonModel([
-			'payload' => $this->prepareHalEntity($c, "process/version/detail/json")
+			'payload' => $this->prepareHalEntity($e, "process/version/detail/json")
 		]);
 	}
 

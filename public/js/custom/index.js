@@ -47,13 +47,15 @@ App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, 
 		if ($scope.type.id) 	 	 query.type 	   = $scope.type.id;
 		if ($scope.state.id) 	 	 query.state       = $scope.state.id;
 		if ($scope.plant.id) 	 	 query.plant       = $scope.plant.id;
+		if ($scope.tpl)				 query.tpl		   = true;
 		query.order    = $scope.order;
 		query.criteria = $scope.criteria;
 		//query.limit	   = 5;
 		return query;
 	}
 
-	$scope.init = function() {
+	$scope.init = function(tpl) {
+		$scope.tpl = (tpl == true);
 		$scope.collection = new MACollection();
 		$resource('/user/json').get().$promise.then(
 			function(data){
@@ -144,6 +146,7 @@ App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, 
 
 	$scope.addProcess = function() {
 		let process = new MAProcess();
+		process.tpl = $scope.tpl;
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/process-form.html',

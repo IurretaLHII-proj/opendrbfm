@@ -909,12 +909,22 @@ class Simulation implements
 		$this->id 		    = null;
 		$this->commentCount = 0;
 		$this->comments     = new ArrayCollection;
-		$this->images       = new ArrayCollection;
-		$this->effects      = new ArrayCollection;
-		$this->suggestions  = new ArrayCollection;
-		$this->preventions  = new ArrayCollection;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
+
+		//Associations
+		$images = $this->getImages();
+		$this->images = new ArrayCollection;
+		foreach ($images as $image) $this->addImage(clone $image);
+		$effects = $this->getEffects();
+		$this->effects      = new ArrayCollection;
+		foreach ($effects as $effect) $this->addEffect(clone $effect);
+		$preventions = $this->getPreventions();
+		$this->preventions      = new ArrayCollection;
+		foreach ($preventions as $prevention) $this->addPrevention(clone $prevention);
+		$suggestions = $this->getSuggestions();
+		$this->suggestions      = new ArrayCollection;
+		foreach ($suggestions as $suggestion) $this->addSuggestion(clone $suggestion);
 	}
 
 	/**

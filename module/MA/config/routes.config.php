@@ -175,15 +175,15 @@ return [
 					],
 				],
 			],
-			//'add' => [
-			//	'type' => 'Literal',
-			//	'options' => [
-			//		'route' => '/add',
-			//		'defaults' => [
-			//			'action' => 'add',
-			//		],
-			//	],
-			//],
+			'tpl' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/tpl',
+					'defaults' => [
+						'action' => 'tpl',
+					],
+				],
+			],
 			'detail' => [
 				'type' => 'Segment',
 				'options' => [
@@ -193,7 +193,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|delete|pdf|version|actions',
+						'action' => 'detail|edit|delete|clone|pdf|version|actions',
 					]
 				],
 				'may_terminate' => true,
