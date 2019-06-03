@@ -147,9 +147,18 @@ class SimulationFieldset extends Fieldset implements
 	public function getInputFilterSpecification()
 	{
 		return [
-			'type' => \MA\InputFilter\SimulationInputFilter::class,
+			//'type' => \MA\InputFilter\SimulationInputFilter::class,
 			'id' => [
 				'required' => false,
+			],
+			'when' => [
+				'required' => $this->get('state')->getValue() > Simulation::STATE_CREATED,
+				'validators' => [
+					[
+						'name' => \Zend\Validator\Date::class,
+						'options' => ['format' => 'Y-m-d'],
+					],
+				],
 			],
 		];
 	}

@@ -133,7 +133,6 @@
 		<div class="form-group col-md-4">
 			<!--<label for="inputTitle">Who</label>-->
 			<select class="form-control"
-				ng-disabled="simulation.state <= 0"
 				ng-class="{'is-invalid': errors.simulations[i].who}"
 				ng-model="simulation.who"
 				ng-options="item.id as item.name for item in users"
@@ -150,7 +149,6 @@
 					uib-datepicker-popup="dd/MM/yyyy" 
 					placeholder="When"
 					ng-model="simulation.when" 
-					ng-disabled="simulation.state <= 0"
 					is-open="popup.opened" 
 					datepicker-options="dateOptions" 
 					ng-required="true" 
