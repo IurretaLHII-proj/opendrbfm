@@ -379,14 +379,18 @@ class HintType implements
 	public function getColor()
 	{
 		switch (true) {
-			case $this->priority >= 6:
+			case $this->priority >= 5:
 				return 'danger';
 			case $this->priority >= 4:
-				return 'warning';
+				return 'coral';
+			case $this->priority >= 3:
+				return 'light-salmon';
 			case $this->priority >= 2:
+				return 'warning';
+			case $this->priority >= 1:
 				return 'success';
 			case $this->priority >= 0:
-				return 'secondary';
+				return 'light-green';
 			default:
 				return 'light';
 		}
