@@ -324,7 +324,8 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		);
 	}
 
-	/*** Common functions to relation dialogs ***/
+	/* FIXME!!! */
+	/* Common functions to relation dialogs */
 	var extended = {
 		stateOptions: _stateOptions,
 		loadNextHints: function(value) {
@@ -415,6 +416,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 			suggestions: [],
 			effects: [],
 			preventions: [],
+			who: null,
 		}) },
 		addSuggestion: function(values) { values.suggestions.push({}) },
 		addEffect: 	   function(values) { values.effects.push({}) },

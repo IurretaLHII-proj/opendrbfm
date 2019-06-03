@@ -1070,6 +1070,7 @@ var MAHint = /** @class */ (function () {
 }());
 var MASimulation = /** @class */ (function () {
     function MASimulation() {
+        this.who = null;
         this.state = MASimulation.STATE_NOT_NECESSARY;
         this.effects = [];
         this.suggestions = [];
@@ -1085,8 +1086,8 @@ var MASimulation = /** @class */ (function () {
     };
     MASimulation.stateLabel = function (value) {
         switch (value) {
-            case MASimulation.STATE_NOT_NECESSARY: return "No necessary";
-            case MASimulation.STATE_NOT_PROCESSED: return "No processed";
+            case MASimulation.STATE_NOT_NECESSARY: return "Not necessary";
+            case MASimulation.STATE_NOT_PROCESSED: return "Not processed";
             case MASimulation.STATE_IN_PROGRESS: return "In progress";
             case MASimulation.STATE_FINISHED: return "Finished";
             case MASimulation.STATE_CANCELLED: return "Cancelled";
