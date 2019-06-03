@@ -736,6 +736,7 @@ class Process implements
 	public function __clone()
 	{
 		$this->id 	    = null;
+		$this->title	= "Clone of " . $this->title;
 		$this->created  = new DateTime;
 		$this->updated  = new DateTime;
 		$this->actions  = new ArrayCollection;
