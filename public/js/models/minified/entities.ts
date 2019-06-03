@@ -1368,8 +1368,8 @@ class MASimulation {
 
 	static stateLabel(value:number):string {
 		switch (value) {
-			case MASimulation.STATE_NOT_NECESSARY:  	return "No necessary";
-			case MASimulation.STATE_NOT_PROCESSED:  	return "No processed";
+			case MASimulation.STATE_NOT_NECESSARY:  	return "Not necessary";
+			case MASimulation.STATE_NOT_PROCESSED:  	return "Not processed";
 			case MASimulation.STATE_IN_PROGRESS:  		return "In progress";
 			case MASimulation.STATE_FINISHED:  			return "Finished";
 			case MASimulation.STATE_CANCELLED:  		return "Cancelled";
