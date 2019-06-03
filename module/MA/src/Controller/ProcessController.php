@@ -9,43 +9,31 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use BjyAuthorize\Exception\UnAuthorizedException;
 use Doctrine\ORM\Mapping as ORM,
 	Doctrine\Common\Collections\ArrayCollection;
+use MA\Entity\ProcessInterface,
+	MA\Entity\VersionInterface;
 
 class ProcessController extends \Base\Controller\AbstractActionController
 {
 	/**
 	 * @return ViewModel
 	 */
-    public function addAction()
-    {
-		$e    = new \MA\Entity\Process;
-		$em   = $this->getEntityManager();
-		$form = $this->getServiceLocator()
-			->get('FormElementManager')
-			->get(\MA\Form\ProcessForm::class);
+    public function indexAction()
+	{
+		return new ViewModel([
+			'tpl' => false,
+		]);
+	}
 
-		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
-        $form->setHydrator(new DoctrineHydrator($em));
-		$form->bind($e);
-
-		if ($this->getRequest()->isPost()) {
-			$form->setData($this->getRequest()->getPost());
-			if ($form->isValid()) {
-
-				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
-
-				$this->getEntityManager()->persist($e);
-				$this->getEntityManager()->flush();
-
-				$r = $this->params()->fromQuery('redirect', $this->url()->fromRoute('process/detail', [
-					'id' => $e->getId(),
-				]));
-
-				return $this->redirect()->toUrl($r);
-			}
-
-		}
-
-		return new ViewModel(['form' => $form,]);
+	/**
+	 * @return ViewModel
+	 */
+    public function tplAction()
+	{
+		$model = new ViewModel([
+			'tpl' => true,
+		]);
+		$model->setTemplate('ma/process/index');
+		return $model;
 	}
 
 	/**
@@ -69,6 +57,54 @@ class ProcessController extends \Base\Controller\AbstractActionController
 			//'stage'		  => $version,
 			//'childrenHal' => $this->prepareHalCollection($paginator, 'process/detail/json'),
 		]);
+	}
+
+	protected function _versionHierarchy(\MA\Entity\VersionInterface $version)
+	{
+		if (!$version->getChildren()->isEmpty()) {
+			$children = $version->getChildren()->toArray();
+			while ($child = array_shift($children)) {
+				$version->addChild(clone $child);
+				//echo '<pre>';
+				//var_dump($version->getName().'-'.$child->getName());
+				//echo '</pre>';
+				$this->versionHierarchy($child);
+			}
+		}
+	}
+
+	protected function versionHierarchy(ProcessInterface $process, VersionInterface $version)
+	{
+		$cloned = clone $version;
+		$cloned->setProcess($process);
+		if (!$version->getChildren()->isEmpty()) {
+			$children = $version->getChildren()->toArray();
+			while ($child = array_shift($children)) {
+				$cloned->addChild($this->versionHierarchy($process, $child));
+			}
+		}
+		return $cloned;
+	}
+
+	/**
+	 * @return Response
+	 */
+    public function cloneAction()
+    {
+		$e = $this->getEntity();
+		$c = clone $e;
+
+		$parents = $e->getVersions()->filter(function($e) {return $e->isParent();})->toArray();
+
+		while (null !== ($parent = array_shift($parents))) {
+			$c->addVersion($this->versionHierarchy($c, $parent));
+		}
+
+		$this->triggerService($this->params()->fromRoute('action'), $c);
+		$this->getEntityManager()->persist($c);
+		$this->getEntityManager()->flush();
+
+		return $this->redirect()->toRoute('process/detail', ['id' => $c->getId()]);
 	}
 
 	/**

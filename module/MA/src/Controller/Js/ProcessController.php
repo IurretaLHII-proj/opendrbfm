@@ -36,6 +36,7 @@ class ProcessController extends \Base\Controller\Js\AbstractActionController
 		$machine  = $this->params()->fromQuery('machine');
 
 		$collection = $em->getRepository("MA\Entity\Process")->getBy(
+			$this->params()->fromQuery('tpl', false),
 			$this->params()->fromQuery('title'),
 			$this->params()->fromQuery('article'),
 			$this->params()->fromQuery('line'),

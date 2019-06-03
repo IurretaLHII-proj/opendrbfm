@@ -101,6 +101,7 @@ interface IMAProcess {
 	body: string,
 	number: string,
 	code: string,
+	tpl: boolean,
 	line: number,
 	complexity: string,
 	pieceNumber: string,

@@ -87,7 +87,7 @@ class Version implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Version",
 	 *	mappedBy	 = "parent",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -340,6 +340,17 @@ class Version implements
 	public function hasChildren()
 	{
 		return $this->getChildren()->count() > 0;
+	}
+
+	/**
+	 * @param VersionInterface $version
+	 * @return Version
+	 */
+	public function addChild(VersionInterface $version)
+	{
+		$version->setParent($this);
+		$this->getChildren()->add($version);
+		return $this;
 	}
     
     /**
@@ -666,13 +677,18 @@ class Version implements
 	public function __clone()
 	{
 		$this->id 	    	= null;
+		$this->name			= "Clone of " . $this->name;
 		$this->parent		= null;
-		$this->state		= self::STATE_IN_PROGRESS;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
-		$this->stages       = new ArrayCollection;
+		$this->children     = new ArrayCollection;
 		$this->comments     = new ArrayCollection;
 		$this->commentCount = 0;
+
+		//Associations
+		$stages = $this->getStages();
+		$this->stages = new ArrayCollection;
+		foreach ($stages as $stage) $this->addStage(clone $stage);
 	}
 
 	/**

@@ -19,6 +19,13 @@ return [
 				//	'privilege' => 'add',
 				//],
 				[
+					'label' => 'Template',
+					'route' => 'process/tpl',
+					'class' => 'nav-link',
+					'resource'	=> Entity\Process::class,
+					'privilege' => 'tpl',
+				],
+				[
 					'label' => 'Operation type',
 					'route' => 'process/operation/type',
 					'class' => 'nav-link',

@@ -37,6 +37,18 @@ class ProcessForm extends Form implements InputFilterProviderInterface
         ], ['priority' => -1]);
 
         $this->add([
+             'type' => 'Checkbox',
+             'name' => 'tpl',
+             'attributes' => [ 
+                 'class' => 'form-control',
+				 'placeholder' => 'Is tpl',
+             ],
+             'options' => [
+                 'label' => 'Is tpl',
+             ],
+        ], ['priority' => -1]);
+
+        $this->add([
              'type' => 'Number',
              'name' => 'line',
              'attributes' => [ 

@@ -72,6 +72,7 @@ return [
 						'comment',
 						'comments',
 						'reply',
+						'tpl',
 						'clone',
 						'stages',
 						'stage',

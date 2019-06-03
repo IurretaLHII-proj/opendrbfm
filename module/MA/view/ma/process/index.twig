@@ -5,8 +5,8 @@
 {% endblock script %}
 
 {% block body %}
-	{{ headTitle('Home') }}
-	<ng-controller ng-controller="_ProcessCollectionCtrl" ng-init="init()">
+	{{ tpl ? headTitle('Process templates') : headTitle('Home') }}
+	<ng-controller ng-controller="_ProcessCollectionCtrl" ng-init="init({{tpl ? true : false}})">
 
 	<div class="input-group input-group-sm sticky-top">
 
@@ -19,9 +19,10 @@
 
 		<!-- Complexity  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button" 
+			<button class="btn border dropdown-toggle" type="button" 
+				ng-class="complexity.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Complexity
-		   			<span ng-if="complexity.id" class="text-dark">( {[complexity.name]} )</span>
+					<span ng-if="complexity.id" class="text-white">( {[complexity.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in complexityOptions" ng-click="selComplexity(option);">{[ option.name ]}</a>
@@ -30,9 +31,10 @@
 
 		<!-- Plant  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle rounded-0" type="button" 
+			<button class="btn border dropdown-toggle rounded-0" type="button" 
+				ng-class="plant.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Plant
-		   			<span ng-if="plant.id" class="text-dark">( {[plant.name]} )</span>
+					<span ng-if="plant.id" class="text-white">( {[plant.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in plants" ng-click="selPlant(option);">{[ option.name ]}</a>
@@ -41,9 +43,10 @@
 
 		<!-- Machine  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle rounded-0" type="button" 
+			<button class="btn border dropdown-toggle rounded-0" type="button" 
+				ng-class="machine.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Machine
-		   			<span ng-if="machine.id" class="text-dark">( {[machine.name]} )</span>
+					<span ng-if="machine.id" class="text-white">( {[machine.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in machines" ng-click="selMachine(option);">{[ option.name ]}</a>
@@ -52,9 +55,10 @@
 
 		<!-- Type  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button" 
+			<button class="btn border dropdown-toggle" type="button" 
+				ng-class="type.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version
-					<span ng-if="type.id" class="text-dark">( {[type.name]} )</span>
+					<span ng-if="type.id" class="text-white">( {[type.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
@@ -63,9 +67,10 @@
 
 		<!-- Material  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button"
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="material.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material
-					<span ng-if="material.id" class="text-dark">( {[material.name]} )</span>
+					<span ng-if="material.id" class="text-white">( {[material.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
@@ -74,9 +79,10 @@
 
 		<!-- State -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button"
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="state.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State
-	   				<span ng-if="state.id != null" class="text-dark">( {[state.name]} )</span>
+	   				<span ng-if="state.id != null" class="text-white">( {[state.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
@@ -85,9 +91,10 @@
 
 		<!-- Owner  -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button"
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="owner.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Owner
-	   				<span ng-if="owner.id" class="text-dark">( {[owner.name]} )</span>
+	   				<span ng-if="owner.id != null" class="text-white">( {[owner.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in users" ng-click="selOwner(option);">{[ option.name ]}</a>
@@ -96,9 +103,10 @@
 
 		<!-- Customer -->
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button"
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="customer.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
 		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Customer
-	   				<span ng-if="customer.id" class="text-dark">( {[customer.name]} )</span>
+	   				<span ng-if="customer.id != null" class="text-white">( {[customer.name]} )</span>
 			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in customers" ng-click="selCustomer(option);">{[ option.name ]}</a>
@@ -255,7 +263,10 @@
 				<td colspan="11"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
 			</tr>
 
-			<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
+			<tr ng-if="collection.isLoaded() && collection.isEmpty()" class="text-center my-2">
+				<td colspan="11">No result maching criteria</i></td>
+			</tr>
+			<tr ng-if="collection.isLoaded() && !collection.isEmpty()" ng-repeat="item in collection.items">
 				<td class="text-center">
 					<a ng-if="item.links.has('image')" href="{[ item.links.getHref()  ]}"><img class="img-responsive img-thumbnail stage-img" ng-src="{[ item.links.getHref('image') ]}"/></a>
 				</td>
@@ -299,6 +310,7 @@
 							confirmed-click="deleteProcess(item);">
 							<i class="fa fa-trash"></i>
 						</a>
+						<a ng-if="item.links.isAllowed('clone')" href="{[ item.links.getHref('clone') ]}" class="btn btn-outline-primary">Clone</a>
 					</div>
 				</td>
 			</tr>

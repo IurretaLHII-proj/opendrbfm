@@ -442,7 +442,7 @@ App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $uibModa
 	$scope.save = function() {
 		var war = $scope._addWarning("Updating...");
 		var uri = process.id ? 
-			process.links.getHref('edit') : 'process/json/add';
+			process.links.getHref('edit') : '/process/json/add';
 		$resource(uri).save($scope.values).$promise.then(
 			function(data){
 				$scope._closeWarning(war);

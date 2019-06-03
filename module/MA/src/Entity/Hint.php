@@ -638,6 +638,10 @@ class Hint implements
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;
 		$this->comments     = new ArrayCollection;
+		//Associations
+		$reasons = $this->getReasons();
+		$this->reasons   = new ArrayCollection;
+		foreach ($reasons as $reason) $this->addReason(clone $reason);
 	}
 
 	/**

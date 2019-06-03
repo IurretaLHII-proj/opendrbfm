@@ -10,37 +10,63 @@
 
 	<div class="input-group input-group-sm sticky-top">
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version <span ng-if="type.id" class="text-dark">( {[type.name]} )</span></button>
+			<button class="btn border dropdown-toggle" type="button" 
+				ng-class="type.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version
+					<span ng-if="type.id" class="text-white">( {[type.name]} )</span>
+			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material <span ng-if="material.id" class="text-dark">( {[material.name]} )</span></button>
+			<button class="btn border dropdown-toggle" type="button" 
+				ng-class="material.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material
+					<span ng-if="material.id" class="text-white">( {[material.name]} )</span>
+				</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State <span ng-if="state.id != null" class="text-dark">( {[state.name]} )</span></button>
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="state.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State
+	   				<span ng-if="state.id != null" class="text-white">( {[state.name]} )</span>
+			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation type <span ng-if="opType.id" class="text-dark">( {[opType.name]} )</span></button>
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="opType.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation type
+	   				<span ng-if="opType.id != null" class="text-white">( {[opType.name]} )</span>
+			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in opTypes" ng-click="selOpType(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle" ng-class="{disabled:opType.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation <span ng-if="operation.id" class="text-dark">( {[operation.name]} )</span></button>
+			<button class="btn border dropdown-toggle" type="button"
+				ng-disabled="opType.id==null"
+				ng-class="operation.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Operation
+	   				<span ng-if="operation.id != null" class="text-white">( {[operation.name]} )</span>
+			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in opType.operations" ng-click="selOp(option);">{[ option.name ]}</a>
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<button class="btn btn-light text-muted dropdown-toggle rounded-0" ng-class="{disabled:operation.id==null}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error <span ng-if="error.id" class="text-dark"><span class="mr-2 badge badge-{[ error.color ]}">{[ error.priority ]}</span>( {[error.name]} )</span></button>
+			<button class="btn border dropdown-toggle rounded-0" type="button" 
+				ng-disabled="operation.id==null" 
+				ng-class="error.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Error
+					<span ng-if="error.id" class="text-white"><span class="mr-2 badge badge-{[ error.color ]}">{[ error.priority ]}</span>( {[error.name]} )</span>
+			</button>
 			<div class="dropdown-menu">
 				<a class="dropdown-item" href="#" ng-repeat="option in operation.hints" ng-click="selError(option);"><span class="mr-2 badge badge-{[ option.color ]}">{[ option.priority ]}</span>{[ option.name ]}</a>
 			</div>
@@ -133,7 +159,10 @@
 			<tr ng-if="!collection.isLoaded()" class="text-center my-2">
 				<td colspan="9"><i class='fa fa-circle-o-notch fa-spin text-primary'></i></td>
 			</tr>
-			<tr ng-if="collection.isLoaded()" ng-repeat="item in collection.items">
+			<tr ng-if="collection.isLoaded() && collection.isEmpty()" class="text-center my-2">
+				<td colspan="9">No result maching criteria</i></td>
+			</tr>
+			<tr ng-if="collection.isLoaded() && !collection.isEmpty()" ng-repeat="item in collection.items">
 				<td class="text-center">
 					<a ng-if="item.version.links.has('image')" href="{[ item.process.links.getHref()  ]}">
 						<img class="img-responsive img-thumbnail stage-img" ng-src="{[ item.version.links.getHref('image') ]}"/>

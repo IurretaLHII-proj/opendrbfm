@@ -363,6 +363,7 @@ class MAProcess {
 			this.body= obj.body;
 			this.number= obj.number;
 			this.code= obj.code;
+			this.tpl= obj.tpl;
 			this.line= obj.line;
 			this.complexity= obj.complexity;
 			this.pieceNumber= obj.pieceNumber;
@@ -398,6 +399,7 @@ class MAProcess {
 			number: this.number,
 			code: this.code,
 			line: this.line,
+			tpl: this.tpl,
 			plant: this.plant ? this.plant.id : null,
 			machine: this.machine ? this.machine.id : null,
 			complexity: this.complexity,
@@ -452,11 +454,16 @@ class MAProcess {
 		}
 	}
 
+	isTpl():boolean {
+		return this.tpl;
+	}
+
 	id: number;
 	title: string;
 	body: string;
 	number: string;
 	code: string;
+	tpl: boolean = false;
 	line: number;
 	plant: MAPlant;
 	machine: MAMachine;

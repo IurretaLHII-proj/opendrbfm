@@ -94,9 +94,15 @@ class Process implements
 
 	/**
 	 * @var string 
-	 * @ORM\Column(type="string", name="complex", options="{default:'AA'")
+	 * @ORM\Column(type="string", name="complex", options="{default:'AA'}")
 	 */
 	protected $complexity;
+
+	/**
+	 * @var string 
+	 * @ORM\Column(type="boolean", options="{default:false}")
+	 */
+	protected $tpl = false;
 
     /**
 	 * @var CustomerInterface
@@ -135,7 +141,7 @@ class Process implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Version",
 	 *	mappedBy	 = "process",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"persist", "remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -407,6 +413,28 @@ class Process implements
     }
     
     /**
+     * Get tpl.
+     *
+     * @return boolean.
+     */
+    public function isTpl()
+    {
+        return $this->tpl;
+    }
+    
+    /**
+     * Set tpl.
+     *
+     * @param bolean tpl the value to set.
+     * @return Process.
+     */
+    public function setTpl($tpl = false)
+    {
+        $this->tpl = (boolean) $tpl;
+        return $this;
+    }
+    
+    /**
      * Get body.
      *
      * @return string.
@@ -512,6 +540,19 @@ class Process implements
     public function setVersions($versions)
     {
         $this->versions = $versions;
+        return $this;
+    }
+    
+    /**
+     * Add version.
+     *
+     * @param VersionInterface version the value to set.
+     * @return Process.
+     */
+    public function addVersion(VersionInterface $version)
+    {
+		$version->setProcess($this);
+		$this->getVersions()->add($version);
         return $this;
     }
 
@@ -692,6 +733,23 @@ class Process implements
 	/**
 	 * @inheritDoc
 	 */
+	public function __clone()
+	{
+		$this->id 	    = null;
+		$this->created  = new DateTime;
+		$this->updated  = new DateTime;
+		$this->actions  = new ArrayCollection;
+		$this->tpl 		= false;
+
+		//Assocs: Does in controller action to asign version parents
+		//$versions = $this->getVersions();
+		//$this->versions = new ArrayCollection;
+		//foreach ($versions as $version) $this->addVersion(clone $version);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
 	{
 	}
@@ -709,6 +767,15 @@ class Process implements
 				'route' => [
 				    'name'    => 'process/detail',
 				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'clone',
+				'privilege'   => $this->isTpl() ? 'clone' : false,
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/detail',
+				    'params'  => ['action' => 'clone', 'id' => $this->getId()],
 				],
 			],
 			[
