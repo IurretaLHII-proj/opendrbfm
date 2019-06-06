@@ -4,6 +4,7 @@ namespace MA\Controller;
 
 use Zend\View\Model\ViewModel,
 	Zend\View\Model\ModelInterface;
+use Zend\Json\Json;
 use DOMPDFModule\View\Model\PdfModel;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use BjyAuthorize\Exception\UnAuthorizedException;
@@ -145,13 +146,20 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	{
 		$e = $this->getEntity();
 
-		$pdf = new PdfModel([
-			'entity' => $e,
-		]);
-        //$pdf->setOption('filename', $e . '-report');		// "pdf" extension is automatically appended
-        $pdf->setOption('paperSize', 'a4');               	// Defaults to "8x11"
-        //$pdf->setOption('paperOrientation', 'landscape'); 	// Defaults to "portrait"
-    	return $pdf;
+		if ($this->getRequest()->isPost()) {
+
+			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+
+			$pdf = new PdfModel([
+				'entity' => $e,
+			]);
+
+        	//$pdf->setOption('filename', $e . '-report');	// "pdf" extension is automatically appended
+        	//$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
+        	$pdf->setOption('paperSize', 'a4');               	// Defaults to "8x11"
+    		return $pdf;
+		}
+		return new ViewModel;
 	}
 
 	/**
