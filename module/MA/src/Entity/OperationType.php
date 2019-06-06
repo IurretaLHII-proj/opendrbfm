@@ -63,6 +63,7 @@ class OperationType implements
 	 *	mappedBy	 = "type",
 	 *	cascade = {"remove"}
 	 * )
+	 * @ORM\OrderBy({"name" = "ASC"})
 	 */
 	protected $operations;
 
