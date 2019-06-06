@@ -28,7 +28,7 @@ class OperationTypeController extends \Base\Controller\AbstractActionController
 		$form->bind($e);
 
 		$collection = $em->getRepository(\MA\Entity\OperationType::class)
-			->findBy([],['created' => 'ASC']);
+			->findBy([],['text' => 'ASC']);
 
 		$paginator = $this->getPaginator($collection, 100);
 

@@ -16,7 +16,7 @@ class OperationTypeController extends \Base\Controller\Js\AbstractActionControll
     {
         $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-		$collection = $em->getRepository("MA\Entity\OperationType")->findBy([],['created' => 'DESC']);
+		$collection = $em->getRepository("MA\Entity\OperationType")->findBy([],['text' => 'ASC']);
 
 		$payload = $this->prepareHalCollection($this->getPaginator($collection, 100), 'process/operation/type/json');
 
