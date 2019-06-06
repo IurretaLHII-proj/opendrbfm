@@ -166,4 +166,10 @@ return [
 	Controller\ImageController::class => [
 		'repository' => Entity\AbstractImage::class,
 	],
+	Controller\ActionController::class => [
+		'repository' => Entity\AbstractProcessAction::class,
+	],
+	Controller\Js\ActionController::class => [
+		'repository' => Entity\AbstractProcessAction::class,
+	],
 ];

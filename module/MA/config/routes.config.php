@@ -142,6 +142,28 @@ return [
 			],
 		],
 	],
+	'action' => [
+		'type' => 'Literal',
+		'options' => [
+			'route' => '/action',
+			'defaults' => [
+				'controller' => Controller\ActionController::class,
+				'action' => 'index' 
+			],
+		],
+		'may_terminate' => true,
+		'child_routes' => [
+			'json' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/json',
+					'defaults' => [
+						'controller' => Controller\Js\ActionController::class,
+					],
+				],
+			],
+		],
+	],
 	'process' => [
 		'type' => 'Literal',
 		'options' => [

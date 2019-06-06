@@ -1,0 +1,32 @@
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/actions.js"></script>
+{% endblock script %}
+
+{% block body %}
+	{{ headTitle('Actions') }}
+	<ng-controller ng-controller="_ActionCollectionCtrl" ng-init="init()">
+
+		<div ng-repeat="item in collection.items" 
+			class="p-2 my-1"
+			ng-class="{first: $first, last: $last}"
+			ng-mouseover="item.hover = true;"
+			ng-mouseleave="item.hover = false;"
+			ng-init="item = item;"
+			ng-include="'/js/custom/tpl/partial/action.html'"
+			style="border-bottom: 1px solid #eee"
+		>
+		</div>
+
+		<div style="text-align: center; margin-top: 1rem;">
+				<p><a href="" ng-if="collection.links.has('next')" ng-click="more()">.view previouses.</a></p>
+				<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
+				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
+			</div>
+		</div>
+
+	</ng-controller>
+
+{% endblock body %}
+
