@@ -545,6 +545,9 @@ var MAStage = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    MAStage.prototype.hasHints = function () {
+        return this.hints.length > 0;
+    };
     MAStage.prototype.getHints = function () {
         return this.hints.sort(function (a, b) {
             if (a.priority < b.priority)
@@ -752,6 +755,9 @@ var MAHintRelation = /** @class */ (function () {
             source: this.source ? this.source.toJSON() : {},
             relation: this.relation ? this.relation.toJSON() : {},
         };
+    };
+    MAHintRelation.prototype.toString = function () {
+        return this.description;
     };
     return MAHintRelation;
 }());
@@ -1070,7 +1076,6 @@ var MAHint = /** @class */ (function () {
 }());
 var MASimulation = /** @class */ (function () {
     function MASimulation() {
-        this.who = null;
         this.state = MASimulation.STATE_NOT_NECESSARY;
         this.effects = [];
         this.suggestions = [];
@@ -1237,6 +1242,9 @@ var MANote = /** @class */ (function () {
             id: this.id,
             text: this.text,
         };
+    };
+    MANote.prototype.toString = function () {
+        return this.text;
     };
     return MANote;
 }());

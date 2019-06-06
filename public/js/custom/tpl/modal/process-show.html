@@ -1,0 +1,29 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ process.title ]} <small class="text-secondary">| inform</small></h3>
+</div>
+<div class="modal-body">
+	<ul>
+		<li ng-repeat="(index, version) in process.versions">
+			<input type="checkbox"><label>{[ version.name ]}</label>
+			<ul>
+				<li ng-repeat="(s, stage) in version.stages">
+					<input type="checkbox"><label>Stage {[ stage.order ]}</label>
+					<ul>
+						<li ng-repeat="(h, hint) in stage.hints">
+							<input type="checkbox"><label>{[ hint.name ]}</label>
+							<ul>
+								<li ng-repeat="(r, reason) in hint.reasons">
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
+	<a href="" class="btn btn-success" ng-click="save()">Generate file</a>
+</div>
+

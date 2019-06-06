@@ -1,0 +1,139 @@
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/pdf.js"></script>
+{% endblock script %}
+{% block style %}
+	{{ parent() }}
+.form-check-label p {
+	margin: 0;
+}
+{% endblock style %}
+
+{% block body %}
+
+
+	{{ headTitle(entity.title) }}
+	<ng-controller
+		ng-controller="_ProcessPdfCtrl" 
+		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
+  	>
+
+		<h2 class="m-2">{[ process.title ]}<small class="ml-2 text-muted">| Report</small></h2>
+
+		<div class="row">
+		<div ng-repeat="(v, version) in process.versions" class="col">
+		<ul>
+			<li class="form-check">
+				<!-- Version -->
+				<input  class="form-check-input" type="checkbox" 
+					ng-change="versionChanged(version)" 
+					ng-model="version.checked"
+	 			>
+	 			<label class="form-check-label" >{[ version.name ]} | {[ version.type.name ]} | {[ version.material.name ]}</label>
+
+				<ul ng-if="version.hasStages()">
+					<li ng-repeat="(s, stage) in version.stages" class="form-check">
+						<!-- Stage -->
+						<input  class="form-check-input" type="checkbox" 
+							ng-change="stageChanged(stage)" 
+							ng-model="stage.checked"
+							ng-disabled="!version.checked"
+	   					>
+						<label class="form-check-label" >Stage {[ stage.order ]}</label>
+
+						<ul ng-if="stage.hasHints()">
+							<!-- Hint -->
+							<b>Errors</b>
+							<li ng-repeat="(h, hint) in stage.hints" class="form-check">
+								<input type="checkbox" class="form-check-input" 
+									ng-change="hintChanged(hint)" 
+									ng-model="hint.checked"
+									ng-disabled="!stage.checked"
+		   						>
+								<label class="form-check-label">{[ hint.name ]}</label>
+
+								<ul ng-if="hint.reasons.length">
+									<b>Reasons</b>
+									<li ng-repeat="(r, reason) in hint.reasons" class="form-check">
+										<!-- Reason -->
+										<input type="checkbox" class="form-check-input"
+											ng-change="reasonChanged(reason)" 
+											ng-model="reason.checked"
+											ng-disabled="!hint.checked"
+		   								>
+										<label class="form-check-label" ng-repeat="note in reason.notes" ng-bind-html="note"></label>
+										<!--<div ng-repeat="rel in reason.relations">{[rel]}</div>-->
+				
+										<ul ng-if="reason.influences.length">
+											<!-- Influence -->
+											<b>Influences</b>
+											<li ng-repeat="(i, influence) in reason.influences" class="form-check">
+												<input type="checkbox" class="form-check-input" 
+													ng-change="influenceChanged(influence)" 
+													ng-model="influence.checked"
+													ng-disabled="!reason.checked"
+						   						>
+												<label class="form-check-label" ng-repeat="note in influence.notes" ng-bind-html="note"></label>
+												<!--<div ng-repeat="rel in influence.relations">{[rel]}</div>-->
+												<ul ng-if="influence.simulations.length">
+													<b>Simulations</b>
+													<!-- Simulation -->
+													<li ng-repeat="(i, simulation) in influence.simulations" class="form-check">
+														<input type="checkbox" class="form-check-input" 
+															ng-change="simulationChanged(simulation)" 
+															ng-model="simulation.checked"
+															ng-disabled="!influence.checked"
+						   								>
+														<label class="form-check-label">{[ simulation.stateLabel() ]}</label>
+														<ul ng-if="simulation.suggestions.length"><b>Suggestions</b>
+															<li ng-repeat="note in simulation.suggestions" class="form-check">
+															  	<input type="checkbox"
+																	class="form-check-input"
+																	ng-model="note.checked"
+																	ng-disabled="!simulation.checked" 
+																>
+															  <label class="form-check-label" ng-bind-html="note"></label>
+															</li>
+														</ul>
+														<ul ng-if="simulation.effects.length"><b>Effects</b>
+															<li ng-repeat="note in simulation.effects" class="form-check">
+															  	<input type="checkbox"
+																	class="form-check-input"
+																	ng-model="note.checked"
+																	ng-disabled="!simulation.checked" 
+																>
+															  <label class="form-check-label" ng-bind-html="note"></label>
+															</li>
+														</ul>
+														<ul ng-if="simulation.preventions.length"><b>Preventions</b>
+															<li ng-repeat="note in simulation.preventions" class="form-check">
+															  	<input type="checkbox"
+																	class="form-check-input"
+																	ng-model="note.checked"
+																	ng-disabled="!simulation.checked" 
+																>
+															  <label class="form-check-label" ng-bind-html="note"></label>
+															</li>
+														</ul>
+													</li>
+													<!-- End of Simulation -->
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</li>
+					</ul>
+
+				</ul>
+			</li>
+		</ul>
+		</div>
+		</div>
+
+	</ng-controller>
+
+{% endblock body %}
+

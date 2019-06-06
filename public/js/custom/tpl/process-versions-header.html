@@ -20,11 +20,13 @@
 	   ng-confirm-click
 	   confirmed-click="deleteVersion(v)"
 	   ><i class="fa fa-trash"></i></a>
-   <a href="{[ process.links.getHref('pdf') ]}"
+	<!--
+    <a href="{[ process.links.getHref('pdf') ]}"
 	   ng-if="v == version && process.links.isAllowed('pdf')"
 	   class="btn btn-sm btn-outline-primary" 
 	   target="_blank"
 	   ><i class="fa fa-file"></i></a>
+	-->
 	<a href=""
 	   class="btn btn-sm btn-outline-primary" 
 	   ng-if="v == version && v.links.isAllowed('clone')"

@@ -692,6 +692,10 @@ class MAStage {
 		return this.body;
 	}
 
+	hasHints():boolean {
+		return this.hints.length > 0;
+	}
+
 	getHints():MAHint[] {
 		return this.hints.sort((a, b) => {
 			if (a.priority < b.priority) return 1;
@@ -1543,6 +1547,10 @@ class MANote {
 			id: this.id,
 			text: this.text,
 		};
+	}
+
+	toString(): string {
+		return this.text;
 	}
 
 	id: number;
