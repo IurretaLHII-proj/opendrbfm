@@ -34,6 +34,10 @@
 	>clone</a>
 	<a href="" class="btn btn-sm disabled btn-{[v.stateColor()]}">{[v.stateLabel()]}</a>
 </div>
+<div ng-if="v == version">
+	<a href="{[ v.user.links.getHref() ]}" class="">{[ v.user.name ]}</a>.
+	<small>{[ v.created | date:"dd MMM yyyy HH:mm" ]}</small>
+</div>
 <ul ng-repeat="_v in v.children" class="m-0 py-1 border-left" style="list-style:none;">
 	<li ng-include="'/js/custom/tpl/process-versions-header.html'" ng-init="v=_v;" class=""/></li>
 </ul>

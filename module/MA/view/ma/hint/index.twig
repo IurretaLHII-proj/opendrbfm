@@ -72,7 +72,7 @@
 			</div>
 		</div>
 		<div class="input-group-prepend">
-			<span class="input-group-text text-muted border-0 bg-light">Priority >=</span>
+			<span class="input-group-text text-muted border-0 bg-light">Priority ></span>
 		</div>
 		<input type="number" class="form-control filter-search" ng-model="priority">
 		<input type="text" class="form-control filter-search w-25" placeholder="Process" auto-complete="autoCompleteOptions" ng-model="process.title">
@@ -181,7 +181,7 @@
 						<a href="{[ item.version.material.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.material.name ]}</a>
 						<a href="{[ item.version.type.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.type.name ]}</a>
 					</div>
-					<div ng-bind-html="item.version.description"></div>
+					<div class="desc" ng-bind-html="item.version.description"></div>
 				</td>
 				<td class="text-center">
 					<a href="{[ item.process.links.getHref() ]}" 
@@ -199,7 +199,7 @@
 					<ul class="m-0 text-muted" style="">
 						<li ng-repeat="(i, op) in item.stage.operations">{[op.longName]}</li>
 					</ul>
-					<div ng-bind-html="item.stage.description"></div>
+					<div class="desc" ng-bind-html="item.stage.description"></div>
 				</td>
 				<td colspan="2">
 					<div class="text-muted">{[ item.operation.longName ]}</div>
@@ -208,7 +208,7 @@
 							<span class="badge badge-light mr-2">{[ item.priority ]}</span>{[ item.name ]} 
 						</a>
 					</div>
-					<div ng-bind-html="item.description"></div>
+					<div class="desc" ng-bind-html="item.description"></div>
 				</td>
 				<td class="text-center">
 					<div>

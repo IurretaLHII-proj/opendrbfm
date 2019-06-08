@@ -83,6 +83,18 @@ interface IMAPlant {
 	},
 }
 
+interface IMAComplexity {
+	id: number,
+	name: string,
+	description: string,
+	state: number,
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+	},
+}
+
 interface IMAMachine {
 	id: number,
 	name: string,
@@ -103,7 +115,6 @@ interface IMAProcess {
 	code: string,
 	tpl: boolean,
 	line: number,
-	complexity: string,
 	pieceNumber: string,
 	pieceName: string,
 	created: IMADate,
@@ -111,6 +122,7 @@ interface IMAProcess {
 	_embedded: {
 		plant: IMAPlant,
 		machine: IMAMachine,
+		complexity: IMAComplexity,
 		customer: IMAUser,
 		owner: IMAUser,
 		versions: IMAVersion[],
@@ -187,6 +199,7 @@ interface IMAOperation {
 interface IMAHintType {
 	id: number,
 	name: string,
+	standard: boolean,
 	color: string,
 	priority: number,
 	description: string,

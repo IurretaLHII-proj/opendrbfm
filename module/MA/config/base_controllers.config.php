@@ -89,6 +89,12 @@ return [
 	Controller\Js\PlantController::class => [
 		'repository' => Entity\ProductivePlant::class,
 	],
+	Controller\ComplexityController::class => [
+		'repository' => Entity\Complexity::class,
+	],
+	Controller\Js\ComplexityController::class => [
+		'repository' => Entity\Complexity::class,
+	],
 	Controller\MachineController::class => [
 		'repository' => Entity\Machine::class,
 	],

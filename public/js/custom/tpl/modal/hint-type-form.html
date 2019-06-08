@@ -28,16 +28,22 @@
 		</div>
 	</div>
 	<div class="form-group">
-	  	<label for="inputDescription">Description</label>
-		<textarea rows="3" 
-			id="inputDescription"
-			class="form-control"
-			ng-class="{'is-invalid': errors.description}"
-			ng-model="values.description">
-		</textarea>
+		<text-angular 
+		ng-model="values.description"
+		ta-toolbar="[['bold', 'italics', 'underline' ], ['ul', 'insertLink', 'html'] ,]"
+		ta-text-editor-class="form-height form-control"
+		ng-class="{'is-invalid': errors.description}"
+		placeholder="Description..."
+		>
+		</text-angular>
+
 		<div ng-if="errors.description"
 			ng-repeat="(key, text) in errors.description"
-			class="invalid-feedback">{[key]}. {[text]}</div>
+			class="invalid-feedback" style="display:block;">{[key]}. {[text]}</div>
+	</div>
+	<div class="form-check">
+		<input class="form-check-input" type="checkbox" ng-model="values.standard" />
+		<label class="form-check-label">Is standard error?</label>
 	</div>
 </div>
 <div class="modal-footer">

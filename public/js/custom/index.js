@@ -5,11 +5,8 @@ App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, 
 	$scope.criteria		= 'DESC';
 	$scope.users		= [{id:null, name: " --ANY-- "}];
 	$scope.customers	= [{id:null, name: " --ANY-- "}];
-	$scope.complexityOptions = [
+	$scope.complexities = [
 		{id:null,  	 					 name: " --ANY-- "},
-		{id:MAProcess.COMPLEXITY_LOW,  	 name: MAProcess.complexityLabel(MAProcess.COMPLEXITY_LOW)},
-		{id:MAProcess.COMPLEXITY_MEDIUM, name: MAProcess.complexityLabel(MAProcess.COMPLEXITY_MEDIUM)},
-		{id:MAProcess.COMPLEXITY_HIGH,   name: MAProcess.complexityLabel(MAProcess.COMPLEXITY_HIGH)},
 	];
 	$scope.materials 	= [{id:null, name:"--- ANY ---"}];
 	$scope.types 		= [{id:null, name:"--- ANY ---"}];
@@ -30,7 +27,7 @@ App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, 
 	$scope.machine 	  = $scope.machines[0];
 	$scope.material   = $scope.materials[0];
 	$scope.type 	  = $scope.types[0];
-	$scope.complexity = $scope.complexityOptions[0];
+	$scope.complexity = $scope.complexities[0];
 	$scope.owner	  = $scope.users[0];
 	$scope.customer	  = $scope.customers[0];
 	$scope.getQuery	  = function() {
@@ -87,7 +84,15 @@ App.controller('_ProcessCollectionCtrl', function($scope, $uibModal, $resource, 
 														angular.forEach(data._embedded.items, item => {
 															$scope.machines.push(MAMachine.fromJSON(item));
 														});
-														$scope.search();
+														$resource('/process/complexity/json').get().$promise.then(
+															function(data){
+																angular.forEach(data._embedded.items, item => {
+																	$scope.complexities.push(MAComplexity.fromJSON(item));
+																});
+																$scope.search();
+															}, 
+															function(err){}
+														);
 													}, 
 													function(err){}
 												);

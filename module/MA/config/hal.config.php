@@ -322,6 +322,13 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 1,
 		],
+		'MA\Entity\Complexity' => [
+			'route_name' => 'process/complexity/detail',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 1,
+		],
 		'MA\Entity\Machine' => [
 			'route_name' => 'process/machine/detail',
 			'route_identifier_name' => 'id',

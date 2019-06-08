@@ -511,6 +511,65 @@ return [
 					],
 				],
 			],
+			'complexity' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/complexity',
+					'defaults' => [
+						'controller' => Controller\ComplexityController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|edit|delete',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\ComplexityController::class,
+									]
+								],
+							]
+						],
+					],
+					'json' => [
+						'type' => 'Literal',
+						'options' => [
+							'route' => '/json',
+							'defaults' => [
+								'controller' => Controller\Js\ComplexityController::class,
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'add' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/add',
+									'defaults' => [
+										'action' => 'add' 
+									]
+								],
+							],
+						],
+					],
+				],
+			],
 			'machine' => [
 				'type' => 'Literal',
 				'options' => [

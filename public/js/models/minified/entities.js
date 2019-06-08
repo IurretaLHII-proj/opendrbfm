@@ -195,6 +195,35 @@ var MAMaterial = /** @class */ (function () {
     };
     return MAMaterial;
 }());
+var MAComplexity = /** @class */ (function () {
+    function MAComplexity() {
+        this.created = new Date();
+    }
+    MAComplexity.fromJSON = function (obj) {
+        var e = new MAComplexity();
+        e.load(obj);
+        return e;
+    };
+    MAComplexity.prototype.load = function (obj) {
+        if (obj.id) {
+            this.id = obj.id;
+            this.name = obj.name;
+            this.description = obj.description;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+        }
+        this.links = new MALinks(obj._links);
+    };
+    MAComplexity.prototype.toJSON = function () {
+        return {
+            id: this.id,
+            name: this.name,
+            description: this.description,
+            user: this.user ? this.user.id : null,
+        };
+    };
+    return MAComplexity;
+}());
 var MAMachine = /** @class */ (function () {
     function MAMachine() {
         this.created = new Date();
@@ -273,11 +302,11 @@ var MAProcess = /** @class */ (function () {
             this.code = obj.code;
             this.tpl = obj.tpl;
             this.line = obj.line;
-            this.complexity = obj.complexity;
             this.pieceNumber = obj.pieceNumber;
             this.pieceName = obj.pieceName;
             this.machine = MAMachine.fromJSON(obj._embedded.machine);
             this.plant = MAPlant.fromJSON(obj._embedded.plant);
+            this.complexity = MAComplexity.fromJSON(obj._embedded.complexity);
             this.user = new MAUser(obj._embedded.owner);
             this.customer = new MAUser(obj._embedded.customer);
             this.created = new Date(obj.created.date);
@@ -309,23 +338,12 @@ var MAProcess = /** @class */ (function () {
             tpl: this.tpl ? 1 : 0,
             plant: this.plant ? this.plant.id : null,
             machine: this.machine ? this.machine.id : null,
-            complexity: this.complexity,
+            complexity: this.complexity ? this.complexity.id : null,
             pieceNumber: this.pieceNumber,
             pieceName: this.pieceName,
             user: this.user ? this.user.id : null,
             customer: this.customer ? this.customer.id : null,
         };
-    };
-    MAProcess.complexityLabel = function (value) {
-        switch (value) {
-            case MAProcess.COMPLEXITY_LOW: return "LOW";
-            case MAProcess.COMPLEXITY_MEDIUM: return "MEDIUM";
-            case MAProcess.COMPLEXITY_HIGH: return "HIGH";
-            default: return "-";
-        }
-    };
-    MAProcess.prototype.complexityLabel = function () {
-        return MAProcess.complexityLabel(this.complexity);
     };
     MAProcess.prototype.hasVersions = function () {
         return this.versions.length > 0;
@@ -356,9 +374,6 @@ var MAProcess = /** @class */ (function () {
     MAProcess.prototype.isTpl = function () {
         return this.tpl;
     };
-    MAProcess.COMPLEXITY_LOW = "AA";
-    MAProcess.COMPLEXITY_MEDIUM = "BB";
-    MAProcess.COMPLEXITY_HIGH = "A";
     return MAProcess;
 }());
 var MAVersion = /** @class */ (function () {
@@ -678,6 +693,7 @@ var MAOperation = /** @class */ (function () {
 }());
 var MAHintType = /** @class */ (function () {
     function MAHintType() {
+        this.standard = false;
         this.priority = 0;
     }
     MAHintType.fromJSON = function (obj) {
@@ -689,6 +705,7 @@ var MAHintType = /** @class */ (function () {
         if (obj._embedded) {
             this.id = obj.id;
             this.name = obj.name;
+            this.standard = obj.standard;
             this.color = obj.color;
             this.priority = obj.priority;
             this.user = new MAUser(obj._embedded.owner);
@@ -702,6 +719,7 @@ var MAHintType = /** @class */ (function () {
         return {
             id: this.id,
             priority: this.priority,
+            standard: this.standard,
             name: this.name,
             color: this.color,
             description: this.description,
@@ -755,9 +773,6 @@ var MAHintRelation = /** @class */ (function () {
             source: this.source ? this.source.toJSON() : {},
             relation: this.relation ? this.relation.toJSON() : {},
         };
-    };
-    MAHintRelation.prototype.toString = function () {
-        return this.description;
     };
     return MAHintRelation;
 }());

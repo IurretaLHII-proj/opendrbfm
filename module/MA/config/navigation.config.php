@@ -72,6 +72,13 @@ return [
 					'privilege' => 'index',
 				],
 				[
+					'label' => 'Complexity',
+					'route' => 'process/complexity',
+					'class' => 'nav-link',
+					'resource'	=> Entity\Complexity::class,
+					'privilege' => 'index',
+				],
+				[
 					'label' => 'Material',
 					'route' => 'process/material',
 					'class' => 'nav-link',
