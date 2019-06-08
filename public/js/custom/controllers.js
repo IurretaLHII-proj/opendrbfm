@@ -201,7 +201,30 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		});
 
 		modal.result.then(
-			function(res) {
+			function(values) {
+				if (values.standard) {
+					let uri = stage.links.getHref('hint');
+					stage.operations.forEach(op => {
+						$resource(op.links.getHref('hints')).get({standard:true}).$promise.then(
+							function(data) {
+								angular.forEach(data._embedded.items, item => {
+									let type = MAHintType.fromJSON(item);
+									let values = {type: type.id, priority: type.priority};
+									$resource(uri).save(values).$promise.then(
+										function(data) { 
+											let hint = MAHint.fromJSON(data);
+											stage.addHint(hint);
+											$scope.addSuccess("'"+hint.name+"' error loaded");
+										},
+										function(err) {
+											$scope.addError(err.data.title);
+										}	
+									);
+								});
+							});
+					
+					});
+				}
 				version.addStage(stage);
 				$scope.setCurrent(stage);
 				$scope.addSuccess("Saved succesfully");
@@ -855,6 +878,11 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 				$scope.addError(err.data.title);
 			}	
 		);
+	}
+
+	$scope.locked = true;
+	$scope.stickyLock = function() {
+		$scope.locked = !$scope.locked;
 	}
 });
 

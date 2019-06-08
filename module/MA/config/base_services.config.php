@@ -23,6 +23,7 @@ return [
 					Service\CustomerService::class, 
 					Service\MaterialService::class, 
 					Service\ProductivePlantService::class, 
+					Service\ComplexityService::class, 
 					Service\MachineService::class, 
 					Service\ProcessService::class, 
 					Service\VersionService::class, 
@@ -56,6 +57,9 @@ return [
 	],
 	Service\ProductivePlantService::class => [
 		'entities' => [Entity\ProductivePlant::class],
+	],
+	Service\ComplexityService::class => [
+		'entities' => [Entity\Complexity::class],
 	],
 	Service\MachineService::class => [
 		'entities' => [Entity\Machine::class],

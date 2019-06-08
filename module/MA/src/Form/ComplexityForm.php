@@ -5,7 +5,7 @@ namespace MA\Form;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
-class HintTypeForm extends Form implements InputFilterProviderInterface
+class ComplexityForm extends Form implements InputFilterProviderInterface
 {
     /**
      * @inheritDoc
@@ -13,60 +13,31 @@ class HintTypeForm extends Form implements InputFilterProviderInterface
     public function init()
     {
         $this->add([
-             'type' => 'Number',
-             'name' => 'priority',
-             'required' => true,
-             'attributes' => [ 
-                 'class' => 'form-control',
-				 'min' => -99,
-				 'max' => 99,
-             ],
-             'options' => [
-                 'label' => 'Priority',
-             ],
-        ], ['priority' => -9]);
-
-        $this->add([
              'type' => 'Text',
              'name' => 'name',
              'required' => true,
              'attributes' => [ 
-                 'class' => 'form-control',
-				 'rows' => 4,
              ],
              'options' => [
-                 'label' => 'Name',
              ],
-        ], ['priority' => -9]);
+        ], ['priority' => -8]);
 
         $this->add([
-             'type' => 'Textarea',
+             'type' => 'TextArea',
              'name' => 'description',
              'required' => true,
              'attributes' => [ 
-                 'class' => 'form-control',
-				 'rows' => 4,
              ],
              'options' => [
-                 'label' => 'Description',
              ],
         ], ['priority' => -9]);
-
-        $this->add([
-             'type' => 'Checkbox',
-             'name' => 'standard',
-             'attributes' => [ 
-             ],
-             'options' => [
-             ],
-        ], ['priority' => -1]);
 
         $this->add([
                 'type' => 'Submit',
                 'name' => 'submit',
                 'attributes' => [ 
                     'value' => 'Save',
-                    'class' => 'btn btn-primary'
+                    'class' => 'btn btn-success'
                 ],
             ],
             ['priority' => -20]
@@ -91,7 +62,7 @@ class HintTypeForm extends Form implements InputFilterProviderInterface
 				'validators' => [
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 255],
+						'options' => ['max' => 255],
 					],
 				],
 			],
@@ -108,12 +79,9 @@ class HintTypeForm extends Form implements InputFilterProviderInterface
 				'validators' => [
 					[
 						'name' => \Zend\Validator\StringLength::class,
-						'options' => ['min' => 3, 'max' => 800],
+						'options' => ['max' => 800],
 					],
 				],
-			],
-			'standard' => [
-				'required' => false,
 			],
 		];
 	}

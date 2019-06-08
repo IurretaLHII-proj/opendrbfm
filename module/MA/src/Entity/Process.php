@@ -93,8 +93,15 @@ class Process implements
 	protected $pieceNumber;
 
 	/**
-	 * @var string 
-	 * @ORM\Column(type="string", name="complex", options="{default:'AA'}")
+	 * @var Complexity
+	 * @ORM\ManyToOne(
+	 *	targetEntity = "MA\Entity\Complexity",
+	 *	inversedBy	 = "processes",
+	 * )
+	 * @ORM\JoinColumn(
+	 *	name= "cpl_id",
+	 *	referencedColumnName = "id"
+	 * )
 	 */
 	protected $complexity;
 
@@ -349,7 +356,7 @@ class Process implements
     /**
      * Get complexity.
      *
-     * @return string.
+     * @return Complexity.
      */
     public function getComplexity()
     {
@@ -359,12 +366,12 @@ class Process implements
     /**
      * Set complexity.
      *
-     * @param string complexity the value to set.
+     * @param Complexity complexity the value to set.
      * @return Process.
      */
-    public function setComplexity($complexity)
+    public function setComplexity(Complexity $complexity)
     {
-        $this->complexity = (string) $complexity;
+        $this->complexity = $complexity;
         return $this;
     }
     

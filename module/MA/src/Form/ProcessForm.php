@@ -145,6 +145,7 @@ class ProcessForm extends Form implements InputFilterProviderInterface
              ],
         ], ['priority' => -8]);
 
+		/*
         $this->add([
              'type' => 'Select',
              'name' => 'complexity',
@@ -161,7 +162,18 @@ class ProcessForm extends Form implements InputFilterProviderInterface
 				 	\MA\Entity\Process::COMPLEXITY_HARD => \MA\Entity\Process::COMPLEXITY_HARD,
 				 ],
              ],
-        ], ['priority' => -8]);
+		 ], ['priority' => -8]);
+		 */
+
+        $this->add([
+             'type' => 'ObjectSelect',
+             'name' => 'complexity',
+             'attributes' => [ 
+             ],
+             'options' => [
+				 'target_class' => 'MA\Entity\Complexity',
+             ],
+        ]);
 
         $this->add([
              'type' => 'ObjectSelect',

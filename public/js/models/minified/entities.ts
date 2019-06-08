@@ -259,6 +259,46 @@ class MAMaterial {
 	links: MALinks;
 }
 
+class MAComplexity {
+
+	static fromJSON(obj: IMAComplexity): MAComplexity{
+		let e = new MAComplexity();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.created = new Date();
+	}
+
+	load(obj: IMAComplexity) {
+		if (obj.id) {
+			this.id	   = obj.id;
+			this.name  = obj.name;
+			this.description  = obj.description;
+			this.user = new MAUser(obj._embedded.owner);
+			this.created = new Date(obj.created.date);
+		}
+		this.links = new MALinks(obj._links);
+	}
+
+	toJSON(): {}{
+		return {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			user: this.user ? this.user.id : null,
+		};
+	}
+
+	id: number;
+	name:string;
+	description:string;
+	user:MAUser;
+	created:Date;
+	links: MALinks;
+}
+
 class MAMachine {
 
 	static fromJSON(obj: IMAMachine): MAMachine{
@@ -341,10 +381,6 @@ class MAPlant {
 
 class MAProcess {
 
-	static readonly COMPLEXITY_LOW    = "AA";
-	static readonly COMPLEXITY_MEDIUM = "BB";
-	static readonly COMPLEXITY_HIGH   = "A";
-
 	static fromJSON(obj: IMAProcess): MAProcess{
 		let e = new MAProcess();
 		e.load(obj);
@@ -365,11 +401,11 @@ class MAProcess {
 			this.code= obj.code;
 			this.tpl= obj.tpl;
 			this.line= obj.line;
-			this.complexity= obj.complexity;
 			this.pieceNumber= obj.pieceNumber;
 			this.pieceName= obj.pieceName;
 			this.machine = MAMachine.fromJSON(obj._embedded.machine);
 			this.plant = MAPlant.fromJSON(obj._embedded.plant);
+			this.complexity = MAComplexity.fromJSON(obj._embedded.complexity);
 			this.user = new MAUser(obj._embedded.owner);
 			this.customer = new MAUser(obj._embedded.customer);
 			this.created = new Date(obj.created.date);
@@ -402,25 +438,12 @@ class MAProcess {
 			tpl: this.tpl ? 1 : 0,
 			plant: this.plant ? this.plant.id : null,
 			machine: this.machine ? this.machine.id : null,
-			complexity: this.complexity,
+			complexity: this.complexity ? this.complexity.id : null,
 			pieceNumber: this.pieceNumber,
 			pieceName: this.pieceName,
 			user: this.user ? this.user.id : null,
 			customer: this.customer ? this.customer.id : null,
 		};
-	}
-
-	static complexityLabel(value:string):string {
-		switch (value) {
-			case MAProcess.COMPLEXITY_LOW: 	  return "LOW";
-			case MAProcess.COMPLEXITY_MEDIUM: return "MEDIUM";
-			case MAProcess.COMPLEXITY_HIGH:   return "HIGH";
-			default: return "-";
-		}
-	}
-
-	complexityLabel():string {
-		return MAProcess.complexityLabel(this.complexity);
 	}
 
 	hasVersions():boolean {
@@ -467,7 +490,7 @@ class MAProcess {
 	line: number;
 	plant: MAPlant;
 	machine: MAMachine;
-	complexity: string;
+	complexity: MAComplexity;
 	pieceNumber: string;
 	pieceName: string;
 	versions: MAVersion[];
@@ -888,6 +911,7 @@ class MAHintType {
 		if (obj._embedded) {
 			this.id = obj.id;
 			this.name = obj.name;
+			this.standard = obj.standard;
 			this.color = obj.color;
 			this.priority = obj.priority;
 			this.user = new MAUser(obj._embedded.owner);
@@ -902,6 +926,7 @@ class MAHintType {
 		return {
 			id: this.id,
 			priority: this.priority,
+			standard: this.standard,
 			name: this.name,
 			color: this.color,
 			description: this.description,
@@ -911,6 +936,7 @@ class MAHintType {
 	id: number;
 	name: string;
 	color: string;
+	standard: boolean=false;
 	priority: number=0;
 	description: string;
 	user: MAUser;

@@ -46,6 +46,12 @@ class HintType implements
 	 */
 	protected $name;
 
+	/**
+	 * @var boolean 
+	 * @ORM\Column(type="boolean", name="std", options="{default:false}")
+	 */
+	protected $standard = false;
+
     /**
 	 * @var string 
      * @ORM\Column(
@@ -134,6 +140,28 @@ class HintType implements
     public function setId($id)
     {
         $this->id = (int) $id;
+        return $this;
+    }
+    
+    /**
+     * Get standard.
+     *
+     * @return boolean.
+     */
+    public function isStandard()
+    {
+        return $this->standard;
+    }
+    
+    /**
+     * Set standard.
+     *
+     * @param bolean standard the value to set.
+     * @return Process.
+     */
+    public function setStandard($standard = false)
+    {
+        $this->standard = (boolean) $standard;
         return $this;
     }
     
@@ -404,6 +432,7 @@ class HintType implements
         return array(
             'id'          => $this->getId(),
             'name'        => $this->getName(),
+            'standard'    => $this->isStandard(),
 			'color'		  => $this->getColor(),
             'priority' 	  => $this->getPriority(),
             'description' => $this->getDescription(),

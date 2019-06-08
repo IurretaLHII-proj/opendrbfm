@@ -28,6 +28,7 @@ return [
 			Entity\Process::class,
 			Entity\Version::class,
 			Entity\VersionType::class,
+			Entity\Complexity::class,
 			Entity\Machine::class,
 			Entity\ProductivePlant::class,
 			Entity\Stage::class,

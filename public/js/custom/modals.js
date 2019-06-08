@@ -24,12 +24,15 @@ App.controller('_NoteModalCtrl', function($scope, $uibModalInstance, $resource, 
 });
 
 App.controller('_HintTypeModalCtrl', function($scope, $uibModalInstance, $resource, type) {
+	console.log(type);
 	$scope.type   = type;
 	$scope.values = JSON.parse(JSON.stringify(type));
 	$scope.errors = {};
 	$scope.save = function() {
+		var raw = angular.copy($scope.values);
+		raw.standard = $scope.values.standard ? 1 : 0;
 		$resource(type.id ? type.links.getHref('edit') : type.operation.links.getHref('hint'))
-			.save($scope.values).$promise.then(
+			.save(raw).$promise.then(
 				function(data) {
 					type.load(data);
 					$uibModalInstance.close();	
@@ -349,12 +352,40 @@ App.controller('_ProcessModalCtrl', function($scope, $uibModalInstance, $uibModa
 	$scope.process = process;
 	$scope.errors  = {};
 	$scope.values  = JSON.parse(JSON.stringify(process));
-	$scope.complexityOptions = [
-		{id:null, 						 name:' --Select complexity-- '},
-		{id:MAProcess.COMPLEXITY_LOW,  	 name: "LOW"},
-		{id:MAProcess.COMPLEXITY_MEDIUM, name: "MEDIUM"},
-		{id:MAProcess.COMPLEXITY_HIGH,	 name: "HIGH"},
+	$scope.complexities = [
+		{id:null, name:' --Select complexity-- '},
+		{id:-1,   name:' --Create new-- '},
 	];
+	$scope.loadComplexities = function() {
+		$resource('/process/complexity/json').get().$promise.then(
+			function(data){
+				angular.forEach(data._embedded.items, function(item) {
+					$scope.complexities.push(MAComplexity.fromJSON(item));
+				});
+			}, 
+			function(err){}
+		);
+	};
+	$scope.createComplexity = function() {
+	 	if ($scope.values.complexity < 0) {	
+			let complexity = new MAComplexity();
+			var modal = $uibModal.open({
+				templateUrl : '/js/custom/tpl/modal/complexity-form.html',
+				controller: '_ComplexityModalCtrl',
+				scope: $scope,
+				size: 'lg',
+				resolve: {complexity: complexity},
+			});
+
+			modal.result.then(
+				function(res) {
+					$scope.complexities.push(complexity);
+					$scope.values.complexity = complexity.id;
+				},
+				function() {}
+			);
+		}
+	}
 
 	$scope.plants = [
 		{id:null, name:' --Select productive plant-- '},
@@ -574,6 +605,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 	console.log(stage, $scope.values);
 
 	$scope.init = function() {
+		$scope.values.standard		 = true;
 		$scope.materials      		 = [$scope.dflt];
 		$scope.operationTypes 		 = [$scope.dflt];
 		$scope.stageOptions 		 = []; 
@@ -640,7 +672,7 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 			.save({stage:$scope.values}).$promise.then(
 				function(data) {
 					stage.load(data);
-					$uibModalInstance.close();	
+					$uibModalInstance.close($scope.values);	
 				},
 				function(err) {
 					console.log(err);
@@ -856,6 +888,30 @@ App.controller('_MachineModalCtrl', function($scope, $uibModalInstance, $resourc
 		$resource(uri).save($scope.values).$promise.then(
 			function(data) {
 				machine.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
+});
+
+App.controller('_ComplexityModalCtrl', function($scope, $uibModalInstance, $resource, complexity)
+{
+	$scope.complexity 	= complexity;
+	$scope.values   	= JSON.parse(JSON.stringify(complexity));
+	$scope.errors   	= {};
+	
+	$scope.save = function() {
+		var uri  = complexity.id ? complexity.links.getHref('edit') : '/process/complexity/json/add';
+		$resource(uri).save($scope.values).$promise.then(
+			function(data) {
+				complexity.load(data);
 				$uibModalInstance.close(data);	
 			},
 			function(err) {

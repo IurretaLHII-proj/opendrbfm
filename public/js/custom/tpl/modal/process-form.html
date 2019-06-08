@@ -131,13 +131,21 @@
 
 	<div class="form-group"> 
 		<!--<label for="inputParents">Complexity</label>-->
-		<select class="form-control"
+		<!--<select class="form-control"
 			ng-class="{'is-invalid': errors.complexity}"
 			ng-model="values.complexity"
 			>
 				<option ng-repeat="option in complexityOptions" 
 					ng-selected="option.id == values.complexity" 
 					value="{[option.id]}">{[ option.name ]}</option>
+		</select>-->
+		<select class="form-control"
+			ng-init="loadComplexities()"
+			ng-change="createComplexity()"
+			ng-class="{'is-invalid': errors.complexity}"
+			ng-model="values.complexity"
+			ng-options="item.id as item.name for item in complexities"
+			>
 		</select>
 		<div ng-if="errors.complexity"
 			ng-repeat="(key, text) in errors.complexity"

@@ -38,7 +38,7 @@ class HintRepository extends EntityRepository
 			->innerJoin('hint.stage', 'stage')
 			->innerJoin('stage.version', 'version')
 			->innerJoin('version.process', 'process')
-			->andWhere('hint.priority >= :prior')->setParameter('prior', $prior)
+			->andWhere('hint.priority > :prior')->setParameter('prior', $prior)
 			->andWhere('process.tpl = false')
 			;
 
