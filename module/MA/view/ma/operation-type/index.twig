@@ -10,16 +10,16 @@
 			ng-init="init({{ json(hal().renderCollection(collectionHal)) | escape }})"
 	>
 	<table class="table table-bordered m-0">
-		<thead>
+		<thead class="text-center">
 			<tr>
-				<th class="text-center">
+				<th>
 					<a href="" ng-click="addGroup()" class="btn btn-sm btn-outline-primary">
 						<i class="fa fa-plus"></i>
 					</a>
 				</th>
 				<th>Name</th>
 				<th>Description</th>
-				<th>Owner</th>
+				<th>Created</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -38,9 +38,9 @@
 				<td class="py-1 align-middle desc" ng-bind-html="group.description"></td>
 				<td class="py-1 align-middle text-center">
 					<a href="{[ group.user.links.getHref() ]}" class="">{[ group.user.name ]}</a>.
-					<small class="">{[ group.created | date:"dd MMM yyyy HH:mm" ]}</span>
+					<div class="small text-muted">{[ group.created | date:"dd MMM yyyy HH:mm" ]}</div>
 				</td>
-				<td class="py-1 text-center">
+				<td class="py-1 align-middle text-center">
 					<div class="btn-group btn-group-justified">
 					<a href="" 
 						title="Edit '{[group.text]}'"
@@ -63,9 +63,9 @@
 				<td class="py-1 align-middle desc" ng-bind-html="op.description"></td>
 				<td class="py-1 align-middle text-center">
 					<a href="{[ op.user.links.getHref() ]}">{[ op.user.name ]}</a>.
-					<small class="text-muted">{[ op.created | date:"dd MMM yyyy HH:mm" ]}</span>
+					<div class="small text-muted">{[ op.created | date:"dd MMM yyyy HH:mm" ]}</div>
 				</td>
-				<td class="py-1 text-center">
+				<td class="py-1 align-middle text-center">
 					<div class="btn-group btn-group-sm btn-group-justified">
 						<a href="{[ op.links.getHref() ]}"
 							class="btn btn-sm btn-outline-primary"
