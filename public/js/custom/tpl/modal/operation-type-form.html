@@ -1,5 +1,6 @@
 <div class="modal-header">
-	<h3 class="modal-title">{[ values.name ]}</h3>
+	<h3 class="modal-title" ng-if="group.id">{[ group.name ]} <small class="text-secondary">| edit group</small></h3>
+	<h3 ng-if="!group.id">New group</h3>
 </div>
 <div class="modal-body">
 	<div class="form-group">

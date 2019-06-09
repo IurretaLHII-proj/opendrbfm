@@ -28,6 +28,42 @@ class OperationTypeController extends \Base\Controller\Js\AbstractActionControll
 	/**
 	 * @return ViewModel
 	 */
+    public function addAction()
+    {
+		$e    = new \MA\Entity\OperationType;
+		$em   = $this->getEntityManager();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\OperationTypeForm::class);
+
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+        $form->setHydrator(new DoctrineHydrator($em));
+		$form->bind($e);
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			if ($form->isValid()) {
+
+				$this->triggerService(\Base\Service\AbstractService::EVENT_CREATE, $e);
+
+				$this->getEntityManager()->persist($e);
+				$this->getEntityManager()->flush();
+				$payload = [
+					'payload' => $this->prepareHalEntity($e, "process/operation/type/detail/json"),
+				];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+		return new HalJsonModel($payload);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
     public function operationAction()
     {
 		$e    = new \MA\Entity\Operation;

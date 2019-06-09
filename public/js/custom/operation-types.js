@@ -23,6 +23,26 @@ App.controller('_OperationTypesCtrl', function($scope, $resource, $uibModal) {
 		);
 	}
 
+	$scope.addGroup = function() {
+		let group = new MAOperationType();
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-type-form.html',
+			controller: '_OperationTypeModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {group: group}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.collection.unshift(group);
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
 	$scope.editGroup = function(group) {
 		var modal = $uibModal.open({
 			animation: true,

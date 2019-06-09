@@ -9,9 +9,20 @@
 	<ng-controller ng-controller="_OperationCtrl"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 	>
-	<h2 class="px-1 my-2">{[ entity.longName ]}</h2>
-	<div ng-if="entity.description" ng-bind-html="entity.description" class="desc px-1"></div>
 
+	<div class="p-1">
+		<div class="d-flex flex-fill">
+			<h2 class="mr-auto">{[ entity.longName ]}</h2>
+			<div class="ml-auto">
+				<a href="{[ entity.user.links.getHref() ]}" class="">{[ entity.user.name ]}</a>.
+				<small>{[ entity.created | date:"dd MMM yyyy HH:mm" ]}</small>
+				<div class="btn-group btn-group-sm btn-group-justified ml-2">
+					<a href="" ng-if="entity.links.isAllowed('edit')" ng-click="editOperation(entity)" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>
+				</div>
+			</div>
+		</div>
+		<div ng-if="entity.description" ng-bind-html="entity.description" class="desc"></div>
+	</div>
 	<div class="row">
 
 	<div class="col-md-12">
@@ -107,7 +118,7 @@
 			<i class="fa fa-close"></i>
 		</a>
 		<div class="input-group-append">
-			<button class="btn btn-primary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+			<a href="" class="btn btn-primary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></a>
 		</div>
 	</div>
 	<table class="table table-bordered m-0">

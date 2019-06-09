@@ -14,18 +14,18 @@ class OperationTypeController extends \Base\Controller\AbstractActionController
 	 */
     public function indexAction()
     {
-		$e    = new \MA\Entity\Operation;
 		$em   = $this->getEntityManager();
-		$form = $this->getServiceLocator()
-			->get('FormElementManager')
-			->get(\MA\Form\OperationTypeForm::class);
+		//$e    = new \MA\Entity\Operation;
+		//$form = $this->getServiceLocator()
+		//	->get('FormElementManager')
+		//	->get(\MA\Form\OperationTypeForm::class);
 
-		$form->setAttribute('action', $this->url()->fromRoute('process/operation/type/add', [], [
-				'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
-			], true));
+		//$form->setAttribute('action', $this->url()->fromRoute('process/operation/type/add', [], [
+		//		'query' => ['redirect' => $this->url()->fromRoute(null, [], [], true)]
+		//	], true));
 
-        $form->setHydrator(new DoctrineHydrator($em));
-		$form->bind($e);
+        //$form->setHydrator(new DoctrineHydrator($em));
+		//$form->bind($e);
 
 		$collection = $em->getRepository(\MA\Entity\OperationType::class)
 			->findBy([],['text' => 'ASC']);
@@ -35,7 +35,7 @@ class OperationTypeController extends \Base\Controller\AbstractActionController
 		return new ViewModel([
 			'collection' 	=> $paginator,
 			'collectionHal' => $this->prepareHalCollection($paginator, 'process/operation/type/json'),
-			'form' 			=> $form,
+			//'form' 			=> $form,
 		]);
     }
 
