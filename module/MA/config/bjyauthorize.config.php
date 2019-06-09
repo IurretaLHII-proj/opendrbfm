@@ -67,6 +67,7 @@ return [
 						'list',
 						'detail',
 						'add',
+						'replace',
 						'actions',
 						'pdf',
 						'version',

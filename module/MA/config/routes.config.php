@@ -726,7 +726,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|hints|hint|actions',
+								'action' => 'detail|edit|delete|replace|stages|hints|hint|actions',
 							]
 						],
 						'may_terminate' => true,
@@ -865,7 +865,7 @@ return [
 									],
 									'constraints' => [
 										'id' => '\d+',
-										'action' => 'detail|edit|hints',
+										'action' => 'detail|edit|delete|hints',
 									]
 								],
 								'may_terminate' => true,

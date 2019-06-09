@@ -103,6 +103,41 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
 	/**
 	 * @return ViewModel
 	 */
+    public function stagesAction()
+    {
+		$e  = $this->getEntity();
+        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+
+		$metadata = $this->hal()->getMetadataMap()->get("MA\Entity\Stage");
+		$metadata->setHydrator(new \MA\Hydrator\Expanded\StageHydrator());
+		$metadata->setMaxDepth(4);
+
+		$p  = $this->params()->fromQuery('process');
+		$m  = $this->params()->fromQuery('material');
+		$t  = $this->params()->fromQuery('type');
+
+		$collection = $em->getRepository("MA\Entity\Stage")->getBy(
+			$p  ? $em->getRepository("MA\Entity\Process")->find($p) : $p,
+			$e,
+			$t  ? $em->getRepository("MA\Entity\VersionType")->find($t) : $t,
+			$m  ? $em->getRepository("MA\Entity\Material")->find($m) : $m,
+			$this->params()->fromQuery('state'),
+			$this->params()->fromQuery('order', 'priority'),
+			$this->params()->fromQuery('criteria', 'DESC')
+		);
+
+		//$collection = $e->getStages()->toArray();
+		$paginator  = $this->getPaginator($collection);
+		$payload = $this->prepareHalCollection($paginator, 'process/operation/detail/json');
+
+		return new HalJsonModel([
+			'payload' => $payload,
+		]);
+	}
+
+	/**
+	 * @return ViewModel
+	 */
     public function hintsAction()
     {
 		$e  = $this->getEntity();
@@ -130,5 +165,32 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
 		$em->flush();
 
 		return new HalJsonModel(['payload' => []]);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function replaceAction()
+	{
+		$e    = $this->getEntity();
+		$form = $this->getServiceLocator()
+			->get('FormElementManager')
+			->get(\MA\Form\OperationReplaceForm::class);
+
+		$form->setAttribute('action', $this->url()->fromRoute(null, [], [], true));
+
+		if ($this->getRequest()->isPost()) {
+			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
+			if ($form->isValid()) {
+				$payload = ['payload' => $this->prepareHalEntity($e, "process/operation/detail")];
+			}
+			else {
+				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);
+				$ex->setAdditionalDetails(['errors' => $form->getMessages()]);
+				throw $ex;
+			}
+		}
+
+		return new HalJsonModel($payload);
 	}
 }

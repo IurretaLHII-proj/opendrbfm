@@ -1,14 +1,219 @@
-{% extends 'layout/base-layout.twig' %}
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/operation.js"></script>
+{% endblock script %}
 
-{% block content %}
-	<div class="col-md-12">
-		<h1>{{ entity }}</h1>
-		{% if entity.description %}<p>{{ entity.description | raw }}</p>{% endif %}
-	</div>
-
-	<div class="col-md-12" 
-		ng-cloak
+{% block body %}
+	{{ headTitle(entity) }}
+	<ng-controller ng-controller="_OperationCtrl"
+		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 	>
+	<h2 class="px-1 my-2">{[ entity.longName ]}</h2>
+	<div ng-if="entity.description" ng-bind-html="entity.description" class="desc px-1"></div>
+
+	<div class="row">
+
+	<div class="col-md-12">
+	<table class="hint-table table table-bordered m-0">
+		<thead class="text-center">
+			<tr>
+				<th class="text-center" colspan="5">
+					<a href="" 
+					   title="New '{[entity.name]}' error type"
+					   class="btn btn-sm btn-outline-primary pull-right" ng-click="addHintType()">
+						<i class="fa fa-plus"></i>
+					</a>
+					Error types
+				</th>
+			</tr>
+			<tr>
+				<th class="text-center">Is standard?</th>
+				<th class="text-center">Name</th>
+				<th class="text-center">Description</th>
+				<th class="text-center">Owner</th>
+				<th class="text-center"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="error in entity.hints">
+				<td class="text-center"><i class="fa fa-check" ng-if="error.standard"></i></td>
+				<td><span class="mr-2 badge badge-{[ error.color ]}">{[ error.priority ]}</span>
+				{[ error.name ]}</td>
+				<td class="desc" ng-bind-html="error.description"></td>
+				<td class="py-1 align-middle text-center">
+					<a href="{[ error.user.links.getHref() ]}" class="">{[ error.user.name ]}</a>.
+					<div class="small">{[ error.created | date:"dd MMM yyyy HH:mm" ]}</div>
+				</td>
+				<td class="py-1 text-center">
+					<div class="btn-group btn-group-justified">
+					<a href="" 
+						title="Edit '{[error.name]}' error type"
+						class="btn btn-sm btn-outline-primary" 
+						ng-click="editHintType(error)"
+					><i class="fa fa-pencil"></i></a>
+					<a href="" 
+						title="Delete '{[error.name]}' error type"
+						class="btn btn-sm btn-outline-primary" 
+						ng-class="{disabled: !error.links.isAllowed('delete')}"
+						ng-confirm-click
+						confirmed-click="deleteHintType(error)"
+					><i class="fa fa-trash"></i></a>
+					<a href="/process/hint?op={[entity.id]}&hint={[error.id]}" 
+						title="Show '{[error.name]}' errors"
+						class="btn btn-sm btn-outline-primary" 
+					><i class="fa fa-warning"></i> Errors</a>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+
+	<div class="col-md-12 mt-4">
+	<div class="input-group input-group-sm sticky-top">
+		<div class="input-group-prepend">
+			<button class="btn border dropdown-toggle" type="button" 
+				ng-class="type.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Version
+					<span ng-if="type.id" class="text-white">( {[type.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in types" ng-click="selType(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+		<div class="input-group-prepend">
+			<button class="btn border dropdown-toggle" type="button" 
+				ng-class="material.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Material
+					<span ng-if="material.id" class="text-white">( {[material.name]} )</span>
+				</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in materials" ng-click="selMaterial(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+		<div class="input-group-prepend">
+			<button class="btn border dropdown-toggle" type="button"
+				ng-class="state.id != null ? 'btn-primary text-light' : 'btn-light text-muted'"
+		   		data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">State
+	   				<span ng-if="state.id != null" class="text-white">( {[state.name]} )</span>
+			</button>
+			<div class="dropdown-menu">
+				<a class="dropdown-item" href="#" ng-repeat="option in states" ng-click="selState(option);">{[ option.name ]}</a>
+			</div>
+		</div>
+		<input type="text" class="form-control filter-search w-25" placeholder="Process" auto-complete="autoCompleteOptions" ng-model="process.title">
+		<a ng-if="process.id" ng-click="rmProcess()" href="" style="position:absolute; right:40px; top:15%;">
+			<i class="fa fa-close"></i>
+		</a>
+		<div class="input-group-append">
+			<button class="btn btn-primary rounded-0" type="button" ng-click="search()"><i class="fa fa-search"></i></button>
+		</div>
+	</div>
+	<table class="table table-bordered m-0">
+		<thead class="text-center">
+			<tr>
+				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('process');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='process'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('process');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='process'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Process</div>
+				</th>
+				<th colspan=2" class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('stage');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='stage'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('stage');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='stage'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Stage</div>
+				</th>
+				<th class="pt-0 pb-1 border-top-0 bg-light sticky-top">
+					<a href="" ng-click="selOrder('created');selCriteria('DESC');search();">
+						<i class="fa fa-caret-down" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='DESC'}">
+						</i>
+					</a>
+					<a href="" ng-click="selOrder('created');selCriteria('ASC');search();">
+						<i class="fa fa-caret-up" 
+						   ng-class="{'text-dark': order=='created'&&criteria=='ASC'}">
+						</i>
+					</a>
+					<div>Created</div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="stage in stages.items">
+				<td class="text-center">
+					<a ng-if="stage.version.links.has('image')" href="{[ stage.process.links.getHref()  ]}">
+						<img class="img-responsive img-thumbnail stage-img" ng-src="{[ stage.version.links.getHref('image') ]}"/>
+					</a>
+				</td>
+				<td class="">
+					<div class="">
+						<a href="{[ stage.process.links.getHref() ]}">{[ stage.process.title ]}</a>
+					</div>
+					<div class="text-muted">nº {[ stage.process.number ]}</div>
+					<div class="small"><a href="{[ stage.process.customer.links.getHref() ]}">{[ stage.process.customer.name ]}</a><span class="ml-2 mr-1">Complexity:</span><a href="{[ stage.process.complexity.links.getHref()]}">{[ stage.process.complexity.name ]}</a></div>
+					<div class="btn-group btn-group-sm">
+						<a href="" 
+						   class="py-0 btn btn-sm disabled btn-{[ stage.version.stateColor() ]}" 
+						>{[ stage.version.stateLabel() ]}</a>
+						<a href="{[ stage.process.links.getHref() ]}?version={[stage.version.id]}" 
+		 				   title="View '{[ stage.version.name ]}' version"
+						   class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ stage.version.name ]}</a>
+						<a href="{[ stage.version.material.links.getHref() ]} "
+		 				   title="View '{[ stage.version.material.name ]}' material"
+					   	   class="py-0 btn btn-sm btn-outline-primary ]}" >{[ stage.version.material.name ]}</a>
+						<a href="{[ stage.version.type.links.getHref() ]} " 
+		 				   title="View '{[ stage.version.type.name ]}' version type"
+						   class="py-0 btn btn-sm btn-outline-primary ]}" >{[ stage.version.type.name ]}</a>
+					</div>
+					<div class="desc" ng-bind-html="stage.version.description"></div>
+				</td>
+				<td class="text-center">
+					<a ng-repeat="img in stage.images"
+					href="{[ stage.process.links.getHref() ]}?version={[stage.version.id]}&stage={[stage.id]}" 
+					>
+						<img ng-src="{[ img.links.getHref() ]}" 
+							alt="{[ img.description ]}" 
+							title="{[ img.description ]}" 
+							class="img-thumbnail p-0 border-0 img-responsive stage-img" 
+						/>
+					</a>
+				</td>
+				<td>
+					<a href="{[ stage.process.links.getHref() ]}?version={[stage.version.id]}&stage={[stage.id]}" class="" >Stage {[ stage.order ]}</a>
+					<ul class="m-0 text-muted" style="">
+						<li ng-repeat="(i, op) in stage.operations">{[op.longName]}</li>
+					</ul>
+					<div class="desc" ng-bind-html="stage.description"></div>
+				</td>
+				<td class="text-center">
+					<a href="{[ stage.user.links.getHref() ]}" class="">{[ stage.user.name ]}</a>.
+					<div class="small">{[ stage.created | date:"dd MMM yyyy HH:mm" ]}</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<hr>
+	<p class="small" ng-if="stages.page_count != stages.page">Showing {[ stages.page * stages.page_size ]} items of {[ stages.total_items ]}</p>
+	<p class="small" ng-if="stages.page_count == stages.page">Showing {[ stages.total_items ]} items of {[ stages.total_items ]}</p>
+	<p><a ng-if="stages.has('next')" ng-click="more()" href="">.view previouses.</a></p>
+	</div>
 
 	</div>
-{% endblock content %}
+	</ng-controller>
+{% endblock body %}

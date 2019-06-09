@@ -45,4 +45,20 @@ class HintTypeController extends \Base\Controller\Js\AbstractActionController
 
 		return new HalJsonModel($payload);
 	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function deleteAction()
+	{
+		$e	  = $this->getEntity();
+		$em   = $this->getEntityManager();
+
+		//$this->triggerService(\Base\Service\AbstractService::EVENT_DELETE, $e);
+
+		$em->remove($e);
+		$em->flush();
+
+		return new HalJsonModel(['payload' => []]);
+	}
 }

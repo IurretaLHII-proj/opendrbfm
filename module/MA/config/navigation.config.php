@@ -6,7 +6,7 @@ return [
 	'default' => [
 		[
 			'label' => 'Process',
-			'route' => 'action',
+			'route' => 'process',
 			'class' => 'nav-link',
 			'resource'	=> Entity\Process::class,
 			'privilege' => 'index',

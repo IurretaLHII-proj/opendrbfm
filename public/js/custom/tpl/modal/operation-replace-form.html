@@ -1,0 +1,36 @@
+<div class="modal-header">
+	<h3 class="modal-title">{[ operation.longName ]} <span class="small text-muted">| delete</small></h3>
+</div>
+<div class="modal-body">
+	<div class="form-row">
+		<div class="form-group col-md-5">
+			<select class="form-control"
+				ng-model="values.operationType"
+				ng-change="groupChanged()"
+				ng-options="item.id as item.name for item in groups">
+			</select>
+		</div>
+		<div class="form-group col-md-5">
+			<select class="form-control"
+				ng-class="{'is-invalid': errors.operation}"
+				ng-disabled="!values.operationType"
+				ng-model="values.operation"
+				ng-options="item.id as item.name for item in operations"
+				>
+			</select>
+			<div ng-if="errors.operation"
+				ng-repeat="(key, text) in errors.operation"
+				class="invalid-feedback">{[key]}. {[text]}</div>
+		</div>
+		<div class="form-group col-md-2">
+			<a href="" 
+				class="btn btn-success btn-block" ng-click="replace()">Replace</a>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
+	<a href=""
+		ng-class="{disabled: !operation.links.isAllowed('delete')}"
+	   	class="btn btn-success" ng-click="delete()">Confirm delete</a>
+</div>

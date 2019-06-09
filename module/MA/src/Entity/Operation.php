@@ -524,8 +524,19 @@ class Operation implements
 				],
 			],
 			[
+				'rel'   	  => 'replace',
+				'privilege'   => 'replace',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/operation/detail/json',
+				    'params'  => ['action' => 'replace', 'id' => $this->getId()],
+				],
+			],
+			[
 				'rel'   	  => 'delete',
-				'privilege'   => $this->getParents()->count() ? false : 'delete',
+				'privilege'   => $this->getParents()->count() ||
+								 $this->getStages()->count() || 
+								 $this->getHints()->count() ? false : 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/operation/detail/json',
@@ -548,6 +559,15 @@ class Operation implements
 				'route' => [
 				    'name'    => 'process/operation/detail/json',
 				    'params'  => ['action' => 'hints', 'id' => $this->getId()],
+				],
+			],
+			[
+				'rel'   	  => 'stages',
+				'privilege'   => 'stages',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/operation/detail/json',
+				    'params'  => ['action' => 'stages', 'id' => $this->getId()],
 				],
 			],
 		];
