@@ -761,16 +761,28 @@ return [
 										'controller' => Controller\Js\OperationTypeController::class,
 									]
 								],
+								'may_terminate' => true,
+								'child_routes' => [
+									'add' => [
+										'type' => 'Literal',
+										'options' => [
+											'route' => '/add',
+											'defaults' => [
+												'action' => 'add' 
+											]
+										],
+									],
+								]
 							],
-							'add' => [
-								'type' => 'Literal',
-								'options' => [
-									'route' => '/add',
-									'defaults' => [
-										'action' => 'add' 
-									]
-								],
-							],
+							//'add' => [
+							//	'type' => 'Literal',
+							//	'options' => [
+							//		'route' => '/add',
+							//		'defaults' => [
+							//			'action' => 'add' 
+							//		]
+							//	],
+							//],
 							'detail' => [
 								'type' => 'Segment',
 								'options' => [

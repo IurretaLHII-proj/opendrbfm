@@ -13,7 +13,9 @@
 		<thead>
 			<tr>
 				<th class="text-center">
-					<a href="" class="btn btn-sm btn-outline-primary"><i class="fa fa-plus"></i></a>
+					<a href="" ng-click="addGroup()" class="btn btn-sm btn-outline-primary">
+						<i class="fa fa-plus"></i>
+					</a>
 				</th>
 				<th>Name</th>
 				<th>Description</th>
@@ -23,7 +25,7 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat-start="group in collection" class="bg-light text-dark">
-				<td class="py-1 text-center">
+				<td class="py-1 align-middle text-center">
 					<div class="btn-group btn-group-justified">
 					<a href="" 
 						title="New sub-operation for '{[group.text]}'"

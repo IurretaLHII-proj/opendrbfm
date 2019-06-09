@@ -733,13 +733,15 @@ App.controller('_StageModalCtrl', function($scope, $uibModalInstance, $resource,
 });
 
 App.controller('_OperationTypeModalCtrl', function($scope, $uibModalInstance, $resource, group) {
-	$scope.values  = JSON.parse(JSON.stringify(group));
+	$scope.values = JSON.parse(JSON.stringify(group));
 	$scope.errors = {};
+	$scope.group  = group;
 	console.log($scope.values, group);
 	
 	$scope.save = function() {
 		var war = $scope._addWarning("Updating...");
-		$resource(group.links.getHref('edit')).save($scope.values).$promise.then(
+		var uri = group.id ? group.links.getHref('edit') : '/process/op/type/json/add';
+		$resource(uri).save($scope.values).$promise.then(
 			function(data) {
 				$scope._closeWarning(war);
 				group.load(data);

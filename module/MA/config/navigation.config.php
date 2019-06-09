@@ -32,13 +32,13 @@ return [
 					'resource'	=> Entity\OperationType::class,
 					'privilege' => 'index',
 					'pages' => [
-						[
-							'label' => 'Add Operation type',
-							'route' => 'process/operation/type/add',
-							'class' => 'nav-link d-none',
-							'resource'	=> Entity\OperationType::class,
-							'privilege' => 'add',
-						],
+						//[
+						//	'label' => 'Add Operation type',
+						//	'route' => 'process/operation/type/add',
+						//	'class' => 'nav-link d-none',
+						//	'resource'	=> Entity\OperationType::class,
+						//	'privilege' => 'add',
+						//],
 					],
 				],
 				[

@@ -50,6 +50,24 @@ App.controller('_OperationCtrl', function($scope, $uibModal, $resource) {
 		);	
 	}
 
+	$scope.editOperation = function() {
+		var modal = $uibModal.open({
+			animation: true,
+			templateUrl : '/js/custom/tpl/modal/operation-form.html',
+			controller: '_OperationModalCtrl',	
+			size: 'lg',
+			scope: $scope,
+			resolve: {op:$scope.entity}
+		});
+
+		modal.result.then(
+			function(res) {
+				$scope.addSuccess("Saved succesfully");
+			},
+			function(err) {}
+		);
+	}
+
 	$scope.addHintType = function() {
 		let type = new MAHintType();
 		type.operation = $scope.entity;
