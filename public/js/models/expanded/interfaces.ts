@@ -1,3 +1,18 @@
+interface IEMAStage {
+	id: number,
+	order: number,
+	body: string,
+	commentCount: number,
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		operations: IMAOperation[],
+		images: IMAImage[],
+		owner: IMAUser,
+		process: IMAProcess,
+		version: IMAVersion,
+	},
+}
 interface IEMAHint {
 	id: number,
 	name: string,

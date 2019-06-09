@@ -474,6 +474,15 @@ class HintType implements
 				],
 			],
 			[
+				'rel'   	  => 'delete',
+				'privilege'   => $this->getHints()->count() ? false : 'delete',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/hint/type/detail/json',
+				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				],
+			],
+			[
 				'rel'   	  => 'hints',
 				'privilege'   => 'hints',
 				'resource'	  => $this,

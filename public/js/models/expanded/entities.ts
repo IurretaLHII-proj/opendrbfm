@@ -44,3 +44,56 @@ class EMAHint {
 	created: Date;
 	links: MALinks;
 }
+
+class EMAStage {
+	static fromJSON(obj: IEMAStage): EMAStage{
+		let e = new EMAStage();
+		e.load(obj);
+		return e;
+	}
+
+	constructor() {
+		this.hints 		= [];
+		this.operations = [];
+		this.images 	= [];
+		this.comments 	= new MACollection();
+		this.created  	= new Date;
+	}
+
+	load(obj: IEMAStage) {
+		if (obj.id) {
+			this.id = obj.id;
+			this.order = obj.order;
+			this.body = obj.body;
+			this.commentCount = obj.commentCount;
+			this.created = new Date(obj.created.date);
+			this.user = new MAUser(obj._embedded.owner);
+			this.operations = [];
+			this.images = [];
+			this.process = MAProcess.fromJSON(obj._embedded.process);
+			this.version = MAVersion.fromJSON(obj._embedded.version);
+			obj._embedded.images.forEach(e => {
+				this.images.push(new MAImage(e));	
+			});
+			obj._embedded.operations.forEach(e => {
+				this.operations.push(MAOperation.fromJSON(e));	
+			});
+		}
+		this.links = new MALinks(obj._links);
+	}
+
+	id: number;
+	order:number = 0;
+	body: string;
+	process: MAProcess;
+	user: MAUser;
+	version: MAVersion;
+	operations: MAOperation[];
+	images: MAImage[];
+	hints: MAHint[];
+	comments: MACollection;
+	commentCount: number=0;
+	created: Date;
+	hintsLoaded: boolean=false;
+	links: MALinks;
+}

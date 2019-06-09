@@ -308,7 +308,7 @@ class OperationType implements
 			],
 			[
 				'rel'   	  => 'delete',
-				'privilege'   => 'delete',
+				'privilege'   => $this->getOperations()->count() ? false : 'delete',
 				'resource'	  => $this,
 				'route' => [
 				    'name'    => 'process/operation/type/detail/json',

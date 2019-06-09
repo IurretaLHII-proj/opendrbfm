@@ -63,7 +63,7 @@ class HintRepository extends EntityRepository
     	if ($t)  $query->andWhere('hint.type = :t')->setParameter('t', $t);
 		if ($vt) $query->andWhere('version.type = :vt')->setParameter('vt', $vt);
 		if ($m)  $query->andWhere('version.material = :m')->setParameter('m', $m);
-		if ($s)  $query->andWhere('version.state = :s')->setParameter('s', $s);
+		if ($s !== null)  $query->andWhere('version.state = :s')->setParameter('s', $s);
 		if ($o)  $query->andWhere('operation = :o')->setParameter('o', $o);
 		if ($ot) $query->andWhere('operation.type = :ot')->setParameter('ot', $ot);
 		//$q = $query->getQuery()->getSQL();

@@ -26,6 +26,7 @@ class OperationController extends \Base\Controller\AbstractActionController
 		if (null !== ($entity = $this->getEntity())) {
 			$model->setVariables([
 				'entity' => $entity,
+				'hal'    => $this->prepareHalEntity($entity, "process/operation/json")
 			]);
 		}
 	}

@@ -184,8 +184,8 @@
 					<div class="desc" ng-bind-html="item.version.description"></div>
 				</td>
 				<td class="text-center">
-					<a href="{[ item.process.links.getHref() ]}" 
-						ng-repeat="img in item.stage.images"
+					<a ng-repeat="img in item.stage.images"
+					href="{[ item.process.links.getHref() ]}?version={[item.version.id]}&stage={[item.stage.id]}" 
 					>
 						<img ng-src="{[ img.links.getHref() ]}" 
 							alt="{[ img.description ]}" 

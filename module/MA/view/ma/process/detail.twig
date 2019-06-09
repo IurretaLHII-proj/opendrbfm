@@ -3,7 +3,9 @@
 {# block template #}
 {% block body %}
 
-	<ng-controller ng-controller="_DetailCtrl" ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})">
+	<ng-controller ng-controller="_DetailCtrl" 
+		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
+	>
 
 	<!-- PROCESS DETAIL -->
 	<div class="p-1">

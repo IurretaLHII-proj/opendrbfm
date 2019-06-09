@@ -22,13 +22,13 @@ App.controller('_HintCollectionCtrl', function($scope, $resource, $location) {
 	$scope.error 	 = $scope.errors[0];
 	$scope.getQuery		= function() {
 		let query = {};
-		if ($scope.opType.id) 	 query.opType   = $scope.opType.id;
-		if ($scope.operation.id) query.op 	    = $scope.operation.id;
-		if ($scope.error.id) 	 query.hint 	= $scope.error.id;
-		if ($scope.material.id)  query.material = $scope.material.id;
-		if ($scope.type.id) 	 query.type 	= $scope.type.id;
-		if ($scope.state.id) 	 query.state    = $scope.state.id;
-		if ($scope.process) 	 query.process  = $scope.process.id;
+		if ($scope.opType.id != null) 	 query.opType   = $scope.opType.id;
+		if ($scope.operation.id != null) query.op 	    = $scope.operation.id;
+		if ($scope.error.id != null) 	 query.hint 	= $scope.error.id;
+		if ($scope.material.id != null)  query.material = $scope.material.id;
+		if ($scope.type.id != null) 	 query.type 	= $scope.type.id;
+		if ($scope.state.id != null) 	 query.state    = $scope.state.id;
+		if ($scope.process != null) 	 query.process  = $scope.process.id;
 		query.prior    = $scope.priority;
 		query.order    = $scope.order;
 		query.criteria = $scope.criteria;
