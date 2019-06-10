@@ -173,6 +173,7 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
 	public function replaceAction()
 	{
 		$e    = $this->getEntity();
+		$em   = $this->getEntityManager();
 		$form = $this->getServiceLocator()
 			->get('FormElementManager')
 			->get(\MA\Form\OperationReplaceForm::class);
@@ -182,7 +183,19 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
 		if ($this->getRequest()->isPost()) {
 			$form->setData(Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY));
 			if ($form->isValid()) {
-				$payload = ['payload' => $this->prepareHalEntity($e, "process/operation/detail")];
+
+				$o =$em->getRepository("MA\Entity\Operation")->find($form->get('operation')->getValue());
+
+				foreach ($e->getStages() as $stage) {
+					$e->removeStage($stage);
+					$o->addStage($stage);
+				}
+				foreach ($e->getHints() as $hint) {
+					$e->removeHint($hint);
+					$o->addHint($hint);
+				}
+
+				return $this->deleteAction();
 			}
 			else {
 				$ex = new \ZF\ApiProblem\Exception\DomainException('Unprocessable entity', 422);

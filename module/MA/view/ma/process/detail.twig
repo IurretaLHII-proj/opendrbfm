@@ -3,6 +3,7 @@
 {# block template #}
 {% block body %}
 
+	{{ headTitle(entity) }}
 	<ng-controller ng-controller="_DetailCtrl" 
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 	>
