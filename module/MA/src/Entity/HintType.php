@@ -277,7 +277,7 @@ class HintType implements
      * @param OperationInterface op the value to set.
      * @return HintType.
      */
-    public function setOperation(OperationInterface $op)
+    public function setOperation(OperationInterface $op = null)
     {
         $this->operation = $op;
         return $this;

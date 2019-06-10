@@ -20,39 +20,54 @@ on process
 <small>{[ item.created | date: "MM/dd/yyyy 'at' HH:mm" ]}</small>
 
 <!--<pre ng-if="item.name == 'update'" class="my-1">{[ item.content ]}</pre>-->
+<div ng-repeat="(key, contents) in item.content" class="pl-4">
 
-<div ng-repeat="(key, contents) in item.content" ng-switch="key" class="py-1 pl-4">
-	<div class="d-flex" ng-switch-when="images">
-		<!--<pre>{[ item.content ]}</pre>-->
-		<div class="bg-light align-self-center py-1 px-2 mr-2">{[ key ]}</div>
+	<div class="d-flex mb-1" ng-if="contents['insert'] || contents['delete']">
+		<div class="small font-weight-bold align-self-center">{[ key ]}</div>
 		<div class="">
-			<a ng-if="contents['delete']" ng-repeat="image in contents['delete']" ng-href="{[ image.href ]}" target="_blank" class="btn btn-sm btn-light mx-1">
-				<span class="text-danger fa fa-close mr-2"></span><img width="100 "ng-src="{[ image.href ]}" />
+			<a ng-if="contents['delete']" 
+				ng-repeat="object in contents['delete']" 
+				ng-href="{[ object.href ]}" 
+				class="btn btn-sm btn-light ml-2">
+				<span class="text-danger fa fa-close"></span>
+				<span ng-if="key!='images'">{[ object.name ]}</span>
+				<img ng-if="key=='images'" width="100 "ng-src="{[ object.href ]}" />
 			</a>
 		</div>
 		<div class="">
-			<a ng-if="contents['insert']" ng-repeat="image in contents['insert']" ng-href="{[ image.href ]}" target="_blank" class="btn btn-sm btn-light mx-1">
-				<span class="text-success fa fa-plus mr-2"></span><img width="100 "ng-src="{[ image.href ]}" />
-			</a>
-		</div>
-	</div>
-	<div class="d-flex" ng-switch-when="operations">
-		<!--<pre>{[ item.content ]}</pre>-->
-		<div class="bg-light align-self-center py-1 px-2 mr-2">{[ key ]}</div>
-		<div class="">
-			<a ng-if="contents['delete']" ng-repeat="operation in contents['delete']" ng-href="{[ operation.href ]}" class="btn btn-sm btn-light mx-1">
-				<span class="text-danger fa fa-close mr-2"></span>{[ operation.name ]}
-			</a>
-		</div>
-		<div class="">
-			<a ng-if="contents['insert']" ng-repeat="operation in contents['insert']" ng-href="{[ operation.href ]}" class="btn btn-sm btn-light mx-1">
-				<span class="text-success fa fa-plus mr-2"></span>{[ operation.name ]}
+			<a ng-if="contents['insert']" 
+				ng-repeat="object in contents['insert']" 
+				ng-href="{[ object.href ]}" 
+				class="btn btn-sm btn-light ml-2">
+				<span class="text-success fa fa-plus"></span>
+				<span ng-if="key!='images'">{[ object.name ]}</span>
+				<img ng-if="key=='images'" width="100 "ng-src="{[ object.href ]}" />
 			</a>
 		</div>
 	</div>
-	<div class="d-flex" ng-switch-default>
-		<div class="bg-light align-self-center py-1 px-2 mr-2">{[ key ]}</div>
-		<div class="text-danger align-self-center p-1 mx-1" ng-bind-html="contents[0]"></div>
-		<div class="text-success align-self-center p-1 ml-2" ng-bind-html="contents[1]"></div>
+	
+	<div class="d-flex mb-1" ng-if="!(contents['insert'] || contents['delete'])">
+		<div class="small font-weight-bold align-self-center">{[ key ]}</div>
+		<div class="align-self-center text-danger ml-2" 
+			ng-if="contents[0] && !isObject(contents[0])" 
+			ng-bind-html="contents[0]"></div>
+		<div class="align-self-center" 
+			ng-if="contents[0] && isObject(contents[0])">
+			<a ng-href="{[ contents[0].href ]}" class="btn btn-sm btn-light ml-2">
+				<span class="text-danger fa fa-close"></span>
+				{[ contents[0].name ]}
+			</a>
+		</div>
+		<div class="align-self-center text-success ml-2" 
+			ng-if="contents[1] && !isObject(contents[1])" 
+			ng-bind-html="contents[1]"></div>
+		<div class="align-self-center" 
+			ng-if="contents[1] && isObject(contents[1])">
+			<a ng-href="{[ contents[1].href ]}" class="btn btn-sm btn-light ml-2">
+				<span class="text-success fa fa-plus"></span>
+				{[ contents[1].name ]}
+			</a>
+		</div>
 	</div>
+
 </div>

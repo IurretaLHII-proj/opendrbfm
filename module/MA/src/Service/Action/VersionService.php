@@ -13,6 +13,15 @@ class VersionService extends AbstractActionService
 	protected $__className__ = \MA\Entity\Action\Version::class;
 
 	/**
+	 * @var array
+	 */
+	protected $changeSetFields = [
+		'parent',
+		'material',
+		'type',
+	];
+
+	/**
 	 * @inheritDoc
 	 */
 	protected function getClassName() {

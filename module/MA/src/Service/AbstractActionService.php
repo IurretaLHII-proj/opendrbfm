@@ -8,6 +8,11 @@ use Base\Service\AbstractService;
 abstract class AbstractActionService extends AbstractService
 {
 	/**
+	 * @var array
+	 */
+	protected $changeSetFields = [];
+
+	/**
 	 * @param EventInterface $e
 	 */
 	public function createAction(EventInterface $e)
@@ -121,6 +126,34 @@ abstract class AbstractActionService extends AbstractService
 	 * @return array
 	 */
 	protected function relationsChangeSet($source, array $changeSet) {
+
+		$class = $this->getEntityManager()->getClassMetadata(get_class($source));
+
+		foreach ($class->associationMappings as $field => $assoc) {
+			if (!in_array($field, $this->changeSetFields)) {
+				unset($changeSet[$field]);
+				continue;
+			}
+			$diff = [];
+			if ($class->isCollectionValuedAssociation($field)) {
+				$coll = $class->reflFields[$field]->getValue($source);
+				foreach ($coll->getInsertDiff() as $entity) {
+					if (!isset($diff['insert'])) $diff['insert'] = [];
+					$diff['insert'][] = $this->relationChangeDesc($entity);
+				}
+				foreach ($coll->getDeleteDiff() as $entity) {
+					if (!isset($diff['delete'])) $diff['delete'] = [];
+					$diff['delete'][] = $this->relationChangeDesc($entity);
+				}
+				$changeSet[$field] = $diff;
+			}
+			elseif (array_key_exists($field, $changeSet)) {
+				foreach ($changeSet[$field] as $i => $source) {
+					$diff[] = $source ? $this->relationChangeDesc($source) : null;
+				};
+				$changeSet[$field] = $diff;
+			}
+		}
 		return $changeSet;
 	}
 }

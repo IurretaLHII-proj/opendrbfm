@@ -158,6 +158,8 @@ App.controller('MainCtrl', function($scope, $uibModal, $resource, $timeout) {
 	$scope.isHintInfluence = function(item) { return item instanceof MAHintInfluence; }
 	$scope.isSimulation = function(item) { return item instanceof MASimulation; }
 
+	$scope.isArray  = function(e) {return Array.isArray(e); }
+	$scope.isObject = function(e) {return typeof e === "object"; }
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {

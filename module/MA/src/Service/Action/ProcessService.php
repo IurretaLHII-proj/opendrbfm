@@ -18,4 +18,13 @@ class ProcessService extends AbstractActionService
 	protected function getClassName() {
 		return (string) $this->__className__;
 	}
+
+	/**
+	 * @var array
+	 */
+	protected $changeSetFields = [
+		'complexity',
+		'machine',
+		'plant',
+	];
 }

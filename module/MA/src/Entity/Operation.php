@@ -229,6 +229,56 @@ class Operation implements
     }
     
     /**
+     * Add stages.
+     *
+     * @param StageInterface[] stages the value to set.
+     * @return OperationInterface.
+     */
+    public function addStages($stages)
+    {
+		foreach ($stages as $stage) {
+			$this->addStage($stage);
+		}
+        return $this;
+    }
+    
+    /**
+     * Remove stages.
+     *
+     * @param StageInterface[] stages the value to set.
+     * @return OperationInterface.
+     */
+    public function removeStages($stages)
+    {
+		foreach ($stages as $stage) {
+			$this->removeStage($stage);
+		}
+        return $this;
+    }
+
+	/**
+	 * @param StageInterface $stage
+	 * @return Operation
+	 */
+	public function addStage(StageInterface $stage)
+	{
+		$stage->addOperation($this);
+		$this->getStages()->add($stage);
+		return $this;
+	}
+
+	/**
+	 * @param StageInterface $stage
+	 * @return Operation
+	 */
+	public function removeStage(StageInterface $stage)
+	{
+		$stage->removeOperation($this);
+		$this->getStages()->remove($stage);
+		return $this;
+	}
+
+    /**
      * Get parents.
      *
      * @return OperationInterface.
@@ -349,6 +399,28 @@ class Operation implements
         $this->hints = $hints;
         return $this;
     }
+
+	/**
+	 * @param HintTypeInterface $hint
+	 * @return Operation
+	 */
+	public function addHint(HintTypeInterface $hint)
+	{
+		$hint->setOperation($this);
+		$this->getHints()->add($hint);
+		return $this;
+	}
+
+	/**
+	 * @param HintTypeInterface $hint
+	 * @return Operation
+	 */
+	public function removeHint(HintTypeInterface $hint)
+	{
+		$hint->setOperation(null);
+		$this->getHints()->removeElement($hint);
+		return $this;
+	}
     
     /**
      * Get user.
