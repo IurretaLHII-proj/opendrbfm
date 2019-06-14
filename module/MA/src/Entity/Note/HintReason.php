@@ -48,11 +48,9 @@ class HintReason extends \MA\Entity\AbstractNote
 	/**
 	 * @inheritDoc
 	 */
-	public function getProcess()
+	public function getSource()
 	{
-		if ($this->getReason() !== null) {
-			return $this->getReason()->getProcess();
-		}
+		return $this->getReason();
 	}
 
 	/**

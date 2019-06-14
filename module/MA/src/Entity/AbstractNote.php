@@ -301,7 +301,39 @@ abstract class AbstractNote implements
 	}
 
 	/**
-	 * @return ProcessInterface
+	 * @inheritDoc
 	 */
-	abstract public function getProcess();
+	public function getProcess() 
+	{
+		return $this->getSource()->getProcess();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getVersion()
+	{
+		return $this->getSource()->getVersion();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getStage()
+	{
+		return $this->getSource()->getStage();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function getHint()
+	{
+		return $this->getSource()->getHint();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	abstract public function getSource();
 }

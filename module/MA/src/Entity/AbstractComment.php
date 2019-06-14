@@ -76,7 +76,7 @@ abstract class AbstractComment implements
 	protected $parent;
 
 	/**
-	 * @var PostComment[]
+	 * @var AbstractComment[]
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\AbstractComment",
 	 *	mappedBy	 = "parent",
@@ -85,6 +85,31 @@ abstract class AbstractComment implements
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
 	protected $children;
+
+	/**
+	 * @var UserInterface[]
+	 * @ORM\ManyToMany(
+	 *	targetEntity = "MA\Entity\User",
+	 *	inversedBy = "suscriptions"
+	 * )
+	 * @ORM\JoinTable(
+	 *	name = "comment_suscriber_rel",
+	 *	joinColumns = {
+	 *		@ORM\JoinColumn(
+	 *			name = "cmm_id",
+	 *			referencedColumnName = "id",
+	 *		)
+	 *	},
+	 *	inverseJoinColumns = {
+	 *		@ORM\JoinColumn(
+	 *			name = "uid",
+	 *			referencedColumnName = "user_id",
+	 *		)
+	 *	}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $suscribers;
 
 	/**
 	 * @var int 
@@ -98,10 +123,23 @@ abstract class AbstractComment implements
 	 */
 	protected $commentCount = 0;
 
+	/**
+	 * @var ActionInterface[]
+	 * @ORM\OneToMany(
+	 *	targetEntity = "MA\Entity\Action\Comment",
+	 *	mappedBy	 = "source",
+	 *	cascade = {"remove"}
+	 * )
+	 * @ORM\OrderBy({"created" = "ASC"})
+	 */
+	protected $actions;
+
 	public function __construct()
 	{
-		$this->created  = new DateTime;
-		$this->children = new ArrayCollection;
+		$this->created  	= new DateTime;
+		$this->suscribers 	= new ArrayCollection;
+		$this->actions  	= new ArrayCollection;
+		$this->children 	= new ArrayCollection;
 	}
     
     /**
@@ -220,6 +258,82 @@ abstract class AbstractComment implements
     }
     
     /**
+     * Get suscribers.
+     *
+     * @return UserInterface[].
+     */
+    public function getSuscribers()
+    {
+        return $this->suscribers;
+    }
+    
+    /**
+     * Set suscribers.
+     *
+     * @param UserInterface[] suscribers the value to set.
+     * @return AbstractComment.
+     */
+    public function setSuscribers($suscribers)
+    {
+        $this->suscribers = $suscribers;
+        return $this;
+    }
+    
+    /**
+     * Add suscriber.
+     *
+     * @param UserInterface suscriber the value to set.
+     * @return Stage.
+     */
+    public function addSuscriber(UserInterface $suscriber)
+    {
+		$this->getSuscribers()->add($suscriber);
+        return $this;
+    }
+    
+    /**
+     * Add suscribers.
+     *
+     * @param UserInterface[] suscribers the value to set.
+     * @return Stage.
+     */
+    public function addSuscribers($suscribers)
+    {
+		foreach ($suscribers as $suscriber) {
+			$this->addSuscriber($suscriber);
+		}
+
+        return $this;
+    }
+    
+    /**
+     * Remove suscriber.
+     *
+     * @param UserInterface suscriber the value to set.
+     * @return Stage.
+     */
+    public function removeSuscriber(UserInterface $suscriber)
+    {
+		$this->getSuscribers()->removeElement($suscriber);
+        return $this;
+    }
+    
+    /**
+     * Remove suscribers.
+     *
+     * @param UserInterface[] suscribers the value to set.
+     * @return Stage.
+     */
+    public function removeSuscribers($suscribers)
+    {
+		foreach ($suscribers as $suscriber) {
+			$this->removeSuscriber($suscriber);
+		}
+
+        return $this;
+    }
+    
+    /**
 	 * @inheritDoc
      */
     public function getComments()
@@ -234,6 +348,40 @@ abstract class AbstractComment implements
     {
         $this->setChildren($comments);
         return $this;
+    }
+
+    /**
+     * Get actions.
+     *
+     * @return ActionInterface[]
+     */
+    public function getActions()
+    {
+        return $this->actions;
+    }
+    
+    /**
+     * Set actions.
+     *
+     * @param ActionInterface[] actions the value to set.
+     * @return AbstractComment.
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
+        return $this;
+    }
+    
+    /**
+     * Get process.
+     *
+     * @return ProcessInterface.
+     */
+    public function getProcess()
+    {
+		if (null !== ($source = $this->getSource())) {
+			return $source->getProcess();
+		}
     }
 
     /**
@@ -322,10 +470,12 @@ abstract class AbstractComment implements
 			'id'       	   => $this->getId(),
 			'body'     	   => $this->getBody(),
 			'owner'	   	   => $this->getUser(),
+			'class'		   => get_class($this),
 			'created'  	   => $this->getCreated(),
-			'parent'   	   => $this->getParent(),
 			'commentCount' => $this->getCommentCount(),
-			'children' 	   => new \ZF\Hal\Collection($this->getChildren()),
+			'suscribers'   => new \ZF\Hal\Collection($this->getSuscribers()),
+			//'parent'   	   => $this->getParent(),
+			//'children' 	   => new \ZF\Hal\Collection($this->getChildren()),
 		];
 	}
 
@@ -336,6 +486,15 @@ abstract class AbstractComment implements
   	{
 		return [
 			[
+				'rel'   => 'delete',
+				'route' => [
+				    'name'    => 'process/comment/detail/json',
+				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+				    'options' => [ /* any options to pass to the router */ ],
+				],
+				'privilege' => $this->getCommentCount() ? false : 'delete',
+			],
+			[
 				'rel'   => 'reply',
 				'route' => [
 				    'name'    => 'process/comment/detail/json',
@@ -345,13 +504,13 @@ abstract class AbstractComment implements
 				'privilege' => 'reply',
 			],
 			[
-				'rel'   => 'children',
+				'rel'   => 'comments',
 				'route' => [
 				    'name'    => 'process/comment/detail/json',
 				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
 				    'options' => [ /* any options to pass to the router */ ],
 				],
-				'privilege' => 'children',
+				'privilege' => 'comments',
 			],
 			//[
 			//	'rel'   => 'comments',

@@ -1,8 +1,9 @@
-App.controller('_ActionCollectionCtrl', function($scope, $resource, $location) {
+App.controller('_UserDetailCtrl', function($scope, $resource, $location) {
 
-	$scope.init = function() {
+	$scope.init = function(user) {
+		$scope.user = new MAUser(user);
 		$scope.collection = new MACollection();
-		$resource('/action/json').get().$promise.then(
+		$resource($scope.user.links.getHref('actions')).get().$promise.then(
 			function(data) {
 				data._embedded.items = data._embedded.items.map(e => {return MAAction.fromJSON(e)});
 				$scope.collection.load(data);

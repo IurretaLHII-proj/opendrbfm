@@ -50,11 +50,9 @@ abstract class AbstractHintNote extends AbstractNote
 	/**
 	 * @inheritDoc
 	 */
-	public function getProcess()
+	public function getSource()
 	{
-		if ($this->getSimulation() !== null) {
-			return $this->getSimulation()->getProcess();
-		}
+		return $this->getSimulation();
 	}
 
 	/**

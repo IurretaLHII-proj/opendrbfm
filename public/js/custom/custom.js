@@ -149,6 +149,7 @@ App.controller('MainCtrl', function($scope, $uibModal, $resource, $timeout) {
 		warnings: [],
 	};
 
+
 	$scope.isNote = function(item) { return item instanceof MANote; }
 	$scope.isProcess = function(item) { return item instanceof MAProcess; }
 	$scope.isVersion = function(item) { return item instanceof MAVersion; }
@@ -157,9 +158,87 @@ App.controller('MainCtrl', function($scope, $uibModal, $resource, $timeout) {
 	$scope.isHintReason = function(item) { return item instanceof MAHintReason; }
 	$scope.isHintInfluence = function(item) { return item instanceof MAHintInfluence; }
 	$scope.isSimulation = function(item) { return item instanceof MASimulation; }
+	$scope.isComment = function(item) { return item instanceof MAComment; }
 
 	$scope.isArray  = function(e) {return Array.isArray(e); }
 	$scope.isObject = function(e) {return typeof e === "object"; }
+
+	$scope.eventLabel = function(ev) {
+		return ev;
+	}
+	$scope.classLabel = function(e) {
+		if ($scope.isNote(e)) {
+			if (e.class == 'MA\\Entity\\Note\\HintReason') return 'Reason note';
+			if (e.class == 'MA\\Entity\\Note\\HintInfluence') return 'Influence note';
+			if (e.class == 'MA\\Entity\\Note\\HintSuggestion') return 'Suggestion note';
+			if (e.class == 'MA\\Entity\\Note\\HintEffect') return 'Effect note';
+			if (e.class == 'MA\\Entity\\Note\\HintPrevention') return 'Prevention note';
+			return "Note";
+		}
+		if ($scope.isComment(e)) {
+			if (e.class == 'MA\\Entity\\Comment\\Version') return "Version comment";
+			if (e.class == 'MA\\Entity\\Comment\\Stage') return "Stage comment";
+			if (e.class == 'MA\\Entity\\Comment\\Hint') return "Error comment";
+			if (e.class == 'MA\\Entity\\Comment\\HintReason') return "Error reason comment";
+			if (e.class == 'MA\\Entity\\Comment\\HintInfluence') return "Error influence comment";
+			if (e.class == 'MA\\Entity\\Comment\\HintSuggestion') return "Error suggestion comment";
+			if (e.class == 'MA\\Entity\\Comment\\HintEffect') return "Error effect comment";
+			if (e.class == 'MA\\Entity\\Comment\\HintPrevention') return "Error prevention comment";
+			if (e.class == 'MA\\Entity\\Comment\\Simulation') return "Simulation comment";
+			if (e.class == 'MA\\Entity\\Comment\\Note') return "Note comment";
+			return "Comment";
+		}
+		if ($scope.isProcess(e)) return "Process";
+		if ($scope.isVersion(e)) return "Version";
+		if ($scope.isStage(e)) return "Stage";
+		if ($scope.isHint(e)) return "Error";
+		if ($scope.isHintReason(e)) return "Error reason";
+		if ($scope.isHintInfluence(e)) return "Error influence";
+		if ($scope.isSimulation(e)) return "Simulation";
+	}
+	$scope.commentDetail = function(comment) {
+		$resource(comment.links.getHref()).get().$promise.then(
+			function (data) {
+				var modal = $uibModal.open({
+					animation: true,
+					templateUrl : '/js/custom/tpl/modal/comment-detail.html',
+					controller: '_CommentDetailCtrl',	
+					size: 'lg',
+					scope: $scope,
+					resolve: {source : new EMAComment(data)}
+				});
+			},
+			function (err) {
+			}
+		);
+	}
+
+	var userColors = [];
+	var colors = [
+		'ForestGreen', 
+		'OrangeRed', 
+		'DodgerBlue', 
+		'LightSeaGreen', 
+		'IndianRed', 
+		'GoldenRod',
+		'Indigo', 
+		'HotPink', 
+		'YellowGreen',
+		'DarkRed',
+		'Black',
+		'LightSalmon',
+		'Gray',
+	];
+	$scope.userColor = function(user) {
+		if (userColors[user.id]) {
+			return userColors[user.id];
+		}
+		if (colors.length) {
+			userColors[user.id] = colors.shift();
+			return userColors[user.id];
+		}
+		return 'LightGray';
+	}
 });
 
 App.controller('CollectionCtrl', function($scope, $resource) {

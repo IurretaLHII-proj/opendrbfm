@@ -436,10 +436,11 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		},
 		addSimulation: function(values) { values.simulations.push({
 			state: MASimulation.STATE_NOT_NECESSARY.toString(),
+			who: null,
+			when: null,
 			suggestions: [],
 			effects: [],
 			preventions: [],
-			who: null,
 		}) },
 		addSuggestion: function(values) { values.suggestions.push({}) },
 		addEffect: 	   function(values) { values.effects.push({}) },
@@ -723,7 +724,7 @@ App.controller('_DetailCtrl', function($scope, $resource, $uibModal, $timeout) {
 		var modal = $uibModal.open({
 			animation: true,
 			templateUrl : '/js/custom/tpl/modal/comment-form.html',
-			controller: 'CommentCtrl',	
+			controller: '_CommentDetailCtrl',	
 			size: 'lg',
 			scope: $scope,
 			resolve: {source : item}

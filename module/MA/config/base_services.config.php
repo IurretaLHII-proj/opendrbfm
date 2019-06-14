@@ -18,6 +18,7 @@ return [
 					Service\Action\HintInfluenceService::class, 
 					Service\Action\SimulationService::class, 
 					Service\Action\NoteService::class, 
+					Service\Action\CommentService::class, 
 					Service\CommentService::class, 
 					Service\NoteService::class, 
 					Service\CustomerService::class, 
@@ -298,13 +299,13 @@ return [
 			Entity\Action\HintReason::class, 
 		],
 		'listeners' => [
-			[
-				'services' => [
-					Service\HintReasonService::class, 
-				],
-				'events'   => ['*'], 
-				'callback' => 'createAction',
-			]
+			//[
+			//	'services' => [
+			//		Service\HintReasonService::class, 
+			//	],
+			//	'events'   => ['*'], 
+			//	'callback' => 'createAction',
+			//]
 		],
 	],
 	Service\Action\HintInfluenceService::class => [
@@ -312,13 +313,13 @@ return [
 			Entity\Action\HintInfluence::class, 
 		],
 		'listeners' => [
-			[
-				'services' => [
-					Service\HintInfluenceService::class, 
-				],
-				'events'   => ['*'], 
-				'callback' => 'createAction',
-			]
+			//[
+			//	'services' => [
+			//		Service\HintInfluenceService::class, 
+			//	],
+			//	'events'   => ['*'], 
+			//	'callback' => 'createAction',
+			//]
 		],
 	],
 	Service\Action\SimulationService::class => [
@@ -343,6 +344,20 @@ return [
 			[
 				'services' => [
 					Service\NoteService::class, 
+				],
+				'events'   => ['*'], 
+				'callback' => 'createAction',
+			]
+		],
+	],
+	Service\Action\CommentService::class => [
+		'entities'  => [
+			Entity\Action\Comment::class, 
+		],
+		'listeners' => [
+			[
+				'services' => [
+					Service\CommentService::class, 
 				],
 				'events'   => ['*'], 
 				'callback' => 'createAction',

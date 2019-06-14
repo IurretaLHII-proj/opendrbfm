@@ -1,0 +1,43 @@
+<div ng-if="comment.parent">
+	<span class="small text-muted">En respuesta a
+			<a href="{[ comment.parent.user.links.getHref()">{[comment.parent.user.name]}</a>
+		</span>
+		<a href="" ng-click="loadParent(comment)" class="btn btn-sm">
+			<i class="fa fa-chevron-up"></i>
+		</a>
+</div>
+<div class="d-flex flex-row mb-2">
+	<div class="align-self-center font-weight-bold mr-2 avatar-circle" style="background: {[userColor(comment.user)]}">
+		<span class="initials">J</span>
+	</div>
+	<div class="align-self-end">
+		<a href="{[ comment.user.links.getHref() ]}">{[ comment.user.name ]}</a>
+		<div class="text-muted small">{[ comment.created | date:'MMM d, H:mm' ]}</div>
+	</div>
+</div>
+<div ng-if="comment.expanded || comment.body.length <= 650"
+	compile="comment.body" 
+	 class="text-expanded desc" 
+	 style="">
+	 <!--compile="'<div style=\'float:left\'>' + comment.body + '</div> <a href=\'\' ng-click=\'commentModal(comment.id);\' class=\'small\'><i class=\'fa fa-arrow-circle-o-right\'></i></a>'"-->
+</div>
+<div ng-if="!comment.expanded && comment.body.length > 650"
+	compile="(comment.body | limitTo: 650) + '... <a href=\'\' ng-click=\'comment.expanded = true;\' class=\'small\'>view more</a>'" 
+	 class="text-collapsed desc" 
+	 style="">
+</div>
+<div class="btn-group btn-group-sm">
+	<a href="" class="btn disabled pl-0">
+		<i class="fa small" ng-class="comment.commentCount ? 'fa-comment' : 'fa-comment-o'">
+			<span ng-if="comment.commentCount">{[ comment.commentCount ]}</span>
+		</i>
+	</a>
+	<a href="" class="btn">
+		<span class="small fa fa-eye" ng-click="commentDetail(comment)"></span>
+	</a>
+	<a href="" class="btn" ng-class="{disabled: !comment.links.isAllowed('delete')}"
+		ng-confirm-click confirmed-click="rmComment(comment)">
+		<span class="small fa fa-trash"></span>
+	</a>
+</div>
+

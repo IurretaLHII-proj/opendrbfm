@@ -186,11 +186,27 @@ class HintReason implements
     }
 
 	/**
+	 * @return StageInterface
+	 */
+	public function getStage()
+	{
+		return $this->getHint()->getStage();
+	}
+
+	/**
+	 * @return VersionInterface
+	 */
+	public function getVersion()
+	{
+		return $this->getStage()->getVersion();
+	}
+
+	/**
 	 * @return ProcessInterface
 	 */
 	public function getProcess()
 	{
-		return $this->getHint()->getProcess();
+		return $this->getVersion()->getProcess();
 	}
     
     /**

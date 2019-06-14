@@ -51,7 +51,7 @@ class VersionController extends \Base\Controller\Js\AbstractActionController
     {
 		$e = clone $this->getEntity();
 
-		$this->triggerService($this->params()->fromRoute('action'), $this->entity);
+		$this->triggerService($this->params()->fromRoute('action'), $e);
 		$this->getEntityManager()->persist($e);
 		$this->getEntityManager()->flush();
 

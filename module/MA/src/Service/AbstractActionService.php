@@ -39,7 +39,12 @@ abstract class AbstractActionService extends AbstractService
 	{
 		$process = $source = $e->getTarget();
 		if (!$process instanceof \MA\Entity\ProcessInterface) {
+			//var_dump(get_class($process->getSource()->getProcess()));
 			$process = $process->getProcess();
+		}
+		if (!$process instanceof \MA\Entity\ProcessInterface) {
+			throw new \InvalidArgumentException(sprintf("%s given, %s expected",
+				get_class($source), \MA\Entity\ProcessInterface::class));
 		}
 
 		$actnNm = $this->getClassName();
@@ -145,13 +150,13 @@ abstract class AbstractActionService extends AbstractService
 					if (!isset($diff['delete'])) $diff['delete'] = [];
 					$diff['delete'][] = $this->relationChangeDesc($entity);
 				}
-				$changeSet[$field] = $diff;
+				if ($diff !== []) $changeSet[$field] = $diff;
 			}
 			elseif (array_key_exists($field, $changeSet)) {
 				foreach ($changeSet[$field] as $i => $source) {
 					$diff[] = $source ? $this->relationChangeDesc($source) : null;
 				};
-				$changeSet[$field] = $diff;
+				if ($diff !== []) $changeSet[$field] = $diff;
 			}
 		}
 		return $changeSet;

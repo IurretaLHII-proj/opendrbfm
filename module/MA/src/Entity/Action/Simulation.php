@@ -45,4 +45,16 @@ class Simulation extends \MA\Entity\AbstractProcessAction
     {
         return $this->source;
     }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function jsonSerialize()
+	{
+		$json = parent::jsonSerialize();
+		$json['hint']    = $this->getSource()->getHint();
+		$json['stage']   = $this->getSource()->getStage();
+		$json['version'] = $this->getSource()->getVersion();
+		return $json;
+	}
 }

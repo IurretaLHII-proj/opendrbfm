@@ -1,0 +1,28 @@
+<div class="d-flex flex-row">
+	<div class="text-center">
+		<a ng-repeat="img in stage.images"
+		href="{[ action.process.links.getHref() ]}?version={[action.version.id]}&stage={[stage.id]}" 
+		>
+			<img ng-src="{[ img.links.getHref() ]}" 
+				alt="{[ img.description ]}" 
+				title="{[ img.description ]}" 
+				class="img-thumbnail p-0 border-0 img-responsive stage-img" 
+			/>
+		</a>
+	</div>
+	<div class="flex-fill ml-2">
+		<ul class="m-0 text-muted" style="">
+			<li ng-repeat="(i, op) in stage.operations">{[op.longName]}</li>
+		</ul>
+		<div ng-if="stage.expanded || stage.description.length <= 500"
+			compile="stage.description" 
+			 class="text-expanded desc" 
+			 style="">
+		</div>
+		<div ng-if="!stage.expanded && stage.description.length > 500"
+			compile="(stage.description | limitTo: 500) + '... <a href=\'\' ng-click=\'stage.expanded = true;\' class=\'small\'>view more</a>'" 
+			 class="text-collapsed desc" 
+			 style="">
+		</div>
+	</div>
+</div>

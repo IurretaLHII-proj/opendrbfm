@@ -45,4 +45,15 @@ class Stage extends \MA\Entity\AbstractProcessAction
     {
         return $this->source;
     }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function jsonSerialize()
+	{
+		$json = parent::jsonSerialize();
+		$json['stage'] = $this->getSource();
+		$json['version'] = $this->getSource()->getVersion();
+		return $json;
+	}
 }

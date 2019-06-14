@@ -111,7 +111,7 @@ App.controller('_HintInfluenceRelationModalCtrl', function($scope, $uibModalInst
 	};
 });
 
-App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $resource, reason, extended) {
+App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $resource, $filter, reason, extended) {
 	$scope.modal			 = $uibModalInstance;
 	$scope.reason 	  		 = reason;
 	$scope.values  	  		 = JSON.parse(JSON.stringify(reason));
@@ -136,8 +136,18 @@ App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $reso
 	$scope.init(stage);
 	$scope.dflt    	  	     = dflt;
 	$scope.save = function() {
+		var raw = angular.copy($scope.values);
+	    if (raw.influences) {
+			raw.influences.forEach(i => {
+				if (i.simulations) {
+					i.simulations.forEach(s => {
+						s.when = s.when ? $filter('date')(new Date(s.when), 'yyyy-MM-dd') : null;
+					});
+				}
+			});
+		}	
 		var uri = reason.id ? reason.links.getHref('edit') : reason.hint.links.getHref('reason');
-		return $resource(uri).save($scope.values).$promise.then(
+		return $resource(uri).save(raw).$promise.then(
 			function(data) { 
 				reason.load(data);
 				console.log(data, reason);
@@ -158,7 +168,7 @@ App.controller('_HintReasonModalCtrl', function($scope, $uibModalInstance, $reso
 	console.log(reason, $scope.values);
 });
 
-App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $resource, influence, extended) {
+App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $resource, $filter, influence, extended) {
 	$scope.modal			 = $uibModalInstance;
 	$scope.influence  	     = influence;
 	$scope.values  	  	     = JSON.parse(JSON.stringify(influence));
@@ -182,10 +192,15 @@ App.controller('_HintInfluenceModalCtrl', function($scope, $uibModalInstance, $r
 	angular.extend($scope, extended);
 	$scope.init(stage);
 	$scope.save = function() {
-		console.log($scope.values);
+		var raw = angular.copy($scope.values);
+	    if (raw.simulations) {
+			raw.simulations.forEach(s => {
+				s.when = s.when ? $filter('date')(new Date(s.when), 'yyyy-MM-dd') : null;
+			});
+		}	
 		var uri = influence.id ? 
 			influence.links.getHref('edit') : influence.reason.links.getHref('influence');
-		return $resource(uri).save({influence:$scope.values}).$promise.then(
+		return $resource(uri).save({influence:raw}).$promise.then(
 			function(data) { 
 				influence.load(data);
 				console.log(data, influence);
@@ -288,8 +303,26 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
 			function(err){}
 		);
 	}
+	$scope.save = function() {
+		var raw = angular.copy($scope.values);
+		var uri = simulation.id ? 
+			simulation.links.getHref('edit') : simulation.influence.links.getHref('simulation');
 
-
+		raw.when = raw.when ? $filter('date')(new Date($scope.values.when), 'yyyy-MM-dd') : null;
+		$resource(uri).save(raw).$promise.then(
+			function(data) {
+				simulation.load(data);
+				$uibModalInstance.close(data);	
+			},
+			function(err) {
+				console.log(err);
+				$scope.errors = err.data.errors;
+			},
+		);
+	};
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');	
+	};
     $scope.uploadFile = function(ev, entity, index) {
         var data = new FormData;
         var file = ev.target.files[0];
@@ -325,26 +358,6 @@ App.controller('_RenderModalCtrl', function($scope, $uibModalInstance, $resource
         );
     }
 
-	$scope.save = function() {
-		var raw = angular.copy($scope.values);
-		var uri = simulation.id ? 
-			simulation.links.getHref('edit') : simulation.influence.links.getHref('simulation');
-
-		raw.when = raw.when ? $filter('date')(new Date($scope.values.when), 'yyyy-MM-dd') : null;
-		$resource(uri).save(raw).$promise.then(
-			function(data) {
-				simulation.load(data);
-				$uibModalInstance.close(data);	
-			},
-			function(err) {
-				console.log(err);
-				$scope.errors = err.data.errors;
-			},
-		);
-	};
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
 	console.log($scope.values, simulation);
 });
 

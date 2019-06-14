@@ -45,4 +45,14 @@ class Version extends \MA\Entity\AbstractProcessAction
     {
         return $this->source;
     }
+
+	/**
+	 * @inheritDoc
+	 */
+	public function jsonSerialize()
+	{
+		$json = parent::jsonSerialize();
+		$json['version'] = $this->getSource();
+		return $json;
+	}
 }

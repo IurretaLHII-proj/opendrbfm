@@ -74,11 +74,11 @@
 			ng-model="version.stages" 
 			ui-sortable-stop="stagesUpdated(version)"
 			class="list-inline">
-			<li ng-repeat="(i,stage) in version.stages" class="list-inline-item m-0">
+			<li ng-repeat="(i,stage) in version.stages" class="list-inline-item mx-0" ng-class="{'ml-1' : i>0}">
 				<a href="" ng-click="setCurrent(stage);" class="btn btn-sm btn-block btn-outline-primary rounded-0"
 					ng-class="{active:current===stage}"
 				>
-					<small class="fa fa-arrows" ng-if="current===stage" style="font-size:12px;"></small>
+					<small class="fa fa-arrows" ng-if="true || current===stage" style="font-size:12px;"></small>
 					{[ stage.name ]}
 				</a>
 				<div ng-if="stage.images.length" 
@@ -95,7 +95,7 @@
 				</div>
 			</li>
 		</ul>
-		<div class="ml-2">
+		<div class="ml-1 mr-0">
 			<a href="" ng-click="addStage(version)" title="New Stage" class="btn btn-sm btn-outline-primary">
 				<span class="fa fa-plus"></span>
 			</a>

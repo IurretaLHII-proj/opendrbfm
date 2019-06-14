@@ -459,6 +459,26 @@ class Simulation implements
 	{
 		return $this->getHint()->getProcess();
 	}
+
+	/**
+     * Get stage.
+     *
+     * @return StageInterface.
+	 */
+	public function getStage()
+	{
+		return $this->getHint()->getStage();
+	}
+
+	/**
+     * Get version.
+     *
+     * @return VersionInterface.
+	 */
+	public function getVersion()
+	{
+		return $this->getHint()->getVersion();
+	}
     
     /**
      * Get user.
