@@ -33,6 +33,18 @@ class CommentForm extends Form implements InputFilterProviderInterface
              ],
         ], ['priority' => 9]);
 
+		$this->add([
+            'type' => 'ObjectSelect',
+            'name' => 'suscribers',
+             'attributes' => [ 
+				 'multiple' => 'multiple',
+			 ],
+			'options' => [
+				 'target_class' => 'MA\Entity\User',
+			],
+        ], ['priority' => -10]
+		);
+
         $this->add([
                 'type' => 'Submit',
                 'name' => 'submit',

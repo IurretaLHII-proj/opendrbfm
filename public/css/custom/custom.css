@@ -275,3 +275,25 @@ th.sticky-top {
 }
 .list-item.last {
 }
+
+/*************************************/
+.avatar-circle {
+  background: green;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: block;
+  text-align: center;
+}
+.initials {
+  color:white;
+  position: relative;
+  top: 23%;
+}
+small.avatar-circle {
+  width: 25px;
+  height: 25px;
+}
+small .initials {
+	top: 10%;
+}

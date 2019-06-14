@@ -1,0 +1,56 @@
+<div class="d-flex flex-row py-2">
+	<div class="align-self-start font-weight-bold mr-3">
+		<small class="avatar-circle mx-auto" style="background: {[userColor(comment.user)]}">
+			<span class="initials">{[ comment.user.name.charAt(0) | uppercase ]}</span>
+		</small>
+	</div>
+	<div class="flex-fill">
+		<div ng-if="comment.expanded || comment.body.length <= 400"
+			compile="formatBody(comment)" 
+			 class="text-expanded desc" 
+			 style="">
+			 <!--compile="'<div style=\'float:left\'>' + comment.body + '</div> <a href=\'\' ng-click=\'commentModal(comment.id);\' class=\'small\'><i class=\'fa fa-arrow-circle-o-right\'></i></a>'"-->
+		</div>
+		<div ng-if="!comment.expanded && comment.body.length > 400"
+			compile="(formatBody(comment) | limitTo: 400) + '... <a href=\'\' ng-click=\'comment.expanded = true;\' class=\'small\'>view more</a>'" 
+			 class="text-collapsed desc" 
+			 style="">
+		</div>
+		<div class="btn-group btn-group-sm">
+			<a href="" class="btn pl-0" 
+			   	ng-click="replies(comment)" 
+			>
+				<!--ng-class="{'disabled': comment.commentsLoading}"-->
+				<i class="fa" 
+					  ng-class="comment.commentCount ? 'fa-comment' : 'fa-comment-o'"
+				><span ng-if="comment.commentCount"> {[ comment.commentCount ]}</span></i>
+			</a>
+			<a href="" class="btn">
+				<span class="small fa fa-eye" ng-click="commentDetail(comment)"></span>
+			</a>
+			<a href="" class="btn" ng-class="{disabled: !comment.links.isAllowed('delete')}"
+				ng-confirm-click confirmed-click="rmComment(comment)">
+				<span class="small fa fa-trash"></span>
+			</a>
+		</div>
+		<span class="text-muted small">{[ comment.created | date:'MMM d, H:mm' ]}, en respuesta a
+		<a href="{[comment.parent.user.links.getHref()]}">{[comment.parent.user.name]}</a></span>
+
+		<div ng-repeat="comment in comment.getComments()" 
+		    id="cmm-{[ c.id ]}"
+		    class=""
+		    ng-class="{'alferra': $last}"
+		    ng-include="'/js/custom/tpl/partial/comment/reply-item.html'"
+		>
+		</div>
+
+		<div ng-if="comment.commentsLoading" class="py-2 text-center">
+			<i class="fa fa-spin fa-circle-o-notch"></i>
+		</div>
+		<div ng-if="comment.commentsLoaded" 
+	   		ng-init="source=comment"
+			ng-include="'/js/custom/tpl/partial/comment/reply-form.html'"> 
+		</div>
+	</div>
+</div>
+

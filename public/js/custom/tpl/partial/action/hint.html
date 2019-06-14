@@ -1,0 +1,10 @@
+<div ng-if="hint.expanded || hint.description.length <= 500"
+	compile="hint.description" 
+	 class="text-expanded desc" 
+	 style="">
+</div>
+<div ng-if="!hint.expanded && hint.description.length > 500"
+	compile="(hint.description | limitTo: 500) + '... <a href=\'\' ng-click=\'hint.expanded = true;\' class=\'small\'>view more</a>'" 
+	 class="text-collapsed desc" 
+	 style="">
+</div>

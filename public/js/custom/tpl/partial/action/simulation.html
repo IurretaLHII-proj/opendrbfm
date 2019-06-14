@@ -1,0 +1,28 @@
+<div class="d-flex flex-row">
+	<div class="d-flex">
+		<div>
+			<small class="font-weight-bold">Stage</small>
+			{[simulation.stateLabel()]}
+		</div>
+		<div ng-if="simulation.who" class="ml-2">
+			<small class="font-weight-bold">Who</small>
+			<a href="{[simulation.who.links.getHref()]}">{[simulation.who.name]}</a>
+		</div>
+		<div ng-if="simulation.when" class="ml-2">
+			<small class="font-weight-bold">When</small>
+			{[simulation.when | date:'MMM d, H:mm']}
+		</div>
+	</div>
+	<div class="flex-fill mt-2">
+		<div ng-if="simulation.expanded || simulation.description.length <= 500"
+			compile="simulation.description" 
+			 class="text-expanded desc" 
+			 style="">
+		</div>
+		<div ng-if="!simulation.expanded && simulation.description.length > 500"
+			compile="(simulation.description | limitTo: 500) + '... <a href=\'\' ng-click=\'simulation.expanded = true;\' class=\'small\'>view more</a>'" 
+			 class="text-collapsed desc" 
+			 style="">
+		</div>
+	</div>
+</div>

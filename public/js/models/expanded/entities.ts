@@ -97,3 +97,91 @@ class EMAStage {
 	hintsLoaded: boolean=false;
 	links: MALinks;
 }
+
+class EMAComment {
+
+	constructor(obj: IEMAComment) {
+		this.suscribers = [];
+		this.comments 	= new MACollection();
+		this.links 	  	= new MALinks(obj._links);
+		this.created  	= new Date();
+		if (obj.id) {
+			this.id				= obj.id;
+			this.class          = obj.class;
+			this.body 			= obj.body;
+			this.user 			= new MAUser(obj._embedded.owner);
+			this.created 		= new Date(obj.created.date);
+			this.commentCount 	= obj.commentCount;
+			this.process		= MAProcess.fromJSON(obj._embedded.process); 
+			switch (this.class) {
+				case "MA\\Entity\\Comment\\Process":
+					this.source = MAProcess.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Comment\\Version":
+					this.source = MAVersion.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Comment\\Stage":
+					this.source = MAStage.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Comment\\Hint":
+					this.source = MAHint.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Comment\\HintReason":
+					this.source = MAHintReason.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Comment\\HintInfluence":
+					this.source = MAHintInfluence.fromJSON(obj._embedded.source);
+					break;	
+				case "MA\\Entity\\Comment\\Simulation":
+					this.source = MASimulation.fromJSON(obj._embedded.source);
+					break;	
+			}
+			obj._embedded.suscribers.forEach(e => {this.suscribers.push(new MAUser(e))});
+			if (obj._embedded.parent) {
+				this.parent		= new EMAComment(obj._embedded.parent); 
+			}
+		}
+	}
+
+	removeComment(child: MAComment) {
+		var index = this.comments.items.indexOf(child);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		obj.parent = this;
+		this.commentCount++;
+		this.comments.items.unshift(obj);
+	}
+
+	toJSON():{} {
+		return {
+			id: this.id,
+			body: this.body,
+			suscribers: this.suscribers.map(e => {return e.id})
+		};
+	}
+
+	id:number;
+	class:string;
+	body:string;
+	source:any;
+	commentCount:number=0;
+	user: MAUser;
+	suscribers: MAUser[];
+	parent: EMAComment;
+	comments: MACollection;
+	process: MAProcess;
+	created: Date;
+	links: MALinks;
+}

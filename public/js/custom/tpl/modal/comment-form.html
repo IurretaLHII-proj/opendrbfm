@@ -10,39 +10,20 @@
 	</button>
 </div>
 <div class="modal-body" ng-init="init()">
-	<div ng-if="!source.comments.isEmpty()" 
-		ng-repeat="comment in source.getComments()" 
-		ng-init="depth = 1;"
-		ng-include="'/js/custom/tpl/comment-list-item.html'"
-		class="pb-2 pt-2">
+
+	<div ng-if="source.commentsLoaded" ng-repeat="comment in source.getComments()" 
+		ng-include="'/js/custom/tpl/partial/comment/reply-item.html'">
+	</div>
+	<div ng-if="source.commentsLoading" class="py-2 text-center">
+		<i class="fa fa-spin fa-circle-o-notch"></i>
+	</div>
+
+	<div class="text-center">
+		<p class="m-0 small" ng-if="source.comments.page_count != source.comments.page">Showing {[ source.comments.page * source.comments.page_size ]} items of {[ source.comments.total_items ]}</p>
+		<p class="m-0 small" ng-if="source.comments.page_count == source.comments.page">Showing {[ source.comments.total_items ]} items of {[ source.comments.total_items ]}</p>
+		<a ng-if="source.comments.has('next')" ng-click="more(source)" href="">.view previouses.</a>
 	</div>
 </div>
-<p ng-if="source.comments.loaded" class="small text-center m-0">Showing <span class="text-secondary">{[ source.comments.items.length ]}</span> of <span class="text-secondary">{[ source.comments.total_items ]}</span></p>
-<div ng-if="source.comments.has('next')" class="text-center mt-1 small">
-        <a href="" ng-click="more(source.comments)">.. view previouses ..</a>
-</div>
-<div class="modal-footer">
-	<div class="ml-auto align-self-stretch" style="width:100%">
-		<div ng-if="errors.body"
-			 ng-repeat="(key, err) in errors.body">
-			 <p class="small error"><span>{[key]}:</span> {[err]}</p>
-		</div>
-		<div text-angular 
-			 ta-target-toolbars="toolbar" 
-			 ng-class="{'error': errors.body}"
-			 ng-model="values.body">
-		</div>
-		<div text-angular-toolbar 
-				ta-toolbar="[
-					['bold', 'italics', 'underline' ],
-					['ul', 'insertLink', ],
-				]"
-			 class=""
-   			 name="toolbar">
-		</div>
-	</div>
-	<div class="reply" style="">
-		<a href="" class="btn btn-secondary" ng-click="cancel()">Cancel</a>
-		<span class="input-group-addon btn btn-success" ng-click="save()">Comment</span>
-	</div>
+
+<div class="modal-footer flex-column" ng-include="'/js/custom/tpl/partial/comment/reply-form.html'">
 </div>

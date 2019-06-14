@@ -19,9 +19,7 @@ class MACollection {
 		this.total_items = obj.total_items;
 		this.links = new MALinks(obj._links);
 		this.loaded 	 = true;
-		for (var i = 0; i < obj._embedded.items.length; i++) {
-			this.items.push(obj._embedded.items[i]);
-		}
+		obj._embedded.items.forEach(item => {this.items.push(item)});
 	}
 
 	isLoaded():boolean {
@@ -111,6 +109,7 @@ class MAAction {
 	}
 
 	load(obj: IMAAction) {
+		this.links   = new MALinks(obj._links);
 		if (obj.id) {
 			this.id	     = obj.id;
 			this.name    = obj.name;
@@ -119,7 +118,6 @@ class MAAction {
 			this.user 	 = new MAUser(obj._embedded.owner);
 			this.process = MAProcess.fromJSON(obj._embedded.process);
 			this.created = new Date(obj.created.date);
-			this.links   = new MALinks(obj._links);
 			switch (this.class) {
 				case "MA\\Entity\\Action\\Note":
 					this.source = MANote.fromJSON(obj._embedded.source);
@@ -145,7 +143,13 @@ class MAAction {
 				case "MA\\Entity\\Action\\Simulation":
 					this.source = MASimulation.fromJSON(obj._embedded.source);
 					break;	
+				case "MA\\Entity\\Action\\Comment":
+					this.source = new MAComment(obj._embedded.source);
+					break;	
 			}
+			this.version = obj._embedded.version ? MAVersion.fromJSON(obj._embedded.version) : null;
+			this.stage 	 = obj._embedded.stage ? MAStage.fromJSON(obj._embedded.stage) : null;
+			this.hint 	 = obj._embedded.hint ? MAHint.fromJSON(obj._embedded.hint) : null;
 		}
 	}
 
@@ -159,6 +163,9 @@ class MAAction {
 	content:{};
 	source:any;
 	process:MAProcess;
+	version:MAVersion;
+	stage:MAStage;
+	hint:MAHint;
 	user:MAUser;
 	created:Date;
 	links: MALinks;
@@ -421,7 +428,7 @@ class MAProcess {
 	reloadVersions() {
 		this.versions.forEach(version => version.children = []); 
 		this.versions.forEach(version => {
-			if (version.hasParent()) {
+			if (version.hasParent() && version.parent.id) {
 				this.versions.find(e => {return e.id == version.parent.id}).addChild(version);
 			}
 		});
@@ -625,11 +632,23 @@ class MAVersion {
 		return this.stages[this.stages.length-1];
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
@@ -747,7 +766,7 @@ class MAStage {
 		return this.hintsLoaded;
 	}
 
-	getComments():MACollection[] {
+	getComments():any[] {
 		return this.comments.items;
 	}
 
@@ -755,6 +774,17 @@ class MAStage {
 		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
+	}
+
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
 	}
 
 	id: number;
@@ -974,11 +1004,23 @@ class MAHintRelation {
 		else if (this.influence) return this.influence.name;
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
@@ -1154,11 +1196,23 @@ class MAHintReason {
 		return items;
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
@@ -1258,15 +1312,26 @@ class MAHintInfluence {
 		this.simulations.push(obj);
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
-
 	toJSON(): {}{
 		return {
 			id: this.id,
@@ -1326,11 +1391,23 @@ class MAHint {
 		this.reasons.push(obj);
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
@@ -1495,11 +1572,23 @@ class MASimulation {
 		}
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
@@ -1559,11 +1648,23 @@ class MANote {
 		this.source = obj;
 	}
 
-	getComments():MACollection[] {
+	removeComment(comment: MAComment) {
+		var index = this.comments.items.indexOf(comment);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
+		}
+	}
+
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
+	}
+
+	getComments():any[] {
 		return this.comments.items;
 	}
 
 	addComment(obj:MAComment) {
+		obj.source = this;
 		this.commentCount++;
 		this.comments.items.unshift(obj);
 	}
@@ -1593,48 +1694,58 @@ class MANote {
 class MAComment {
 
 	constructor(obj: IMAComment) {
-		this.id				= obj.id;
-		this.body 			= obj.body;
-		this.user 			= new MAUser(obj._embedded.owner);
-		this.links 			= new MALinks(obj._links);
-		this.created 		= new Date(obj.created.date);
-		this.commentCount 	= obj.commentCount;
-		this.children 		= new MACollection();
+		this.suscribers = [];
+		this.comments 	= new MACollection();
+		this.links 		= new MALinks(obj._links);
+		if (obj.id) {
+			this.id				= obj.id;
+			this.class          = obj.class;
+			this.body 			= obj.body;
+			this.user 			= new MAUser(obj._embedded.owner);
+			this.created 		= new Date(obj.created.date);
+			this.commentCount 	= obj.commentCount;
+			obj._embedded.suscribers.forEach(e => {this.suscribers.push(new MAUser(e))});
+		}
 	}
 
 	toJSON():{} {
 		return {
 			id: this.id,
 			body: this.body,
+			suscribers: this.suscribers.map(e => {return e.id})
 		};
 	}
 
-	/*addChildren(children: MAComment[]) {
-		for (var i = 0; i < children.length; i++) {
-			this.addChild(children[i]);
+	removeComment(child: MAComment) {
+		var index = this.comments.items.indexOf(child);
+		if (index != -1) {
+			this.comments.items.splice(index, 1);
 		}
-	}*/
-
-	addChild(child: MAComment) {
-		child.parent = this;
-		this.children.items.unshift(child);
 	}
 
-	hasChildren(): boolean {
-		return !this.children.isEmpty();
+	hasComments(): boolean {
+		return !this.comments.isEmpty();
 	}
 
-	getChildren():MACollection[] {
-		return this.children.items;
+	getComments():any[] {
+		return this.comments.items;
+	}
+
+	addComment(obj:MAComment) {
+		obj.parent = this;
+		this.commentCount++;
+		this.comments.items.unshift(obj);
 	}
 
 	id:number;
+	class:string;
 	body:string;
 	source:any;
 	commentCount:number=0;
 	user: MAUser;
+	suscribers: MAUser[];
 	parent: MAComment;
-	children: MACollection;
+	comments: MACollection;
 	created: Date;
 	links: MALinks;
 }

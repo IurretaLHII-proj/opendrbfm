@@ -5,21 +5,12 @@ namespace MA\Service\Action;
 use Zend\EventManager\EventInterface;
 use MA\Service\AbstractActionService;
 
-class VersionService extends AbstractActionService
+class CommentService extends AbstractActionService
 {
 	/**
 	 * @var string
 	 */
-	protected $__className__ = \MA\Entity\Action\Version::class;
-
-	/**
-	 * @var array
-	 */
-	protected $changeSetFields = [
-		'parent',
-		'material',
-		'type',
-	];
+	protected $__className__ = \MA\Entity\Action\Comment::class;
 
 	/**
 	 * @inheritDoc
@@ -34,7 +25,7 @@ class VersionService extends AbstractActionService
 	public function createAction(EventInterface $e)
 	{
 		switch ($e->getName()) {
-			case \MA\Service\VersionService::EVENT_CLONE:
+			case \MA\Service\CommentService::EVENT_REPLY:
 				return $this->newEntity($e);
 			default;
 				return parent::createAction($e);

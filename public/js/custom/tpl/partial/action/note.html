@@ -1,0 +1,12 @@
+<div ng-if="note.expanded || note.text.length <= 500"
+	compile="note.text" 
+	 class="text-expanded desc" 
+	 style="">
+	 <!--compile="'<div style=\'float:left\'>' + note.text + '</div> <a href=\'\' ng-click=\'noteModal(note.id);\' class=\'small\'><i class=\'fa fa-arrow-circle-o-right\'></i></a>'"-->
+</div>
+<div ng-if="!note.expanded && note.text.length > 500"
+	compile="(note.text | limitTo: 500) + '... <a href=\'\' ng-click=\'note.expanded = true;\' class=\'small\'>view more</a>'" 
+	 class="text-collapsed desc" 
+	 style="">
+</div>
+

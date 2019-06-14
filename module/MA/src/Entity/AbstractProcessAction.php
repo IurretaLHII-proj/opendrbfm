@@ -20,6 +20,7 @@ use DateTime;
  * 	"influence" = "MA\Entity\Action\HintInfluence",
  * 	"simulation"= "MA\Entity\Action\Simulation",
  * 	"note"		= "MA\Entity\Action\Note",
+ * 	"comment"	= "MA\Entity\Action\Comment",
  * })
  */
 abstract class AbstractProcessAction extends AbstractAction

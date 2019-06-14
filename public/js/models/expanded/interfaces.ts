@@ -30,3 +30,19 @@ interface IEMAHint {
 		reasons: IMAHintReason[],
 	},
 }
+
+interface IEMAComment {
+	id:number,
+	class:string;
+	body: string,
+	commentCount: number, 
+	created: IMADate,
+	_links: IMALinks, 
+	_embedded: {
+		owner: IMAUser,
+		suscribers: IMAUser[],
+		parent: IEMAComment,
+		process: IMAProcess,
+		source: any,
+	},
+}

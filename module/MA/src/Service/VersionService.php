@@ -7,5 +7,5 @@ use Base\Service\AbstractService;
 
 class VersionService extends AbstractService
 {
-	const EVENT_CLONE = 'create';
+	const EVENT_CLONE = 'clone';
 }

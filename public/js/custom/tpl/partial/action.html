@@ -1,73 +1,65 @@
-<a ng-href="{[ item.user.links.getHref() ]}">{[ item.user.name ]}</a>
-<span class="text-muted">{[ item.name ]}</span>
-a
-<span class="text-muted" ng-if="isNote(item.source)"> 
-	<span ng-if="item.source.class === 'MA\\Entity\\Note\\HintReason'">reason</span> 
-	<span ng-if="item.source.class === 'MA\\Entity\\Note\\HintInfluence'">influence</span> 
-	<span ng-if="item.source.class === 'MA\\Entity\\Note\\HintSuggestion'">suggestion</span> 
-	<span ng-if="item.source.class === 'MA\\Entity\\Note\\HintEffect'">effect</span> 
-	<span ng-if="item.source.class === 'MA\\Entity\\Note\\HintPrevention'">prevention</span> 
-note</span>
-<span class="text-muted" ng-if="isProcess(item.source)">Process</span> 
-<span class="text-muted" ng-if="isVersion(item.source)">Version</span> 
-<span class="text-muted" ng-if="isStage(item.source)">Stage</span> 
-<span class="text-muted" ng-if="isHint(item.source)">Hint</span> 
-<span class="text-muted" ng-if="isHintReason(item.source)">HintReason</span> 
-<span class="text-muted" ng-if="isHintInfluence(item.source)">HintInfluence</span> 
-<span class="text-muted" ng-if="isSimulation(item.source)">Simulation</span> 
-on process
-<a ng-href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>.
-<small>{[ item.created | date: "MM/dd/yyyy 'at' HH:mm" ]}</small>
-
-<!--<pre ng-if="item.name == 'update'" class="my-1">{[ item.content ]}</pre>-->
-<div ng-repeat="(key, contents) in item.content" class="pl-4">
-
-	<div class="d-flex mb-1" ng-if="contents['insert'] || contents['delete']">
-		<div class="small font-weight-bold align-self-center">{[ key ]}</div>
-		<div class="">
-			<a ng-if="contents['delete']" 
-				ng-repeat="object in contents['delete']" 
-				ng-href="{[ object.href ]}" 
-				class="btn btn-sm btn-light ml-2">
-				<span class="text-danger fa fa-close"></span>
-				<span ng-if="key!='images'">{[ object.name ]}</span>
-				<img ng-if="key=='images'" width="100 "ng-src="{[ object.href ]}" />
-			</a>
-		</div>
-		<div class="">
-			<a ng-if="contents['insert']" 
-				ng-repeat="object in contents['insert']" 
-				ng-href="{[ object.href ]}" 
-				class="btn btn-sm btn-light ml-2">
-				<span class="text-success fa fa-plus"></span>
-				<span ng-if="key!='images'">{[ object.name ]}</span>
-				<img ng-if="key=='images'" width="100 "ng-src="{[ object.href ]}" />
-			</a>
-		</div>
+<div class="d-flex flex-row py-2">
+	<div class="align-self-start font-weight-bold mr-3">
+		<small class="avatar-circle mx-auto" style="background: {[userColor(item.user)]}">
+			<span class="initials">{[ item.user.name.charAt(0) | uppercase ]}</span>
+		</small>
 	</div>
-	
-	<div class="d-flex mb-1" ng-if="!(contents['insert'] || contents['delete'])">
-		<div class="small font-weight-bold align-self-center">{[ key ]}</div>
-		<div class="align-self-center text-danger ml-2" 
-			ng-if="contents[0] && !isObject(contents[0])" 
-			ng-bind-html="contents[0]"></div>
-		<div class="align-self-center" 
-			ng-if="contents[0] && isObject(contents[0])">
-			<a ng-href="{[ contents[0].href ]}" class="btn btn-sm btn-light ml-2">
-				<span class="text-danger fa fa-close"></span>
-				{[ contents[0].name ]}
-			</a>
+	<div class="flex-fill">
+		<div>
+			<a ng-href="{[ item.user.links.getHref() ]}">{[ item.user.name ]}</a>
+			<span class="text-muted">{[ eventLabel(item.name) ]}</span>
+			<span class="text-muted">{[ classLabel(item.source) ]}</span>
 		</div>
-		<div class="align-self-center text-success ml-2" 
-			ng-if="contents[1] && !isObject(contents[1])" 
-			ng-bind-html="contents[1]"></div>
-		<div class="align-self-center" 
-			ng-if="contents[1] && isObject(contents[1])">
-			<a ng-href="{[ contents[1].href ]}" class="btn btn-sm btn-light ml-2">
-				<span class="text-success fa fa-plus"></span>
-				{[ contents[1].name ]}
-			</a>
+		<div>
+			<a ng-href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
+			<span class="small font-weight-bold">nº{[ item.process.number ]}</span>
 		</div>
-	</div>
 
+		<div ng-if="item.version" class="btn-group btn-group-sm">
+			<a href="" class="py-0 btn btn-sm disabled btn-{[ item.version.stateColor() ]}" >{[ item.version.stateLabel() ]}</a>
+			<a href="{[ item.process.links.getHref() ]}?version={[item.version.id]}" class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.name ]}</a>
+			<a href="{[ item.version.material.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.material.name ]}</a>
+			<a href="{[ item.version.type.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.type.name ]}</a>
+		</div>
+
+		<div ng-if="item.stage" class="btn-group btn-group-sm">
+			<a href="{[ item.process.links.getHref() ]}?version={[item.version.id]}&stage={[item.stage.id]}" class="py-0 btn btn-sm btn-outline-primary" >Stage {[ item.stage.order ]}</a>
+		</div>
+		<div ng-if="item.hint" class="btn-group btn-group-sm">
+			<a href="{[ item.hint.links.getHref() ]}" class="py-0 btn btn-sm btn-{[item.hint.color]}" style="white-space:normal">
+				<span class="badge badge-light mr-2">{[ item.hint.priority ]}</span>{[ item.hint.name ]} 
+			</a>
+		</div>
+
+		<p class="text-muted small border-bottom py-1 mb-1">on {[ item.created | date: "MM/dd/yyyy 'at' HH:mm" ]}</p>
+
+		<ng-include ng-if="isComment(item.source)" 
+			ng-init="action=item;comment=item.source" 
+			src="'/js/custom/tpl/partial/action/comment.html'" />
+
+		<ng-include ng-if="item.name!='update' && isVersion(item.source)" 
+			ng-init="action=item;version=item.source" 
+			src="'/js/custom/tpl/partial/action/version.html'" />
+
+		<ng-include ng-if="item.name!='update' && isStage(item.source)" 
+			ng-init="action=item;stage=item.source" 
+			src="'/js/custom/tpl/partial/action/stage.html'" />
+
+		<ng-include ng-if="item.name!='update' && isHint(item.source)" 
+			ng-init="action=item;hint=item.source" 
+			src="'/js/custom/tpl/partial/action/hint.html'" />
+
+		<ng-include ng-if="item.name!='update' && isSimulation(item.source)" 
+			ng-init="action=item;simulation=item.source" 
+			src="'/js/custom/tpl/partial/action/simulation.html'" />
+
+		<ng-include ng-if="item.name!='update' && isNote(item.source)" 
+			ng-init="action=item;note=item.source" 
+			src="'/js/custom/tpl/partial/action/note.html'" />
+		
+		<ng-include ng-if="item.name=='update'" 
+			src="'/js/custom/tpl/partial/_action.html'" />
+
+	</div>
 </div>
+

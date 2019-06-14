@@ -1,6 +1,10 @@
-{% extends 'layout/base-layout.twig' %}
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/user.js"></script>
+{% endblock script %}
 
-{% block content %}
+{% block body %}
 	<div class="col-md-12 py-2">
 		<h2>{{ entity.name }}</h2>
 		<a class="btn btn-secondary" href="{{ url('zfcuser/changepassword') }}">Change password</a>
@@ -8,15 +12,13 @@
 		<a class="btn btn-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>
 	</div>
 
-	<div class="col-md-12" 
-		ng-cloak
-		ng-controller="_CollectionCtrl"
-		ng-init="init({{ json(hal().renderCollection(actionsHal)) | escape }}, 'MAAction')"
-	>
+	{{ headTitle(entity) }}
+	<ng-controller ng-controller="_UserDetailCtrl"
+		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
+  	>
 
-		<h4>Actividad</h4>
 		<div ng-repeat="item in collection.items" 
-			class="py-2 my-1"
+			class="p-2 my-1"
 			ng-class="{first: $first, last: $last}"
 			ng-mouseover="item.hover = true;"
 			ng-mouseleave="item.hover = false;"
@@ -32,5 +34,6 @@
 				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 			</div>
 		</div>
-	</div>
-{% endblock content %}
+
+	</ng-controller>
+{% endblock body %}

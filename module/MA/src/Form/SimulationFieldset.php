@@ -151,6 +151,9 @@ class SimulationFieldset extends Fieldset implements
 			'id' => [
 				'required' => false,
 			],
+			'who' => [
+				'required' => $this->get('state')->getValue() > Simulation::STATE_CREATED,
+			],
 			'when' => [
 				'required' => $this->get('state')->getValue() > Simulation::STATE_CREATED,
 				'validators' => [

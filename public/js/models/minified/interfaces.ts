@@ -36,6 +36,9 @@ interface IMAAction {
 	_links: IMALinks; 
 	_embedded: {
 		process: IMAProcess,
+		version: IMAVersion,
+		stage: IMAStage,
+		hint: IMAHint,
 		owner: IMAUser,
 		source:any;
 	},
@@ -287,12 +290,14 @@ interface IMAHint {
 
 interface IMAComment {
 	id:number,
+	class:string;
 	body: string,
 	commentCount: number, 
 	created: IMADate,
 	_links: IMALinks, 
 	_embedded: {
 		owner: IMAUser,
+		suscribers: IMAUser[],
 	},
 }
 

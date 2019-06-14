@@ -24,17 +24,14 @@
 				</div>
 			</div>
 			<div class="">
-				<!--<img ng-src="{[ comment._embedded.user._links.avatar.href ]}" height=30 width=30 style="border-radius:30px; margin-right:5px;">-->
-				<!--<span style="font-size:12px;" class="small fa fa-angle-up"> {[ comment.votesUp ]}</span>
-				<span style="font-size:12px;" class="small fa fa-angle-down"> {[ comment.votesDown ]}</span>-->
 				<a href="" class="btn btn-sm"
 				   ng-click="replies(comment);" 
 				   ng-class="{disabled: comment.children.loaded}"
-				   ng-if="!comment.loaded && comment.commentCount && depth <= 2"
+				   ng-if="true || (!comment.loaded && comment.commentCount && depth <= 2)"
 				>
 					<span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span>
 				</a>
-				<a href="" class="btn btn-sm disabled" ng-if="!comment.commentCount || depth > 2"><span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span></a>
+				<!--<a href="" class="btn btn-sm disabled" ng-if="true || (!comment.commentCount || depth > 2)"><span class="small fa fa-comment-o"> {[ comment.commentCount ]}</span></a>-->
 
 				<a  class="btn btn-sm btn-outline-default"
 					ng-if="(true || comment._links.comment.allowed) && depth <= 2" 

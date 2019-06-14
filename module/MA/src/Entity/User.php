@@ -19,8 +19,8 @@ class User extends BaseUser implements
 	JsonSerializable,
 	RoleProviderInterface,
 	ResourceInterface,
-	UserInterface
-	//LinkProvider
+	UserInterface,
+	\Base\Hal\LinkProvider
 {
 	/**
 	 * @constants string
@@ -46,13 +46,23 @@ class User extends BaseUser implements
 	protected $updated;
 
 	/**
+	 * @var AbstractComment[]
+	 * @ORM\ManyToMany(
+     *  targetEntity = "MA\Entity\AbstractComment",
+	 *	mappedBy	 = "suscribers",
+	 * )
+	 * @ORM\OrderBy({"created" = "DESC"})
+	 */
+	protected $suscriptions;
+
+	/**
 	 * @param void
 	 */
 	public function __construct()
 	{
-
-		$this->created  = new DateTime;
-		$this->updated  = new DateTime;
+		$this->created  	= new DateTime;
+		$this->updated  	= new DateTime;
+		$this->suscriptions = new ArrayCollection;
 	}
 
 	/**
@@ -140,6 +150,24 @@ class User extends BaseUser implements
 	}
 
 	/**
+	 * @param AbstractComment[] $suscriptions
+	 * @return User
+	 */
+	public function setSuscriptions($suscriptions)
+	{
+		$this->suscriptions = $suscriptions;
+		return $this;
+	}
+
+	/**
+	 * @return AbstractComment[]
+	 */
+	public function getSuscriptions()
+	{
+		return $this->suscriptions;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function toString()
@@ -157,6 +185,24 @@ class User extends BaseUser implements
 			'email' => $this->getEmail(),
 			'name'  => $this->getName(),
 			'roles' => $this->getRoles(),
+		];
+	}
+
+	/**
+  	 * @inheritDoc
+  	 */
+  	public function provideLinks()
+  	{
+		return [
+			[
+				'rel'   	  => 'actions',
+				'privilege'   => 'actions',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'user/detail/json',
+				    'params'  => ['action' => 'actions', 'id' => $this->getId()],
+				],
+			],
 		];
 	}
 }

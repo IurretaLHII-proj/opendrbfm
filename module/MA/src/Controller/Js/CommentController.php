@@ -10,6 +10,36 @@ use ZF\Hal\View\HalJsonModel;
 class CommentController extends \Base\Controller\Js\AbstractActionController
 {
 	/**
+	 * @return JsonViewModel
+	 */
+	public function detailAction()
+	{
+		$e = $this->getEntity();
+		$metadata = $this->hal()->getMetadataMap()->get(get_class($e));
+		$metadata->setHydrator(new \MA\Hydrator\Expanded\CommentHydrator());
+		$metadata->setMaxDepth(2);
+		return new HalJsonModel([
+			'payload' => $this->prepareHalEntity($e, "process/comment/detail/json"),
+		]);
+	}
+
+	/**
+	 * @return JsonViewModel
+	 */
+	public function deleteAction()
+	{
+		$e	  = $this->getEntity();
+		$em   = $this->getEntityManager();
+
+		//$this->triggerService(\Base\Service\AbstractService::EVENT_DELETE, $e);
+
+		$em->remove($e);
+		$em->flush();
+
+		return new HalJsonModel(['payload' => []]);
+	}
+
+	/**
 	 * @return ViewModel
 	 */
     public function commentsAction()

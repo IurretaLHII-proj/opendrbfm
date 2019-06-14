@@ -12,15 +12,14 @@ var MACollection = /** @class */ (function () {
         return this.links.has(name);
     };
     MACollection.prototype.load = function (obj) {
+        var _this = this;
         this.page = obj.page;
         this.page_count = obj.page_count;
         this.page_size = obj.page_size;
         this.total_items = obj.total_items;
         this.links = new MALinks(obj._links);
         this.loaded = true;
-        for (var i = 0; i < obj._embedded.items.length; i++) {
-            this.items.push(obj._embedded.items[i]);
-        }
+        obj._embedded.items.forEach(function (item) { _this.items.push(item); });
     };
     MACollection.prototype.isLoaded = function () {
         return this.loaded;
@@ -87,6 +86,7 @@ var MAAction = /** @class */ (function () {
         return e;
     };
     MAAction.prototype.load = function (obj) {
+        this.links = new MALinks(obj._links);
         if (obj.id) {
             this.id = obj.id;
             this.name = obj.name;
@@ -95,7 +95,6 @@ var MAAction = /** @class */ (function () {
             this.user = new MAUser(obj._embedded.owner);
             this.process = MAProcess.fromJSON(obj._embedded.process);
             this.created = new Date(obj.created.date);
-            this.links = new MALinks(obj._links);
             switch (this.class) {
                 case "MA\\Entity\\Action\\Note":
                     this.source = MANote.fromJSON(obj._embedded.source);
@@ -121,7 +120,13 @@ var MAAction = /** @class */ (function () {
                 case "MA\\Entity\\Action\\Simulation":
                     this.source = MASimulation.fromJSON(obj._embedded.source);
                     break;
+                case "MA\\Entity\\Action\\Comment":
+                    this.source = new MAComment(obj._embedded.source);
+                    break;
             }
+            this.version = obj._embedded.version ? MAVersion.fromJSON(obj._embedded.version) : null;
+            this.stage = obj._embedded.stage ? MAStage.fromJSON(obj._embedded.stage) : null;
+            this.hint = obj._embedded.hint ? MAHint.fromJSON(obj._embedded.hint) : null;
         }
     };
     return MAAction;
@@ -322,7 +327,7 @@ var MAProcess = /** @class */ (function () {
         var _this = this;
         this.versions.forEach(function (version) { return version.children = []; });
         this.versions.forEach(function (version) {
-            if (version.hasParent()) {
+            if (version.hasParent() && version.parent.id) {
                 _this.versions.find(function (e) { return e.id == version.parent.id; }).addChild(version);
             }
         });
@@ -481,10 +486,20 @@ var MAVersion = /** @class */ (function () {
     MAVersion.prototype.getActive = function () {
         return this.stages[this.stages.length - 1];
     };
+    MAVersion.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MAVersion.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MAVersion.prototype.getComments = function () {
         return this.comments.items;
     };
     MAVersion.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -596,6 +611,15 @@ var MAStage = /** @class */ (function () {
         obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
+    };
+    MAStage.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MAStage.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
     };
     return MAStage;
 }());
@@ -759,10 +783,20 @@ var MAHintRelation = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    MAHintRelation.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MAHintRelation.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MAHintRelation.prototype.getComments = function () {
         return this.comments.items;
     };
     MAHintRelation.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -911,10 +945,20 @@ var MAHintReason = /** @class */ (function () {
         }
         return items;
     };
+    MAHintReason.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MAHintReason.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MAHintReason.prototype.getComments = function () {
         return this.comments.items;
     };
     MAHintReason.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -1001,10 +1045,20 @@ var MAHintInfluence = /** @class */ (function () {
         obj.influence = this;
         this.simulations.push(obj);
     };
+    MAHintInfluence.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MAHintInfluence.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MAHintInfluence.prototype.getComments = function () {
         return this.comments.items;
     };
     MAHintInfluence.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -1053,10 +1107,20 @@ var MAHint = /** @class */ (function () {
         obj.hint = this;
         this.reasons.push(obj);
     };
+    MAHint.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MAHint.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MAHint.prototype.getComments = function () {
         return this.comments.items;
     };
     MAHint.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -1192,10 +1256,20 @@ var MASimulation = /** @class */ (function () {
             var res = this.preventions.splice(index, 1);
         }
     };
+    MASimulation.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MASimulation.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MASimulation.prototype.getComments = function () {
         return this.comments.items;
     };
     MASimulation.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -1245,10 +1319,20 @@ var MANote = /** @class */ (function () {
     MANote.prototype.setSource = function (obj) {
         this.source = obj;
     };
+    MANote.prototype.removeComment = function (comment) {
+        var index = this.comments.items.indexOf(comment);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
+        }
+    };
+    MANote.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
+    };
     MANote.prototype.getComments = function () {
         return this.comments.items;
     };
     MANote.prototype.addComment = function (obj) {
+        obj.source = this;
         this.commentCount++;
         this.comments.items.unshift(obj);
     };
@@ -1265,35 +1349,44 @@ var MANote = /** @class */ (function () {
 }());
 var MAComment = /** @class */ (function () {
     function MAComment(obj) {
+        var _this = this;
         this.commentCount = 0;
-        this.id = obj.id;
-        this.body = obj.body;
-        this.user = new MAUser(obj._embedded.owner);
+        this.suscribers = [];
+        this.comments = new MACollection();
         this.links = new MALinks(obj._links);
-        this.created = new Date(obj.created.date);
-        this.commentCount = obj.commentCount;
-        this.children = new MACollection();
+        if (obj.id) {
+            this.id = obj.id;
+            this.class = obj.class;
+            this.body = obj.body;
+            this.user = new MAUser(obj._embedded.owner);
+            this.created = new Date(obj.created.date);
+            this.commentCount = obj.commentCount;
+            obj._embedded.suscribers.forEach(function (e) { _this.suscribers.push(new MAUser(e)); });
+        }
     }
     MAComment.prototype.toJSON = function () {
         return {
             id: this.id,
             body: this.body,
+            suscribers: this.suscribers.map(function (e) { return e.id; })
         };
     };
-    /*addChildren(children: MAComment[]) {
-        for (var i = 0; i < children.length; i++) {
-            this.addChild(children[i]);
+    MAComment.prototype.removeComment = function (child) {
+        var index = this.comments.items.indexOf(child);
+        if (index != -1) {
+            this.comments.items.splice(index, 1);
         }
-    }*/
-    MAComment.prototype.addChild = function (child) {
-        child.parent = this;
-        this.children.items.unshift(child);
     };
-    MAComment.prototype.hasChildren = function () {
-        return !this.children.isEmpty();
+    MAComment.prototype.hasComments = function () {
+        return !this.comments.isEmpty();
     };
-    MAComment.prototype.getChildren = function () {
-        return this.children.items;
+    MAComment.prototype.getComments = function () {
+        return this.comments.items;
+    };
+    MAComment.prototype.addComment = function (obj) {
+        obj.parent = this;
+        this.commentCount++;
+        this.comments.items.unshift(obj);
     };
     return MAComment;
 }());

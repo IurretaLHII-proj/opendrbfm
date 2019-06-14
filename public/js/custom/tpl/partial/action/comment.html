@@ -1,0 +1,14 @@
+<span ng-if="comment.suscribers.length" class="small">En respuesta a <a href="" ng-repeat="s in comment.suscribers" class="mr-1">{[s.name]}</a></span>
+<a href="" ng-click="commentDetail(comment)"><i class="small fa fa-eye"></i></a>
+<div ng-if="comment.expanded || comment.body.length <= 500"
+	compile="comment.body" 
+	 class="text-expanded desc" 
+	 style="">
+	 <!--compile="'<div style=\'float:left\'>' + comment.body + '</div> <a href=\'\' ng-click=\'commentModal(comment.id);\' class=\'small\'><i class=\'fa fa-arrow-circle-o-right\'></i></a>'"-->
+</div>
+<div ng-if="!comment.expanded && comment.body.length > 500"
+	compile="(comment.body | limitTo: 500) + '... <a href=\'\' ng-click=\'comment.expanded = true;\' class=\'small\'>view more</a>'" 
+	 class="text-collapsed desc" 
+	 style="">
+</div>
+
