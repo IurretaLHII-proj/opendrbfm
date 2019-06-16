@@ -49,6 +49,7 @@ return [
 			Entity\AbstractComment::class,
 			Entity\Comment\Hint::class,
 			Entity\Comment\Note::class,
+			Entity\Notification::class,
 		]
 	],
     'rule_providers' => [
@@ -67,8 +68,10 @@ return [
 						'list',
 						'detail',
 						'add',
+						'read',
 						'replace',
 						'actions',
+						'notifications',
 						'pdf',
 						'version',
 						'comment',

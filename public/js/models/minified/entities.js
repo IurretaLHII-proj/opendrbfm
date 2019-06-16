@@ -1,3 +1,16 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var MACollection = /** @class */ (function () {
     function MACollection() {
         this.loaded = false;
@@ -131,6 +144,26 @@ var MAAction = /** @class */ (function () {
     };
     return MAAction;
 }());
+var MANotification = /** @class */ (function (_super) {
+    __extends(MANotification, _super);
+    function MANotification() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.readed = false;
+        return _this;
+    }
+    MANotification.fromJSON = function (obj) {
+        var e = new MANotification();
+        e.load(obj);
+        return e;
+    };
+    MANotification.prototype.load = function (obj) {
+        _super.prototype.load.call(this, obj);
+        if (obj.id) {
+            this.readed = obj.readed;
+        }
+    };
+    return MANotification;
+}(MAAction));
 var MAUser = /** @class */ (function () {
     function MAUser(obj) {
         this.id = obj.id;

@@ -69,6 +69,7 @@ class Comment extends \MA\Entity\AbstractProcessAction
 				break;
 			case $comment instanceof \MA\Entity\Comment\HintReason:
 			case $comment instanceof \MA\Entity\Comment\HintInfluence:
+			case $comment instanceof \MA\Entity\Comment\Simulation:
 				$json['hint']    = $comment->getSource()->getHint();
 				$json['stage']   = $comment->getSource()->getStage();
 				$json['version'] = $comment->getSource()->getVersion();
@@ -83,7 +84,7 @@ class Comment extends \MA\Entity\AbstractProcessAction
 						$source = $note->getInfluence();
 						break;
 					case $note instanceof \MA\Entity\AbstractHintNote:
-						$source = $note->getSimulations();
+						$source = $note->getSimulation();
 						break;
 					default:
 						throw new \InvalidArgumentException(sprinf("%s not defined", get_class($note)));

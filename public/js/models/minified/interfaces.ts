@@ -44,6 +44,10 @@ interface IMAAction {
 	},
 }
 
+interface IMANotification extends IMAAction {
+	readed: boolean,
+}
+
 interface IMAUser {
 	id:number,
 	name: string,

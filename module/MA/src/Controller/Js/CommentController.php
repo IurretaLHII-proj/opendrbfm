@@ -31,7 +31,7 @@ class CommentController extends \Base\Controller\Js\AbstractActionController
 		$e	  = $this->getEntity();
 		$em   = $this->getEntityManager();
 
-		//$this->triggerService(\Base\Service\AbstractService::EVENT_DELETE, $e);
+		$this->triggerService(\Base\Service\AbstractService::EVENT_REMOVE, $e);
 
 		$em->remove($e);
 		$em->flush();

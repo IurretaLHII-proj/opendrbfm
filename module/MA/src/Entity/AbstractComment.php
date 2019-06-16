@@ -214,6 +214,14 @@ abstract class AbstractComment implements
 	{
 		return (string) $this->getId();
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasParent()
+	{
+		return $this->getParent() !== null;
+	}
     
     /**
      * @return AbstractPostComment.

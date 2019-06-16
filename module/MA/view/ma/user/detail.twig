@@ -5,35 +5,81 @@
 {% endblock script %}
 
 {% block body %}
-	<div class="col-md-12 py-2">
-		<h2>{{ entity.name }}</h2>
-		<a class="btn btn-secondary" href="{{ url('zfcuser/changepassword') }}">Change password</a>
-		<a class="btn btn-secondary" href="{{ url('zfcuser/changeemail') }}">Change email</a>
-		<a class="btn btn-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>
-	</div>
 
 	{{ headTitle(entity) }}
-	<ng-controller ng-controller="_UserDetailCtrl"
+	<div class="row" ng-controller="_UserDetailCtrl"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
   	>
+		<div class="col-md-12">
+			<h2 class="m-2">{{ entity.name }}</h2>
+			<div class="mx-2 btn-group btn-group-sm">
+				<a class="btn btn-outline-secondary" href="{{ url('zfcuser/changepassword') }}">Change password</a>
+				<a class="btn btn-outline-secondary" href="{{ url('zfcuser/changeemail') }}">Change email</a>
+				<a class="btn btn-outline-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="mx-2 font-weight-bold">Notifications</div>
+			<ul class="nav nav-tabs nav-fill">
+				<li class="nav-item">
+					<a href="" class="nav-link" ng-class="{active:!readed}" 
+						title="Unreads"
+						ng-click="readed=false;notificationQuery();">
+						<i class="fa fa-envelope"></i>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="" 
+						title="Reads"
+						class="nav-link" ng-class="{active:readed}"
+						ng-click="readed=true;notificationQuery();">
+						<i class="fa fa-envelope-open"></i>
+					</a>
+				</li>
+			</ul>
+			<div ng-repeat="notification in notifications.items" 
+				class="border-left border-right"
+				ng-class="{first: $first, last: $last}"
+				ng-mouseover="item.hover = true;"
+				ng-mouseleave="item.hover = false;"
+				ng-include="'/js/custom/tpl/partial/notification.html'"
+				style="border-bottom: 1px solid #eee"
+			>
+			</div>
 
-		<div ng-repeat="item in collection.items" 
-			class="p-2 my-1"
-			ng-class="{first: $first, last: $last}"
-			ng-mouseover="item.hover = true;"
-			ng-mouseleave="item.hover = false;"
-			ng-init="item = item;"
-			ng-include="'/js/custom/tpl/partial/action.html'"
-			style="border-bottom: 1px solid #eee"
-		>
+			<div ng-if="!notifications.isLoaded()" class="text-center my-2">
+				<i class='fa fa-circle-o-notch fa-spin text-primary'></i>
+			</div>
+
+			<div style="text-align: center; margin-top: 1rem;">
+				<p><a href="" ng-if="notifications.links.has('next')" ng-click="more(notifications)">.view previouses.</a></p>
+				<p class="small" ng-if="notifications.page_count != notifications.page">Showing {[ notifications.page * notifications.page_size ]} items of {[ notifications.total_items ]}</p>
+				<p class="small" ng-if="notifications.page_count == notifications.page">Showing {[ notifications.total_items ]} items of {[ notifications.total_items ]}</p>
+			</div>
 		</div>
 
-		<div style="text-align: center; margin-top: 1rem;">
-				<p><a href="" ng-if="collection.links.has('next')" ng-click="more()">.view previouses.</a></p>
+		<div class="col-md-6">
+			<div class="font-weight-bold">Activity</div>
+			<div ng-repeat="item in collection.items" 
+				class=""
+				ng-class="{first: $first, last: $last}"
+				ng-mouseover="item.hover = true;"
+				ng-mouseleave="item.hover = false;"
+				ng-init="item = item;"
+				ng-include="'/js/custom/tpl/partial/action.html'"
+				style="border-bottom: 1px solid #eee"
+			>
+			</div>
+
+			<div ng-if="!collection.isLoaded()" class="text-center my-2">
+				<i class='fa fa-circle-o-notch fa-spin text-primary'></i>
+			</div>
+
+			<div style="text-align: center; margin-top: 1rem;">
+				<p><a href="" ng-if="collection.links.has('next')" ng-click="more(collection)">.view previouses.</a></p>
 				<p class="small" ng-if="collection.page_count != collection.page">Showing {[ collection.page * collection.page_size ]} items of {[ collection.total_items ]}</p>
 				<p class="small" ng-if="collection.page_count == collection.page">Showing {[ collection.total_items ]} items of {[ collection.total_items ]}</p>
 			</div>
 		</div>
-
-	</ng-controller>
+	</div>
 {% endblock body %}

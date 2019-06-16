@@ -20,7 +20,9 @@ App.controller('_CommentDetailCtrl', function($scope, $uibModalInstance, $resour
 				angular.forEach(data._embedded.items, item => {
 					$scope.users.push(new MAUser(item));
 				});
-				this.commentValues(source);
+				this.commentValues($scope.source);
+				$scope.source.commentsLoaded = false;
+				$scope.source.comments = new MACollection();
 				$scope.replies($scope.source);
 			},
 			function (err) {}
@@ -177,91 +179,7 @@ App.controller('_CommentDetailCtrl', function($scope, $uibModalInstance, $resour
 	};
 });
 
-App.controller('CommentsCtrl', function($scope, $uibModalInstance, $resource, source) 
-{
-	$scope.source  = source;
-	$scope.values  = {};
-
-	$scope.init = function() {
-		if (!source.comments.isLoaded()) {
-			$resource(source.links.getHref('comments')).get().$promise.then(
-				function(data) {
-					data._embedded.items = data._embedded.items.map(raw => {return new MAComment(raw);}); 
-					source.comments.load(data);
-				},		
-				function(err) {
-					$scope.errors = err;
-				}
-			);	
-		}
-	};
-
-	$scope.more = function(coll) {
-		$resource(coll.links.getHref('next')).get().$promise.then(
-			function(data) {
-				data._embedded.items = data._embedded.items.map(raw => {return new MAComment(raw);}); 
-				coll.load(data);
-			},		
-			function(err) {
-				$scope.errors = err;
-			}
-		);	
-	}
-
-	$scope.save = function() {
-		var war = $scope._addWarning("Saving...");
-		return $resource(source.links.getHref('comment')).save($scope.values).$promise.then(
-			function(res) {
-				$scope.values = {};
-				$scope._closeWarning(war);
-				source.addComment(new MAComment(res));
-			},		
-			function(err) {
-				console.log(err);
-				$scope._closeWarning(war);
-				$scope.errors = err.data.errors;
-			}
-		);	
-	};
-
-	$scope.reply = function(comment) {
-		console.log(comment);
-		var war = $scope._addWarning("Saving...");
-		$resource(comment.links.getHref('reply')).save(comment.values).$promise.then(
-			function(res) {
-				comment.values = {};
-				comment.commentCount++;
-				comment.addChild(new MAComment(res));
-				$scope._closeWarning(war);
-			},		
-			function(err) {
-				console.log(err);
-				$scope._closeWarning(war);
-				comment.errors = err.data.errors;
-			}
-		);	
-	};
-
-	$scope.replies = function(comment) {
-		var war = $scope._addWarning("Loading...");
-		$resource(comment.links.getHref('children')).get().$promise.then(
-			function(data) {
-				data._embedded.items = data._embedded.items.map(raw => {return new MAComment(raw);}); 
-				comment.children.load(data);
-				$scope._closeWarning(war);
-			},		
-			function(err) {
-				console.log(err);
-				$scope._closeWarning(war);
-			}
-		);	
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');	
-	};
-});
-
+//remove this
 App.service('$api', ['$resource', function($res) {
 	return {
 		hint: {

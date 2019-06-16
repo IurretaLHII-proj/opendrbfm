@@ -12,6 +12,9 @@ return [
 	Controller\Js\NoteController::class => [
 		'repository' => Entity\AbstractNote::class,
 	],
+	Controller\Js\NotificationController::class => [
+		'repository' => Entity\Notification::class,
+	],
 	Controller\Js\CommentController::class => [
 		'repository' => Entity\AbstractComment::class,
 	],
