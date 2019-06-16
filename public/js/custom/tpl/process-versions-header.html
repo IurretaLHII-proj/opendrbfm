@@ -8,7 +8,11 @@
 	   class="btn btn-sm btn-outline-primary"
 	   ng-if="v == version && v.links.isAllowed('comment')"
 	   ng-click="addComment(v)"
-	   ><i class="fa fa-comment"> {[ v.commentCount ]}</i></a>
+	   >
+		<i class="fa" ng-class="v.commentCount ? 'fa-comment' : 'fa-comment-o'">
+			<span ng-if="v.commentCount">{[ v.commentCount ]}</span>
+		</i>
+	</a>
 	<a href=""
 	   class="btn btn-sm btn-outline-primary"
 	   ng-if="v == version && v.links.isAllowed('edit')"

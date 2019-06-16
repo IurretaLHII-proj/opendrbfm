@@ -1,0 +1,17 @@
+<div class="d-flex flex-row">
+	<div class="flex-fill border-right px-2" 
+		ng-init="item=notification" 
+		ng-include="'/js/custom/tpl/partial/action.html'">
+	</div>
+	<div class="align-self-center text-center btn-group btn-group-sm px-2">
+		<a href="" title="Mark as read" class="btn btn-outline-primary" 
+			ng-click="asRead(notification)">
+			<i class="fa fa-check"></i>
+		</a>
+		<a href="" title="Delete" class="btn btn-outline-primary" 
+			ng-confirm-click confirmed-click="delete(notification)">
+			<i class="fa fa-trash"></i>
+		</a>
+	</div>
+</div>
+

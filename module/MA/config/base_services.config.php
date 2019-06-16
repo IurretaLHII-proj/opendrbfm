@@ -163,7 +163,7 @@ return [
 				'services' => Service\SimulationService::class, 
 				'events'   => [
 					Service\SimulationService::EVENT_CREATE, 
-					Service\SimulationService::EVENT_UPDATE, 
+					//Service\SimulationService::EVENT_UPDATE, 
 				],
 				'callback' => 'createSimulation',
 				'priority' => 100,
@@ -205,6 +205,14 @@ return [
 					Service\CommentService::EVENT_REPLY,
 				],
 				'callback' => 'increaseCommentCount',
+				'priority' => 100,
+			],
+			[
+				'services' => Service\CommentService::class,
+				'events'   => [
+					Service\CommentService::EVENT_REMOVE,
+				],
+				'callback' => 'decreaseCommentCount',
 				'priority' => 100,
 			],
 		]
@@ -363,5 +371,15 @@ return [
 				'callback' => 'createAction',
 			]
 		],
+	],
+	Service\NotificationService::class => [
+		'entities'  => [Entity\Notification::class],
+		'listeners' => [
+			[
+				'services' => [Service\Action\CommentService::class],
+				'events'   => ['*'], 
+				'callback' => 'createNotifications',
+			]
+		]	
 	],
 ];

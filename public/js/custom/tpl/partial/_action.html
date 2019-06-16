@@ -31,21 +31,30 @@
 			ng-if="contents[0] && !isObject(contents[0])" 
 			ng-bind-html="contents[0]"></div>
 		<div class="align-self-center" 
-			ng-if="contents[0] && isObject(contents[0])">
+			ng-if="contents[0] && isObject(contents[0]) && !content[0].date">
 			<a ng-href="{[ contents[0].href ]}" class="btn btn-sm btn-light ml-2">
 				<span class="text-danger fa fa-close"></span>
 				{[ contents[0].name ]}
 			</a>
 		</div>
+		<div class="align-self-center" 
+			ng-if="contents[0] && isObject(contents[0]) && contents[0].date">
+			<span class="text-danger ml-2">{[ contents[0].date ]}</span>
+		</div>
+
 		<div class="align-self-center text-success ml-2" 
 			ng-if="contents[1] && !isObject(contents[1])" 
 			ng-bind-html="contents[1]"></div>
 		<div class="align-self-center" 
-			ng-if="contents[1] && isObject(contents[1])">
+			ng-if="contents[1] && isObject(contents[1]) && !contents[1].date">
 			<a ng-href="{[ contents[1].href ]}" class="btn btn-sm btn-light ml-2">
 				<span class="text-success fa fa-plus"></span>
 				{[ contents[1].name ]}
 			</a>
+		</div>
+		<div class="align-self-center" 
+			ng-if="contents[1] && isObject(contents[1]) && contents[1].date">
+			<span class="text-success ml-2">{[ contents[1].date ]}</span>
 		</div>
 	</div>
 

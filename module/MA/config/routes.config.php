@@ -57,7 +57,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|actions',
+						'action' => 'detail|edit|actions|notifications',
 					]
 				],
 				'may_terminate' => true,
@@ -229,6 +229,44 @@ return [
 							],
 						],
 					]
+				],
+			],
+			'notification' => [
+				'type' => 'Literal',
+				'options' => [
+					'route' => '/notification',
+					'defaults' => [
+						'controller' => Controller\NotificationController::class,
+						'action' => 'index' 
+					],
+				],
+				'may_terminate' => true,
+				'child_routes' => [
+					'detail' => [
+						'type' => 'Segment',
+						'options' => [
+							'route' => '/:id[/:action]',
+							'defaults' => [
+								'action' => 'detail',
+							],
+							'constraints' => [
+								'id' => '\d+',
+								'action' => 'detail|read|delete',
+							]
+						],
+						'may_terminate' => true,
+						'child_routes' => [
+							'json' => [
+								'type' => 'Literal',
+								'options' => [
+									'route' => '/json',
+									'defaults' => [
+										'controller' => Controller\Js\NotificationController::class,
+									],
+								],
+							]
+						],
+					],
 				],
 			],
 			'comment' => [

@@ -266,6 +266,13 @@ return [
 			'route_params' => ['action' => 'detail'],
 			'max_depth' => 3,
 		],
+		'MA\Entity\Notification' => [
+			'route_name' => 'process/notification',
+			'route_identifier_name' => 'id',
+			'entity_identifier_name' => 'id',
+			'route_params' => ['action' => 'detail'],
+			'max_depth' => 3,
+		],
 		'MA\Entity\Comment\Version' => [
 			'route_name' => 'process/comment/detail/json', 
 			'route_identifier_name' => 'id',

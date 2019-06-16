@@ -37,6 +37,38 @@ abstract class AbstractProcessAction extends AbstractAction
 	 * )
 	 */
 	protected $process;
+
+	/**
+	 * @var Notification[]
+	 * @ORM\OneToMany(
+     *  targetEntity = "MA\Entity\Notification",
+	 *	mappedBy	 = "action",
+	 * )
+	 */
+	protected $notifications;
+
+	public function __construct()
+	{
+		$this->notifications = new ArrayCollection;
+	}
+
+	/**
+	 * @param Notification[] $notifications
+	 * @return AbstractProcessAction
+	 */
+	public function setNotification($notifications)
+	{
+		$this->notifications = $notifications;
+		return $this;
+	}
+
+	/**
+	 * @return Notification
+	 */
+	public function getNotifications()
+	{
+		return $this->notifications;
+	}
     
     /**
      * Set process.

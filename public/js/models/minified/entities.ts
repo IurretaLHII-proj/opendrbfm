@@ -171,6 +171,24 @@ class MAAction {
 	links: MALinks;
 }
 
+class MANotification extends MAAction {
+
+	static fromJSON(obj: IMANotification): MANotification{
+		let e = new MANotification();
+		e.load(obj);
+		return e;
+	}
+
+	load(obj: IMANotification) {
+		super.load(obj);
+		if (obj.id) {
+			this.readed = obj.readed;
+		}
+	}
+
+	readed:boolean=false;
+}
+
 class MAUser {
 	constructor(obj: IMAUser) {
 		this.id	   = obj.id;

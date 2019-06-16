@@ -7,19 +7,19 @@
 	<div class="flex-fill">
 		<div>
 			<a ng-href="{[ item.user.links.getHref() ]}">{[ item.user.name ]}</a>
-			<span class="text-muted">{[ eventLabel(item.name) ]}</span>
+			<span class="">{[ eventLabel(item.name) ]}</span>
 			<span class="text-muted">{[ classLabel(item.source) ]}</span>
 		</div>
 		<div>
 			<a ng-href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
-			<span class="small font-weight-bold">nº{[ item.process.number ]}</span>
+			<span class="text-muted">nº{[ item.process.number ]}</span>
 		</div>
 
 		<div ng-if="item.version" class="btn-group btn-group-sm">
 			<a href="" class="py-0 btn btn-sm disabled btn-{[ item.version.stateColor() ]}" >{[ item.version.stateLabel() ]}</a>
 			<a href="{[ item.process.links.getHref() ]}?version={[item.version.id]}" class="py-0 border-left-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.name ]}</a>
-			<a href="{[ item.version.material.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.material.name ]}</a>
-			<a href="{[ item.version.type.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.type.name ]}</a>
+			<!--<a href="{[ item.version.material.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.material.name ]}</a>
+			<a href="{[ item.version.type.links.getHref() ]} " class="py-0 btn btn-sm btn-outline-primary ]}" >{[ item.version.type.name ]}</a>-->
 		</div>
 
 		<div ng-if="item.stage" class="btn-group btn-group-sm">
@@ -31,7 +31,7 @@
 			</a>
 		</div>
 
-		<p class="text-muted small border-bottom py-1 mb-1">on {[ item.created | date: "MM/dd/yyyy 'at' HH:mm" ]}</p>
+		<p class="text-muted small py-1 mb-1">on {[ item.created | date: "dd MMMyy 'at' HH:mm" ]}</p>
 
 		<ng-include ng-if="isComment(item.source)" 
 			ng-init="action=item;comment=item.source" 

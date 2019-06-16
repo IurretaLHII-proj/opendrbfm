@@ -203,6 +203,15 @@ class User extends BaseUser implements
 				    'params'  => ['action' => 'actions', 'id' => $this->getId()],
 				],
 			],
+			[
+				'rel'   	  => 'notifications',
+				'privilege'   => 'notifications',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'user/detail/json',
+				    'params'  => ['action' => 'notifications', 'id' => $this->getId()],
+				],
+			],
 		];
 	}
 }
