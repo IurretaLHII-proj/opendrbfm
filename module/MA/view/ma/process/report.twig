@@ -21,6 +21,10 @@
 
 		<h2 class="m-2">{[ process.title ]}<small class="ml-2 text-muted">| Report</small></h2>
 
+		<form method="POST" action="{[ process.links.getHref('pdf') ]}">
+			<input type="submit" value="PDF" class="btn btn-success pull-right" />
+		</form>
+
 		{[ selection ]}
 		
 		<div ng-repeat="version in process.versions" class="">
@@ -47,14 +51,12 @@
 						<div class="my-1 border rounded"
 							ng-if="isStageSelected(stage)"
 							ng-repeat="hint in stage.hints"
-							ng-class="{'border-secondary':isHintSelected(hint)}">
+							ng-class="{'border-primary':isHintSelected(hint)}">
 							<div class="d-flex">
-								<a class="align-self-center btn btn-sm btn-outline-secondary mx-1" 
-									ng-class="{'active':isHintSelected(hint)}"
-									ng-click="toggleHint(hint)"
-		   							style="padding:2px 4px;"
-									><i class="fa fa-check"></i>
-								</a>
+								<input type="checkbox" class="align-self-center mx-1" 
+									ng-disabled="!isStageSelected(stage)"
+		  							ng-checked="isHintSelected(hint)"
+									ng-click="toggleHint(hint)">
 								<div class="p-1 rounded flex-fill"
 									 ng-class="{'bg-light border':isHintSelected(hint)}">
 									<span class="badge badge-{[hint.color]} mr-2">{[hint.priority]}</span>
@@ -68,20 +70,17 @@
 							<div class="m-1 ml-2"
 		   						ng-if="hint.reasons.length && isHintSelected(hint)" 
 								ng-repeat="(r, reason) in hint.reasons">
-								<div class="btn-group btn-group-sm">
-									<a class="btn btn-sm btn-outline-secondary" ng-class="{
-			 							'active':isReasonSelected(reason)
-									}"
-									ng-click="toggleReason(reason)"
-		   							style="padding:2px 4px;"
-		   							>
-										<i class="fa fa-check"></i>
-									</a>
-								</div>
+								<input type="checkbox" class="align-self-center mx-1" 
+									ng-disabled="!isHintSelected(hint)"
+		  							ng-checked="isReasonSelected(reason)"
+									ng-click="toggleReason(reason)">
 								<small class="font-weight-bold"
 								>Reason {[ r+1 ]}</small>
-								<div ng-repeat="note in reason.notes" class="d-flex flex-row m-1">
-									<input type="checkbox" class="align-self-center mr-1" 
+								<div class="d-flex flex-row m-1"
+		  							ng-if="isReasonSelected(reason)"
+									ng-repeat="note in reason.notes" 
+	  							>
+									<input type="checkbox" class="align-self-center mx-1" 
 										ng-disabled="!isReasonSelected(reason)"
 		  								ng-checked="isNoteSelected(note)"
 										ng-click="toggleNote(note)">
@@ -94,16 +93,15 @@
 								<div class="mt-1 ml-2"
 								   ng-if="reason.influences.length && isReasonSelected(reason)" 
 								   ng-repeat="(i, influence) in reason.influences">
-									<div class="btn-group btn-group-sm">
-										<a class="btn btn-outline-secondary" ng-class="{
-											active:isInfluenceSelected(influence)
-						  					}"
-											ng-click="toggleInfluence(influence)"
-		   									style="padding:2px 4px;"
-		   								><i class="fa fa-check"></i></a>
-									</div>
+									<input type="checkbox" class="align-self-center mx-1" 
+										ng-disabled="!isReasonSelected(reason)"
+		  								ng-checked="isInfluenceSelected(influence)"
+										ng-click="toggleInfluence(influence)">
 									<small class="font-weight-bold">Influence {[ r+1 ]}.{[ i+1 ]}</small>
-									<div ng-repeat="note in influence.notes" class="d-flex flex-row m-1">
+									<div class="d-flex flex-row m-1"
+		  								ng-if="isInfluenceSelected(influence)"
+										ng-repeat="note in influence.notes" 
+									>
 										<input type="checkbox" class="align-self-center mr-1" 
 											ng-disabled="!isInfluenceSelected(influence)"
 		  									ng-checked="isNoteSelected(note)"
@@ -118,13 +116,10 @@
 										 ng-repeat="(s, simulation) in influence.simulations" 
 									>
 										<div class="d-flex">
-											<a class="btn btn-outline-secondary align-self-center mx-1" 
-												ng-class="{'active':isSimulationSelected(simulation)}"
-												ng-click="toggleSimulation(simulation)"
-		   										style="padding:2px 4px;"
-		   									>
-												<i class="fa fa-check"></i>
-											</a>
+											<input type="checkbox" class="align-self-center mx-1" 
+												ng-disabled="!isInfluenceSelected(influence)"
+		  										ng-checked="isSimulationSelected(simulation)"
+												ng-click="toggleSimulation(simulation)">
 											<div class="small p-1 rounded" ng-class="{'bg-light border':isSimulationSelected(simulation)}">
 												<span class="font-weight-bold text-{[simulation.stateColor()]}">{[ simulation.stateLabel() ]}</span>
 												<span ng-if="simulation.who">{[simulation.who.name]}</span>

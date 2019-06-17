@@ -156,7 +156,8 @@ class ProcessController extends \Base\Controller\AbstractActionController
 
 		if ($this->getRequest()->isPost()) {
 
-			$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+			//$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
+			$data = $this->getRequest()->getPost();
 
 			$pdf = new PdfModel([
 				'entity' => $e,
