@@ -7,7 +7,7 @@
 {% block body %}
 	{{ headTitle('Actions') }}
 	<ng-controller ng-controller="_ActionCollectionCtrl" ng-init="init()">
-
+		<h2>Site activity</h2>
 		<div ng-repeat="item in collection.items" 
 			class="p-2 my-1"
 			ng-class="{first: $first, last: $last}"
