@@ -10,16 +10,16 @@
 	<div class="row" ng-controller="_UserDetailCtrl"
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
   	>
-		<div class="col-md-12">
-			<h2 class="m-2">{{ entity.name }}</h2>
-			<div class="mx-2 btn-group btn-group-sm">
+		<div class="col-md-12 pt-2">
+			<h2 class="">{{ entity.name }}</h2>
+			<div class="my-2 btn-group btn-group-sm">
 				<a class="btn btn-outline-secondary" href="{{ url('zfcuser/changepassword') }}">Change password</a>
 				<a class="btn btn-outline-secondary" href="{{ url('zfcuser/changeemail') }}">Change email</a>
 				<a class="btn btn-outline-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>
 			</div>
 		</div>
 		<div class="col-md-6">
-			<div class="mx-2 font-weight-bold">Notifications</div>
+			<div class="font-weight-bold">Notifications</div>
 			<ul class="nav nav-tabs nav-fill">
 				<li class="nav-item">
 					<a href="" class="nav-link" ng-class="{active:!readed}" 

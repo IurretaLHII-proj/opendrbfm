@@ -796,6 +796,15 @@ class Process implements
 				],
 			],
 			[
+				'rel'   	  => 'report',
+				'privilege'   => 'report',
+				'resource'	  => $this,
+				'route' => [
+				    'name'    => 'process/detail',
+				    'params'  => ['action' => 'report', 'id' => $this->getId()],
+				],
+			],
+			[
 				'rel'   	  => 'edit',
 				'privilege'   => 'edit',
 				'resource'	  => $this,

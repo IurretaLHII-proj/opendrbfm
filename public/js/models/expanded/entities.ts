@@ -135,6 +135,9 @@ class EMAComment {
 				case "MA\\Entity\\Comment\\Simulation":
 					this.source = MASimulation.fromJSON(obj._embedded.source);
 					break;	
+				default:
+					this.source = MANote.fromJSON(obj._embedded.source);
+					break;	
 			}
 			obj._embedded.suscribers.forEach(e => {this.suscribers.push(new MAUser(e))});
 			if (obj._embedded.parent) {
@@ -148,6 +151,10 @@ class EMAComment {
 		if (index != -1) {
 			this.comments.items.splice(index, 1);
 		}
+	}
+
+	hasParent(): boolean {
+		return this.parent != null;
 	}
 
 	hasComments(): boolean {

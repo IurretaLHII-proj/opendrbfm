@@ -215,7 +215,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|delete|clone|pdf|version|actions',
+						'action' => 'detail|edit|delete|clone|pdf|report|version|actions',
 					]
 				],
 				'may_terminate' => true,

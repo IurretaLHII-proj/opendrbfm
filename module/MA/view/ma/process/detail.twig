@@ -16,8 +16,8 @@
 				<a href="{[ process.user.links.getHref() ]}" class="">{[ process.user.name ]}</a>.
 				<small>{[ process.created | date:"dd MMM yyyy HH:mm" ]}</small>
 				<div class="btn-group btn-group-sm btn-group-justified ml-2">
-					<a href="" ng-if="process.links.isAllowed('edit')" ng-click="editProcess(process)" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>
-					<a href="{[process.links.getHref('pdf')]}" ng-if="process.links.isAllowed('pdf')" class="btn btn-outline-primary"><i class="fa fa-file"></i></a>
+					<a href="" ng-if="process.links.isAllowed('edit')" ng-click="editProcess(process)" title="Edit process" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>
+					<a href="{[process.links.getHref('pdf')]}" ng-if="process.links.isAllowed('pdf')" title="Generate inform" class="btn btn-outline-primary"><i class="fa fa-file"></i></a>
 				</div>
 			</div>
 		</div>
@@ -106,19 +106,25 @@
 				<a href="{[ current.user.links.getHref() ]}" class="">{[ current.user.name ]}</a>.
 				<small>{[ current.created | date:"dd MMM yyyy HH:mm" ]}</small>
 				<div class="btn-group btn-group-sm btn-group-justified ml-2">
-					<a href="" ng-if="current.links.isAllowed('comment')" class="btn btn-outline-primary" ng-click="addComment(current)">
+					<a href="" class="btn btn-outline-primary" title="Comment stage"
+						ng-if="current.links.isAllowed('comment')" 
+						ng-click="addComment(current)">
 						<i class="fa" ng-class="current.commentCount ? 'fa-comment' : 'fa-comment-o'">
 							<span ng-if="current.commentCount">{[ current.commentCount ]}</span>
 						</i>
 	  				</a>
-					<a href="" ng-if="current.links.isAllowed('edit')" ng-click="editStage(current)" class="btn btn-outline-primary">
+					<a href="" class="btn btn-outline-primary" title="Edit stage"
+						ng-if="current.links.isAllowed('edit')" 
+  						ng-click="editStage(current)">
 						<i class="fa fa-pencil"></i>
 					</a>
-					<a href="" ng-if="current.links.isAllowed('delete')" class="btn btn-outline-primary" 
+					<a href="" class="btn btn-outline-primary" title="Delete stage"
+						ng-if="current.links.isAllowed('delete')" 
 						ng-confirm-click confirmed-click="deleteStage(current)">
 						<i class="fa fa-trash"></i>
 					</a>
-					<a href="" ng-click="stickyLock()" class="btn btn-outline-primary">
+					<a href="" class="btn btn-outline-primary" title="{[ locked ? 'Unlock scroll' : 'Lock scroll']}"
+						ng-click="stickyLock()">
 						<i class="fa" ng-class="{true:'fa-unlock', false:'fa-lock'}[locked == true]"></i>
 					</a>
 				</div>
@@ -126,7 +132,9 @@
 			<div class="">
 				<small class="font-weight-bold">Stage {[current.order]} operations</small>
 				<ul class="m-0" style="">
-					<li ng-repeat="op in current.operations"><a href="{[ op.links.getHref() ]}">{[op.longName]}</a></li>
+					<li ng-repeat="op in current.operations">
+						<a href="{[ op.links.getHref() ]}">{[op.longName]}</a>
+					</li>
 				</ul>
 				<div ng-if="current.body">
 					<small class="font-weight-bold">Stage {[current.order]} description</small>
@@ -203,13 +211,22 @@
 								<a href="{[ r.user.links.getHref() ]}" class="">{[ r.user.name ]}</a>. {[ r.created | date:"dd MMMyy HH:mm" ]}
 							</div>
 							<div class="btn-group btn-group-sm">
-								<a href="" class="btn btn-sm" ng-click="addComment(r)">
+								<a href="" class="btn btn-sm" title="Relation comments"
+									ng-click="addComment(r)">
 									<i class="fa" ng-class="r.commentCount ?'fa-comment':'fa-comment-o'">
 										<span ng-if="r.commentCount">{[ r.commentCount ]}</span>
 									</i>
 								</a>
-								<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('edit')" ng-click="editReasonRelation(r)"><span class="fa fa-pencil"></span></a>
-								<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteReasonRelation(r)"><span class="fa fa-trash"></span></a>
+								<a href="" class="btn btn-sm" title="Edit relation"
+				   					ng-if="r.links.isAllowed('edit')" 
+				   					ng-click="editReasonRelation(r)">
+									<span class="fa fa-pencil"></span>
+								</a>
+								<a href="" class="btn btn-sm" title="Delete relation" 
+				 	                ng-if="r.links.isAllowed('delete')" 
+				   					ng-confirm-click confirmed-click="deleteReasonRelation(r)">
+									<span class="fa fa-trash"></span>
+								</a>
 							</div>
 						</li>
 						<li ng-repeat="note in reason.notes" class="my-1">
@@ -218,13 +235,20 @@
 								<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
 							</div>
 							<div class="btn-group btn-group-sm">
-								<a href="" class="btn btn-sm" ng-click="addComment(note)">
-								<i class="fa" ng-class="note.commentCount ?'fa-comment':'fa-comment-o'">
-									<span ng-if="note.commentCount">{[ note.commentCount ]}</span>
-								</i>
+								<a href="" class="btn btn-sm" title="Note comments"
+									ng-click="addComment(note)">
+									<i class="fa" ng-class="note.commentCount ?'fa-comment':'fa-comment-o'">
+										<span ng-if="note.commentCount">{[ note.commentCount ]}</span>
+									</i>
 								</a>
-								<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-								<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+								<a href="" class="btn btn-sm" title="Edit note" 
+									ng-if="note.links.isAllowed('edit')" 
+							        ng-click="editNote(note)"><span class="fa fa-pencil"></span>
+								</a>
+								<a href="" class="btn btn-sm" title="Delete note"
+									ng-if="note.links.isAllowed('delete')"
+									ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span>
+								</a>
 							</div>
 						</li>
 					</ul>
@@ -253,13 +277,20 @@
 								<a href="{[ r.user.links.getHref() ]}" class="">{[ r.user.name ]}</a>. {[ r.created | date:"dd MMMyy HH:mm" ]}
 							</div>
 							<div class="btn-group btn-group-sm">
-								<a href="" class="btn btn-sm" ng-click="addComment(r)">
+								<a href="" class="btn btn-sm" title="Relation comments" 
+									ng-click="addComment(r)">
 									<i class="fa" ng-class="r.commentCount ?'fa-comment':'fa-comment-o'">
 										<span ng-if="r.commentCount">{[ r.commentCount ]}</span>
 									</i>
 								</a>
-								<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('edit')" ng-click="editInfluenceRelation(r)"><span class="fa fa-pencil"></span></a>
-								<a href="" class="btn btn-sm" ng-if="r.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteInfluenceRelation(r)"><span class="fa fa-trash"></span></a>
+								<a href="" class="btn btn-sm" title="Edit relation"
+									ng-if="r.links.isAllowed('edit')"
+									ng-click="editInfluenceRelation(r)"><span class="fa fa-pencil"></span>
+								</a>
+								<a href="" class="btn btn-sm" title="Delete relation"
+									ng-if="r.links.isAllowed('delete')"
+									ng-confirm-click confirmed-click="deleteInfluenceRelation(r)"><span class="fa fa-trash"></span>
+								</a>
 							</div>
 						</li>
 						<li ng-repeat="note in infl.notes" class="my-1">
@@ -268,13 +299,19 @@
 								<a href="{[ note.user.links.getHref() ]}" class="">{[ note.user.name ]}</a>. {[ note.created | date:"dd MMMyy HH:mm" ]}
 							</div>
 							<div class="btn-group btn-group-sm">
-								<a href="" class="btn btn-sm" ng-click="addComment(note)">
+								<a href="" class="btn btn-sm" title="Note comments" ng-click="addComment(note)">
 								<i class="fa" ng-class="note.commentCount ?'fa-comment':'fa-comment-o'">
 									<span ng-if="note.commentCount">{[ note.commentCount ]}</span>
 								</i>
 								</a>
-								<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('edit')" ng-click="editNote(note)"><span class="fa fa-pencil"></span></a>
-								<a href="" class="btn btn-sm" ng-if="note.links.isAllowed('delete')" ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span></a>
+								<a href="" class="btn btn-sm" title="Edit note"
+								   ng-if="note.links.isAllowed('edit')"
+								   ng-click="editNote(note)"><span class="fa fa-pencil"></span>
+								</a>
+								<a href="" class="btn btn-sm" title="Delete note"
+								   ng-if="note.links.isAllowed('delete')" 
+				   				   ng-confirm-click confirmed-click="deleteNote(note)"><span class="fa fa-trash"></span>
+								</a>
 							</div>
 						</li>
 					</ul>

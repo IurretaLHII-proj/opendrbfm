@@ -31,7 +31,7 @@
 			</a>
 		</div>
 
-		<p class="text-muted small py-1 mb-1">on {[ item.created | date: "dd MMMyy 'at' HH:mm" ]}</p>
+		<p class="text-muted small py-1 mb-1">{[ item.created | date: "dd MMM yyyy HH:mm" ]}</p>
 
 		<ng-include ng-if="isComment(item.source)" 
 			ng-init="action=item;comment=item.source" 

@@ -2,7 +2,9 @@
 	<span class="small text-muted">En respuesta a
 			<a href="{[ comment.parent.user.links.getHref()">{[comment.parent.user.name]}</a>
 		</span>
-		<a href="" ng-click="loadParent(comment)" class="btn btn-sm">
+		<a href="" class="btn btn-sm" 
+	 		ng-click="loadParent(comment)" 
+			ng-class="{disabled:comment.parentLoaded}">
 			<i class="fa fa-chevron-up"></i>
 		</a>
 </div>
