@@ -1,6 +1,15 @@
-<div class="modal-header flex-column" ng-if="isProcess(comment.source)||isVersion(comment.source)||isStage(comment.source)">
-	<div><a href="{[ comment.source.user.links.getHref() ]}">{[ comment.source.user.name ]}</a> on <small>{[ comment.source.created | date:"dd MMM yyyy HH:mm" ]}</small></div>
-	<h3 class="modal-title">{[ comment.source.name ]}
+<div class="modal-header flex-column">
+	<div class="">
+		<a href="{[ comment.source.user.links.getHref() ]}">{[ comment.source.user.name ]}</a>
+		<small class="text-muted">{[ comment.source.created | date:"dd MMM yyyy HH:mm" ]}</small>
+	</div>
+	<div class="">
+		<a href="{[ comment.process.links.getHref()]}">{[comment.process.title]}</a>
+		<span class="text-muted">nº{[comment.process.number]}</span>
+	</div>
+	<h3 class="modal-title">
+		{[ classLabel(comment.source) ]}
+		<span ng-if="isProcess(comment.source)||isVersion(comment.source)||isStage(comment.source)||isHint(comment.source)">{[ comment.source.name ]}</span>
 		<span class="small text-secondary">| Comments</span>
 	</h3>
 	<div ng-if="comment.source.description" ng-bind-html="comment.source.description" class="desc"></div>
@@ -37,8 +46,8 @@
 
 <script type="text/ng-template" id="comment-item-list">
 	<ng-include src="'/js/custom/tpl/partial/comment/comment-item.html'"/>
-	<div ng-repeat="comment in comment.getChildren()"
-		 ng-include="'/js/custom/tpl/partial/comment/comment-item.html'"
+	<div ng-repeat="comment in comment.getComments()"
+		 ng-include="'comment-item-list'"
 	>
 	</div>
 </script>

@@ -1,5 +1,8 @@
 <div class="modal-header flex-column">
-	<div><a href="{[ source.user.links.getHref() ]}">{[ source.user.name ]}</a> on <small>{[ source.created | date:"dd MMM yyyy HH:mm" ]}</small></div>
+	<div>
+		<a href="{[ source.user.links.getHref() ]}">{[ source.user.name ]}</a>
+	    <small class="text-muted">{[ source.created | date:"dd MMM yyyy HH:mm" ]}</small>
+	</div>
 	<h3 class="modal-title">{[ source.name ]} <span class="small text-secondary">| Comments</span></h3>
 	<div ng-if="source.description" ng-bind-html="source.description"></div>
 	<button ng-click="cancel()" type="button" class="close"

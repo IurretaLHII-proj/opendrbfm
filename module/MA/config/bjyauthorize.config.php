@@ -73,6 +73,7 @@ return [
 						'actions',
 						'notifications',
 						'pdf',
+						'report',
 						'version',
 						'comment',
 						'comments',

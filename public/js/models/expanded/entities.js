@@ -109,6 +109,9 @@ var EMAComment = /** @class */ (function () {
                 case "MA\\Entity\\Comment\\Simulation":
                     this.source = MASimulation.fromJSON(obj._embedded.source);
                     break;
+                default:
+                    this.source = MANote.fromJSON(obj._embedded.source);
+                    break;
             }
             obj._embedded.suscribers.forEach(function (e) { _this.suscribers.push(new MAUser(e)); });
             if (obj._embedded.parent) {
@@ -121,6 +124,9 @@ var EMAComment = /** @class */ (function () {
         if (index != -1) {
             this.comments.items.splice(index, 1);
         }
+    };
+    EMAComment.prototype.hasParent = function () {
+        return this.parent != null;
     };
     EMAComment.prototype.hasComments = function () {
         return !this.comments.isEmpty();

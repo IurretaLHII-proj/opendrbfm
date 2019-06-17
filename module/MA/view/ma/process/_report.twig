@@ -1,0 +1,97 @@
+{% extends 'layout/_layout.twig' %}
+{% block script %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ basePath() }}/js/custom/report.js"></script>
+{% endblock script %}
+{% block style %}
+	{{ parent() }}
+.form-check-label p {
+	margin: 0;
+}
+{% endblock style %}
+
+{% block body %}
+
+
+	{{ headTitle(entity.title) }}
+	<ng-controller
+		ng-controller="_ProcessReportCtrl" 
+		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
+  	>
+
+		<h2 class="m-2">{[ process.title ]}<small class="ml-2 text-muted">| Report</small></h2>
+
+		{[ selection ]}
+		
+		<div ng-repeat="version in process.versions" class="">
+			<div class="">
+				<input type="checkbox" class=""
+					name="versions[]" value="{[version.id]}" 
+					ng-checked="selection.versions.indexOf(version.id) > -1"						
+					ng-click="toggleVersion(version)">
+				<label class="">{[version.name]}</label>
+			</div>
+			<div class="">
+				<div class="row">
+					<div ng-repeat="stage in version.stages" class="col border">
+						<div class="row">
+							<div class="col-md-2">
+								<input type="checkbox" class="" 
+									name="stages[]" value="{[stage.id]}" 
+									ng-checked="selection.stages.indexOf(stage.id) > -1"	
+									ng-click="toggleStage(stage)">
+							</div>
+							<div class="col-md-10">{[stage.name]}</div>
+						</div>
+						<div class="text-center">
+							<img ng-repeat="img in stage.images" 
+								ng-src="{[ img.links.getHref() ]}" class="stage-img"/>
+						</div>
+						<div ng-if="stage.hints.length" class="font-weight-bold">Errors</div>
+						<div ng-repeat="hint in stage.hints" class="row">
+							<div class="col-md-2">
+								<input type="checkbox" class="" 
+									name="hints[]" value="{[hint.id]}" 
+									ng-checked="selection.hints.indexOf(hint.id) > -1"	
+									ng-click="toggleHint(hint)">
+							</div>
+							<div class="col-md-10">
+								<p>{[hint.name]}</p>
+								<div ng-if="hint.reasons.length">
+									<b>Reasons</b>
+									<div ng-repeat="(r, reason) in hint.reasons" class="">
+										<!-- Reason -->
+										<div class="">
+											<input type="checkbox" class="">
+											<div ng-repeat="note in reason.notes" class="d-flex">
+												<input type="checkbox" class="">
+												<label ng-bind-html="note"></label>
+											</label>
+										</div>
+										<div ng-if="reason.influences.length">
+											<!-- Influence -->
+											<b>Influences</b>
+											<div ng-repeat="(i, influence) in reason.influences"
+											   	class="">
+												<div class="">
+													<input type="checkbox" class="" 
+													>
+													<label class="" 
+														ng-repeat="note in influence.notes" 
+														ng-bind-html="note"></label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>	
+		</div>
+
+	</ng-controller>
+
+{% endblock body %}
+

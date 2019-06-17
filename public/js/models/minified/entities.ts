@@ -1502,8 +1502,20 @@ class MASimulation {
 		}
 	}
 
+	stateColor():string {
+		switch (this.state) {
+			case MASimulation.STATE_NOT_NECESSARY:  	//return "light";
+			case MASimulation.STATE_NOT_PROCESSED:  	return "secondary";
+			case MASimulation.STATE_IN_PROGRESS:  		return "dark";
+			case MASimulation.STATE_FINISHED:  			return "success";
+			case MASimulation.STATE_CANCELLED:  		return "danger";
+			default: return "-";
+		}
+	}
+
+
 	stateLabel():string {
-	return MASimulation.stateLabel(this.state);
+		return MASimulation.stateLabel(this.state);
 	}
 
 	constructor() {

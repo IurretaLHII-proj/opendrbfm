@@ -24,6 +24,7 @@ App.controller('_CommentDetailCtrl', function($scope, $uibModalInstance, $resour
 				$scope.source.commentsLoaded = false;
 				$scope.source.comments = new MACollection();
 				$scope.replies($scope.source);
+				if ($scope.source.hasParent()) $scope.loadParent($scope.source);
 			},
 			function (err) {}
 		);
@@ -56,6 +57,7 @@ App.controller('_CommentDetailCtrl', function($scope, $uibModalInstance, $resour
 			    }	
 				comment.parentLoading = false;
 				comment.parentLoaded  = true;
+				console.log($scope.highest);
 			},
 			function(err) {}
 		);

@@ -142,6 +142,14 @@ class ProcessController extends \Base\Controller\AbstractActionController
 	/**
 	 * @return PdfModel
 	 */
+	public function reportAction()
+	{
+		return $this->pdfAction();
+	}
+
+	/**
+	 * @return PdfModel
+	 */
 	public function pdfAction()
 	{
 		$e = $this->getEntity();

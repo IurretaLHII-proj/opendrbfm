@@ -5,10 +5,12 @@
 	</div>
 	<div class="align-self-center text-center btn-group btn-group-sm px-2">
 		<a href="" title="Mark as read" class="btn btn-outline-primary" 
+  		    ng-if="notification.links.isAllowed('read')"
 			ng-click="asRead(notification)">
 			<i class="fa fa-check"></i>
 		</a>
 		<a href="" title="Delete" class="btn btn-outline-primary" 
+  		    ng-if="notification.links.isAllowed('delete')"
 			ng-confirm-click confirmed-click="delete(notification)">
 			<i class="fa fa-trash"></i>
 		</a>
