@@ -1,4 +1,4 @@
-<span ng-if="comment.suscribers.length" class="small">En respuesta a <a href="" ng-repeat="s in comment.suscribers" class="mr-1">{[s.name]}</a></span>
+<span ng-if="comment.suscribers.length" class="small">En respuesta a <a href="{[ s.links.getHref() ]}" ng-repeat="s in comment.suscribers" class="mr-1">{[s.name]}</a></span>
 <a href="" ng-click="commentDetail(comment)"><i class="small fa fa-eye"></i></a>
 <div ng-if="comment.expanded || comment.body.length <= 500"
 	compile="comment.body" 

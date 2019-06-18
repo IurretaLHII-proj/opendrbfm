@@ -12,10 +12,15 @@ class NotificationService extends AbstractService
 	 */
 	public function createNotifications(EventInterface $e)
 	{
-		$action  = $e->getTarget();
-		$comment = $action->getSource();
+		//$identity = $this->getServiceLocator()->get('zfcuser_auth_service')->getIdentity();
+
+		$action   = $e->getTarget();
+		$comment  = $action->getSource();
 
 		foreach ($comment->getSuscribers() as $subscriber) {
+			if ($subscriber === $comment->getUser()) {
+				continue;
+			}
 			$notification = new \MA\Entity\Notification;
 			$notification->setSubscriber($subscriber);
 			$notification->setAction($action);
