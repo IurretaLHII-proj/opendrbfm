@@ -8,11 +8,11 @@ nbproject
 .idea
 .project
 .settings
-.package-lock.json
 vendor
 composer.phar
 data
 public/img
+public/js/.package-lock.json
 public/js/node_modules
 public/js/_node_modules
 config/autoload/ddbb.php
