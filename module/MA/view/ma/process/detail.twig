@@ -70,7 +70,7 @@
 	<div ng-if="version && version.isStagesLoaded() && !version.stages.length" class="text-center my-2">No stage registered</div>
 
 	<!-- VERSION STAGE TABS -->
-	<div ng-if="current" class="bg-white d-flex" ng-class="{'sticky-top': locked}">
+	<div class="bg-white d-flex" ng-class="{'sticky-top': locked}">
 		<ul ui-sortable
 			ng-model="version.stages" 
 			ui-sortable-stop="stagesUpdated(version)"
@@ -101,7 +101,7 @@
 				<span class="fa fa-plus"></span>
 			</a>
 		</div>
-		<div class="ml-4 d-flex flex-column flex-fill">
+		<div ng-if="current" class="ml-4 d-flex flex-column flex-fill">
 			<div class="ml-auto">
 				<a href="{[ current.user.links.getHref() ]}" class="">{[ current.user.name ]}</a>.
 				<small>{[ current.created | date:"dd MMM yyyy HH:mm" ]}</small>
