@@ -17,7 +17,7 @@
 				<small>{[ process.created | date:"dd MMM yyyy HH:mm" ]}</small>
 				<div class="btn-group btn-group-sm btn-group-justified ml-2">
 					<a href="" ng-if="process.links.isAllowed('edit')" ng-click="editProcess(process)" title="Edit process" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>
-					<a href="{[process.links.getHref('pdf')]}" ng-if="process.links.isAllowed('pdf')" title="Generate inform" class="btn btn-outline-primary"><i class="fa fa-file"></i></a>
+					<a href="{[process.links.getHref('report')]}" ng-if="process.links.isAllowed('report')" title="Generate inform" class="btn btn-outline-primary"><i class="fa fa-file"></i></a>
 				</div>
 			</div>
 		</div>
