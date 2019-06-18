@@ -148,7 +148,7 @@ class Version implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Version",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

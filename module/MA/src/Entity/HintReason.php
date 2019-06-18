@@ -109,7 +109,7 @@ class HintReason implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\HintReason",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

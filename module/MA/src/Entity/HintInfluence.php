@@ -82,7 +82,7 @@ class HintInfluence implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\HintInfluence",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

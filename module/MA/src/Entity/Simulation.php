@@ -158,7 +158,7 @@ class Simulation implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Simulation",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

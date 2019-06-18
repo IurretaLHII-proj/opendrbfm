@@ -111,7 +111,7 @@ class Stage implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Stage",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -388,6 +388,22 @@ class Stage implements
 
 		return false;
 	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasImage()
+	{
+		return $this->getImages()->count() > 0;
+	}
+
+	/**
+	 * @return ImageInterface
+	 */
+	public function getImage()
+	{
+		return $this->getImages()->first();
+	}	
     
     /**
      * Get images.

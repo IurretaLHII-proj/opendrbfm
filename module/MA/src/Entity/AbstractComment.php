@@ -80,7 +80,7 @@ abstract class AbstractComment implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\AbstractComment",
 	 *	mappedBy	 = "parent",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
@@ -128,7 +128,7 @@ abstract class AbstractComment implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Comment",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

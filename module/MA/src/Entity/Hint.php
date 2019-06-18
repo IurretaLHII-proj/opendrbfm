@@ -105,7 +105,7 @@ class Hint implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Hint",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */

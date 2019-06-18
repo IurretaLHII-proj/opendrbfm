@@ -163,12 +163,17 @@ class ProcessController extends \Base\Controller\AbstractActionController
 				'entity' => $e,
 			]);
 
-        	//$pdf->setOption('filename', $e . '-report');	// "pdf" extension is automatically appended
-        	//$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
+			$pdf->setTerminal(true);
+
+        	$pdf->setOption('filename', $e . '-report');	// "pdf" extension is automatically appended
+        	$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
         	$pdf->setOption('paperSize', 'a4');               	// Defaults to "8x11"
     		return $pdf;
 		}
-		return new ViewModel;
+		$model = new ViewModel([
+			'entity' => $this->getEntity(),
+		]);
+		return $model;
 	}
 
 	/**

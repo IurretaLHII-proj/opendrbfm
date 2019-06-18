@@ -1,5 +1,103 @@
-<html>
-  <body>
-	  <h1>Process: <?php echo $this->entity; ?></h1>
-  </body>
+<html lang="en">
+    <head>
+		<link href="/js/node_modules/bootstrap/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+
+<table border="0" width="100%">
+	<thead>
+		<tr>
+			<th colspan="6"><b><?php echo $this->entity; ?></b> <small>(nº<?php echo $this->entity->getNumber(); ?>)</small></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><b>Complexity</b></td>
+			<td> <?php echo $this->entity->getComplexity()->getName(); ?></td>
+			<td><b>Customer:</b></td>
+			<td colspan="3"><?php echo $this->entity->getCustomer()->getName(); ?></td>
+		</tr>
+		<tr>
+			<td><b>Productive plan:</b></td>
+			<td> <?php echo $this->entity->getPlant()->getName(); ?></td>
+			<td><b>Machine</b></td>
+			<td><?php echo $this->entity->getMachine()->getName(); ?></td>
+			<td><b>Line</b>
+			<td><?php echo $this->entity->getLine(); ?></td>
+		</tr>
+		<?php if (null !== ($desc = $this->entity->getBody())) : ?>
+			<tr>
+				<td colspan="6">
+					<b>Description</b>
+					<?php echo $desc; ?>
+				</td>
+			</tr>
+		<?php endif; ?>
+	</tbody>
+</table>
+
+<?php foreach ($this->entity->getVersions() as $version) : ?>
+<table border="0">
+	<thead>
+		<tr>
+			<th colspan="<?php echo $version->getStages()->count(); ?>">
+				<?php echo $version->getName(); ?>
+			</th>
+		</tr>
+		<?php if (null !== ($desc = $version->getDescription())) : ?>
+			<tr>
+				<th colspan="<?php echo $version->getStages()->count(); ?>">
+					<b>Description</b>
+					<?php echo $version->getDescription(); ?>
+				</th>
+			</tr>
+		<?php endif; ?>
+	</thead>
+	<tbody>
+		<tr>
+		<?php foreach ($version->getStages() as $stage) : ?>
+			<td align="center">
+				Stage <?php echo $stage->getOrder(); ?>
+			</td>
+		<?php endforeach ?>
+		</tr>
+		<tr>
+		<?php foreach ($version->getStages() as $stage) : ?>
+			<td align="center">
+				<?php if ($stage->hasImage()) : ?>
+				<img src="<?php echo $stage->getImage()->getName(); ?>"/>
+				<?php endif; ?>
+			</td>
+		<?php endforeach ?>
+		</tr>
+		<tr>
+		<?php foreach ($version->getStages() as $stage) : ?>
+			<td valign="top">
+				<?php if (null !== ($desc = $stage->getBody())): ?><b>Description</b><?php endif; ?>
+				<?php echo $stage->getBody(); ?>
+				<b>Operations</b>
+				<ul>
+				<?php foreach ($stage->getOperations() as $op): ?>
+					<li><?php echo $op->getLongName(); ?></li>
+				<?php endforeach ?>
+				</ul>
+			</td>
+		<?php endforeach ?>
+		</tr>
+		<tr>
+		<?php foreach ($version->getStages() as $stage) : ?>
+			<td valign="top">
+				<b>Errors</b>
+				<ul>
+				<?php foreach ($stage->getHints() as $error): ?>
+					<li><?php echo $error->getName(); ?></li>
+				<?php endforeach ?>
+				</ul>
+			</td>
+		<?php endforeach ?>
+		</tr>
+	</tbody>
+</table>
+<?php endforeach ?>
+	</body>
 </html>

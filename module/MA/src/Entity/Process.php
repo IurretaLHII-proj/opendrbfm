@@ -159,7 +159,7 @@ class Process implements
 	 * @ORM\OneToMany(
 	 *	targetEntity = "MA\Entity\Action\Process",
 	 *	mappedBy	 = "source",
-	 *	cascade = {"remove"}
+	 *	cascade 	 = {"remove"}
 	 * )
 	 * @ORM\OrderBy({"created" = "ASC"})
 	 */
