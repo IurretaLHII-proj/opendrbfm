@@ -24,7 +24,7 @@ class UserForm extends Form
 				'value_options' => [
 					\MA\Entity\User::ROLE_USER => \MA\Entity\User::ROLE_USER,
 					\MA\Entity\User::ROLE_ADMIN => \MA\Entity\User::ROLE_ADMIN,
-					\MA\Entity\User::ROLE_SUPER => \MA\Entity\User::ROLE_SUPER,
+					//\MA\Entity\User::ROLE_SUPER => \MA\Entity\User::ROLE_SUPER,
 				]
 			]
         ]);

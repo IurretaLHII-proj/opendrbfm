@@ -6,7 +6,7 @@
 
 {% block body %}
 	{{ headTitle('Errors') }}
-	<ng-controller ng-controller="_HintCollectionCtrl" ng-init="init()">
+	<ng-controller ng-controller="_HintCollectionCtrl" ng-init="init()" class="row">
 
 	<div class="input-group input-group-sm sticky-top">
 		<div class="input-group-prepend">
@@ -173,7 +173,10 @@
 						<a href="{[ item.process.links.getHref() ]}">{[ item.process.title ]}</a>
 					</div>
 					<div class="text-muted">nº {[ item.process.number ]}</div>
-					<div><a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a></div>
+					<div>
+						<a href="{[ item.process.complexity.links.getHref() ]}" class="small">{[ item.process.complexity.name ]}</a>
+						<a href="{[ item.process.customer.links.getHref() ]}" class="small">{[ item.process.customer.name ]}</a>
+					</div>
 					<!--<div class="small text-muted">{[ item.version.name]} |  {[ item.version.type.name]} | {[ item.version.material.name]}</div>-->
 					<div class="btn-group btn-group-sm">
 						<a href="" class="py-0 btn btn-sm disabled btn-{[ item.version.stateColor() ]}" >{[ item.version.stateLabel() ]}</a>

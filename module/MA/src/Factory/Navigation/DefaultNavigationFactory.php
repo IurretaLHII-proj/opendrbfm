@@ -44,6 +44,20 @@ class DefaultNavigationFactory extends BaseFactory
 					'params' => ['id' => $identity->getId()],
 					'pages' => [
 						[
+							'label' => 'Change password',
+							'route' => 'zfcuser/changepassword',
+							'class' => 'nav-link',
+							'resource'	=> \MA\Entity\User::class,
+							'privilege' => 'edit',
+						],
+						[
+							'label' => 'Change email',
+							'route' => 'zfcuser/changeemail',
+							'class' => 'nav-link',
+							'resource'	=> \MA\Entity\User::class,
+							'privilege' => 'edit',
+						],
+						[
 							'label' => 'Logout',
 							'route' => 'zfcuser/logout',
 							'class' => 'nav-link',

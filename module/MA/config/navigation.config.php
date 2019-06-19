@@ -110,13 +110,13 @@ return [
 			'resource'	=> Entity\Customer::class,
 			'privilege' => 'add',
 			'pages' => [
-				[
-					'label' => 'Add Customer',
-					'route' => 'customer/add',
-					'class' => 'nav-link d-none',
-					'resource'	=> Entity\Customer::class,
-					'privilege' => 'add',
-				],
+				//[
+				//	'label' => 'Add Customer',
+				//	'route' => 'customer/add',
+				//	'class' => 'nav-link d-none',
+				//	'resource'	=> Entity\Customer::class,
+				//	'privilege' => 'add',
+				//],
 			],
 		],
 		[
@@ -126,13 +126,13 @@ return [
 			'resource'	=> Entity\User::class,
 			'privilege' => 'add',
 			'pages' => [
-				[
-					'label' => 'Add User',
-					'route' => 'user/add',
-					'class' => 'nav-link d-none',
-					'resource'	=> Entity\User::class,
-					'privilege' => 'add',
-				],
+				//[
+				//	'label' => 'Add User',
+				//	'route' => 'user/add',
+				//	'class' => 'nav-link d-none',
+				//	'resource'	=> Entity\User::class,
+				//	'privilege' => 'add',
+				//],
 			],
 		],
 	],

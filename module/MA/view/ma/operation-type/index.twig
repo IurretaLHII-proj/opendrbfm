@@ -6,7 +6,7 @@
 
 {% block body %}
 	{{ headTitle('Operation types') }}
-	<ng-controller ng-controller="_OperationTypesCtrl"
+	<ng-controller ng-controller="_OperationTypesCtrl" class="row"
 			ng-init="init({{ json(hal().renderCollection(collectionHal)) | escape }})"
 	>
 	<table class="table table-bordered m-0">

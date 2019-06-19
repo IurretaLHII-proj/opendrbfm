@@ -6,7 +6,7 @@
 
 {% block body %}
 	{{ headTitle(entity) }}
-	<ng-controller ng-controller="_OperationCtrl"
+	<ng-controller ng-controller="_OperationCtrl" class=""
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
 	>
 
@@ -47,7 +47,10 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="error in entity.hints">
+			<tr ng-if="!entity.hints.length">
+				<td colspan="5" class="text-center">No error type registered</td>
+			</tr>
+			<tr ng-if="entity.hints.length" ng-repeat="error in entity.hints">
 				<td class="text-center"><i class="fa fa-check" ng-if="error.standard"></i></td>
 				<td><span class="mr-2 badge badge-{[ error.color ]}">{[ error.priority ]}</span>
 				{[ error.name ]}</td>
@@ -166,6 +169,9 @@
 			</tr>
 		</thead>
 		<tbody>
+			<tr ng-if="stages.isEmpty()">
+				<td colspan="5" class="text-center">No stage registered</td>
+			</tr>
 			<tr ng-repeat="stage in stages.items">
 				<td class="text-center">
 					<a ng-if="stage.version.links.has('image')" href="{[ stage.process.links.getHref()  ]}">

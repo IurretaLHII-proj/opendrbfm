@@ -13,9 +13,11 @@
 		<div class="col-md-12 pt-2">
 			<h2 class="">{{ entity.name }}</h2>
 			<div class="my-2 btn-group btn-group-sm">
+				{#
 				<a class="btn btn-outline-secondary" href="{{ url('zfcuser/changepassword') }}">Change password</a>
 				<a class="btn btn-outline-secondary" href="{{ url('zfcuser/changeemail') }}">Change email</a>
-				<a class="btn btn-outline-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>
+				#}
+				{% if isAllowed(entity, 'edit') %}<a class="btn btn-outline-secondary" href="{{ url('user/detail', {id: entity.id, 'action': 'edit'}) }}">Edit roles</a>{% endif %}
 			</div>
 		</div>
 		<div class="col-md-6">

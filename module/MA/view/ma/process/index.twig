@@ -6,7 +6,7 @@
 
 {% block body %}
 	{{ tpl ? headTitle('Process templates') : headTitle('Home') }}
-	<ng-controller ng-controller="_ProcessCollectionCtrl" ng-init="init({{tpl ? true : false}})">
+	<ng-controller ng-controller="_ProcessCollectionCtrl" ng-init="init({{tpl ? true : false}})" class="row">
 
 	<div class="input-group input-group-sm sticky-top">
 
@@ -281,7 +281,7 @@
 					</div></div>
 				</td>
 				<td class="text-center">{[ item.code ]}</td>
-				<td class="text-center">{[ item.complexityLabel() ]}</td>
+				<td class="text-center"><a href="{[ item.complexity.links.getHref() ]}">{[ item.complexity.name ]}</a></td>
 				<td class="text-center"><a href="{[ item.plant.links.getHref() ]}">{[ item.plant.name ]}</a></td>
 				<td class="text-center"><a href="{[ item.machine.links.getHref() ]}">{[ item.machine.name ]}</a></td>
 				<td class="text-center">{[ item.line ]}</td>
