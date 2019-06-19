@@ -17,10 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ma_prod`
+-- Database: `drbfm`
 --
-CREATE DATABASE IF NOT EXISTS `ma_prod` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `ma_prod`;
+CREATE DATABASE `drbfm` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `drbfm`;
 
 -- --------------------------------------------------------
 
@@ -987,3 +987,10 @@ ALTER TABLE `process_version`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`username`, `email`, `display_name`, `password`, `state`, `roles`) VALUES
+('Admin', 'admin.opendrbfm@iurretalhi.eus', NULL, '$2y$14$nlhr6mXbR7QTkNB0ahYh3O9bvv5rRfvMSDyNxu4EdRJkrFl.TLt7S', NULL, 'a:1:{i:0;s:5:"admin";}');
