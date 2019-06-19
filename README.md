@@ -2,8 +2,8 @@
 
 ## Install
 
-Get composer and install PHP dependencies (**composer.json**)
-Get [last version of nodejs](https://github.com/nvm-sh/nvm) and install javascript dependencies with [npm](https://www.npmjs.com/) (**package.json**)
+* Get composer and install PHP dependencies (**composer.json**)
+* Get [last version of nodejs](https://github.com/nvm-sh/nvm) and install javascript dependencies with [npm](https://www.npmjs.com/) (**package.json**)
 
 ## Configuration
 
@@ -21,9 +21,10 @@ return [
 
 ## Demo
 
-Log in [https://dev.opendrbfm.iurretalhi.eus](https://dev.opendrbfm.iurretalhi.eus) with:
-  user:demouser
-  password:demouser
+Log in [https://dev.opendrbfm.iurretalhi.eus](https://dev.opendrbfm.iurretalhi.eus) with
+
+* user: demouser
+* password: demouser
 
 > This software needs a complete refactory.
 > Currently the frontend and backend works together without a serverless api, and both needs know each other.
