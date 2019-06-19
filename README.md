@@ -14,9 +14,14 @@ return [
   'host' => '',
   'user' => '',
   'password' => '',
-  'dbname' => '',
+  'dbname' => 'drbfm',
   'charset' => 'utf8',
 ];
+```
+run db structure script
+
+```php
+mysql -h 'host' -u 'user' -p'password' < /sql/structure.sql
 ```
 
 ## Demo
