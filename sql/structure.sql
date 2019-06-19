@@ -995,4 +995,4 @@ ALTER TABLE `process_version`
 INSERT INTO `user` (`username`, `email`, `display_name`, `password`, `state`, `roles`) VALUES
 ('Admin', 'admin.opendrbfm@iurretalhi.eus', NULL, '$2y$14$nlhr6mXbR7QTkNB0ahYh3O9bvv5rRfvMSDyNxu4EdRJkrFl.TLt7S', NULL, 'a:1:{i:0;s:5:"admin";}');
 INSERT INTO `user` (`username`, `email`, `display_name`, `password`, `state`, `roles`) VALUES
-(22, 'Demo', 'demouser@example.eus', NULL, '$2y$14$ry/wGwU77cn9Ifew.2QlTOxAQLy4Pn8W3oETuD4FYu14xI7cvjFdG', NULL, 'a:1:{i:0;s:4:"user";}');
+('Demo', 'demouser@example.eus', NULL, '$2y$14$ry/wGwU77cn9Ifew.2QlTOxAQLy4Pn8W3oETuD4FYu14xI7cvjFdG', NULL, 'a:1:{i:0;s:4:"user";}');
