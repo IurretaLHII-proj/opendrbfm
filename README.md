@@ -1,6 +1,6 @@
 # opendrbfm
 
-## Install
+## Installation
 
 * Get [composer](https://getcomposer.org/) and install PHP dependencies (**composer.json**)
 * Get [last version of nodejs](https://github.com/nvm-sh/nvm) and install javascript dependencies with [npm](https://www.npmjs.com/) (**package.json**)
