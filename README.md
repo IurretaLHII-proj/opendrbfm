@@ -1,4 +1,4 @@
-# opendrbfm
+# OpenDrbfm
 
 ## Installation
 
