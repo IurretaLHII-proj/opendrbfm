@@ -7,7 +7,7 @@
 
 ## Configuration
 
-Create ddbb.php file inside /config/autoload directory and type inside the credentials to connect the database.
+Create **ddbb.php** file inside **/config/autoload** directory and type inside the credentials to connect the database.
 
 ```php
 return [
@@ -18,7 +18,7 @@ return [
   'charset' => 'utf8',
 ];
 ```
-run db structure script
+run db **structure.sql** script located at **/sql** directory
 
 ```php
 mysql -h 'host' -u 'user' -p'password' < /sql/structure.sql
