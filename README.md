@@ -28,7 +28,7 @@ mysql -h 'host' -u 'user' -p'password' < /sql/structure.sql
 
 Log in [https://dev.opendrbfm.iurretalhi.eus](https://dev.opendrbfm.iurretalhi.eus) with
 
-* user: demouser
+* user: Demo
 * password: demouser
 
 > This software needs a complete refactory.
