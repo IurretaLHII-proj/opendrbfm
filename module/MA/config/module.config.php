@@ -60,4 +60,8 @@ return [
 		'cache_expire' => 86400,
 		'cookie_lifetime' => 86400,
 	],	
+	'dompdf_module' => [
+        'enable_html5parser' => true,
+        //'debug_css' => true,
+	],
 ];

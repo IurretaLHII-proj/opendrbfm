@@ -1,0 +1,104 @@
+<html lang="en">
+    <head>
+        <!--<link href="/js/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">-->
+		<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css">-->
+
+		<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+
+		<style type="text/css">
+			ul,
+			ul li ul {
+				list-style: none;
+			}
+			
+		</style>
+	</head>
+	<body>
+
+	<div style="display:inline-block; background: red; padding: 10px;">a</div>
+	<div style="display:inline-block; background: red; padding: 10px;">a</div>
+	<div style="display:inline-block; background: red; padding: 10px;">a</div>
+	<div style="display:inline-block; background: red; padding: 10px;">a</div>
+	
+	<h2><?php echo $this->entity; ?>. <small>nº<?php echo $this->entity->getNumber(); ?></small></h2>
+
+	<?php foreach ($this->entity->getVersions() as $version) : ?>
+		<?php foreach ($version->getStages() as $stage) : ?>
+			<div class="" style="display:inline-block; width:<?php echo (100/$version->getStages()->count()); ?>%">Stage <?php echo $stage->getOrder(); ?>
+				<?php foreach ($stage->getHints() as $h => $error) : ?>
+					<div>
+					<p><?php echo $error->getName(); ?></p>
+					<?php if (!$error->getReasons()->isEmpty()): ?>
+						<ul>
+						<?php foreach ($error->getReasons() as $r => $reason) : ?>
+							<li>
+								<small><b>Reason <?php echo $r+1;?></b></small>
+								<?php if (!$reason->getNotes()->isEmpty()) : ?>
+								<ul>
+									<?php foreach ($reason->getNotes() as $note): ?>
+										<li><?php echo $note->getText(); ?></li>
+									<?php endforeach; ?>
+								</ul>
+								<?php endif; ?>
+
+								<?php if (!$reason->getInfluences()->isEmpty()) : ?>
+								<ul>
+								<?php foreach ($reason->getInfluences() as $i => $influence) : ?>
+									<li>
+										<small><b>Influence <?php echo $r+1;?>.<?php echo $i+1; ?></b></small>
+										<?php if (!$influence->getNotes()->isEmpty()) : ?>
+										<ul>
+											<?php foreach ($influence->getNotes() as $note): ?>
+												<li><?php echo $note->getText(); ?></li>
+											<?php endforeach; ?>
+										</ul>
+										<?php endif; ?>
+										<?php if (!$influence->getSimulations()->isEmpty()) : ?>
+										<ul class="simulations">
+											<?php foreach ($influence->getSimulations() as $s => $simulation): ?>
+												<li>
+													<small>Simulation <?php echo $r+1; ?>.<?php echo $i+1; ?>.<?php echo $s+1; ?></small>
+													<?php if (!$simulation->getSuggestions()->isEmpty()) : ?>
+													<ul>
+														<small>Suggestions</small>
+														<?php foreach ($simulation->getSuggestions() as $note) : ?>
+															<li><?php echo $note->getText(); ?></li>
+														<?php endforeach; ?>
+													</ul>
+													<?php endif; ?>
+													<?php if (!$simulation->getEffects()->isEmpty()) : ?>
+													<ul>
+														<small>Effects</small>
+														<?php foreach ($simulation->getEffects() as $note) : ?>
+															<li><?php echo $note->getText(); ?></li>
+														<?php endforeach; ?>
+													</ul>
+													<?php endif; ?>
+													<?php if (!$simulation->getPreventions()->isEmpty()) : ?>
+													<ul>
+														<li><small>Preventions</small></li>
+														<?php foreach ($simulation->getPreventions() as $note) : ?>
+															<li><?php echo $note->getText(); ?></li>
+														<?php endforeach; ?>
+													</ul>
+													<?php endif; ?>
+												</li>
+											<?php endforeach; ?>	
+										</ul>
+										<?php endif; ?>
+									</li>	
+								<?php endforeach; ?>
+								</ul>
+								<?php endif; ?>
+							</li>
+						<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				</div>
+				<?php endforeach; ?>
+			</div>
+		<?php endforeach; ?>
+	<?php endforeach; ?>
+
+	</body>
+</html>

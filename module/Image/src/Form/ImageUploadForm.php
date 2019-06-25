@@ -11,7 +11,7 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 class ImageUploadForm extends Form implements 
     ServiceLocatorAwareInterface, InputFilterProviderInterface
 {
-    const UPLOAD_TARGET = './public/img';
+    const UPLOAD_TARGET = '/public/img';
 
     /**
      * @var ServiceLocatorInterface
@@ -66,9 +66,10 @@ class ImageUploadForm extends Form implements
                     [
                         'name' => 'Zend\Filter\File\RenameUpload',
                         'options' => array(
-                            'target' => static::UPLOAD_TARGET,
-                            //'use_upload_name' => true, 
-                            //'use_upload_extension' => true,
+                            'target' => getcwd() . '/public/img/' . uniqid(),
+                            'use_upload_name' => false, 
+                            'use_upload_extension' => true,
+							'randomize' => false,
                             'overwrite' => true,
                         )
                     ]

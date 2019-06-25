@@ -18,21 +18,32 @@
 		ng-controller="_ProcessReportCtrl" 
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
   	>
-
 		<h2 class="m-2">{[ process.title ]}<small class="ml-2 text-muted">| Report</small></h2>
 
-		<form method="POST" action="{[ process.links.getHref('pdf') ]}">
-			<input type="submit" value="PDF" class="btn btn-success pull-right" />
+		<form method="POST" action="{[ process.links.getHref('pdf') ]}" target="_blank">
+			<input ng-repeat="v in selection.versions" 
+				type="checkbox" checked=true name="versions[]" value="{[v]}" class="d-none">
+			<input ng-repeat="s in selection.stages" 
+				type="checkbox" checked=true name="stages[]" value="{[s]}" class="d-none">
+			<input ng-repeat="h in selection.hints" 
+				type="checkbox" checked=true name="hints[]" value="{[h]}" class="d-none">
+			<input ng-repeat="r in selection.reasons" 
+				type="checkbox" checked=true name="reasons[]" value="{[r]}" class="d-none">
+			<input ng-repeat="r in selection.influences" 
+				type="checkbox" checked=true name="influences[]" value="{[r]}" class="d-none">
+			<input ng-repeat="r in selection.simulations" 
+				type="checkbox" checked=true name="simulations[]" value="{[r]}" class="d-none">
+			<input ng-repeat="r in selection.notes" 
+				type="checkbox" checked=true name="notes[]" value="{[r]}" class="d-none">
+			<input type="submit" value="PDF" class="btn btn-success pull-block" />
 		</form>
 
-		<div ng-repeat="version in process.versions" class="">
-			<div class="">
-				<a class="btn btn-sm btn-outline-primary" 
-					ng-class="{active:selection.versions.indexOf(version.id) > -1}"
-					ng-click="toggleVersion(version)">
-					{[version.name]}
-				</a>
-			</div>
+		<div ng-repeat="version in process.versions" class="mb-1">
+			<a class="btn btn-sm btn-outline-primary btn-block my-1" 
+				ng-class="{active:selection.versions.indexOf(version.id) > -1}"
+				ng-click="toggleVersion(version)">
+				{[version.name]}
+			</a>
 			<div class="" ng-if="isVersionSelected(version)">
 				<div class="row">
 					<div ng-repeat="stage in version.stages" class="col px-1">

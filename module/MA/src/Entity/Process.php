@@ -562,6 +562,19 @@ class Process implements
 		$this->getVersions()->add($version);
         return $this;
     }
+    
+    /**
+     * Remove version.
+     *
+     * @param VersionInterface version the value to set.
+     * @return Process.
+     */
+    public function removeVersion(VersionInterface $version)
+    {
+		//$version->setProcess(null);
+		$this->getVersions()->removeElement($version);
+        return $this;
+    }
 
     /**
      * Get stages.
@@ -743,16 +756,12 @@ class Process implements
 	public function __clone()
 	{
 		$this->id 	    = null;
+		$this->user		= null;
 		$this->title	= "Clone of " . $this->title;
 		$this->created  = new DateTime;
 		$this->updated  = new DateTime;
 		$this->actions  = new ArrayCollection;
 		$this->tpl 		= false;
-
-		//Assocs: Does in controller action to asign version parents
-		//$versions = $this->getVersions();
-		//$this->versions = new ArrayCollection;
-		//foreach ($versions as $version) $this->addVersion(clone $version);
 	}
 
 	/**

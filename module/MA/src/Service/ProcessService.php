@@ -7,4 +7,5 @@ use Base\Service\AbstractService;
 
 class ProcessService extends AbstractService
 {
+	const EVENT_CLONE = 'clone';
 }

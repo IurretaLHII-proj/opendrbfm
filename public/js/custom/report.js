@@ -33,8 +33,8 @@ App.controller('_ProcessReportCtrl', function($scope, $resource) {
 						let stage = MAStage.fromJSON(e);
 						version.addStage(stage);
 						$scope.toggleStage(stage);
-						$scope.selection.versions.push(version.id);
 					});
+					$scope.selection.versions.push(version.id);
 				}
 			);
 		}

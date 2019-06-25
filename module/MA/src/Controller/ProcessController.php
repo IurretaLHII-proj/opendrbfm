@@ -60,20 +60,6 @@ class ProcessController extends \Base\Controller\AbstractActionController
 		]);
 	}
 
-	protected function _versionHierarchy(\MA\Entity\VersionInterface $version)
-	{
-		if (!$version->getChildren()->isEmpty()) {
-			$children = $version->getChildren()->toArray();
-			while ($child = array_shift($children)) {
-				$version->addChild(clone $child);
-				//echo '<pre>';
-				//var_dump($version->getName().'-'.$child->getName());
-				//echo '</pre>';
-				$this->versionHierarchy($child);
-			}
-		}
-	}
-
 	protected function versionHierarchy(ProcessInterface $process, VersionInterface $version)
 	{
 		$cloned = clone $version;
@@ -84,6 +70,7 @@ class ProcessController extends \Base\Controller\AbstractActionController
 				$cloned->addChild($this->versionHierarchy($process, $child));
 			}
 		}
+		$this->triggerService($this->params()->fromRoute('action'), $cloned);
 		return $cloned;
 	}
 
@@ -102,6 +89,7 @@ class ProcessController extends \Base\Controller\AbstractActionController
 		}
 
 		$this->triggerService($this->params()->fromRoute('action'), $c);
+
 		$this->getEntityManager()->persist($c);
 		$this->getEntityManager()->flush();
 
@@ -156,16 +144,50 @@ class ProcessController extends \Base\Controller\AbstractActionController
 
 		if ($this->getRequest()->isPost()) {
 
-			//$data = Json::decode($this->getRequest()->getContent(), Json::TYPE_ARRAY);
-			$data = $this->getRequest()->getPost();
+			//set_time_limit(0);
+
+			$values = $this->getRequest()->getPost();
+			foreach ($e->getVersions() as $version) {
+				if (!in_array((string) $version->getId(), $values['versions'])) {
+					$e->removeVersion($version);
+				}
+				else {
+					foreach ($version->getStages() as $stage) {
+						if (!in_array((string) $stage->getId(), $values['stages'])) {
+							$version->removeStage($stage);
+						}
+						else {
+							foreach ($stage->getHints() as $error) {
+								if (!in_array((string) $error->getId(), $values['hints'])) {
+									$stage->removeHint($error);
+								}
+								else {
+									foreach ($error->getReasons() as $r) {
+										if (!in_array((string) $r->getId(), $values['reasons'])) {
+											$error->removeReason($r);
+										}
+										else {
+											foreach ($r->getInfluences() as $i) {
+												if (!in_array((string) $i->getId(), $values['influences'])) {
+													$r->removeInfluence($i);
+												}
+											}
+										}	
+									}
+								}	
+							}
+						}	
+					}
+				}
+			}
 
 			$pdf = new PdfModel([
 				'entity' => $e,
 			]);
 
 			$pdf->setTerminal(true);
-
-        	$pdf->setOption('filename', $e . '-report');	// "pdf" extension is automatically appended
+			//$pdf->setOption('basePath', '/');
+        	//$pdf->setOption('filename', $e . '-report');	// "pdf" extension is automatically appended
         	$pdf->setOption('paperOrientation', 'landscape'); // Defaults to "portrait"
         	$pdf->setOption('paperSize', 'a4');               	// Defaults to "8x11"
     		return $pdf;

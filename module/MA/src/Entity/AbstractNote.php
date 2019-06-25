@@ -333,6 +333,14 @@ abstract class AbstractNote implements
 	}
 
 	/**
+	 * @return string
+	 */
+	public function totring()
+	{
+		return $this->getText();
+	}
+
+	/**
 	 * @return mixed
 	 */
 	abstract public function getSource();

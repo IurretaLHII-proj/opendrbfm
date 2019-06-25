@@ -64,7 +64,6 @@
 
 <h2><?php echo $this->entity; ?>. <small>nº<?php echo $this->entity->getNumber(); ?></small></h2>
 
-<!--
 <table class="process">
 	<tbody>
 		<tr>
@@ -84,13 +83,13 @@
 		<?php if (null !== ($desc = $this->entity->getBody())) : ?>
 			<tr>
 				<td colspan="6">
+					<!--<b>Description</b>-->
 					<?php echo $desc; ?>
 				</td>
 			</tr>
 		<?php endif; ?>
 	</tbody>
 </table>
--->
 
 <?php foreach ($this->entity->getVersions() as $version) : ?>
 <table>

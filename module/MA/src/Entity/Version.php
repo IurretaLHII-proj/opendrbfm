@@ -478,7 +478,7 @@ class Version implements
     {
 		//FIXME
 		//$stage->setProcess();
-		//$this->getStages()->removeElement($stage);
+		$this->getStages()->removeElement($stage);
         return $this;
     }
     
@@ -678,6 +678,7 @@ class Version implements
 	{
 		$this->id 	    	= null;
 		$this->name			= "Clone of " . $this->name;
+		$this->user			= null;
 		$this->parent		= null;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;

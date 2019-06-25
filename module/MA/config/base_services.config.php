@@ -44,6 +44,7 @@ return [
 				'events'   => [
 					\Base\Service\AbstractService::EVENT_CREATE,
 					Service\CommentService::EVENT_REPLY,
+					Service\ProcessService::EVENT_CLONE,
 				],
 				'callback' => 'injectUser',
 				'priority' => 100,

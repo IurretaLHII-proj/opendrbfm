@@ -313,6 +313,17 @@ class Hint implements
 		$this->getReasons()->add($reason);
 		return $this;
 	}
+
+	/**
+	 * @param HintReasonInterface $reason
+	 * @return HintInterface
+	 */
+	public function removeReason(HintReasonInterface $reason)
+	{
+		//$reason->setHint();
+		$this->getReasons()->removeElement($reason);
+		return $this;
+	}
     
     /**
      * Get user.

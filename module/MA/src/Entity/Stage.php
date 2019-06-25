@@ -390,6 +390,17 @@ class Stage implements
 	}
 
 	/**
+	 * @param HintInterface hint
+	 * @return StageInterface
+	 */
+	public function removeHint(HintInterface $hint)
+	{
+		//$hint->setStage();
+		$this->getHints()->removeElement($hint);
+		return $this;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function hasImage()
@@ -651,6 +662,7 @@ class Stage implements
 	public function __clone()
 	{
 		$this->id 		    = null;
+		$this->user			= null;
 		$this->commentCount = 0;
 		$this->comments		= new ArrayCollection;
 		$this->created    	= new DateTime;
