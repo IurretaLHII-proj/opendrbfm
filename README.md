@@ -20,6 +20,17 @@ return [
   'charset' => 'utf8',
 ];
 ```
+--
+-- Database: `drbfm`
+--
+CREATE DATABASE `DATABASENAME` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+
+GRANT ALL PRIVILEGES ON DATABASENAME
+
+USE `DATABASENAME`;
+
+
+
 run db **structure.sql** script located at **sql** directory
 
 ```php
