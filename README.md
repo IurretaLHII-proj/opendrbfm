@@ -5,6 +5,20 @@
 * Get [composer](https://getcomposer.org/) and install PHP dependencies (**composer.json**)
 * Get [last version of nodejs](https://github.com/nvm-sh/nvm) and install javascript dependencies with [npm](https://www.npmjs.com/) (**package.json**)
 
+
+## Create database
+--
+-- Database: `DATABASENAME`
+--
+CREATE DATABASE `DATABASENAME` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+GRANT ALL PRIVILEGES ON DATABASENAME.* TO 'USERNAME'@'localhost' IDENTIFIED BY 'USERPASSWORD';
+
+run db **structure.sql** script located at **sql** directory
+```php
+mysql -h localhost -u USERNAME -pUSERPASSWORD < sql/structure.sql
+```
+
 ## Configuration
 
 Create **ddbb.php** file inside **config/autoload** directory and type inside the credentials to connect the database.
@@ -13,29 +27,14 @@ Create **ddbb.php** file inside **config/autoload** directory and type inside th
 <?php
 
 return [
-  'host' => '',
-  'user' => '',
-  'password' => '',
-  'dbname' => 'drbfm',
+  'host' => 'localhost',
+  'user' => 'USERNAME',
+  'password' => 'USERPASSWORD',
+  'dbname' => 'DATABASENAME',
   'charset' => 'utf8',
 ];
 ```
---
--- Database: `drbfm`
---
-CREATE DATABASE `DATABASENAME` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 
-GRANT ALL PRIVILEGES ON DATABASENAME
-
-USE `DATABASENAME`;
-
-
-
-run db **structure.sql** script located at **sql** directory
-
-```php
-mysql -h 'host' -u 'user' -p'password' < sql/structure.sql
-```
 ## Permissions
 
 Give **write permissions to Apache** on following directories
