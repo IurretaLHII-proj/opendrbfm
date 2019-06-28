@@ -16,12 +16,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Database: `drbfm`
---
-CREATE DATABASE `drbfm` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `drbfm`;
-
 -- --------------------------------------------------------
 
 --
@@ -41,7 +35,7 @@ CREATE TABLE `action` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comment`
+-- Table structure for table `comment`$2y$14$2zRjiUcjeg/.6JXM29w.UOX7C44zajhvbhtixvFELu/epbvUI0k8W
 --
 
 CREATE TABLE `comment` (
@@ -993,6 +987,5 @@ ALTER TABLE `process_version`
 --
 
 INSERT INTO `user` (`username`, `email`, `display_name`, `password`, `state`, `roles`) VALUES
-('Admin', 'admin.opendrbfm@iurretalhi.eus', NULL, '$2y$14$nlhr6mXbR7QTkNB0ahYh3O9bvv5rRfvMSDyNxu4EdRJkrFl.TLt7S', NULL, 'a:1:{i:0;s:5:"admin";}');
-INSERT INTO `user` (`username`, `email`, `display_name`, `password`, `state`, `roles`) VALUES
-('Demo', 'demouser@example.eus', NULL, '$2y$14$ry/wGwU77cn9Ifew.2QlTOxAQLy4Pn8W3oETuD4FYu14xI7cvjFdG', NULL, 'a:1:{i:0;s:4:"user";}');
+('admin', 'admin-opendrbfm@example.com', NULL, '$2y$14$2zRjiUcjeg/.6JXM29w.UOX7C44zajhvbhtixvFELu/epbvUI0k8W', NULL, 'a:1:{i:0;s:5:"admin";}');
+
