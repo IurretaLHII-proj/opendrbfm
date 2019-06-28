@@ -18,6 +18,8 @@ SET time_zone = "+00:00";
 
 -- --------------------------------------------------------
 
+USE `DATABASENAME`;
+
 --
 -- Table structure for table `action`
 --
