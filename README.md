@@ -14,7 +14,8 @@ CREATE DATABASE `DATABASENAME` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_c
 
 GRANT ALL PRIVILEGES ON DATABASENAME.* TO 'USERNAME'@'localhost' IDENTIFIED BY 'USERPASSWORD';
 
-run db **structure.sql** script located at **sql** directory
+run db **structure.sql** script located at **sql** directory and replace DATABASENAME with yours.
+
 ```php
 mysql -h localhost -u USERNAME -pUSERPASSWORD < sql/structure.sql
 ```
