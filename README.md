@@ -10,6 +10,8 @@
 Create **ddbb.php** file inside **config/autoload** directory and type inside the credentials to connect the database.
 
 ```php
+<?php
+
 return [
   'host' => '',
   'user' => '',
@@ -23,10 +25,16 @@ run db **structure.sql** script located at **sql** directory
 ```php
 mysql -h 'host' -u 'user' -p'password' < sql/structure.sql
 ```
+## Permissions
+
+Give **write permissions to Apache** on following directories
+
+* /data
+* /public/img
 
 ## Demo
 
-Log in [https://dev.opendrbfm.iurretalhi.eus](https://dev.opendrbfm.iurretalhi.eus) with
+Log in [https://opendrbfm.iurretalhi.eus](https://opendrbfm.iurretalhi.eus) with
 
 * user: Demo
 * password: demouser
