@@ -10,8 +10,8 @@ nbproject
 .settings
 vendor
 composer.phar
-data
-public/img
+data/*
+public/img/*
 public/js/.package-lock.json
 public/js/node_modules
 public/js/_node_modules

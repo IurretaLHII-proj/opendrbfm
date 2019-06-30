@@ -18,69 +18,167 @@
 		ng-controller="_ProcessReportCtrl" 
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
   	>
-
 		<h2 class="m-2">{[ process.title ]}<small class="ml-2 text-muted">| Report</small></h2>
 
-		{[ selection ]}
-		
-		<div ng-repeat="version in process.versions" class="">
-			<div class="">
-				<input type="checkbox" class=""
-					name="versions[]" value="{[version.id]}" 
-					ng-checked="selection.versions.indexOf(version.id) > -1"						
-					ng-click="toggleVersion(version)">
-				<label class="">{[version.name]}</label>
-			</div>
-			<div class="">
+		<form method="POST" action="{[ process.links.getHref('excel') ]}" target="_blank">
+			<input ng-repeat="v in selection.versions" 
+				type="checkbox" checked=true name="versions[]" value="{[v]}" class="d-none">
+			<input ng-repeat="s in selection.stages" 
+				type="checkbox" checked=true name="stages[]" value="{[s]}" class="d-none">
+			<input ng-repeat="h in selection.hints" 
+				type="checkbox" checked=true name="hints[]" value="{[h]}" class="d-none">
+			<input ng-repeat="r in selection.reasons" 
+				type="checkbox" checked=true name="reasons[]" value="{[r]}" class="d-none">
+			<input ng-repeat="r in selection.influences" 
+				type="checkbox" checked=true name="influences[]" value="{[r]}" class="d-none">
+			<input ng-repeat="r in selection.simulations" 
+				type="checkbox" checked=true name="simulations[]" value="{[r]}" class="d-none">
+			<input ng-repeat="r in selection.notes" 
+				type="checkbox" checked=true name="notes[]" value="{[r]}" class="d-none">
+			<input type="submit" value="PDF" class="btn btn-success pull-block" />
+		</form>
+
+		<div ng-repeat="version in process.versions" class="mb-1">
+			<a class="btn btn-sm btn-outline-primary btn-block my-1" 
+				ng-class="{active:selection.versions.indexOf(version.id) > -1}"
+				ng-click="toggleVersion(version)">
+				{[version.name]}
+			</a>
+			<div class="" ng-if="isVersionSelected(version)">
 				<div class="row">
-					<div ng-repeat="stage in version.stages" class="col border">
-						<div class="row">
-							<div class="col-md-2">
-								<input type="checkbox" class="" 
-									name="stages[]" value="{[stage.id]}" 
-									ng-checked="selection.stages.indexOf(stage.id) > -1"	
-									ng-click="toggleStage(stage)">
-							</div>
-							<div class="col-md-10">{[stage.name]}</div>
-						</div>
+					<div ng-repeat="stage in version.stages" class="col px-1">
+						<a class="btn btn-sm btn-outline-primary btn-block" 
+							ng-class="{'btn-outline-primary active':isStageSelected(stage)}"
+							ng-click="toggleStage(stage)">
+							<i class="fa fa-check"></i>
+							{[stage.name]}
+						</a>
 						<div class="text-center">
 							<img ng-repeat="img in stage.images" 
 								ng-src="{[ img.links.getHref() ]}" class="stage-img"/>
 						</div>
-						<div ng-if="stage.hints.length" class="font-weight-bold">Errors</div>
-						<div ng-repeat="hint in stage.hints" class="row">
-							<div class="col-md-2">
-								<input type="checkbox" class="" 
-									name="hints[]" value="{[hint.id]}" 
-									ng-checked="selection.hints.indexOf(hint.id) > -1"	
+						<div class="my-1 border rounded"
+							ng-if="isStageSelected(stage)"
+							ng-repeat="hint in stage.hints"
+							ng-class="{'border-primary':isHintSelected(hint)}">
+							<div class="d-flex">
+								<input type="checkbox" class="align-self-center mx-1" 
+									ng-disabled="!isStageSelected(stage)"
+		  							ng-checked="isHintSelected(hint)"
 									ng-click="toggleHint(hint)">
+								<div class="p-1 rounded flex-fill"
+									 ng-class="{'bg-light border':isHintSelected(hint)}">
+									<span class="badge badge-{[hint.color]} mr-2">{[hint.priority]}</span>
+									{[ hint.name ]}
+								</div>
 							</div>
-							<div class="col-md-10">
-								<p>{[hint.name]}</p>
-								<div ng-if="hint.reasons.length">
-									<b>Reasons</b>
-									<div ng-repeat="(r, reason) in hint.reasons" class="">
-										<!-- Reason -->
-										<div class="">
-											<input type="checkbox" class="">
-											<div ng-repeat="note in reason.notes" class="d-flex">
-												<input type="checkbox" class="">
-												<label ng-bind-html="note"></label>
-											</label>
-										</div>
-										<div ng-if="reason.influences.length">
-											<!-- Influence -->
-											<b>Influences</b>
-											<div ng-repeat="(i, influence) in reason.influences"
-											   	class="">
-												<div class="">
-													<input type="checkbox" class="" 
-													>
-													<label class="" 
-														ng-repeat="note in influence.notes" 
-														ng-bind-html="note"></label>
-												</div>
+							<div class="desc small px-1"
+			   					ng-if="hint.description" 
+		   						ng-bind-html="hint.description"
+		   					></div>
+							<div class="m-1 ml-2"
+		   						ng-if="hint.reasons.length && isHintSelected(hint)" 
+								ng-repeat="(r, reason) in hint.reasons">
+								<input type="checkbox" class="align-self-center mx-1" 
+									ng-disabled="!isHintSelected(hint)"
+		  							ng-checked="isReasonSelected(reason)"
+									ng-click="toggleReason(reason)">
+								<small class="font-weight-bold"
+								>Reason {[ r+1 ]}</small>
+								<div class="d-flex flex-row m-1"
+		  							ng-if="isReasonSelected(reason)"
+									ng-repeat="note in reason.notes" 
+	  							>
+									<input type="checkbox" class="align-self-center mx-1" 
+										ng-disabled="!isReasonSelected(reason)"
+		  								ng-checked="isNoteSelected(note)"
+										ng-click="toggleNote(note)">
+									<div class="desc rounded p-1"
+										ng-bind-html="note" 
+	 									ng-class="{'bg-light border':isNoteSelected(note)}"
+									></div>
+								</div>
+								<!-- Influence -->
+								<div class="mt-1 ml-2"
+								   ng-if="reason.influences.length && isReasonSelected(reason)" 
+								   ng-repeat="(i, influence) in reason.influences">
+									<input type="checkbox" class="align-self-center mx-1" 
+										ng-disabled="!isReasonSelected(reason)"
+		  								ng-checked="isInfluenceSelected(influence)"
+										ng-click="toggleInfluence(influence)">
+									<small class="font-weight-bold">Influence {[ r+1 ]}.{[ i+1 ]}</small>
+									<div class="d-flex flex-row m-1"
+		  								ng-if="isInfluenceSelected(influence)"
+										ng-repeat="note in influence.notes" 
+									>
+										<input type="checkbox" class="align-self-center mr-1" 
+											ng-disabled="!isInfluenceSelected(influence)"
+		  									ng-checked="isNoteSelected(note)"
+											ng-click="toggleNote(note)">
+										<div class="desc rounded p-1"
+											ng-bind-html="note" 
+	 										ng-class="{'bg-light border':isNoteSelected(note)}"
+										></div>
+									</div>
+									<div class="mt-1 ml-2"
+			  							 ng-if="influence.simulations.length && isInfluenceSelected(influence)" 
+										 ng-repeat="(s, simulation) in influence.simulations" 
+									>
+										<div class="d-flex">
+											<input type="checkbox" class="align-self-center mx-1" 
+												ng-disabled="!isInfluenceSelected(influence)"
+		  										ng-checked="isSimulationSelected(simulation)"
+												ng-click="toggleSimulation(simulation)">
+											<div class="small p-1 rounded" ng-class="{'bg-light border':isSimulationSelected(simulation)}">
+												<span class="font-weight-bold text-{[simulation.stateColor()]}">{[ simulation.stateLabel() ]}</span>
+												<span ng-if="simulation.who">{[simulation.who.name]}</span>
+												<span ng-if="simulation.when"class="small text-center">{[ simulation.when | date:"dd MMMyy"]}</span>
 											</div>
+										</div>
+										<small class="font-weight-bold"
+											ng-if="simulation.suggestions.length && isSimulationSelected(simulation)" 
+										>Suggestions</small>
+										<div class="d-flex flex-row m-1"
+											ng-if="isSimulationSelected(simulation)" 
+											ng-repeat="note in simulation.suggestions">
+											<input type="checkbox" class="align-self-center mr-1"
+												ng-disabled="!isSimulationSelected(simulation)"
+		  										ng-checked="isNoteSelected(note)"
+												ng-click="toggleNote(note)">
+											<div class="desc rounded p-1"
+												ng-bind-html="note" 
+	 											ng-class="{'bg-light border':isNoteSelected(note)}"
+											></div>
+										</div>
+										<small class="font-weight-bold"
+											ng-if="simulation.effects.length && isSimulationSelected(simulation)" 
+										>Effects</small>
+										<div class="d-flex flex-row m-1"
+											ng-if="isSimulationSelected(simulation)" 
+											ng-repeat="note in simulation.effects">
+											<input type="checkbox" class="align-self-center mr-1"
+												ng-disabled="!isSimulationSelected(simulation)"
+		  										ng-checked="isNoteSelected(note)"
+												ng-click="toggleNote(note)">
+											<div class="desc rounded p-1"
+												ng-bind-html="note" 
+	 											ng-class="{'bg-light border':isNoteSelected(note)}"
+											></div>
+										</div>
+										<small class="font-weight-bold"
+											ng-if="simulation.preventions.length && isSimulationSelected(simulation)" 
+										>Preventions</small>
+										<div class="d-flex flex-row m-1"
+											ng-if="isSimulationSelected(simulation)" 
+											ng-repeat="note in simulation.preventions">
+											<input type="checkbox" class="align-self-center mr-1"
+												ng-disabled="!isSimulationSelected(simulation)"
+		  										ng-checked="isNoteSelected(note)"
+												ng-click="toggleNote(note)">
+											<div class="desc rounded p-1"
+												ng-bind-html="note" 
+	 											ng-class="{'bg-light border':isNoteSelected(note)}"
+											></div>
 										</div>
 									</div>
 								</div>

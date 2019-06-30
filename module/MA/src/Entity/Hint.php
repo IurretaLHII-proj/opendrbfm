@@ -3,7 +3,7 @@
 namespace MA\Entity;
 
 use Doctrine\ORM\Mapping as ORM,
-	Doctrine\Common\Collections\ArrayCollection;
+    Doctrine\Common\Collections\ArrayCollection;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
@@ -13,35 +13,35 @@ use DateTime;
  * @ORM\Table(name="process_hint")
  */
 class Hint implements 
-	ResourceInterface, 
-	\User\Entity\UserAwareInterface,
-	\Base\Hal\LinkProvider,
-	\Base\Hal\LinkPrepareAware,
-	CommentProviderInterface,
-	HintInterface 
+    ResourceInterface, 
+    \User\Entity\UserAwareInterface,
+    \Base\Hal\LinkProvider,
+    \Base\Hal\LinkPrepareAware,
+    CommentProviderInterface,
+    HintInterface 
 {
-	/**
-	 * @var int 
-	 * @ORM\Id
-	 * @ORM\Column(type="integer")
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	protected $id;
-
-	/**
-	 * @var int
-	 * @ORM\Column(type="integer", name="prior", options={"default":1})
-	 */
-	protected $priority = 1;
-
-	/**
-	 * @var string 
-	 * @ORM\Column(type="string", options = {"nullable":true})
-	 */
-	protected $text;
+    /**
+     * @var int 
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
     /**
-	 * @var string 
+     * @var int
+     * @ORM\Column(type="integer", name="prior", options={"default":1})
+     */
+    protected $priority = 1;
+
+    /**
+     * @var string 
+     * @ORM\Column(type="string", options = {"nullable":true})
+     */
+    protected $text;
+
+    /**
+     * @var string 
      * @ORM\Column(
      *    type="string",
      *    name="descr",
@@ -50,107 +50,107 @@ class Hint implements
      */
     protected $description;
 
-	/**
-	 * @var User
-	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\User",
-	 *	inversedBy	 = "hints",
-	 * )
-	 * @ORM\JoinColumn(
-	 *	name= "uid",
-	 *	referencedColumnName = "user_id"
-	 * )
-	 */
-	protected $user;
+    /**
+     * @var User
+     * @ORM\ManyToOne(
+     *    targetEntity = "MA\Entity\User",
+     *    inversedBy     = "hints",
+     * )
+     * @ORM\JoinColumn(
+     *    name= "uid",
+     *    referencedColumnName = "user_id"
+     * )
+     */
+    protected $user;
 
     /**
-	 * @var StageInterface
+     * @var StageInterface
      * @ORM\ManyToOne(
      *     targetEntity="MA\Entity\Stage",
      *     inversedBy="hints"
      * )
      * @ORM\JoinColumn(
      *     name = "stg_id",
-	 *     referencedColumnName = "id"
+     *     referencedColumnName = "id"
      * )
      */
     protected $stage;
 
     /**
-	 * @var HintTypeInterface
+     * @var HintTypeInterface
      * @ORM\ManyToOne(
      *     targetEntity="MA\Entity\HintType",
      *     inversedBy="hints"
      * )
      * @ORM\JoinColumn(
      *     name = "type_id",
-	 *     referencedColumnName = "id"
+     *     referencedColumnName = "id"
      * )
      */
     protected $type;
 
-	/**
-	 * @var HintReasonInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\HintReason",
-	 *	mappedBy	 = "hint",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $reasons;
+    /**
+     * @var HintReasonInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\HintReason",
+     *    mappedBy     = "hint",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $reasons;
 
-	/**
-	 * @var ActionInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Action\Hint",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $actions;
+    /**
+     * @var ActionInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Action\Hint",
+     *    mappedBy     = "source",
+     *    cascade      = {"remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $actions;
 
-	/**
-	 * @var CommentInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Comment\Hint",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
-	 */
-	protected $comments;
+    /**
+     * @var CommentInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Comment\Hint",
+     *    mappedBy     = "source",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "DESC"})
+     */
+    protected $comments;
 
-	/**
-	 * @var int
-	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
-	 */
-	protected $commentCount = 0;
+    /**
+     * @var int
+     * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+     */
+    protected $commentCount = 0;
 
-	/**
-	 * @var DateTime
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $created;
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
 
-	/**
-	 * @var DateTime
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $updated;
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
 
-	/**
-	 * @return
-	 */
-	public function __construct()
-	{
-		$this->created   = new DateTime;
-		$this->updated   = new DateTime;
-		$this->reasons   = new ArrayCollection;
-		$this->comments  = new ArrayCollection;
-		$this->actions   = new ArrayCollection;
-	}
+    /**
+     * @return
+     */
+    public function __construct()
+    {
+        $this->created   = new DateTime;
+        $this->updated   = new DateTime;
+        $this->reasons   = new ArrayCollection;
+        $this->comments  = new ArrayCollection;
+        $this->actions   = new ArrayCollection;
+    }
     
     /**
      * Get id.
@@ -240,13 +240,13 @@ class Hint implements
         return $this;
     }
 
-	/**
-	 * @return OperationInterface
-	 */
-	public function getOperation()
-	{
-		return $this->getType()->getOperation();
-	}
+    /**
+     * @return OperationInterface
+     */
+    public function getOperation()
+    {
+        return $this->getType()->getOperation();
+    }
     
     /**
      * Get type.
@@ -270,65 +270,65 @@ class Hint implements
         return $this;
     }
 
-	/**
+    /**
      * Get version.
      *
-	 * @return VersionInterface
-	 */
-	public function getVersion()
-	{
-		return $this->getStage()->getVersion();
-	}
+     * @return VersionInterface
+     */
+    public function getVersion()
+    {
+        return $this->getStage()->getVersion();
+    }
 
-	/**
+    /**
      * Get process.
      *
-	 * @return ProcessInterface
-	 */
-	public function getProcess()
-	{
-		return $this->getStage()->getProcess();
-	}
+     * @return ProcessInterface
+     */
+    public function getProcess()
+    {
+        return $this->getStage()->getProcess();
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->getType()->getTitle();
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getType()->getTitle();
 
-		//return sprintf("Stage %d. %s", 
-		//	$this->getStage()->getLevel(),
-		//	$this->getType()->getTitle()
-		//);
-	}
+        //return sprintf("Stage %d. %s", 
+        //    $this->getStage()->getLevel(),
+        //    $this->getType()->getTitle()
+        //);
+    }
 
-	/**
-	 * @param HintReasonInterface $reason
-	 * @return HintInterface
-	 */
-	public function addReason(HintReasonInterface $reason)
-	{
-		$reason->setHint($this);
-		$this->getReasons()->add($reason);
-		return $this;
-	}
+    /**
+     * @param HintReasonInterface $reason
+     * @return HintInterface
+     */
+    public function addReason(HintReasonInterface $reason)
+    {
+        $reason->setHint($this);
+        $this->getReasons()->add($reason);
+        return $this;
+    }
 
-	/**
-	 * @param HintReasonInterface $reason
-	 * @return HintInterface
-	 */
-	public function removeReason(HintReasonInterface $reason)
-	{
-		//$reason->setHint();
-		$this->getReasons()->removeElement($reason);
-		return $this;
-	}
+    /**
+     * @param HintReasonInterface $reason
+     * @return HintInterface
+     */
+    public function removeReason(HintReasonInterface $reason)
+    {
+        //$reason->setHint();
+        $this->getReasons()->removeElement($reason);
+        return $this;
+    }
     
     /**
      * Get user.
      *
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function getUser()
     {
@@ -338,7 +338,7 @@ class Hint implements
     /**
      * Set user.
      *
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function setUser(\User\Entity\UserInterface $user)
     {
@@ -391,7 +391,7 @@ class Hint implements
     }
     
     /**
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function getCommentCount()
     {
@@ -399,7 +399,7 @@ class Hint implements
     }
     
     /**
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function setCommentCount($commentCount)
     {
@@ -407,23 +407,23 @@ class Hint implements
         return $this;
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function increaseCommentCount()
-	{
-		$this->commentCount++;
-		return $this;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function increaseCommentCount()
+    {
+        $this->commentCount++;
+        return $this;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function decreaseCommentCount()
-	{
-		$this->commentCount--;
-		return $this;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function decreaseCommentCount()
+    {
+        $this->commentCount--;
+        return $this;
+    }
     
     /**
      * Get parents.
@@ -432,13 +432,13 @@ class Hint implements
      */
     public function getParents()
     {
-		$parents = new ArrayCollection;
-		foreach ($this->getReasons() as $reason) {
-			foreach ($reason->getRelations()->map(function($r) { return $r->getRelation()->getHint(); }) as $hint) {
-				if (!$parents->contains($hint)) $parents->add($hint);
-			}	
-		}
-		return $parents;
+        $parents = new ArrayCollection;
+        foreach ($this->getReasons() as $reason) {
+            foreach ($reason->getRelations()->map(function($r) { return $r->getRelation()->getHint(); }) as $hint) {
+                if (!$parents->contains($hint)) $parents->add($hint);
+            }    
+        }
+        return $parents;
     }
     
     /**
@@ -448,50 +448,50 @@ class Hint implements
      */
     public function getChildren()
     {
-		$children = new ArrayCollection;
-		foreach ($this->getReasons() as $reason) {
-			foreach ($reason->getInfluences() as $infl) {
-				foreach ($infl->getRelations()->map(function($r) { return $r->getSource()->getHint(); }) as $hint) {
-					if (!$children->contains($hint)) $children->add($hint);
-				}	
-			}	
-		}
-		return $children;
+        $children = new ArrayCollection;
+        foreach ($this->getReasons() as $reason) {
+            foreach ($reason->getInfluences() as $infl) {
+                foreach ($infl->getRelations()->map(function($r) { return $r->getSource()->getHint(); }) as $hint) {
+                    if (!$children->contains($hint)) $children->add($hint);
+                }    
+            }    
+        }
+        return $children;
     }
 
-	/**
-	 * @param HintInterface hint
-	 * @return bool 
-	 */
-	public function hasParent(HintInterface $hint)
-	{
-		if ($this->getParents()->contains($hint) !== false) {
-			return true;	
-		}
+    /**
+     * @param HintInterface hint
+     * @return bool 
+     */
+    public function hasParent(HintInterface $hint)
+    {
+        if ($this->getParents()->contains($hint) !== false) {
+            return true;    
+        }
 
-		foreach ($this->getParents() as $parent) {
-			if ($parent->hasParent($hint)) return true;
-		}
+        foreach ($this->getParents() as $parent) {
+            if ($parent->hasParent($hint)) return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @param HintInterface hint
-	 * @return bool 
-	 */
-	public function hasChild(HintInterface $hint)
-	{
-		if ($this->getChildren()->contains($hint) !== false) {
-			return true;	
-		}
+    /**
+     * @param HintInterface hint
+     * @return bool 
+     */
+    public function hasChild(HintInterface $hint)
+    {
+        if ($this->getChildren()->contains($hint) !== false) {
+            return true;    
+        }
 
-		foreach ($this->getChildren() as $child) {
-			if ($child->hasChild($hint)) return true;
-		}
+        foreach ($this->getChildren() as $child) {
+            if ($child->hasChild($hint)) return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
     
     /**
      * Get description.
@@ -581,53 +581,53 @@ class Hint implements
         return $this;
     }
 
-	/**
-	 * @ORM\PreUpdate
-	 * @return Hint
-	 */
-	public function preUpdate()
-	{
-		return $this->setUpdated(new DateTime);
-	}
+    /**
+     * @ORM\PreUpdate
+     * @return Hint
+     */
+    public function preUpdate()
+    {
+        return $this->setUpdated(new DateTime);
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getColor()
-	{
-		switch (true) {
-			case $this->priority >= 5:
-				return 'danger';
-			case $this->priority >= 4:
-				return 'coral';
-			case $this->priority >= 3:
-				return 'light-salmon';
-			case $this->priority >= 2:
-				return 'warning';
-			case $this->priority >= 1:
-				return 'success';
-			case $this->priority >= 0:
-				return 'light-green';
-			default:
-				return 'light';
-		}
-	}
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        switch (true) {
+            case $this->priority >= 5:
+                return 'danger';
+            case $this->priority >= 4:
+                return 'coral';
+            case $this->priority >= 3:
+                return 'light-salmon';
+            case $this->priority >= 2:
+                return 'warning';
+            case $this->priority >= 1:
+                return 'success';
+            case $this->priority >= 0:
+                return 'light-green';
+            default:
+                return 'light';
+        }
+    }
 
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return (string) $this->getText();
-	}
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->getText();
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getResourceId()
-	{
-		return self::class;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getResourceId()
+    {
+        return self::class;
+    }
 
     /**
      * @inheritDoc
@@ -637,86 +637,87 @@ class Hint implements
         return array(
             'id'          => $this->getId(),
             'text'        => $this->getText(),
-            'priority' 	  => $this->getPriority(),
+            'priority'       => $this->getPriority(),
             'description' => $this->getDescription(),
             'created'     => $this->getCreated(),
         );
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function __clone()
-	{
-		$this->id 		    = null;
-		$this->commentCount = 0;
-		$this->created      = new DateTime;
-		$this->updated      = new DateTime;
-		$this->comments     = new ArrayCollection;
-		//Associations
-		$reasons = $this->getReasons();
-		$this->reasons   = new ArrayCollection;
-		foreach ($reasons as $reason) $this->addReason(clone $reason);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->id           = null;
+        $this->commentCount = 0;
+        $this->created      = new DateTime;
+        $this->updated      = new DateTime;
+        $this->comments     = new ArrayCollection;
 
-	/**
-	 * @inheritDoc
-	 */
-	public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
-	{
-	}
+        //Associations
+        $reasons = $this->getReasons();
+        $this->reasons   = new ArrayCollection;
+        foreach ($reasons as $reason) $this->addReason(clone $reason);
+    }
 
-	/**
-  	 * @inheritDoc
-  	 */
-  	public function provideLinks()
-  	{
-		return [
-			[
-				'rel'   	  => 'reason',
-				'privilege'   => 'reason',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'reason', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'edit',
-				'privilege'   => 'edit',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'delete',
-				'privilege'   => 'edit',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'comment',
-				'privilege'   => 'comment',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'comments',
-				'privilege'   => 'comments',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/detail/json',
-				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
-				],
-			],
-		];
-	}
+    /**
+     * @inheritDoc
+     */
+    public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
+    {
+    }
+
+    /**
+       * @inheritDoc
+       */
+      public function provideLinks()
+      {
+        return [
+            [
+                'rel'         => 'reason',
+                'privilege'   => 'reason',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/detail/json',
+                    'params'  => ['action' => 'reason', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'edit',
+                'privilege'   => 'edit',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/detail/json',
+                    'params'  => ['action' => 'edit', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'delete',
+                'privilege'   => 'edit',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/detail/json',
+                    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'comment',
+                'privilege'   => 'comment',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/detail/json',
+                    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'comments',
+                'privilege'   => 'comments',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/detail/json',
+                    'params'  => ['action' => 'comments', 'id' => $this->getId()],
+                ],
+            ],
+        ];
+    }
 }

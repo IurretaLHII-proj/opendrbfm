@@ -44,6 +44,7 @@ $privileges = [
 	'actions',
 	'notifications',
 	'pdf',
+	'excel',
 	'report',
 	'version',
 	'comment',

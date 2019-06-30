@@ -37,6 +37,9 @@ class Module
     public function getConfig()
 	{
 		return [
+			'user_assertions' => [
+				Authorization\Assertion\IsOwner::class,
+			]
 		];
 	}
 

@@ -796,15 +796,6 @@ class Process implements
 				],
 			],
 			[
-				'rel'   	  => 'pdf',
-				'privilege'   => 'pdf',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/detail',
-				    'params'  => ['action' => 'pdf', 'id' => $this->getId()],
-				],
-			],
-			[
 				'rel'   	  => 'report',
 				'privilege'   => 'report',
 				'resource'	  => $this,

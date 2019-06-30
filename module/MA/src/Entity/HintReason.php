@@ -3,7 +3,7 @@
 namespace MA\Entity;
 
 use Doctrine\ORM\Mapping as ORM,
-	Doctrine\Common\Collections\ArrayCollection;
+    Doctrine\Common\Collections\ArrayCollection;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
@@ -13,133 +13,133 @@ use DateTime;
  * @ORM\Table(name="process_hint_reason")
  */
 class HintReason implements 
-	HintReasonInterface,
-	JsonSerializable,
-	ResourceInterface, 
-	\User\Entity\UserAwareInterface,
-	\Base\Hal\LinkProvider,
-	CommentProviderInterface
+    HintReasonInterface,
+    JsonSerializable,
+    ResourceInterface, 
+    \User\Entity\UserAwareInterface,
+    \Base\Hal\LinkProvider,
+    CommentProviderInterface
 {
-	/**
-	 * @var int 
-	 * @ORM\Id
-	 * @ORM\Column(type="integer")
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	protected $id;
-
-	/**
-	 * @var User
-	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\User",
-	 *	inversedBy	 = "hints",
-	 * )
-	 * @ORM\JoinColumn(
-	 *	name= "uid",
-	 *	referencedColumnName = "user_id"
-	 * )
-	 */
-	protected $user;
+    /**
+     * @var int 
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
     /**
-	 * @var HintInterface
+     * @var User
+     * @ORM\ManyToOne(
+     *    targetEntity = "MA\Entity\User",
+     *    inversedBy     = "hints",
+     * )
+     * @ORM\JoinColumn(
+     *    name= "uid",
+     *    referencedColumnName = "user_id"
+     * )
+     */
+    protected $user;
+
+    /**
+     * @var HintInterface
      * @ORM\ManyToOne(
      *     targetEntity="MA\Entity\Hint",
      *     inversedBy="reasons"
      * )
      * @ORM\JoinColumn(
      *     name = "hint_id",
-	 *     referencedColumnName = "id"
+     *     referencedColumnName = "id"
      * )
      */
     protected $hint;
 
-	/**
-	 * @var HintInfluenceInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\HintInfluence",
-	 *	mappedBy	 = "reason",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $influences;
+    /**
+     * @var HintInfluenceInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\HintInfluence",
+     *    mappedBy     = "reason",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $influences;
 
-	/**
-	 * @var HintRelationInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\HintRelation",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
-	 */
-	protected $relations;
+    /**
+     * @var HintRelationInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\HintRelation",
+     *    mappedBy     = "source",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "DESC"})
+     */
+    protected $relations;
 
-	/**
-	 * @var Note\HintReason[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintReason",
-	 *	mappedBy	 = "reason",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $notes;
+    /**
+     * @var Note\HintReason[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Note\HintReason",
+     *    mappedBy     = "reason",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $notes;
 
-	/**
-	 * @var CommentInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Comment\HintReason",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
-	 */
-	protected $comments;
+    /**
+     * @var CommentInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Comment\HintReason",
+     *    mappedBy     = "source",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "DESC"})
+     */
+    protected $comments;
 
-	/**
-	 * @var int
-	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
-	 */
-	protected $commentCount = 0;
+    /**
+     * @var int
+     * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+     */
+    protected $commentCount = 0;
 
-	/**
-	 * @var ActionInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Action\HintReason",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $actions;
+    /**
+     * @var ActionInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Action\HintReason",
+     *    mappedBy     = "source",
+     *    cascade      = {"remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $actions;
 
-	/**
-	 * @var DateTime
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $created;
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
 
-	/**
-	 * @var DateTime
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $updated;
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
 
-	/**
-	 * @return
-	 */
-	public function __construct()
-	{
-		$this->created     = new DateTime;
-		$this->updated     = new DateTime;
-		$this->notes	   = new ArrayCollection;
-		$this->relations   = new ArrayCollection;
-		$this->comments    = new ArrayCollection;
-		$this->influences  = new ArrayCollection;
-		$this->actions     = new ArrayCollection;
-	}
+    /**
+     * @return
+     */
+    public function __construct()
+    {
+        $this->created     = new DateTime;
+        $this->updated     = new DateTime;
+        $this->notes       = new ArrayCollection;
+        $this->relations   = new ArrayCollection;
+        $this->comments    = new ArrayCollection;
+        $this->influences  = new ArrayCollection;
+        $this->actions     = new ArrayCollection;
+    }
     
     /**
      * Get id.
@@ -185,34 +185,34 @@ class HintReason implements
         return $this;
     }
 
-	/**
-	 * @return StageInterface
-	 */
-	public function getStage()
-	{
-		return $this->getHint()->getStage();
-	}
+    /**
+     * @return StageInterface
+     */
+    public function getStage()
+    {
+        return $this->getHint()->getStage();
+    }
 
-	/**
-	 * @return VersionInterface
-	 */
-	public function getVersion()
-	{
-		return $this->getStage()->getVersion();
-	}
+    /**
+     * @return VersionInterface
+     */
+    public function getVersion()
+    {
+        return $this->getStage()->getVersion();
+    }
 
-	/**
-	 * @return ProcessInterface
-	 */
-	public function getProcess()
-	{
-		return $this->getVersion()->getProcess();
-	}
+    /**
+     * @return ProcessInterface
+     */
+    public function getProcess()
+    {
+        return $this->getVersion()->getProcess();
+    }
     
     /**
      * Get user.
      *
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function getUser()
     {
@@ -222,7 +222,7 @@ class HintReason implements
     /**
      * Set user.
      *
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function setUser(\User\Entity\UserInterface $user)
     {
@@ -260,8 +260,8 @@ class HintReason implements
      */
     public function addRelation(HintRelationInterface $relation)
     {
-		$relation->setSource($this);
-		$this->getRelations()->add($relation);
+        $relation->setSource($this);
+        $this->getRelations()->add($relation);
         return $this;
     }
     
@@ -273,9 +273,9 @@ class HintReason implements
      */
     public function addRelations($relations)
     {
-		foreach ($relations as $relation) {
-			$this->addRelation($relation);
-		}
+        foreach ($relations as $relation) {
+            $this->addRelation($relation);
+        }
 
         return $this;
     }
@@ -288,7 +288,7 @@ class HintReason implements
      */
     public function removeRelation(HintRelationInterface $relation)
     {
-		$this->getRelations()->removeElement($relation);
+        $this->getRelations()->removeElement($relation);
         return $this;
     }
     
@@ -300,9 +300,9 @@ class HintReason implements
      */
     public function removeRelations($relations)
     {
-		foreach ($relations as $relation) {
-			$this->removeRelation($relation);
-		}
+        foreach ($relations as $relation) {
+            $this->removeRelation($relation);
+        }
 
         return $this;
     }
@@ -337,9 +337,9 @@ class HintReason implements
      */
     public function addInfluences($influences)
     {
-		foreach ($influences as $influence) {
-			$this->addInfluence($influence);
-		}
+        foreach ($influences as $influence) {
+            $this->addInfluence($influence);
+        }
 
         return $this;
     }
@@ -352,8 +352,8 @@ class HintReason implements
      */
     public function addInfluence(HintInfluenceInterface $influence)
     {
-		$influence->setReason($this);
-		$this->getInfluences()->add($influence);
+        $influence->setReason($this);
+        $this->getInfluences()->add($influence);
         return $this;
     }
     
@@ -365,9 +365,9 @@ class HintReason implements
      */
     public function removeInfluences($influences)
     {
-		foreach ($influences as $influence) {
-			$this->removeInfluence($influence);
-		}
+        foreach ($influences as $influence) {
+            $this->removeInfluence($influence);
+        }
 
         return $this;
     }
@@ -380,7 +380,7 @@ class HintReason implements
      */
     public function removeInfluence(HintInfluenceInterface $influence)
     {
-		$this->getInfluences()->removeElement($influence);
+        $this->getInfluences()->removeElement($influence);
         return $this;
     }
     
@@ -414,8 +414,8 @@ class HintReason implements
      */
     public function addNote(Note\HintReason $note)
     {
-		$note->setReason($this);
-		$this->getNotes()->add($note);
+        $note->setReason($this);
+        $this->getNotes()->add($note);
         return $this;
     }
     
@@ -427,9 +427,9 @@ class HintReason implements
      */
     public function addNotes($notes)
     {
-		foreach ($notes as $note) {
-			$this->addNote($note);
-		}
+        foreach ($notes as $note) {
+            $this->addNote($note);
+        }
 
         return $this;
     }
@@ -442,8 +442,8 @@ class HintReason implements
      */
     public function removeNote(Note\HintReason $note)
     {
-		$note->setReason();
-		$this->getNotes()->removeElement($note);
+        $note->setReason();
+        $this->getNotes()->removeElement($note);
         return $this;
     }
     
@@ -455,9 +455,9 @@ class HintReason implements
      */
     public function removeNotes($notes)
     {
-		foreach ($notes as $note) {
-			$this->removeNote($note);
-		}
+        foreach ($notes as $note) {
+            $this->removeNote($note);
+        }
 
         return $this;
     }
@@ -507,7 +507,7 @@ class HintReason implements
     }
     
     /**
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function getCommentCount()
     {
@@ -515,7 +515,7 @@ class HintReason implements
     }
     
     /**
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function setCommentCount($commentCount)
     {
@@ -523,23 +523,23 @@ class HintReason implements
         return $this;
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function increaseCommentCount()
-	{
-		$this->commentCount++;
-		return $this;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function increaseCommentCount()
+    {
+        $this->commentCount++;
+        return $this;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function decreaseCommentCount()
-	{
-		$this->commentCount--;
-		return $this;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function decreaseCommentCount()
+    {
+        $this->commentCount--;
+        return $this;
+    }
 
     /**
      * Get created.
@@ -585,22 +585,22 @@ class HintReason implements
         return $this;
     }
 
-	/**
-	 * @ORM\PreUpdate
-	 * @return Hint
-	 */
-	public function preUpdate()
-	{
-		return $this->setUpdated(new DateTime);
-	}
+    /**
+     * @ORM\PreUpdate
+     * @return Hint
+     */
+    public function preUpdate()
+    {
+        return $this->setUpdated(new DateTime);
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getResourceId()
-	{
-		return self::class;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getResourceId()
+    {
+        return self::class;
+    }
 
     /**
      * @inheritDoc
@@ -608,98 +608,98 @@ class HintReason implements
     public function jsonSerialize()
     {
         return array(
-            'id'       	   => $this->getId(),
-			'owner'	   	   => $this->getUser(),
-            'created'  	   => $this->getCreated(),
-			'commentCount' => $this->getCommentCount(),
-			'notes' 	   => new \ZF\Hal\Collection($this->getNotes()),
-			'relations'	   => new \ZF\Hal\Collection($this->getRelations()),
-			'influences'   => new \ZF\Hal\Collection($this->getInfluences()),
+            'id'              => $this->getId(),
+            'owner'              => $this->getUser(),
+            'created'         => $this->getCreated(),
+            'commentCount' => $this->getCommentCount(),
+            'notes'        => new \ZF\Hal\Collection($this->getNotes()),
+            'relations'       => new \ZF\Hal\Collection($this->getRelations()),
+            'influences'   => new \ZF\Hal\Collection($this->getInfluences()),
         );
     }
 
-	/**
-	 * TODO
-	 * @inheritDoc
-	 */
-	public function __clone()
-	{
-		$this->id 		    = null;
-		$this->created      = new DateTime;
-		$this->updated      = new DateTime;
-		$this->relations    = new ArrayCollection;
-		$this->comments     = new ArrayCollection;
-		$this->commentCount = 0;
+    /**
+     * TODO
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->id             = null;
+        $this->created      = new DateTime;
+        $this->updated      = new DateTime;
+        $this->relations    = new ArrayCollection;
+        $this->comments     = new ArrayCollection;
+        $this->commentCount = 0;
 
-		//Associations
-		$influences = $this->getInfluences();
-		$this->influences   = new ArrayCollection;
-		foreach ($influences as $influence) $this->addInfluence(clone $influence);
-		$notes = $this->getNotes();
-		$this->notes	    = new ArrayCollection;
-		foreach ($notes as $note) $this->addNote(clone $note);
-	}
+        //Associations
+        $influences = $this->getInfluences();
+        $this->influences   = new ArrayCollection;
+        foreach ($influences as $influence) $this->addInfluence(clone $influence);
+        $notes = $this->getNotes();
+        $this->notes        = new ArrayCollection;
+        foreach ($notes as $note) $this->addNote(clone $note);
+    }
 
-	/**
-  	 * @inheritDoc
-  	 */
-  	public function provideLinks()
-  	{
-		return [
-			[
-				'rel'   	  => 'delete',
-				'privilege'   => 'delete',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/reason/detail/json',
-				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'note',
-				'privilege'   => 'note',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/reason/detail/json',
-				    'params'  => ['action' => 'note', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'relation',
-				'privilege'   => 'relation',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/reason/detail/json',
-				    'params'  => ['action' => 'relation', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'influence',
-				'privilege'   => 'influence',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/reason/detail/json',
-				    'params'  => ['action' => 'influence', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'comment',
-				'privilege'   => 'comment',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/reason/detail/json',
-				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'comments',
-				'privilege'   => 'comments',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/reason/detail/json',
-				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
-				],
-			],
-		];
-	}
+    /**
+       * @inheritDoc
+       */
+      public function provideLinks()
+      {
+        return [
+            [
+                'rel'         => 'delete',
+                'privilege'   => 'delete',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/reason/detail/json',
+                    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'note',
+                'privilege'   => 'note',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/reason/detail/json',
+                    'params'  => ['action' => 'note', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'relation',
+                'privilege'   => 'relation',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/reason/detail/json',
+                    'params'  => ['action' => 'relation', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'influence',
+                'privilege'   => 'influence',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/reason/detail/json',
+                    'params'  => ['action' => 'influence', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'comment',
+                'privilege'   => 'comment',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/reason/detail/json',
+                    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'comments',
+                'privilege'   => 'comments',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/reason/detail/json',
+                    'params'  => ['action' => 'comments', 'id' => $this->getId()],
+                ],
+            ],
+        ];
+    }
 }

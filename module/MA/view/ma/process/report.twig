@@ -18,45 +18,71 @@
 		ng-controller="_ProcessReportCtrl" 
 		ng-init="init({{ json(hal().renderEntity(hal)) | escape }}, {{ values | json_encode }})"
   	>
-		<h2 class="m-2">{[ process.title ]}<small class="ml-2 text-muted">| Report</small></h2>
-
-		<form method="POST" action="{[ process.links.getHref('pdf') ]}" target="_blank">
-			<input ng-repeat="v in selection.versions" 
-				type="checkbox" checked=true name="versions[]" value="{[v]}" class="d-none">
-			<input ng-repeat="s in selection.stages" 
-				type="checkbox" checked=true name="stages[]" value="{[s]}" class="d-none">
-			<input ng-repeat="h in selection.hints" 
-				type="checkbox" checked=true name="hints[]" value="{[h]}" class="d-none">
-			<input ng-repeat="r in selection.reasons" 
-				type="checkbox" checked=true name="reasons[]" value="{[r]}" class="d-none">
-			<input ng-repeat="r in selection.influences" 
-				type="checkbox" checked=true name="influences[]" value="{[r]}" class="d-none">
-			<input ng-repeat="r in selection.simulations" 
-				type="checkbox" checked=true name="simulations[]" value="{[r]}" class="d-none">
-			<input ng-repeat="r in selection.notes" 
-				type="checkbox" checked=true name="notes[]" value="{[r]}" class="d-none">
-			<input type="submit" value="PDF" class="btn btn-success pull-block" />
-		</form>
+		<div class="">
+			<div class="d-flex flex-fill">
+				<h2 class="mr-auto">{[ process.title ]} <small class="text-muted">nº{[process.number]} | Report</small></h2>
+				<div class="ml-auto align-self-center">
+					<a href="{[ process.user.links.getHref() ]}" class="">{[ process.user.name ]}</a>.
+					<small>{[ process.created | date:"dd MMM yyyy HH:mm" ]}</small>
+					<div class="btn-group btn-group-sm btn-group-justified ml-2">
+						<!--<a href="" ng-if="process.links.isAllowed('edit')" ng-click="editProcess(process)" title="Edit process" class="btn btn-outline-primary"><i class="fa fa-pencil"></i></a>-->
+						<a href="{[process.links.getHref()]}" title="View process" class="btn btn-outline-primary"><i class="fa fa-eye"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div ng-repeat="version in process.versions" class="mb-1">
-			<a class="btn btn-sm btn-outline-primary btn-block my-1" 
-				ng-class="{active:selection.versions.indexOf(version.id) > -1}"
-				ng-click="toggleVersion(version)">
-				{[version.name]}
-			</a>
+
+			<div class="d-flex rounded border my-1" ng-class="{'border-primary':isVersionSelected(version)}">
+		
+				<div class="align-self-center pl-2">
+					<input type="checkbox" 
+						ng-checked="isVersionSelected(version)"
+						ng-click="toggleVersion(version)">
+					<span>{[ version.name ]}</span>
+				</div>
+
+				<form method="POST" action="{[ version.links.getHref('excel') ]}" target="_blank" class="ml-auto">
+					<!--<input ng-repeat="v in selection.versions" 
+						type="checkbox" checked=true name="versions[]" value="{[v]}" class="d-none">-->
+					<input ng-repeat="s in selection.stages" 
+						type="checkbox" checked=true name="stages[]" value="{[s]}" class="d-none">
+					<input ng-repeat="h in selection.hints" 
+						type="checkbox" checked=true name="hints[]" value="{[h]}" class="d-none">
+					<input ng-repeat="r in selection.reasons" 
+						type="checkbox" checked=true name="reasons[]" value="{[r]}" class="d-none">
+					<input ng-repeat="r in selection.influences" 
+						type="checkbox" checked=true name="influences[]" value="{[r]}" class="d-none">
+					<input ng-repeat="r in selection.simulations" 
+						type="checkbox" checked=true name="simulations[]" value="{[r]}" class="d-none">
+					<input ng-repeat="r in selection.notes" 
+						type="checkbox" checked=true name="notes[]" value="{[r]}" class="d-none">
+					<button type="submit" value="File" class="btn btn-sm btn-primary pull-block m-1" 
+						ng-disabled="!isVersionSelected(version)"/>
+						<i class="fa fa-file"></i>
+					</button>
+				</form>
+			</div>
+
 			<div class="" ng-if="isVersionSelected(version)">
 				<div class="row">
-					<div ng-repeat="stage in version.stages" class="col px-1">
-						<a class="btn btn-sm btn-outline-primary btn-block" 
-							ng-class="{'btn-outline-primary active':isStageSelected(stage)}"
-							ng-click="toggleStage(stage)">
-							<i class="fa fa-check"></i>
-							{[stage.name]}
-						</a>
-						<div class="text-center">
-							<img ng-repeat="img in stage.images" 
-								ng-src="{[ img.links.getHref() ]}" class="stage-img"/>
+					<div ng-repeat="stage in version.stages" class="col">
+
+						<div class="border rounded" ng-class="{'border-primary':isStageSelected(stage)}">
+							<div class="d-flex rounded my-1">
+								<div class="align-self-center pl-2">
+									<input type="checkbox" 
+									ng-checked="isStageSelected(stage)"
+									ng-click="toggleStage(stage)">
+									<span>{[ stage.name ]}</span>
+								</div>
+							</div>
+							<div class="text-center">
+								<img ng-repeat="img in stage.images" ng-src="{[ img.links.getHref() ]}" class="stage-img"/>
+							</div>
 						</div>
+
 						<div class="my-1 border rounded"
 							ng-if="isStageSelected(stage)"
 							ng-repeat="hint in stage.hints"
@@ -130,12 +156,13 @@
 		  										ng-checked="isSimulationSelected(simulation)"
 												ng-click="toggleSimulation(simulation)">
 											<div class="small p-1 rounded" ng-class="{'bg-light border':isSimulationSelected(simulation)}">
+												<div class="small font-weight-bold">Simulation {[ r+1 ]}.{[ i+1 ]}.{[s+1]}</div>
 												<span class="font-weight-bold text-{[simulation.stateColor()]}">{[ simulation.stateLabel() ]}</span>
 												<span ng-if="simulation.who">{[simulation.who.name]}</span>
 												<span ng-if="simulation.when"class="small text-center">{[ simulation.when | date:"dd MMMyy"]}</span>
 											</div>
 										</div>
-										<small class="font-weight-bold"
+										<small class="ml-4 font-weight-bold"
 											ng-if="simulation.suggestions.length && isSimulationSelected(simulation)" 
 										>Suggestions</small>
 										<div class="d-flex flex-row m-1"
@@ -150,7 +177,7 @@
 	 											ng-class="{'bg-light border':isNoteSelected(note)}"
 											></div>
 										</div>
-										<small class="font-weight-bold"
+										<small class="ml-4 font-weight-bold"
 											ng-if="simulation.effects.length && isSimulationSelected(simulation)" 
 										>Effects</small>
 										<div class="d-flex flex-row m-1"
@@ -165,7 +192,7 @@
 	 											ng-class="{'bg-light border':isNoteSelected(note)}"
 											></div>
 										</div>
-										<small class="font-weight-bold"
+										<small class="ml-4 font-weight-bold"
 											ng-if="simulation.preventions.length && isSimulationSelected(simulation)" 
 										>Preventions</small>
 										<div class="d-flex flex-row m-1"

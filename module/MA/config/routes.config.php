@@ -215,7 +215,7 @@ return [
 					],
 					'constraints' => [
 						'id' => '\d+',
-						'action' => 'detail|edit|delete|clone|pdf|report|version|actions',
+						'action' => 'detail|edit|delete|clone|report|version|actions',
 					]
 				],
 				'may_terminate' => true,
@@ -365,7 +365,7 @@ return [
 							],
 							'constraints' => [
 								'id' => '\d+',
-								'action' => 'detail|edit|delete|clone|stages|stage|comments|comment',
+								'action' => 'detail|edit|delete|clone|stages|stage|pdf|excel|comments|comment',
 							]
 						],
 						'may_terminate' => true,

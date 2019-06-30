@@ -18,7 +18,7 @@ return array(
 		'ZfcUserDoctrineORM',
 		'BjyAuthorize',
 		'ZfcTwig',
-		'DOMPDFModule',
+		//'DOMPDFModule',
 		//Custom
 		'Base',
 		'User',

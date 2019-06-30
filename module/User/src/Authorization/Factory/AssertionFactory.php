@@ -32,17 +32,16 @@ class AssertionFactory implements AbstractFactoryInterface
 	 */
 	public function canCreateServiceWithName(ServiceLocatorInterface $sm, $name, $className)
 	{
-		if (!class_exists($className)) {
+		$config = $sm->get('config');
+
+		if (!(isset($config['user_assertions']) &&
+			  is_array($config['user_assertions']) &&
+			  in_array($className, $config['user_assertions'])
+			)) {
 			return false;
 		}
 
-		if ($sm instanceof AbstractPluginManager) {
-			$sm = $sm->getServiceLocator();
-		}
-
-		$assertion = new $className($this->getIdentity($sm));
-
-		return $assertion instanceof \User\Authorization\Assertion\AbstractAssertion;
+		return true;
 	}
 
 	/**

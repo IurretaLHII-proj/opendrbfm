@@ -77,6 +77,9 @@ return [
 	Controller\VersionTypeController::class => [
 		'repository' => Entity\VersionType::class,
 	],
+	Controller\VersionController::class => [
+		'repository' => Entity\Version::class,
+	],
 	Controller\Js\VersionTypeController::class => [
 		'repository' => Entity\VersionType::class,
 	],
