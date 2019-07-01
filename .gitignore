@@ -10,8 +10,6 @@ nbproject
 .settings
 vendor
 composer.phar
-!data/.gitkeep
-!public/img/logo.png
 public/js/.package-lock.json
 public/js/node_modules
 config/autoload/ddbb.php
