@@ -150,7 +150,7 @@ class ExcelService
 
         $version = $this->filterVersion($version, $values);
 
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load("/home/iturri/Sites/DRBFM/public/xlsx/DRBFM.xlsx");
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load(getcwd() . "/public/xlsx/DRBFM.xlsx");
     
         $sheet = $spreadsheet->getActiveSheet();
 
