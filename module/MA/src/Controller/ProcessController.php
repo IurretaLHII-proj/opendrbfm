@@ -70,7 +70,14 @@ class ProcessController extends \Base\Controller\AbstractActionController
                 $cloned->addChild($this->versionHierarchy($process, $child));
             }
         }
-        $this->triggerService($this->params()->fromRoute('action'), $cloned);
+        
+        $this->triggerService($this->params()->fromRoute('action'), $cloned, ['origin' => $version]);
+
+        /*$this->forward()->dispatch(\MA\Controller\Js\VersionController::class, [
+            'action' => 'clone',
+            'entity' => $cloned,
+        ]);*/
+
         return $cloned;
     }
 

@@ -663,18 +663,12 @@ class Stage implements
     {
         $this->id             = null;
         $this->user           = null;
+        $this->images         = new ArrayCollection;
+        $this->hints          = new ArrayCollection;
         $this->commentCount   = 0;
         $this->comments       = new ArrayCollection;
         $this->created        = new DateTime;
         $this->updated        = new DateTime;
-
-        //Associations
-        $images = $this->getImages();
-        $this->images = new ArrayCollection;
-        foreach ($images as $image) $this->addImage(clone $image);
-        $hints = $this->getHints();
-        $this->hints = new ArrayCollection;
-        foreach ($hints as $hint) $this->addHint(clone $hint);
     }
 
     /**

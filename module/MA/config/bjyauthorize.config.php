@@ -67,7 +67,7 @@ $privileges = [
 	'simulate',
 	'suggestion',
 	'effect',
-	'revention',
+	'prevention',
 	'render',
 	'logout',
 ];

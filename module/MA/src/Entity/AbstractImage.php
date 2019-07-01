@@ -3,7 +3,7 @@
 namespace MA\Entity;
 
 use Doctrine\ORM\Mapping as ORM,
-	Doctrine\Common\Collections\ArrayCollection;
+    Doctrine\Common\Collections\ArrayCollection;
 
 use DateTime;
 
@@ -13,8 +13,8 @@ use DateTime;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({
- * 	"stage" 	 = "MA\Entity\Image\IStage",
- * 	"simulation" = "MA\Entity\Image\ISimulation",
+ *     "stage"      = "MA\Entity\Image\IStage",
+ *     "simulation" = "MA\Entity\Image\ISimulation",
  * })
  */
 abstract class AbstractImage extends \Image\Entity\Image
@@ -65,20 +65,20 @@ abstract class AbstractImage extends \Image\Entity\Image
      *     referencedColumnName = "user_id"
      * )
      */
-	protected $user;
+    protected $user;
 
     /**
      * @return string
      */
     public function getResourceId()
     {
-		return static::class;
+        return static::class;
     }
 
     /**
      * @inheritDoc
      */
-	public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
+    public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
     {
     }
 
@@ -87,28 +87,29 @@ abstract class AbstractImage extends \Image\Entity\Image
      */
     public function provideLinks()
     {
-		return [];
+        return [];
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function __clone()
-	{
-		$this->id 	   = null;
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->id        = null;
+        $this->user    = null;
         $this->created = new DateTime;
-	}
+    }
 
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->getName();
-	}
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }
 
-	/**
-	 * @return mixed
-	 */
-	abstract public function getSource();
+    /**
+     * @return mixed
+     */
+    abstract public function getSource();
 }

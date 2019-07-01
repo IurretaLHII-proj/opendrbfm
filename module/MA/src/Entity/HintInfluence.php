@@ -634,20 +634,15 @@ class HintInfluence implements
      */
     public function __clone()
     {
-        $this->id             = null;
+        $this->id           = null;
+        $this->user         = null;
         $this->created      = new DateTime;
         $this->updated      = new DateTime;
         $this->relations    = new ArrayCollection;
+        $this->notes        = new ArrayCollection;
+        $this->simulations  = new ArrayCollection;
         $this->comments     = new ArrayCollection;
         $this->commentCount = 0;
-
-        //Associations
-        $simulations = $this->getSimulations();
-        $this->simulations    = new ArrayCollection;
-        foreach ($simulations as $simulation) $this->addSimulation(clone $simulation);
-        $notes = $this->getNotes();
-        $this->notes        = new ArrayCollection;
-        foreach ($notes as $note) $this->addNote(clone $note);
     }
 
     /**

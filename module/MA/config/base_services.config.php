@@ -77,6 +77,17 @@ return [
 	],
 	Service\StageService::class => [
 		'entities' => [Entity\Stage::class],
+		'listeners' => [
+			[
+				'services' => [
+					Service\VersionService::class,
+				],
+				'events'   => [
+					Service\VersionService::EVENT_CLONE,
+				],
+				'callback' => 'cloneStages',
+			]
+		],
 	],
 	Service\OperationTypeService::class => [
 		'entities' => [Entity\OperationType::class],
@@ -103,6 +114,13 @@ return [
 	],
 	Service\HintService::class => [
 		'entities' => [Entity\Hint::class],
+		'listeners' => [
+			[
+				'services' => Service\StageService::class,
+				'events'   => Service\VersionService::EVENT_CLONE,
+				'callback' => 'cloneHints',
+			],
+		],
 	],
 	Service\HintRelationService::class => [
 		'entities' => [Entity\HintRelation::class],
@@ -126,7 +144,12 @@ return [
 				],
 				'callback' => 'createDependencies',
 				'priority' => 100,
-			]
+			],
+			[
+				'services' => Service\HintService::class,
+				'events'   => Service\VersionService::EVENT_CLONE,
+				'callback' => 'cloneReasons',
+			],
 		],
 	],
 	Service\HintInfluenceService::class => [
@@ -140,7 +163,12 @@ return [
 				],
 				'callback' => 'createDependencies',
 				'priority' => 100,
-			]
+			],
+			[
+				'services' => Service\HintReasonService::class,
+				'events'   => Service\VersionService::EVENT_CLONE,
+				'callback' => 'cloneInfluences',
+			],
 		],
 	],
 	Service\HintContextService::class => [
@@ -168,7 +196,12 @@ return [
 				],
 				'callback' => 'createSimulation',
 				'priority' => 100,
-			]
+			],
+			[
+				'services' => Service\HintInfluenceService::class,
+				'events'   => Service\VersionService::EVENT_CLONE,
+				'callback' => 'cloneSimulations',
+			],
 		],
 	],
 	Service\ImageService::class => [

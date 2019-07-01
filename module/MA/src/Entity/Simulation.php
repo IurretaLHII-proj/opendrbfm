@@ -3,7 +3,7 @@
 namespace MA\Entity;
 
 use Doctrine\ORM\Mapping as ORM,
-	Doctrine\Common\Collections\ArrayCollection;
+    Doctrine\Common\Collections\ArrayCollection;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use JsonSerializable;
 use DateTime;
@@ -13,31 +13,31 @@ use DateTime;
  * @ORM\Table(name="process_hint_simulation")
  */
 class Simulation implements 
-	ResourceInterface, 
-	JsonSerializable,
-	\User\Entity\UserAwareInterface,
-	\Base\Hal\LinkProvider,
-	\Base\Hal\LinkPrepareAware,
-	CommentProviderInterface,
-	SimulationInterface 
+    ResourceInterface, 
+    JsonSerializable,
+    \User\Entity\UserAwareInterface,
+    \Base\Hal\LinkProvider,
+    \Base\Hal\LinkPrepareAware,
+    CommentProviderInterface,
+    SimulationInterface 
 {
-	const STATE_CREATED	      = 0;
-	const STATE_NOT_PROCESSED = 0;
-	const STATE_IN_PROGRESS   = 1;
-	const STATE_FINISHED  	  = 2;
-	const STATE_NOT_NECESSARY = -1;
-	const STATE_CANCELED  	  = -2;
-
-	/**
-	 * @var int 
-	 * @ORM\Id
-	 * @ORM\Column(type="integer")
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	protected $id;
+    const STATE_CREATED          = 0;
+    const STATE_NOT_PROCESSED = 0;
+    const STATE_IN_PROGRESS   = 1;
+    const STATE_FINISHED        = 2;
+    const STATE_NOT_NECESSARY = -1;
+    const STATE_CANCELED        = -2;
 
     /**
-	 * @var string 
+     * @var int 
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @var string 
      * @ORM\Column(
      *    type="string",
      *    name="descr",
@@ -46,167 +46,167 @@ class Simulation implements
      */
     protected $description;
 
-	/**
-	 * @var User
-	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\User",
-	 *	inversedBy	 = "hints",
-	 * )
-	 * @ORM\JoinColumn(
-	 *	name= "uid",
-	 *	referencedColumnName = "user_id"
-	 * )
-	 */
-	protected $user;
+    /**
+     * @var User
+     * @ORM\ManyToOne(
+     *    targetEntity = "MA\Entity\User",
+     *    inversedBy     = "hints",
+     * )
+     * @ORM\JoinColumn(
+     *    name= "uid",
+     *    referencedColumnName = "user_id"
+     * )
+     */
+    protected $user;
 
     /**
-	 * @var HintInterface
+     * @var HintInterface
      * @ORM\ManyToOne(
      *     targetEntity="MA\Entity\HintInfluence",
      *     inversedBy="simulations"
      * )
      * @ORM\JoinColumn(
      *     name = "src_id",
-	 *     referencedColumnName = "id"
+     *     referencedColumnName = "id"
      * )
      */
     protected $influence;
 
-	/**
-	 * @var Note\HintSuggestion[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintSuggestion",
-	 *	mappedBy	 = "simulation",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $suggestions;
+    /**
+     * @var Note\HintSuggestion[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Note\HintSuggestion",
+     *    mappedBy     = "simulation",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $suggestions;
 
-	/**
-	 * @var Note\HintEffect[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintEffect",
-	 *	mappedBy	 = "simulation",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $effects;
+    /**
+     * @var Note\HintEffect[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Note\HintEffect",
+     *    mappedBy     = "simulation",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $effects;
 
-	/**
-	 * @var Note\HintPrevention[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Note\HintPrevention",
-	 *	mappedBy	 = "simulation",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $preventions;
+    /**
+     * @var Note\HintPrevention[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Note\HintPrevention",
+     *    mappedBy     = "simulation",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $preventions;
 
-	/**
-	 * @var int
-	 * @ORM\Column(type="integer", options={"default":-1})
-	 */
-	protected $state = self::STATE_NOT_NECESSARY;
+    /**
+     * @var int
+     * @ORM\Column(type="integer", options={"default":-1})
+     */
+    protected $state = self::STATE_NOT_NECESSARY;
 
-	/**
-	 * @var User
-	 * @ORM\ManyToOne(
-	 *	targetEntity = "MA\Entity\User",
-	 *	inversedBy	 = "simulations",
-	 * )
-	 * @ORM\JoinColumn(
-	 *	name= "who",
-	 *	referencedColumnName = "user_id"
-	 * )
-	 */
-	protected $who;
+    /**
+     * @var User
+     * @ORM\ManyToOne(
+     *    targetEntity = "MA\Entity\User",
+     *    inversedBy     = "simulations",
+     * )
+     * @ORM\JoinColumn(
+     *    name= "who",
+     *    referencedColumnName = "user_id"
+     * )
+     */
+    protected $who;
 
-	/**
-	 * @var DateTime 
-	 * @ORM\Column(type="datetime", name="whn", options={"nullable":true})
-	 */
-	protected $when;
+    /**
+     * @var DateTime 
+     * @ORM\Column(type="datetime", name="whn", options={"nullable":true})
+     */
+    protected $when;
 
-	/**
-	 * @var string 
-	 * @ORM\Column(type="string", name="eff", options = {"nullable":true})
-	 */
-	protected $effect;
+    /**
+     * @var string 
+     * @ORM\Column(type="string", name="eff", options = {"nullable":true})
+     */
+    protected $effect;
 
-	/**
-	 * @var string 
-	 * @ORM\Column(type="string", name="prev", options = {"nullable":true})
-	 */
-	protected $prevention;
+    /**
+     * @var string 
+     * @ORM\Column(type="string", name="prev", options = {"nullable":true})
+     */
+    protected $prevention;
 
-	/**
-	 * @var Image\ISimulation[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Image\ISimulation",
-	 *	mappedBy	 = "source",
-	 *	cascade = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $images;
+    /**
+     * @var Image\ISimulation[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Image\ISimulation",
+     *    mappedBy     = "source",
+     *    cascade = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $images;
 
-	/**
-	 * @var ActionInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Action\Simulation",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "ASC"})
-	 */
-	protected $actions;
+    /**
+     * @var ActionInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Action\Simulation",
+     *    mappedBy     = "source",
+     *    cascade      = {"remove"}
+     * )
+     * @ORM\OrderBy({"created" = "ASC"})
+     */
+    protected $actions;
 
-	/**
-	 * @var CommentInterface[]
-	 * @ORM\OneToMany(
-	 *	targetEntity = "MA\Entity\Comment\Simulation",
-	 *	mappedBy	 = "source",
-	 *	cascade 	 = {"persist", "remove"}
-	 * )
-	 * @ORM\OrderBy({"created" = "DESC"})
-	 */
-	protected $comments;
+    /**
+     * @var CommentInterface[]
+     * @ORM\OneToMany(
+     *    targetEntity = "MA\Entity\Comment\Simulation",
+     *    mappedBy     = "source",
+     *    cascade      = {"persist", "remove"}
+     * )
+     * @ORM\OrderBy({"created" = "DESC"})
+     */
+    protected $comments;
 
-	/**
-	 * @var int
-	 * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
-	 */
-	protected $commentCount = 0;
+    /**
+     * @var int
+     * @ORM\Column(type="integer", name="cmm_c", options={"default":0})
+     */
+    protected $commentCount = 0;
 
-	/**
-	 * @var DateTime
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $created;
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
 
-	/**
-	 * @var DateTime
-	 * @ORM\Column(type="datetime")
-	 */
-	protected $updated;
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
 
-	/**
-	 * @return
-	 */
-	public function __construct()
-	{
-		$this->created     = new DateTime;
-		$this->updated     = new DateTime;
-		$this->comments    = new ArrayCollection;
-		$this->effects     = new ArrayCollection;
-		$this->suggestions = new ArrayCollection;
-		$this->preventions = new ArrayCollection;
-		$this->images      = new ArrayCollection;
-		$this->actions     = new ArrayCollection;
-	}
+    /**
+     * @return
+     */
+    public function __construct()
+    {
+        $this->created     = new DateTime;
+        $this->updated     = new DateTime;
+        $this->comments    = new ArrayCollection;
+        $this->effects     = new ArrayCollection;
+        $this->suggestions = new ArrayCollection;
+        $this->preventions = new ArrayCollection;
+        $this->images      = new ArrayCollection;
+        $this->actions     = new ArrayCollection;
+    }
     
     /**
      * Get id.
@@ -314,7 +314,7 @@ class Simulation implements
      */
     public function setEffect($effect = null)
     {
-		$this->effect = $effect ? (string) $effect : $effect;
+        $this->effect = $effect ? (string) $effect : $effect;
         return $this;
     }
     
@@ -336,7 +336,7 @@ class Simulation implements
      */
     public function setPrevention($prevention = null)
     {
-		$this->prevention = $prevention ? (string) $prevention : $prevention;
+        $this->prevention = $prevention ? (string) $prevention : $prevention;
         return $this;
     }
     
@@ -390,8 +390,8 @@ class Simulation implements
      */
     public function addImage(Image\ISimulation $image)
     {
-		$image->setSource($this);
-		$this->getImages()->add($image);
+        $image->setSource($this);
+        $this->getImages()->add($image);
         return $this;
     }
     
@@ -403,9 +403,9 @@ class Simulation implements
      */
     public function addImages($images)
     {
-		foreach ($images as $image) {
-			$this->addImage($image);
-		}
+        foreach ($images as $image) {
+            $this->addImage($image);
+        }
 
         return $this;
     }
@@ -418,8 +418,8 @@ class Simulation implements
      */
     public function removeImage(Image\ISimulation $image)
     {
-		$image->setSource();
-		$this->getImages()->removeElement($image);
+        $image->setSource();
+        $this->getImages()->removeElement($image);
         return $this;
     }
     
@@ -431,9 +431,9 @@ class Simulation implements
      */
     public function removeImages($images)
     {
-		foreach ($images as $image) {
-			$this->removeImage($image);
-		}
+        foreach ($images as $image) {
+            $this->removeImage($image);
+        }
 
         return $this;
     }
@@ -450,40 +450,40 @@ class Simulation implements
         return $this;
     }
 
-	/**
+    /**
      * Get process.
      *
      * @return SimulationInterface.
-	 */
-	public function getProcess()
-	{
-		return $this->getHint()->getProcess();
-	}
+     */
+    public function getProcess()
+    {
+        return $this->getHint()->getProcess();
+    }
 
-	/**
+    /**
      * Get stage.
      *
      * @return StageInterface.
-	 */
-	public function getStage()
-	{
-		return $this->getHint()->getStage();
-	}
+     */
+    public function getStage()
+    {
+        return $this->getHint()->getStage();
+    }
 
-	/**
+    /**
      * Get version.
      *
      * @return VersionInterface.
-	 */
-	public function getVersion()
-	{
-		return $this->getHint()->getVersion();
-	}
+     */
+    public function getVersion()
+    {
+        return $this->getHint()->getVersion();
+    }
     
     /**
      * Get user.
      *
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function getUser()
     {
@@ -493,7 +493,7 @@ class Simulation implements
     /**
      * Set user.
      *
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function setUser(\User\Entity\UserInterface $user)
     {
@@ -546,7 +546,7 @@ class Simulation implements
     }
     
     /**
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function getCommentCount()
     {
@@ -554,7 +554,7 @@ class Simulation implements
     }
     
     /**
-	 * @inheritDoc
+     * @inheritDoc
      */
     public function setCommentCount($commentCount)
     {
@@ -562,23 +562,23 @@ class Simulation implements
         return $this;
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function increaseCommentCount()
-	{
-		$this->commentCount++;
-		return $this;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function increaseCommentCount()
+    {
+        $this->commentCount++;
+        return $this;
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function decreaseCommentCount()
-	{
-		$this->commentCount--;
-		return $this;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function decreaseCommentCount()
+    {
+        $this->commentCount--;
+        return $this;
+    }
     
     /**
      * Get effects.
@@ -610,8 +610,8 @@ class Simulation implements
      */
     public function addEffect(Note\HintEffect $effect)
     {
-		$effect->setSimulation($this);
-		$this->getEffects()->add($effect);
+        $effect->setSimulation($this);
+        $this->getEffects()->add($effect);
         return $this;
     }
     
@@ -623,9 +623,9 @@ class Simulation implements
      */
     public function addEffects($effects)
     {
-		foreach ($effects as $effect) {
-			$this->addEffect($effect);
-		}
+        foreach ($effects as $effect) {
+            $this->addEffect($effect);
+        }
 
         return $this;
     }
@@ -638,8 +638,8 @@ class Simulation implements
      */
     public function removeEffect(Note\HintEffect $effect)
     {
-		$effect->setSimulation();
-		$this->getEffects()->removeElement($effect);
+        $effect->setSimulation();
+        $this->getEffects()->removeElement($effect);
         return $this;
     }
     
@@ -651,9 +651,9 @@ class Simulation implements
      */
     public function removeEffects($effects)
     {
-		foreach ($effects as $effect) {
-			$this->removeEffect($effect);
-		}
+        foreach ($effects as $effect) {
+            $this->removeEffect($effect);
+        }
 
         return $this;
     }
@@ -688,8 +688,8 @@ class Simulation implements
      */
     public function addSuggestion(Note\HintSuggestion $suggestion)
     {
-		$suggestion->setSimulation($this);
-		$this->getSuggestions()->add($suggestion);
+        $suggestion->setSimulation($this);
+        $this->getSuggestions()->add($suggestion);
         return $this;
     }
     
@@ -701,9 +701,9 @@ class Simulation implements
      */
     public function addSuggestions($suggestions)
     {
-		foreach ($suggestions as $suggestion) {
-			$this->addSuggestion($suggestion);
-		}
+        foreach ($suggestions as $suggestion) {
+            $this->addSuggestion($suggestion);
+        }
 
         return $this;
     }
@@ -716,8 +716,8 @@ class Simulation implements
      */
     public function removeSuggestion(Note\HintSuggestion $suggestion)
     {
-		$suggestion->setSimulation();
-		$this->getSuggestions()->removeElement($suggestion);
+        $suggestion->setSimulation();
+        $this->getSuggestions()->removeElement($suggestion);
         return $this;
     }
     
@@ -729,9 +729,9 @@ class Simulation implements
      */
     public function removeSuggestions($suggestions)
     {
-		foreach ($suggestions as $suggestion) {
-			$this->removeSuggestion($suggestion);
-		}
+        foreach ($suggestions as $suggestion) {
+            $this->removeSuggestion($suggestion);
+        }
 
         return $this;
     }
@@ -766,8 +766,8 @@ class Simulation implements
      */
     public function addPrevention(Note\HintPrevention $prevention)
     {
-		$prevention->setSimulation($this);
-		$this->getPreventions()->add($prevention);
+        $prevention->setSimulation($this);
+        $this->getPreventions()->add($prevention);
         return $this;
     }
     
@@ -779,9 +779,9 @@ class Simulation implements
      */
     public function addPreventions($preventions)
     {
-		foreach ($preventions as $prevention) {
-			$this->addPrevention($prevention);
-		}
+        foreach ($preventions as $prevention) {
+            $this->addPrevention($prevention);
+        }
 
         return $this;
     }
@@ -794,8 +794,8 @@ class Simulation implements
      */
     public function removePrevention(Note\HintPrevention $prevention)
     {
-		$prevention->setSimulation();
-		$this->getPreventions()->removeElement($prevention);
+        $prevention->setSimulation();
+        $this->getPreventions()->removeElement($prevention);
         return $this;
     }
     
@@ -807,9 +807,9 @@ class Simulation implements
      */
     public function removePreventions($preventions)
     {
-		foreach ($preventions as $prevention) {
-			$this->removePrevention($prevention);
-		}
+        foreach ($preventions as $prevention) {
+            $this->removePrevention($prevention);
+        }
 
         return $this;
     }
@@ -880,22 +880,22 @@ class Simulation implements
         return $this;
     }
 
-	/**
-	 * @ORM\PreUpdate
-	 * @return Simulation
-	 */
-	public function preUpdate()
-	{
-		return $this->setUpdated(new DateTime);
-	}
+    /**
+     * @ORM\PreUpdate
+     * @return Simulation
+     */
+    public function preUpdate()
+    {
+        return $this->setUpdated(new DateTime);
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function getResourceId()
-	{
-		return self::class;
-	}
+    /**
+     * @inheritDoc
+     */
+    public function getResourceId()
+    {
+        return self::class;
+    }
 
     /**
      * @inheritDoc
@@ -904,143 +904,134 @@ class Simulation implements
     {
         return array(
             'id'           => $this->getId(),
-			'owner'   	   => $this->getUser(),
+            'owner'          => $this->getUser(),
             'description'  => $this->getDescription(),
             'created'      => $this->getCreated(),
-			'owner'   	   => $this->getUser(),
-			'state' 	   => $this->getState(),
-			'who' 	  	   => $this->getWho(),
-			'when' 	  	   => $this->getWhen(),
-			'effect'	   => $this->getEffect(),
-			'prevention'   => $this->getPrevention(),
-			'commentCount' => $this->getCommentCount(),
-			'images'  	   => new \ZF\Hal\Collection($this->getImages()),
-			'effects' 	   => new \ZF\Hal\Collection($this->getEffects()),
-			'suggestions'  => new \ZF\Hal\Collection($this->getSuggestions()),
-			'preventions'  => new \ZF\Hal\Collection($this->getPreventions()),
+            'owner'          => $this->getUser(),
+            'state'        => $this->getState(),
+            'who'              => $this->getWho(),
+            'when'              => $this->getWhen(),
+            'effect'       => $this->getEffect(),
+            'prevention'   => $this->getPrevention(),
+            'commentCount' => $this->getCommentCount(),
+            'images'         => new \ZF\Hal\Collection($this->getImages()),
+            'effects'        => new \ZF\Hal\Collection($this->getEffects()),
+            'suggestions'  => new \ZF\Hal\Collection($this->getSuggestions()),
+            'preventions'  => new \ZF\Hal\Collection($this->getPreventions()),
         );
     }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function __clone()
-	{
-		$this->id 		    = null;
-		$this->commentCount = 0;
-		$this->comments     = new ArrayCollection;
-		$this->created      = new DateTime;
-		$this->updated      = new DateTime;
+    /**
+     * @inheritDoc
+     */
+    public function __clone()
+    {
+        $this->id           = null;
+        $this->user         = null;
+        $this->commentCount = 0;
+        $this->comments     = new ArrayCollection;
+        $this->images       = new ArrayCollection;
+        $this->created      = new DateTime;
+        $this->updated      = new DateTime;
+        $this->effects      = new ArrayCollection;
+        $this->preventions  = new ArrayCollection;
+        $this->suggestions  = new ArrayCollection;
+    }
 
-		//Associations
-		$images = $this->getImages();
-		$this->images = new ArrayCollection;
-		foreach ($images as $image) $this->addImage(clone $image);
-		$effects = $this->getEffects();
-		$this->effects      = new ArrayCollection;
-		foreach ($effects as $effect) $this->addEffect(clone $effect);
-		$preventions = $this->getPreventions();
-		$this->preventions      = new ArrayCollection;
-		foreach ($preventions as $prevention) $this->addPrevention(clone $prevention);
-		$suggestions = $this->getSuggestions();
-		$this->suggestions      = new ArrayCollection;
-		foreach ($suggestions as $suggestion) $this->addSuggestion(clone $suggestion);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
+    {
+    }
 
-	/**
-	 * @inheritDoc
-	 */
-	public function prepareLinks(\ZF\Hal\Link\LinkCollection $links)
-	{
-	}
-
-	/**
-  	 * @inheritDoc
-  	 */
-  	public function provideLinks()
-  	{
-		return [
-			[
-				'rel'   	  => 'render',
-				'privilege'   => 'render',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'render', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'edit',
-				'privilege'   => 'edit',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'edit', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'delete',
-				'privilege'   => 'delete',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'delete', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'image',
-				'privilege'   => 'image',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/image',
-				    'params'  => ['action' => 'image'],
-				],
-			],
-			[
-				'rel'   	  => 'effect',
-				'privilege'   => 'effect',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'effect', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'prevention',
-				'privilege'   => 'prevention',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'prevention', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'suggestion',
-				'privilege'   => 'suggestion',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'suggestion', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'comment',
-				'privilege'   => 'comment',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'comment', 'id' => $this->getId()],
-				],
-			],
-			[
-				'rel'   	  => 'comments',
-				'privilege'   => 'comments',
-				'resource'	  => $this,
-				'route' => [
-				    'name'    => 'process/hint/simulation/detail/json',
-				    'params'  => ['action' => 'comments', 'id' => $this->getId()],
-				],
-			],
-		];
-	}
+    /**
+       * @inheritDoc
+       */
+      public function provideLinks()
+      {
+        return [
+            [
+                'rel'         => 'render',
+                'privilege'   => 'render',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'render', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'edit',
+                'privilege'   => 'edit',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'edit', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'delete',
+                'privilege'   => 'delete',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'delete', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'image',
+                'privilege'   => 'image',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/image',
+                    'params'  => ['action' => 'image'],
+                ],
+            ],
+            [
+                'rel'         => 'effect',
+                'privilege'   => 'effect',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'effect', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'prevention',
+                'privilege'   => 'prevention',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'prevention', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'suggestion',
+                'privilege'   => 'suggestion',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'suggestion', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'comment',
+                'privilege'   => 'comment',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'comment', 'id' => $this->getId()],
+                ],
+            ],
+            [
+                'rel'         => 'comments',
+                'privilege'   => 'comments',
+                'resource'      => $this,
+                'route' => [
+                    'name'    => 'process/hint/simulation/detail/json',
+                    'params'  => ['action' => 'comments', 'id' => $this->getId()],
+                ],
+            ],
+        ];
+    }
 }

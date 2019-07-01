@@ -695,14 +695,10 @@ class Version implements
         $this->parent       = null;
         $this->created      = new DateTime;
         $this->updated      = new DateTime;
+        $this->stages       = new ArrayCollection;
         $this->children     = new ArrayCollection;
         $this->comments     = new ArrayCollection;
         $this->commentCount = 0;
-
-        //Associations
-        $stages = $this->getStages();
-        $this->stages = new ArrayCollection;
-        foreach ($stages as $stage) $this->addStage(clone $stage);
     }
 
     /**

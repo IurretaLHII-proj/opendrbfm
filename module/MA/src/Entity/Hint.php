@@ -649,15 +649,12 @@ class Hint implements
     public function __clone()
     {
         $this->id           = null;
+        $this->user         = null;
         $this->commentCount = 0;
         $this->created      = new DateTime;
         $this->updated      = new DateTime;
+        $this->reasons      = new ArrayCollection;
         $this->comments     = new ArrayCollection;
-
-        //Associations
-        $reasons = $this->getReasons();
-        $this->reasons   = new ArrayCollection;
-        foreach ($reasons as $reason) $this->addReason(clone $reason);
     }
 
     /**

@@ -70,7 +70,7 @@
 	<div ng-if="version && version.isStagesLoaded() && !version.stages.length" class="text-center my-2">No stage registered</div>
 
 	<!-- VERSION STAGE TABS -->
-	<div class="bg-white d-flex" ng-class="{'sticky-top': locked}">
+	<div ng-if="version" class="bg-white d-flex" ng-class="{'sticky-top': locked}">
 		<ul ui-sortable
 			ng-model="version.stages" 
 			ui-sortable-stop="stagesUpdated(version)"

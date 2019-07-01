@@ -624,20 +624,15 @@ class HintReason implements
      */
     public function __clone()
     {
-        $this->id             = null;
+        $this->id           = null;
+        $this->user         = null;
         $this->created      = new DateTime;
         $this->updated      = new DateTime;
+        $this->influences   = new ArrayCollection;
         $this->relations    = new ArrayCollection;
+        $this->notes        = new ArrayCollection;
         $this->comments     = new ArrayCollection;
         $this->commentCount = 0;
-
-        //Associations
-        $influences = $this->getInfluences();
-        $this->influences   = new ArrayCollection;
-        foreach ($influences as $influence) $this->addInfluence(clone $influence);
-        $notes = $this->getNotes();
-        $this->notes        = new ArrayCollection;
-        foreach ($notes as $note) $this->addNote(clone $note);
     }
 
     /**

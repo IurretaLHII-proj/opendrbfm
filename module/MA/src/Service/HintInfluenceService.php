@@ -4,6 +4,7 @@ namespace MA\Service;
 
 use Zend\EventManager\EventInterface;
 use Base\Service\AbstractService;
+use MA\Entity\HintReasonInterface;
 
 class HintInfluenceService extends AbstractService
 {
@@ -30,4 +31,28 @@ class HintInfluenceService extends AbstractService
 			$this->getNavService()->triggerService(self::EVENT_CREATE, $simulation);
 		}
 	}
+
+	/**
+     * @param EventInterface $e
+     */
+    public function cloneInfluences(EventInterface $e)
+    {
+        $reason = $e->getTarget();
+        $params = $e->getParams();
+
+        if (!(array_key_exists('origin', $params) && $params['origin'] instanceof HintReasonInterface)) {
+            throw new \InvalidArgumentException(sprintf("Clone origin parameter missing"));
+		}
+		
+		foreach ($params['origin']->getInfluences() as $influence) {
+			$_influence = clone $influence;
+			foreach ($influence->getNotes() as $note) {
+                $_note = clone $note;
+                $this->triggerService($e->getName(), $_note, ['origin' => $note]);
+                $_influence->addNote($_note);
+			}
+			$this->triggerService($e->getName(), $_influence, ['origin' => $influence]);
+			$reason->addInfluence($_influence);
+		}
+    }
 }
