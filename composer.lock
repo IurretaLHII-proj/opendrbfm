@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26916d33ed7757eb46032b74f10787b9",
+    "content-hash": "860fca44871567a37f5c885603abbbca",
     "packages": [
         {
             "name": "bjyoungblood/bjy-authorize",
