@@ -231,16 +231,17 @@ class Navigation
 	/**
 	 * @param string $event
 	 * @param mixed $entity
+	 * @param array $argv
 	 * @return mixed
 	 */
-	public function triggerService($event, $entity)
+	public function triggerService($event, $entity, $argv = [])
 	{
 		if (null === ($service = $this->getServiceByRepository(get_class($entity)))) {
 			throw new \InvalidArgumentException(sprintf("Unable to find service for given %s entity",
 				get_class($entity)));
 		}
 
-		return $service->getEventManager()->trigger($event, $entity);
+		return $service->getEventManager()->trigger($event, $entity, $argv);
 	}
 
 	/**

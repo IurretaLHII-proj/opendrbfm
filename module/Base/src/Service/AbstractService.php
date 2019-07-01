@@ -179,5 +179,15 @@ abstract class AbstractService implements
 		}
 		return $this->navService;
 	}
+	/**
+	 * @param string $event
+	 * @param mixed $entity
+	 * @param array $argv
+	 * @return mixed
+	 */
+	public function triggerService($event, $entity, $argv = [])
+	{
+		return $this->getNavService()->triggerService($event, $entity, $argv);
+	}
 }
 

@@ -285,11 +285,12 @@ abstract class AbstractActionController extends BaseAbstractActionController
 	/**
 	 * @param string $event
 	 * @param mixed $entity
+	 * @param array $argv
 	 * @return mixed
 	 */
-	public function triggerService($event, $entity)
+	public function triggerService($event, $entity, $argv = [])
 	{
-		return $this->navService->triggerService($event, $entity);
+		return $this->navService->triggerService($event, $entity, $argv);
 	}
 
 	/**
