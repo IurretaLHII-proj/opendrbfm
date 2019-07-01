@@ -43,12 +43,12 @@ class HintReasonService extends AbstractService
         foreach ($params['origin']->getReasons() as $reason) {
 			$_reason = clone $reason;
 			foreach ($reason->getNotes() as $note) {
-                $_note = clone $note;
+				$_note = clone $note;
+				$_reason->addNote($_note);
                 $this->triggerService($e->getName(), $_note, ['origin' => $note]);
-                $_reason->addNote($_note);
 			}
+			$hint->addReason($_reason);
             $this->triggerService($e->getName(), $_reason, ['origin' => $reason]);
-            $hint->addReason($_reason);
         }
     }
 }

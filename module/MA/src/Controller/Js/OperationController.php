@@ -141,9 +141,16 @@ class OperationController extends \Base\Controller\Js\AbstractActionController
     public function hintsAction()
     {
 		$e  = $this->getEntity();
-        $em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+		$em = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
+		
+		if ($this->params()->fromQuery('standard', false)) {
+			$collection = $e->getHints()->filter(function($item) {return $item->isStandard();});
+		}
+		else {
+			$collection = $e->getHints();
+		}
 
-		$paginator = $this->getPaginator($e->getHints()->toArray(), $e->getHints()->count());
+		$paginator = $this->getPaginator($collection->toArray(), $collection->count());
 		$payload = $this->prepareHalCollection($paginator, 'process/operation/detail/json');
 
 		return new HalJsonModel([

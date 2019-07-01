@@ -22,8 +22,8 @@ class HintService extends AbstractService
 
         foreach ($params['origin']->getHints() as $hint) {
             $_hint = clone $hint;
-            $this->triggerService($e->getName(), $_hint, ['origin' => $hint]);
             $stage->addHint($_hint);
+            $this->triggerService($e->getName(), $_hint, ['origin' => $hint]);
         }
     }
 }

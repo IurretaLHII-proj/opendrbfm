@@ -24,8 +24,10 @@ App.controller('_ProcessReportCtrl', function($scope, $resource) {
 	$scope.toggleVersion = function(version) {
 		if ($scope.isVersionSelected(version)) {
 			$scope.unselect(version);
+			version.stagesLoaded  = false;
 		}
 		else {
+			version.stagesLoading = true;
 			$resource(version.links.getHref('stages')).get().$promise.then(
 				function(data) {
 					version.stages = [];
@@ -35,6 +37,8 @@ App.controller('_ProcessReportCtrl', function($scope, $resource) {
 						$scope.toggleStage(stage);
 					});
 					$scope.selection.versions.push(version.id);
+					version.stagesLoaded  = true;
+					version.stagesLoading = false;
 				}
 			);
 		}
@@ -43,8 +47,10 @@ App.controller('_ProcessReportCtrl', function($scope, $resource) {
 	$scope.toggleStage = function(stage) {
 		if ($scope.isStageSelected(stage)) {
 			$scope.unselect(stage);
+			stage.hintsLoaded  = false;
 		}
 		else {
+			stage.hintsLoading = true;
 			$resource(stage.links.getHref('hints')).get().$promise.then(
 				function(data) {
 					stage.hints = [];
@@ -54,6 +60,8 @@ App.controller('_ProcessReportCtrl', function($scope, $resource) {
 						$scope.select(hint);
 					});
 					$scope.selection.stages.push(stage.id);
+					stage.hintsLoading = false;
+					stage.hintsLoaded  = true;
 				}
 			);
 		}

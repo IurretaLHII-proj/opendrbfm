@@ -17,6 +17,8 @@
         "ircmaxell/random-lib": "1.1",
         "zf-commons/zfc-admin": "^0.3.1",
         "phpoffice/phpspreadsheet": "^1.7",
-        "dompdf/dompdf": "^0.8.3"
+        "dompdf/dompdf": "^0.8.3",
+        "tecnickcom/tcpdf": "^6.2",
+        "mpdf/mpdf": "^8.0"
     }
 }

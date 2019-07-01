@@ -367,7 +367,8 @@ class HintRelation implements
 	 */
 	public function __clone()
 	{
-		$this->id 		    = null;
+        $this->id 		    = null;
+        $this->user         = null;
 		$this->commentCount = 0;
 		$this->created      = new DateTime;
 		$this->updated      = new DateTime;

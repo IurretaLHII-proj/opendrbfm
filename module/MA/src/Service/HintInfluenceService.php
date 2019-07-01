@@ -48,11 +48,11 @@ class HintInfluenceService extends AbstractService
 			$_influence = clone $influence;
 			foreach ($influence->getNotes() as $note) {
                 $_note = clone $note;
-                $this->triggerService($e->getName(), $_note, ['origin' => $note]);
-                $_influence->addNote($_note);
+				$_influence->addNote($_note);
+				$this->triggerService($e->getName(), $_note, ['origin' => $note]);
 			}
-			$this->triggerService($e->getName(), $_influence, ['origin' => $influence]);
 			$reason->addInfluence($_influence);
+			$this->triggerService($e->getName(), $_influence, ['origin' => $influence]);
 		}
     }
 }

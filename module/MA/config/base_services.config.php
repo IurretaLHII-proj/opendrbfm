@@ -131,6 +131,11 @@ return [
 				'callback' => 'createRelation',
 				'priority' => 100,
 			],
+			[
+				'services' => Service\HintReasonService::class,
+				'events'   => Service\VersionService::EVENT_CLONE,
+				'callback' => 'cloneRelations',
+			],
 		],
 	],
 	Service\HintReasonService::class => [

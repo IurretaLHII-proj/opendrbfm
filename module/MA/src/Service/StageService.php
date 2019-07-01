@@ -22,13 +22,13 @@ class StageService extends AbstractService
 
         foreach ($params['origin']->getStages() as $stage) {
             $_stage = clone $stage;
-            $this->triggerService($e->getName(), $_stage, ['origin' => $stage]);
             $version->addStage($_stage);
+            $this->triggerService($e->getName(), $_stage, ['origin' => $stage]);
 
             foreach ($stage->getImages() as $image) {
                 $_image = clone $image;
-                $this->triggerService($e->getName(), $_image);
                 $_stage->addImage($_image);
+                $this->triggerService($e->getName(), $_image);
             }
         }
     }
