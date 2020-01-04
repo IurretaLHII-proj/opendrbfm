@@ -66,13 +66,13 @@ sudo apt install php-mysql php-gd php-dom php-mbstring php-zip php-curl php-xml 
 sudo service apache2 restart
 
 
-8- Enable some apache2 modules
+### Enable some apache2 modules
 sudo a2enmod rewrite socache_shmcb ssl
 
 sudo service apache2 reload
 
 
-9- Create opendrbfm site (machining) database. (I suppose database user is 'drbfm' and password is 'PASSWORD'. Change to meet your needs).
+### Create opendrbfm site (machining) database. (I suppose database user is 'drbfm' and password is 'PASSWORD'. Change to meet your needs).
 
 mysql -u root -p
 > CREATE DATABASE IF NOT EXISTS `drbfm_machining` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
@@ -82,28 +82,28 @@ mysql -u root -p
 > quit;
 
 
-10- From ~/ODRBFM directory, get the software from github.com
+### From ~/ODRBFM directory, get the software from github.com
 cd ~/ODRBFM/
 git clone https://github.com/IurretaLHII-proj/opendrbfm.git
 
 
-11- Change directory name to our site name (machining).
+### Change directory name to our site name (machining).
 mv opendrbfm machining
 
 
-12- Change data and images directories group to www-data.
+### Change data and images directories group to www-data.
 sudo chgrp www-data ~/ODRBFM/machining/data
 sudo chgrp www-data ~/ODRBFM/machining/public/img
 
 
-13- Create database scheme
+### Create database scheme
 > change database name in the file machining/sql/structure.sql (USE 'DATABASENAME'; >>> USE 'drbfm_machining'
 sed -i s/DATABASENAME/drbfm_machining/ ~/ODRBFM/machining/sql/structure.sql
 > load database structure into database
 mysql -u drbfm -pPASSWORD < machining/sql/structure.sql
 
 
-14- Install Composer
+### Install Composer
 cd ~/ODRBFM/machining
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php
@@ -111,27 +111,27 @@ php -r "unlink('composer-setup.php');"
 php composer.phar install
 
 
-15- Install nvm
+### Install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 
 
-16- Logout and login to load .bashrc, and go to site
+### Logout and login to load .bashrc, and go to site
 check nvm version
 nvm --version
 cd /ODRBFM/machining
 
-17- Install nodejs stable version
+### Install nodejs stable version
 nvm install stable
 nvm use stable
 
 
-18- Install js dependencies
+### Install js dependencies
 cd public/js/
 npm install
 
 
 
-19- Create database connection settings file
+### Create database connection settings file
 
 echo "
 <?php
@@ -145,7 +145,7 @@ return [
 " > ~/ODRBFM/machining/config/autoload/ddbb.php
 
 
-20- Create apache2 virtual server
+### Create apache2 virtual server
 >> First: create link to site:
 sudo mkdir /var/www/html/ODRBFM
 sudo    ln -s /home/opendrbfm/ODRBFM/machining/public /var/www/html/ODRBFM/machining
@@ -186,7 +186,7 @@ sudo a2ensite 001-machining
 sudo service apache2 reload
 
 
-21- After installation there is only one user, the administrator user of the system.
+### After installation there is only one user, the administrator user of the system.
 
 Username: admin
 Password: password
