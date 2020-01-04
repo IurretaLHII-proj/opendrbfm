@@ -11,21 +11,21 @@ Tools used:
 - Composer
 - Zen Framework
 - jQuery
-- ootstrap
+- bootstrap
 - Node.js
 - Angular
 
 This installation procedure is verified by Ubuntu 16.04 Xenial Linux system.
-1- Create a new site on an intranet or Internet DNS domain server. And aim this server registers at our opendrbfm server IP address. For example own server name is drbserver.EXAMPLE.COM domain and site is machining.drbfm.EXAMPLE.COM:
+1- Create a new site on an intranet or Internet DNS domain server. And aim this server registers at our opendrbfm server IP address. For example our domain is EXAMPLE.COM, our server name is drbserver.EXAMPLE.COM, and site is machining.drbfm.EXAMPLE.COM:
 
 drbserver          IN A 192.168.3.218
 machining.drbfm    IN CNAME drbserver
 
 
-# 2- Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
+2- Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
 sudo apt update && apt upgrade
 
-# 2.2- Adapt /etc/hosts file and check next line:
+2.2- Adapt /etc/hosts file and check next line:
 127.0.1.1 YOURHOSTNAME.drbfm.YOURDOMAIN YOURHOSTNAME
 
 # 2.3- Check network configuration. As example:
