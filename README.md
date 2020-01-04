@@ -16,7 +16,8 @@ Tools used:
 - Angular
 
 This installation procedure is verified by Ubuntu 16.04 Xenial Linux system.
-### Create a new site on an intranet or Internet DNS domain server. And aim this server registers at our opendrbfm server IP address. For example our domain is EXAMPLE.COM, our server name is drbserver.EXAMPLE.COM, and site is machining.drbfm.EXAMPLE.COM:
+### Create a new site on an intranet or Internet DNS domain server.
+And aim this server registers at our opendrbfm server IP address. For example our domain is EXAMPLE.COM, our server name is drbserver.EXAMPLE.COM, and site is machining.drbfm.EXAMPLE.COM:
 '''
 drbserver          IN A 192.168.3.218
 machining.drbfm    IN CNAME drbserver
@@ -25,10 +26,10 @@ machining.drbfm    IN CNAME drbserver
 ### Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
 sudo apt update && apt upgrade
 
-2.2- Adapt /etc/hosts file and check next line:
+### Adapt /etc/hosts file and check next line:
 127.0.1.1 YOURHOSTNAME.drbfm.YOURDOMAIN YOURHOSTNAME
 
-# 2.3- Check network configuration. As example:
+### Check network configuration. As example:
 auto ens18
 iface ens18 inet static
     address 192.168.3.218
@@ -40,25 +41,25 @@ iface ens18 inet static
     dns-nameservers 192.168.3.12
 
 
-# 3- create the opendrbfm user and add to sudo group.
+### Create the opendrbfm user and add to sudo group.
 sudo useradd -m opendrbfm -s /bin/bash -G sudo
 
 
-# 4- change his/her password
+### Change his/her password
 sudo passwd opendrbfm
 
 
-# 5- Login as opendrbfm
+### Login as opendrbfm
 exit
 ssh opendrbfm@YOURHOSTNAME.drbfm.YOURDOMAIN
 
 
-6- Create ODRBFM directory
+### Create ODRBFM directory
 mkdir ODRBFM
 cd ODRBFM
 
 
-7- Install the web server (apache2), PHP (7.0) php modules and the database (mysql) and Git!!!
+### Install the web server (apache2), PHP (7.0) php modules and the database (mysql) and Git!!!
 sudo apt install apache2 php libapache2-mod-php php-mysql php-gd php-dom php-mbstring php-zip mysql-server mysql-client git
 sudo apt install php-mysql php-gd php-dom php-mbstring php-zip php-curl php-xml php-xmlrpc  php-xml-htmlsax3 php-xml-parser php-xml-rpc2 php-xml-serializer php-xml-svg php-cache-lite php-http-request2 php-net-url2 php-pear php7.0-fpm php7.0-readline
 
