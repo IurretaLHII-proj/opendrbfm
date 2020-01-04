@@ -1,7 +1,7 @@
 # OpenDRBFM
 OpenDRBFM is a free implementation of Toyota's DRBFM (Design Review Based on Failure Mode) method.
 This application was developed by Jon Iturriondobeitia, teacher from Iurreta LHII vocational school in Iurreta, Basque Country.
-# Installation
+## Installation
 This software can be used as one site or multiple sites on one server.
 The application uses a variety of tools. Therefore, installation is complex.
 Tools used:
@@ -16,13 +16,13 @@ Tools used:
 - Angular
 
 This installation procedure is verified by Ubuntu 16.04 Xenial Linux system.
-##Create a new site on an intranet or Internet DNS domain server. And aim this server registers at our opendrbfm server IP address. For example our domain is EXAMPLE.COM, our server name is drbserver.EXAMPLE.COM, and site is machining.drbfm.EXAMPLE.COM:
-
+### Create a new site on an intranet or Internet DNS domain server. And aim this server registers at our opendrbfm server IP address. For example our domain is EXAMPLE.COM, our server name is drbserver.EXAMPLE.COM, and site is machining.drbfm.EXAMPLE.COM:
+'''
 drbserver          IN A 192.168.3.218
 machining.drbfm    IN CNAME drbserver
+¡¡¡
 
-
-2- Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
+### Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
 sudo apt update && apt upgrade
 
 2.2- Adapt /etc/hosts file and check next line:
