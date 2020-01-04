@@ -16,18 +16,24 @@ Tools used:
 - Angular
 
 This installation procedure is verified by Ubuntu 16.04 Xenial Linux system.
+
 For example, Our system is:
+
 Domain: EXAMPLE.COM
+
 Server: drbserver.EXAMPLE.COM
+
 Server IP: 192.168.3.218
+
 Site: machining.drbfm.EXAMPLE.COM
 
 ### 1- Create a new site on an intranet or Internet DNS domain server.
 And aim this server registers at our opendrbfm server IP address.
-'''
+
 drbserver          IN A 192.168.3.218
+
 machining.drbfm    IN CNAME drbserver
-'''
+
 
 ### 2- Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
 sudo apt update && apt upgrade
