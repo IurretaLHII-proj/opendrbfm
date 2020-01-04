@@ -93,23 +93,23 @@ cd ~/ODRBFM/
 git clone https://github.com/IurretaLHII-proj/opendrbfm.git
 
 
-### Change directory name to our site name (machining).
+### 13- Change directory name to our site name (machining).
 mv opendrbfm machining
 
 
-### Change data and images directories group to www-data.
+### 14- Change data and images directories group to www-data.
 sudo chgrp www-data ~/ODRBFM/machining/data
 sudo chgrp www-data ~/ODRBFM/machining/public/img
 
 
-### Create database scheme
+### 15- Create database scheme
 > change database name in the file machining/sql/structure.sql (USE 'DATABASENAME'; >>> USE 'drbfm_machining'
 sed -i s/DATABASENAME/drbfm_machining/ ~/ODRBFM/machining/sql/structure.sql
 > load database structure into database
 mysql -u drbfm -pPASSWORD < machining/sql/structure.sql
 
 
-### Install Composer
+### 16- Install Composer
 cd ~/ODRBFM/machining
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php
@@ -117,27 +117,27 @@ php -r "unlink('composer-setup.php');"
 php composer.phar install
 
 
-### Install nvm
+### 17- Install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 
 
-### Logout and login to load .bashrc, and go to site
+### 18- Logout and login to load .bashrc, and go to site
 check nvm version
 nvm --version
 cd /ODRBFM/machining
 
-### Install nodejs stable version
+### 19- Install nodejs stable version
 nvm install stable
 nvm use stable
 
 
-### Install js dependencies
+### 20- Install js dependencies
 cd public/js/
 npm install
 
 
 
-### Create database connection settings file
+### 21- Create database connection settings file
 
 echo "
 <?php
@@ -151,7 +151,7 @@ return [
 " > ~/ODRBFM/machining/config/autoload/ddbb.php
 
 
-### Create apache2 virtual server
+### 22- Create apache2 virtual server
 >> First: create link to site:
 sudo mkdir /var/www/html/ODRBFM
 sudo    ln -s /home/opendrbfm/ODRBFM/machining/public /var/www/html/ODRBFM/machining
@@ -192,7 +192,7 @@ sudo a2ensite 001-machining
 sudo service apache2 reload
 
 
-### After installation there is only one user, the administrator user of the system.
+### 23- After installation there is only one user, the administrator user of the system.
 
 Username: admin
 Password: password
@@ -205,7 +205,7 @@ NOTE: CHANGE THE DEFAULT PASSWORDS!
 * Get [last version of nodejs](https://github.com/nvm-sh/nvm) and install javascript dependencies with [npm](https://www.npmjs.com/) (**package.json**)
 
 
-## Create database
+## --------------- OLD --------------Create database
 
 CREATE DATABASE `DATABASENAME` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
