@@ -15,7 +15,7 @@ Tools used:
 - Node.js
 - Angular
 
-This installation procedure is verified by Ubuntu 16.04 Xenial GNU/Linux system.
+This installation procedure is verified for Ubuntu 16.04 Xenial GNU/Linux system.
 
 For example, Our system is:
 ```
