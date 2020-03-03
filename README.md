@@ -28,7 +28,7 @@ Site: machining.drbfm.EXAMPLE.COM
 And aim this server registers at our opendrbfm server IP address.
 ```
 drbfmserver        IN A 192.168.3.218
-machining.drbfm    IN CNAME drbserver
+machining.drbfm    IN CNAME drbfmserver
 ```
 
 ### 2- Install one Ubuntu Linux 16.04 (Xenial) system as usual and upgrade.
@@ -37,7 +37,7 @@ sudo apt update && apt upgrade
 ```
 ### 3- Adapt /etc/hosts file and check next line:
 ```
-127.0.1.1 machining.drbfm.EXAMPLE.COM drbfmserver
+127.0.1.1 drbfmserver.EXAMPLE.COM drbfmserver
 ```
 ### 4- Check network configuration. As example:
 ```
