@@ -156,7 +156,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 ```
 check nvm version
 nvm --version
-cd /ODRBFM/machining
+cd ~ODRBFM/machining
 ```
 
 ### 18- Install nodejs stable version
