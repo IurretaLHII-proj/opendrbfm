@@ -154,6 +154,11 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
 
 ### 17- Logout and login to load .bashrc. Check nvm version and go to site.
 ```
+exit
+....
+ssh opendrbfm@drbfmserver.EXAMPLE.COM
+password: 
+....
 check nvm version
 nvm --version
 cd ~ODRBFM/machining
